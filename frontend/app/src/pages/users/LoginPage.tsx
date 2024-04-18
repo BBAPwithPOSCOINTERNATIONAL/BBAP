@@ -1,13 +1,16 @@
 import React, { useState, FormEvent } from "react";
 import logoimg from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleLogin = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("Login Attempted with:", employeeId, password);
+    navigate("/main");
   };
 
   return (
@@ -15,7 +18,6 @@ function LoginPage() {
       style={{ backgroundColor: "#035381", color: "white", padding: "20px" }}
     >
       <img src={logoimg} alt="Login Logo" />
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <h1>BBAP</h1>
       <form onSubmit={handleLogin}>
         <div>
@@ -25,7 +27,6 @@ function LoginPage() {
             id="employeeId"
             value={employeeId}
             onChange={(e) => setEmployeeId(e.target.value)}
-            required
           />
         </div>
         <div>
@@ -35,7 +36,6 @@ function LoginPage() {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </div>
         <button type="submit">로그인</button>
