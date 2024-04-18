@@ -1,0 +1,433 @@
+{
+	"coffee": [
+		{
+			"name": "아메리카노",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "진하게 로스팅한 커피 원두에서 에스프레소를 추출하여 투썸 고유의 원두 풍미를 느낄 수 있는 에스프레소 음료입니다.",
+			"price": 2500,
+			"images": "https://drive.google.com/uc?export=view&id=1YwGMYXYDW35qWMCHVEB4D_ksRvZ2S5Ul",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "카페라떼",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "풍부하고 진한 농도의 에스프레소와 스팀밀크 위에 부드러운 우유 거품을 살짝 올려준 에스프레소 음료입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1xnpv7M48DamjSG8Cyi-7KrKDBQi4QwM2",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "카푸치노",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "풍부하고 진한 농도의 에스프레소 위에 스팀밀크와 부드럽고 풍부한 양의 우유거품을 올린 에스프레소 음료입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1b-ocHaDH08qZBsGyjFw9VhmKMYE0IICn",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "바닐라라떼",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "달콤한 바닐라 향과 풍부한 에스프레소가 조화를 이룬 부드러운 라떼입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1XDD41cC6iHPiCKfB6gghaSN8_68_TYZ-",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "카페모카",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "진한 초콜릿 모카 시럽과 풍부하고 진한 농도의 에스프레소를 스팀밀크와 혼합하여 부드러운 휘핑크림을 올린 달콤한 에스프레소 음료입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1dHE10t1uM0FFZfPU9xklGB2ezAkotAM6",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "카라멜 마끼아또",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "바닐라 향을 넣은 스팀밀크 위에 에스프레소 샷을 넣고 카라멜 소스를 뿌린 달콤한 에스프레소 음료입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1X6D_NCIa3FZyMAaKblcdYmju5uaXoKjW",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "아이스크림 라떼",
+			"temperature": ["ICE"],
+			"size": ["medium"],
+			"description": "소프트 아이스크림이 더해진 달콤하고 부드러운 카페 라떼입니다.",
+			"price": 3500,
+			"images": "https://drive.google.com/uc?export=view&id=17Jti76C0HU9eIsAmOBhZKPVolHfzpE28",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "콜드브루",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "커피 본연의 깊은 풍미와 단맛이 느껴지는 부드럽고 깔끔한 콜드브루 커피입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1C9MDVKrO9ZJe7OQT4Gw3t_FOGSVUCeJK",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "콜드브루 라떼",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "콜드브루와 우유가 어우러져 더욱 부드럽게 즐길 수 있는 콜드브루 라떼입니다.",
+			"price": 3500,
+			"images": "https://drive.google.com/uc?export=view&id=1-QRcog_GOKdpWKQhyYYY8xtRf5FvQcyM",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		}
+	],
+	"beverage": [
+		{
+			"name": "허니 레몬에이드",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "프레시한 레몬을 듬뿍 넣어 상큼한 레몬향이 가득한 클래식 에이드입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1EHwCUWAVuB0OlKdpss5bamiUEkbjB7u8",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "초콜릿 라떼",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "프레시한 레몬을 듬뿍 넣어 상큼한 레몬향이 가득한 클래식 에이드입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=14dcpR3fxs9h8rA5uUfyTnE6auMxG8npG",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "오렌지에이드",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "달콤한 오렌지의 맛과 스파클링의 청량함이 느껴지는 오렌지 에이드입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1osYKvA0oUPtDo-ian9eCoptK3cB7wJDi",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "자몽에이드",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "자몽의 상큼함과 스파클링의 청량감이 입 안 가득 느껴지는 자몽 에이드입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1ciWtjCx8Q9P1sszzQ0saNqcL1G3w9Fex",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "잉글리쉬 브렉퍼스트",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "최고급 실론티 잎을 선별하여 블렌딩 맛이 진하고 바디감이 강하며 꽃향기가 나는 TWG 잉글리쉬브렉퍼스트입니다.",
+			"price": 2000,
+			"images": "https://drive.google.com/uc?export=view&id=1KlliO6LhIcZYT6TJMC7MHlTp_DGsQxmi",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "얼그레이",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "산뜻한 과일향과 수레국화의 향긋한 향이 느껴지는 TWG TEA 입니다.",
+			"price": 2000,
+			"images": "https://drive.google.com/uc?export=view&id=1jzxw8NP9tZn3B5GA008cTAl0OBL5tOUw",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "녹차",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "유기농 녹차 티백만을 사용한 티로 맑은 수색과 고유의 풍미가 뛰어난 녹차입니다.",
+			"price": 2000,
+			"images": "https://drive.google.com/uc?export=view&id=14prKTZf0xh9H5YfqAPcu8VVr9S4aeANa",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "민트차",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "홍차, 녹차, 민트가 블렌딩 된 청량한 타입의 TWG TEA 입니다.",
+			"price": 2000,
+			"images": "https://drive.google.com/uc?export=view&id=1mC1Vg2ZjRxU5vqmWK4K8TQqweAT53zgf",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "카모마일",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "카페인이 없어 누구나 편안하게 즐길 수 있는 허브티로, 풍부한 벌꿀향과 황금빛이 특징인 TWG TEA 입니다.",
+			"price": 2000,
+			"images": "https://drive.google.com/uc?export=view&id=1wWFcaziCozrUa2v-63Ahet91Xof0NGDO",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "허니레몬티",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "진한 TWG TEA 프렌치 얼그레이 베이스에 달콤한 꿀과 상큼한 레몬이 더해진 TWG 베리에이션 티입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1oOhtXv9Mq8ztMatoUgWQdKpZ8wQjifNU",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "그린티 라떼",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "그린티 파우더와 우유가 조화로운 부드러운 티 라떼입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1vKWM9AMLWPm4O_0sRgh3-2mBBL__JIzz",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "밀크티",
+			"temperature": ["HOT", "ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "향긋한 홍차향과 부드러운 우유가 어우러진 정통 밀크티입니다.",
+			"price": 3000,
+			"images": "https://drive.google.com/uc?export=view&id=1SFRBDeYg_ySnDQDa4RV3xUXS6GUGAOP0",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		},
+		{
+			"name": "복숭아아이스티",
+			"temperature": ["ICE"],
+			"size": ["small", "medium", "large"],
+			"description": "깊은 맛의 홍차와 달콤한 복숭아의 은은한 향이 어우러진 아이스티입니다.",
+			"price": 2500,
+			"images": "https://drive.google.com/uc?export=view&id=1QT8E3THxKAJhgg63VNJu5VdhaAw5pBce",
+			"options": {
+				"1샷 추가": 500,
+				"2샷 추가": 1000,
+				"3샷 추가": 1500,
+				"휘핑추가": 500,
+				"바닐라시럽 추가": 500,
+				"헤이즐넛시럽 추가": 500
+			}
+		}
+	],
+	"dessert": [
+		{
+			"name": "소금빵",
+			"description": "버터를 롤링한 반죽 위에 소금이 뿌려져 있어 고소하면서도 짭짤한 맛을 동시에 느끼실 수 있으며 쫄깃한 식감이 매력적인 빵입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1PMy131LB06SbnY10UjqUbgDdpHFQ4nsc",
+			"price": 2000
+		},
+		{
+			"name": "베이글",
+			"description": "탕종법으로 반죽한 후 고온에서 데치고, 짧게 구워 내 쫄깃하고 촉촉한 식감이 특징인 플레인 베이글입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1uX-WJ0adqWAJOSZvASGC2_ZUmPrRUwsI",
+			"price": 2500
+		},
+		{
+			"name": "까눌레",
+			"description": "자연방사 유정란과 바닐라 럼을 활용하는 프랑스 보르도 지역의 전통 레시피로 만들어져 풍성한 바닐라 향과 쫀득한 식감이 특징인 프랑스 전통 디저트 쁘띠 까눌레입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=181N65XOazzFDxbGzjugbuxpcscg3Kuw8",
+			"price": 1500
+		},
+		{
+			"name": "휘낭시에",
+			"description": "까망베르 치즈, 체다치즈와 버터의 고소한 풍미가 가득한 휘낭시에입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1NQnFuupM9Ok4CQxGOsMPo3wqdpf80RO7",
+			"price": 1500
+		},
+		{
+			"name": "바닐라 마카롱",
+			"description": "겉은 바삭하고 속은 쫄깃한 달콤한 바닐라 맛의 마카롱입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1Mr9FaZkUu_je4c7qjvMTPWNYv1XXQ2JJ",
+			"price": 2000
+		},
+		{
+			"name": "딸기 마카롱",
+			"description": "겉은 바삭하고 속은 쫄깃한 상큼한 딸기 맛 마카롱입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1ehIm736zoYqlanXlHqRzGXKhzddB2Ja7",
+			"price": 2000
+		},
+		{
+			"name": "초콜릿 쿠키",
+			"description": "진한 다크 초콜릿과 고소한 피칸이 들어있는 쿠키입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1RLUj4hp_jWxRLWKNIjvygt8qgBEmc8O0",
+			"price": 1000
+		},
+		{
+			"name": "치킨 베이컨 랩",
+			"description": "닭가슴살과 스크램블 에그, 베이컨, 스위스 치즈에 매콤한 할라피뇨 마요 소스를 더해 감칠맛을 살린 랩입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1_rhghxHB51rOkGivHCIAOHYrxxXRhH5X",
+			"price": 3000
+		},
+		{
+			"name": "에그 샌드위치",
+			"description": "화이트 식빵 사이에 고소한 에그 스프레드를 넣은 부드러운 샌드위치입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=11rcmpi0EAUrAjqW9RRptOJ4d16eNp3Pr",
+			"price": 3000
+		},
+		{
+			"name": "초콜릿케이크",
+			"description": "촉촉하고 꾸덕한 초코시트와 생초코가 어우러진 초콜릿케이크입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1QByl-KCkBTiuhrw9jjgRLpZ61HBQoORp",
+			"price": 3500
+		},
+		{
+			"name": "당근케이크",
+			"description": "우유생크림과 생당근,호두가 들어간 당근케이크입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1tlGHvLrcLX0QtEKIRJ-E4sWQMvlL59A4",
+			"price": 3500
+		},
+
+		{
+			"name": "치즈케이크",
+			"description": "밀가루,향료,유화제를 넣지 않은 순수 필라델피아크림치즈, 생크림, 샤워크림으로 만든 정통수제치즈케이크 입니다.",
+			"images": "https://drive.google.com/uc?export=view&id=1A3rhWXfP9ypjJ60kTUuMpAu_mqg5osSz",
+			"price": 3500
+		}
+	]
+}

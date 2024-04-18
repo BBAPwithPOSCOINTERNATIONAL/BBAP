@@ -1,14 +1,14 @@
-import { useState } from "react";
-import CurrentTime from "./components/currentTime";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import EntryPage from "./pages/entryPage";
+import MainPage from "./pages/mainPage";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
-		<>
-			<CurrentTime />
-		</>
+		<Routes>
+			<Route path="/" element={<EntryPage />}></Route>
+			<Route path="/main" element={<MainPage />}></Route>
+		</Routes>
 	);
 }
 
