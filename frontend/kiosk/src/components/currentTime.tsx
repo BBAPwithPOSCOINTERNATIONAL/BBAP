@@ -21,9 +21,7 @@ const CurrentTime: React.FC = () => {
 
 	return (
 		<div>
-			<p className="text-4xl font-hyemin-bold text-primary-color">
-				{currentTime}
-			</p>
+			<p className="text-sm font-bold text-primary-color">{currentTime}</p>
 		</div>
 	);
 };
