@@ -1,3 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "IM_Hyemin-Bold";
+  src: url("assets/fonts/IM_HYEMIN-BOLD.TTF");
+}
+
+@font-face {
+  font-family: "IM_Hyemin-Regular";
+  src: url("assets/fonts/IM_HYEMIN-REGULAR.TTF");
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
