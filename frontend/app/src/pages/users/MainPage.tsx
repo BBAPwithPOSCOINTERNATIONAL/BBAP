@@ -1,4 +1,3 @@
-// MainPage.tsx
 import React from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
