@@ -3,6 +3,9 @@ import CurrentTime from "../components/currentTime";
 import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
 import MenuItem from "../components/menuItem";
+import Button from "../components/button";
+import useModalStore from "../store/modalStore";
+import MenuModal from "../components/menuModal";
 
 interface MenuData {
 	[key: string]: Menu[];
@@ -19,6 +22,7 @@ const MainPage: React.FC = () => {
 	const [activeTapItem, setActiveTapItem] = useState<string>(tapItems[0]);
 	const [activeMenu, setActiveMenu] = useState<Menu[]>();
 	const [menuData, setMenuData] = useState<MenuData>();
+	const { isMenuModalOpen } = useModalStore();
 
 	useEffect(() => {
 		setMenuData(cafeMenuData);
@@ -32,56 +36,101 @@ const MainPage: React.FC = () => {
 		setActiveTapItem(tap);
 	};
 
+	const handleGame = () => {
+		// TODO
+		// 게임 시작 화면으로 감
+	};
+	const handlePurchase = () => {
+		// TODO
+		// 내기 화면으로 감
+	};
+	const goToEntry = () => {
+		// TODO
+		// /으로 감
+		// 주문 목록 리셋
+	};
+
 	return (
-		<div className="w-full h-screen bg-white">
-			<div id="header" className="flex justify-between p-8">
-				<img
-					src="/assets/images/포스코인터내셔널_로고.png"
-					alt=""
-					className="w-[300px]"
-				/>
-				<CurrentTime />
-			</div>
-			<div id="menus" className="m-10">
-				<div
-					id="menu-header"
-					className="text-lg text-center text-white flex justify-start space-x-5"
-				>
-					{tapItems.map((item, index) => (
-						<div
-							className={`transition-all rounded-t-3xl ${
-								activeTapItem === item
-									? "w-1/4 bg-active-color"
-									: "w-1/5 bg-primary-color"
-							} py-4`}
-							key={index}
-							onClick={() => handleTapItemClick(item)}
-						>
-							{item}
-						</div>
-					))}
+		<>
+			{isMenuModalOpen && <MenuModal />}
+			<div className="w-full h-screen bg-white">
+				<div id="header" className="flex justify-between p-8">
+					<img
+						src="/assets/images/포스코인터내셔널_로고.png"
+						alt=""
+						className="w-[300px]"
+					/>
+					<CurrentTime />
 				</div>
-				<div
-					id="menu-body"
-					className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1600px] flex flex-col divide-y-2 divide-primary-color"
-				>
-					<div className="flex-grow overflow-y-auto grid grid-cols-3">
-						{activeMenu &&
-							activeMenu.map((item: Menu, index: number) => (
-								<MenuItem menuItemData={item} key={index} />
-							))}
-						{/* menuItem 카드 렌더링 */}
+				<div id="menus" className="m-10">
+					<div
+						id="menu-header"
+						className="text-lg text-center text-white flex justify-start space-x-5"
+					>
+						{tapItems.map((item, index) => (
+							<div
+								className={`transition-all rounded-t-3xl ${
+									activeTapItem === item
+										? "w-1/4 bg-primary-color"
+										: "w-1/5 bg-bg-color"
+								} py-2`}
+								key={index}
+								onClick={() => handleTapItemClick(item)}
+							>
+								{item}
+							</div>
+						))}
 					</div>
-					<div className="h-[450px] flex divide-x-2 divide-primary-color">
-						<div className="flex-grow">
-							<p className="text-base font-bold">주문 목록</p>
-							{/* store에 저장된 주문내역 렌더링 */}
+					<div
+						id="menu-body"
+						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1650px] flex flex-col divide-y-2 divide-primary-color"
+					>
+						<div className="flex-grow overflow-y-auto grid grid-cols-3 mb-1">
+							{activeMenu &&
+								activeMenu.map((item: Menu, index: number) => (
+									<MenuItem menuItemData={item} key={index} />
+								))}
 						</div>
-						<div className="w-[400px]">총 금액 + 결제버튼</div>
+						<div className="min-h-[450px] max-h-[450px] flex divide-x-2 divide-primary-color">
+							<div className="flex-grow">
+								<p className="text-base font-bold">주문 목록</p>
+								{/* store에 저장된 주문내역 렌더링 */}
+							</div>
+							<div className="w-[400px]">
+								<div className="mx-10 my-3">
+									<p className="flex justify-between text-2xs">
+										<span>총 주문개수</span>
+										<span className="font-bold">8 개</span>
+									</p>
+									<p className="flex justify-between text-2xs">
+										<span>총 결제금액</span>
+										<span className="font-bold text-red-500">15000 원</span>
+									</p>
+								</div>
+								<div className="px-10 py-5 flex flex-col space-y-4">
+									<Button
+										onClick={handleGame}
+										text={"내기하기"}
+										className={"bg-primary-color text-sm w-full py-3"}
+									/>
+									{/* 주문 목록이 비었으면, inactive 컬러, 버튼 비활성화 */}
+									<Button
+										onClick={handlePurchase}
+										text={"결제하기"}
+										className={"bg-inactive-color text-sm w-full py-3"}
+									/>
+									<Button
+										onClick={goToEntry}
+										text={"처음으로"}
+										className={"bg-bg-color text-sm w-full py-3"}
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

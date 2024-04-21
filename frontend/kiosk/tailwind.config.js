@@ -21,7 +21,7 @@ export default {
 			colors: {
 				"primary-color": "#163760",
 				"bg-color": "#8AB9D4",
-				"active-color": "#AC2323",
+				"active-color": "#179F0B",
 				"inactive-color": "#777777",
 			},
 		},

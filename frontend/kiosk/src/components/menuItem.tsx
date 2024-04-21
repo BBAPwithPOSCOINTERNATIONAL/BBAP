@@ -1,15 +1,24 @@
 import React from "react";
 import { Menu } from "../types";
+import useModalStore from "../store/modalStore";
 
 interface MenuItemProps {
 	menuItemData: Menu;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
+	const { openMenuModal } = useModalStore();
+	const tempLen: number = menuItemData.temperature
+		? menuItemData.temperature.length
+		: 0;
 	return (
 		<div
 			id="menu-item"
-			className="relative rounded-3xl shadow-xl h-[430px] m-8 p-5 flex flex-col"
+			className="relative rounded-3xl shadow-xl h-[400px] m-8 p-5 flex flex-col bg-stone-100"
+			onClick={() => {
+				console.log("클릭");
+				openMenuModal(menuItemData);
+			}}
 		>
 			{menuItemData.temperature && (
 				<div className="flex justify-start space-x-3 text-2xs font-bold mb-2">
@@ -17,13 +26,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 						if (item === "HOT") {
 							return (
 								<p className="text-red-500" key={index}>
-									{item}
+									{item} {tempLen == 1 && "Only"}
 								</p>
 							);
 						} else if (item === "ICE") {
 							return (
 								<p className="text-blue-500" key={index}>
-									{item}
+									{item} {tempLen == 1 && "Only"}
 								</p>
 							);
 						}
@@ -33,7 +42,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 			<img
 				src={menuItemData.image}
 				alt={menuItemData.name}
-				className="w-2/3 absolute top-20 left-14"
+				className="w-1/2 absolute top-24 left-20"
 			/>
 			<div id="menu-info" className="absolute w-full pr-10 bottom-4">
 				<p className="text-xs break-keep">{menuItemData.name}</p>
