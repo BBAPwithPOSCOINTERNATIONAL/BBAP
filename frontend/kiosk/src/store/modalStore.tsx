@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Menu } from "../types";
 
+
 interface ModalState {
 	isMenuModalOpen: boolean;
 	selectedMenu: Menu | undefined;

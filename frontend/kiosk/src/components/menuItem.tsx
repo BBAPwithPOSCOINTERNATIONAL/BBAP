@@ -16,7 +16,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 			id="menu-item"
 			className="relative rounded-3xl shadow-xl h-[400px] m-8 p-5 flex flex-col bg-stone-100"
 			onClick={() => {
-				console.log("클릭");
 				openMenuModal(menuItemData);
 			}}
 		>

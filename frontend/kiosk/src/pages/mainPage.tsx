@@ -4,8 +4,10 @@ import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
 import MenuItem from "../components/menuItem";
 import Button from "../components/button";
-import useModalStore from "../store/modalStore";
 import MenuModal from "../components/menuModal";
+import useModalStore from "../store/modalStore";
+import useCartStore from "../store/cartStore";
+import CartItem from "../components/cartItem";
 
 interface MenuData {
 	[key: string]: Menu[];
@@ -23,6 +25,7 @@ const MainPage: React.FC = () => {
 	const [activeMenu, setActiveMenu] = useState<Menu[]>();
 	const [menuData, setMenuData] = useState<MenuData>();
 	const { isMenuModalOpen } = useModalStore();
+	const { cartList, totalPrice, totalCount } = useCartStore();
 
 	useEffect(() => {
 		setMenuData(cafeMenuData);
@@ -85,7 +88,7 @@ const MainPage: React.FC = () => {
 						id="menu-body"
 						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1650px] flex flex-col divide-y-2 divide-primary-color"
 					>
-						<div className="flex-grow overflow-y-auto grid grid-cols-3 mb-1">
+						<div className="flex-grow overflow-y-auto grid grid-cols-3 my-1">
 							{activeMenu &&
 								activeMenu.map((item: Menu, index: number) => (
 									<MenuItem menuItemData={item} key={index} />
@@ -94,17 +97,24 @@ const MainPage: React.FC = () => {
 						<div className="min-h-[450px] max-h-[450px] flex divide-x-2 divide-primary-color">
 							<div className="flex-grow">
 								<p className="text-base font-bold">주문 목록</p>
-								{/* store에 저장된 주문내역 렌더링 */}
+								<div className="overflow-y-auto">
+									{/* store에 저장된 주문내역 렌더링 */}
+									{cartList.map((item, index) => (
+										<CartItem props={item} key={index} />
+									))}
+								</div>
 							</div>
 							<div className="w-[400px]">
 								<div className="mx-10 my-3">
 									<p className="flex justify-between text-2xs">
 										<span>총 주문개수</span>
-										<span className="font-bold">8 개</span>
+										<span className="font-bold">{totalCount} 개</span>
 									</p>
 									<p className="flex justify-between text-2xs">
 										<span>총 결제금액</span>
-										<span className="font-bold text-red-500">15000 원</span>
+										<span className="font-bold text-red-500">
+											{totalPrice.toLocaleString()} 원
+										</span>
 									</p>
 								</div>
 								<div className="px-10 py-5 flex flex-col space-y-4">
