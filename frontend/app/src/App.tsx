@@ -3,6 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import LoginPage from "./pages/users/LoginPage";
 import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminInquiryPage from "./pages/admin/AdminInquiryPage";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminLoginPage />,
+  },
+  {
+    path: "/admininquiry",
+    element: <AdminInquiryPage />,
   },
 ]);
 
