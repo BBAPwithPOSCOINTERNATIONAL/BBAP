@@ -14,32 +14,41 @@ function LoginPage() {
   };
 
   return (
-    <div
-      style={{ backgroundColor: "#035381", color: "white", padding: "20px" }}
-    >
-      <img src={logoimg} alt="Login Logo" />
-      <h1>BBAP</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="employeeId">사원번호:</label>
-          <input
-            type="text"
-            id="employeeId"
-            value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">비밀번호:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">로그인</button>
-      </form>
+    <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">
+      <div className="w-full max-w-xs">
+        <img src={logoimg} alt="Login Logo" className="mx-auto mb-6" />
+        <h1 className="text-center text-5xl font-hyemin-bold mb-6">BBAP</h1>
+        <form onSubmit={handleLogin} className="px-8 pt-6 pb-8 mb-4">
+          <div className="mb-4">
+            <input
+              type="text"
+              id="employeeId"
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
+              placeholder="사원번호"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-6">
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <button
+              type="submit"
+              className="bg-primary-color hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              로그인
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

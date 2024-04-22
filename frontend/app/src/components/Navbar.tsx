@@ -23,25 +23,25 @@ const NavBar: React.FC = () => {
     <>
       <div
         ref={navBarRef}
-        className="fixed top-0 left-0 right-0 z-50 bg-white text-black p-4 flex justify-between items-center"
+        className="fixed top-0 left-0 right-0 z-50 bg-primary-color text-black p-4 flex justify-between items-center"
       >
         <div className="text-left flex items-center space-x-4">
           {/* MainPage가 아닐 때 뒤로가기와 홈 버튼 표시 */}
           {!isMainPage && (
             <>
               <Link to="/main">
-                <FiArrowLeft className="text-2xl cursor-pointer" />
+                <FiArrowLeft className="text-2xl cursor-pointer text-white" />
               </Link>
               <Link to="/main">
-                <FiHome className="text-2xl cursor-pointer" />
+                <FiHome className="text-2xl cursor-pointer text-white" />
               </Link>
             </>
           )}
         </div>
-        <div className="text-3xl font-hyemin-bold">BBAP</div>
+        <div className="text-3xl font-hyemin-bold text-white">BBAP</div>
 
         <div className="text-right">
-          <FiBell className="text-2xl cursor-pointer" />
+          <FiBell className="text-2xl cursor-pointer text-white" />
         </div>
       </div>
       {/* 빈 div를 사용하여 NavBar 아래에 공간을 생성 */}

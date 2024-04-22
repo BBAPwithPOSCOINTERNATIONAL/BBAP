@@ -12,6 +12,7 @@ export default {
         "bg-color": "#739DB5",
         "active-color": "#AC2323",
         "inactive-color": "#777777",
+        "light-primary-color": "#4786C1",
       },
     },
   },
