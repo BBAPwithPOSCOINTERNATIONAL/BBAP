@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import useModalStore from "../store/modalStore";
 import useCartStore from "../store/cartStore";
 import Button from "./button";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 const MenuModal: React.FC = () => {
 	const { closeMenuModal, selectedMenu } = useModalStore();
@@ -13,6 +15,7 @@ const MenuModal: React.FC = () => {
 		(selectedMenu && selectedMenu.price) || 0
 	);
 	const [warningText, setWarningText] = useState<string>("");
+	const [count, setCount] = useState<number>(1);
 
 	// 커피/음료 메뉴 -> 온도/사이즈 선택지가 있음
 	const isHasOptions =
@@ -37,8 +40,8 @@ const MenuModal: React.FC = () => {
 			totalPrice += selectedMenu.size[selectedSize] || 0;
 		}
 
-		setTotalPrice(totalPrice);
-	}, [selectedOptions, selectedSize, selectedMenu]);
+		setTotalPrice(totalPrice * count);
+	}, [selectedOptions, selectedSize, selectedMenu, count]);
 
 	const handleAddCart = () => {
 		if (selectedMenu) {
@@ -48,7 +51,7 @@ const MenuModal: React.FC = () => {
 				const menuInfo = {
 					name: selectedMenu.name,
 					price: totalPrice,
-					count: 1,
+					count,
 					options: [] as string[],
 				};
 
@@ -199,7 +202,7 @@ const MenuModal: React.FC = () => {
 						<div
 							id="footer"
 							className={`absolute bottom-0 bg-stone-100 rounded-b-2xl py-3 w-full ${
-								warningText ? "h-[280px]" : "h-[210px]"
+								warningText ? "h-[400px]" : "h-[350px]"
 							}`}
 						>
 							{warningText && (
@@ -208,18 +211,51 @@ const MenuModal: React.FC = () => {
 							<p className="text-base font-bold text-center">
 								총 결제가격: {totalPrice?.toLocaleString()} 원
 							</p>
+							{/* 수량 변경 */}
+							<div className="my-6 flex items-center justify-center text-base font-bold space-x-10">
+								<p>수량</p>
+								<div
+									onClick={() => {
+										if (count > 1) {
+											setCount(count - 1);
+										}
+									}}
+								>
+									<RemoveCircleOutlineIcon
+										sx={{
+											fontSize: 55,
+											color: `${count === 1 ? "lightGray" : "black"}`,
+										}}
+									/>
+								</div>
+								<p>{count}</p>
+								<div
+									onClick={() => {
+										if (count < 99) {
+											setCount(count + 1);
+										}
+									}}
+								>
+									<AddCircleOutlineIcon
+										sx={{
+											fontSize: 55,
+											color: `${count === 99 ? "lightGray" : "black"}`,
+										}}
+									/>
+								</div>
+							</div>
 							<div className="text-base flex justify-center space-x-20 my-3">
 								<Button
 									onClick={closeMenuModal}
 									text="취소"
-									className="bg-bg-color w-1/3 py-2"
+									className="bg-bg-color w-1/3 py-2 text-white"
 								/>
 								<Button
 									onClick={() => {
 										handleAddCart();
 									}}
 									text="담기"
-									className="bg-primary-color w-1/3 py-2"
+									className="bg-primary-color w-1/3 py-2 text-white"
 								/>
 							</div>
 						</div>

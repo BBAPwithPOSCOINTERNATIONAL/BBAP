@@ -1,6 +1,5 @@
 import React from "react";
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from "@mui/material/IconButton";
 
 interface MenuInfo {
 	name: string;
@@ -11,7 +10,7 @@ interface MenuInfo {
 
 interface CartItemProps {
 	props: MenuInfo;
-  index: number;
+	index: number;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
@@ -23,9 +22,14 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 			</div>
 			<div className="text-xs">{props.price.toLocaleString()} 원</div>
 			<div>{props.count}</div>
-      <IconButton onClick={() => {console.log("삭제")}} aria-label="delete">
-        <DeleteIcon />
-      </IconButton>
+			<IconButton
+				onClick={() => {
+					console.log("삭제");
+				}}
+				aria-label="delete"
+			>
+				<DeleteIcon />
+			</IconButton>
 		</div>
 	);
 };

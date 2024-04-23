@@ -121,18 +121,22 @@ const MainPage: React.FC = () => {
 									<Button
 										onClick={handleGame}
 										text={"내기하기"}
-										className={"bg-primary-color text-sm w-full py-3"}
+										className={
+											"bg-primary-color text-sm text-white w-full py-3"
+										}
 									/>
 									{/* 주문 목록이 비었으면, inactive 컬러, 버튼 비활성화 */}
 									<Button
 										onClick={handlePurchase}
 										text={"결제하기"}
-										className={"bg-inactive-color text-sm w-full py-3"}
+										className={
+											"bg-inactive-color text-sm text-white w-full py-3"
+										}
 									/>
 									<Button
 										onClick={goToEntry}
 										text={"처음으로"}
-										className={"bg-bg-color text-sm w-full py-3"}
+										className={"bg-bg-color text-sm text-white w-full py-3"}
 									/>
 								</div>
 							</div>
