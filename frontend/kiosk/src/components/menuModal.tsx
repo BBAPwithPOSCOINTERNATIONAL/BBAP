@@ -96,7 +96,7 @@ const MenuModal: React.FC = () => {
 							id="header"
 							className="bg-primary-color rounded-t-2xl h-28 py-4 text-base text-white"
 						>
-							음료 선택
+							메뉴 선택
 						</div>
 						<div id="body" className="mt-10">
 							<div id="menu-info">
