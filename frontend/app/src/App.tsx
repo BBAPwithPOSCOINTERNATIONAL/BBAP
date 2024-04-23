@@ -4,6 +4,7 @@ import LoginPage from "./pages/users/LoginPage";
 import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminInquiryPage from "./pages/admin/AdminInquiryPage";
+import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/admininquiry",
     element: <AdminInquiryPage />,
+  },
+  {
+    path: "/employee/:id",
+    element: <PeriodInquiryPage />,
   },
 ]);
 
