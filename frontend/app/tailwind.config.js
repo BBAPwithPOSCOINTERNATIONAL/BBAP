@@ -13,6 +13,7 @@ export default {
         "active-color": "#AC2323",
         "inactive-color": "#777777",
         "light-primary-color": "#4786C1",
+        "cafe-primary-color": "#E2F1FF",
       },
     },
   },

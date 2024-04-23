@@ -26,7 +26,7 @@ function LoginPage() {
               value={employeeId}
               onChange={(e) => setEmployeeId(e.target.value)}
               placeholder="사원번호"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="font-hyemin-bold shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
           <div className="mb-6">
@@ -36,7 +36,7 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="font-hyemin-bold shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
           <div className="flex items-center justify-center">

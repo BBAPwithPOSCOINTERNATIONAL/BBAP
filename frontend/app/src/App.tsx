@@ -5,7 +5,7 @@ import { queryClient } from "./api/tanstackQuery";
 // Page들
 import LoginPage from "./pages/users/LoginPage";
 import MainPage from "./pages/users/MainPage";
-import CafeMainPage from "./pages/CafeMainPage";
+import CafeMainPage from "./pages/cafe/CafeMainPage";
 import RestaurantMainPage from "./pages/RestaurantMainPage";
 import MyReceiptPage from "./pages/MyReceiptPage";
 import MyProfilePage from "./pages/users/MyProfilePage";
