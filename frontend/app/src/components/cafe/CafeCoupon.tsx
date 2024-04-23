@@ -3,14 +3,29 @@ import React from "react";
 interface CafeCouponStatusProps {
   orderCount: number;
   couponCount: number;
-  gaugeBars: JSX.Element[];
 }
 
 const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
   orderCount,
   couponCount,
-  gaugeBars,
 }) => {
+  // 게이지 바 색상 설정을 위한 함수
+  const getGaugeColor = (index: number): string => {
+    if (index <= couponCount) {
+      return "bg-primary-color";
+    } else {
+      return "bg-sky-200";
+    }
+  };
+
+  // 게이지 바 생성을 위한 배열
+  const gaugeBars = Array.from({ length: 10 }, (_, index) => (
+    <div
+      key={index}
+      className={`h-4 w-full ${getGaugeColor(index + 1)} rounded-sm`}
+    ></div>
+  ));
+
   return (
     <>
       <p className="mt-1 font-hyemin-bold ml-5 mt-1">

@@ -4,47 +4,31 @@ import CafeTabs from "../../components/cafe/CafeTabs";
 import CafeCoupon from "../../components/cafe/CafeCoupon";
 import menu from "../../assets/cafe-menu.json";
 import MenuSection from "../../components/cafe/MenuSection";
+import together from "../../assets/together.png";
 
-// interface MenuItem {
-//   name: string;
-//   price: number;
-//   description: string;
-//   images: string;
-//   temperature?: string[];
-//   size?: string[];
-//   options?: { [key: string]: number };
-// }
-
-import { useRef } from "react";
 import MenuButtons from "../../components/cafe/MenuButtons";
-
-function useMoveScroll(offset = 0) {
-  const element = useRef<HTMLDivElement>(null);
-  const onMoveToElement = () => {
-    if (element.current) {
-      const elementPosition =
-        element.current.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
-  };
-  return { element, onMoveToElement };
-}
+import CafeSelector from "../../components/cafe/CafeSelector";
+import useMoveScroll from "../../hooks/useMoveScroll";
 
 function CafeMainPage() {
   const [content, setContent] = useState("alone");
-  const [selectedCafe, setSelectedCafe] = useState("A카페");
   const [selectedMenu, setSelectedMenu] = useState("coffee");
+  const [selectedCafe, setSelectedCafe] = useState("A카페");
+  const cafes = [
+    { value: "A카페", label: "A카페" },
+    { value: "B카페", label: "B카페" },
+    { value: "C카페", label: "C카페" },
+  ];
+
+  const handleCafeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCafe(e.target.value);
+  };
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
     { key: "together", label: "같이주문" },
     { key: "history", label: "나의주문" },
   ];
-
-  // const coffeeRef = useRef<HTMLDivElement>(null);
-  // const beverageRef = useRef<HTMLDivElement>(null);
-  // const dessertRef = useRef<HTMLDivElement>(null);
 
   const handleMenuSelect = (menu: string) => {
     setSelectedMenu(menu);
@@ -90,24 +74,7 @@ function CafeMainPage() {
   }, []);
 
   const [orderCount, setOrderCount] = useState(10);
-  const [couponCount, setCouponCount] = useState(9);
-
-  // 게이지 바 색상 설정을 위한 함수
-  const getGaugeColor = (index: number): string => {
-    if (index <= couponCount) {
-      return "bg-primary-color"; // 주문량까지의 부분은 녹색으로 표시
-    } else {
-      return "bg-sky-200"; // 주문량 이후의 부분은 회색으로 표시
-    }
-  };
-
-  // 게이지 바 생성을 위한 배열
-  const gaugeBars = Array.from({ length: 10 }, (_, index) => (
-    <div
-      key={index}
-      className={`h-4 w-full ${getGaugeColor(index + 1)} rounded-sm`}
-    ></div>
-  ));
+  const [couponCount, setCouponCount] = useState(7);
 
   const navBarHeight = 50; // NavBar의 높이 추정값
   const tabsHeight = 50; // CafeTabs의 높이 추정값
@@ -145,23 +112,12 @@ function CafeMainPage() {
               className="sticky top-[110px] z-10 bg-white"
               style={{ paddingTop: `${couponAndButtonsHeight}px` }}
             >
-              <div className="mt-2 flex flex-col items-center">
-                <select
-                  id="cafe-select"
-                  value={selectedCafe}
-                  onChange={(e) => setSelectedCafe(e.target.value)}
-                  className="bg-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center"
-                >
-                  <option value="A카페">A카페</option>
-                  <option value="B카페">B카페</option>
-                  <option value="C카페">C카페</option>
-                </select>
-              </div>
-              <CafeCoupon
-                orderCount={orderCount}
-                couponCount={couponCount}
-                gaugeBars={gaugeBars}
+              <CafeSelector
+                cafes={cafes}
+                selectedCafe={selectedCafe}
+                onCafeSelect={handleCafeSelect}
               />
+              <CafeCoupon orderCount={orderCount} couponCount={couponCount} />
               <div className="flex mt-1">
                 <MenuButtons
                   selectedMenu={selectedMenu}
@@ -174,7 +130,41 @@ function CafeMainPage() {
             <MenuSection ref={dessertRef} items={menu.dessert} title="디저트" />
           </>
         )}
-        {content === "together" && <div>같이 주문하는 페이지입니다.</div>}
+        {content === "together" && (
+          <>
+            <CafeSelector
+              cafes={cafes}
+              selectedCafe={selectedCafe}
+              onCafeSelect={handleCafeSelect}
+            />
+            <div className="mt-2 flex flex-col items-center">
+              <div className="bg-light-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center">
+                <h2 className="m-8 text-4xl">우리같이 주문 할래 ?</h2>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <img src={together} alt="together" style={{ width: "80%" }} />
+                </div>
+
+                <hr className="h-1 bg-white m-2 mx-auto w-11/12" />
+                <p className="m-4 text-2xl">
+                  각자 원하는 메뉴를 담아두면 한꺼번에 주문할 수 있어요!!
+                </p>
+              </div>
+
+              <button
+                className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
+                onClick={() => console.log("gogo")}
+              >
+                방 만들러 가기
+              </button>
+            </div>
+          </>
+        )}
         {content === "history" && <div>주문 내역을 보는 페이지입니다.</div>}
       </div>
     </div>
