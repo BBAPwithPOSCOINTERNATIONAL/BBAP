@@ -11,8 +11,8 @@ const EntryPage: React.FC = () => {
 	};
 
 	return (
-		<div className="w-full h-screen bg-white">
-			<div id="header" className="flex justify-between p-8">
+		<div className="w-full h-screen bg-primary-color">
+			<div id="header" className="flex justify-between px-8 py-12 bg-white">
 				<img
 					src="/assets/images/포스코인터내셔널_로고.png"
 					alt=""
@@ -23,7 +23,7 @@ const EntryPage: React.FC = () => {
 			<div className="mt-32">
 				<EntryCarousel />
 			</div>
-			<div className="text-sm my-16 text-center font-black">
+			<div className="text-sm my-16 text-center text-white">
 				<p>언어를 선택하면, 메인 화면으로 넘어갑니다.</p>
 				<p>Selecting a language, enter the main screen.</p>
 			</div>

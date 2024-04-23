@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CurrentTime from "../components/currentTime";
 import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
@@ -25,7 +26,8 @@ const MainPage: React.FC = () => {
 	const [activeMenu, setActiveMenu] = useState<Menu[]>();
 	const [menuData, setMenuData] = useState<MenuData>();
 	const { isMenuModalOpen } = useModalStore();
-	const { cartList, totalPrice, totalCount } = useCartStore();
+	const { cartList, totalPrice, totalCount, resetCart } = useCartStore();
+	const navigation = useNavigate();
 
 	useEffect(() => {
 		setMenuData(cafeMenuData);
@@ -48,9 +50,8 @@ const MainPage: React.FC = () => {
 		// 내기 화면으로 감
 	};
 	const goToEntry = () => {
-		// TODO
-		// /으로 감
-		// 주문 목록 리셋
+		navigation("/");
+		resetCart();
 	};
 
 	return (
@@ -95,12 +96,12 @@ const MainPage: React.FC = () => {
 								))}
 						</div>
 						<div className="min-h-[450px] max-h-[450px] flex divide-x-2 divide-primary-color">
-							<div className="flex-grow">
-								<p className="text-base font-bold">주문 목록</p>
-								<div className="overflow-y-auto">
+							<div className="flex-grow px-3 py-5">
+								<div className="text-base font-bold bg-white">주문 목록</div>
+								<div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
 									{/* store에 저장된 주문내역 렌더링 */}
 									{cartList.map((item, index) => (
-										<CartItem props={item} key={index} />
+										<CartItem props={item} key={index} index={index} />
 									))}
 								</div>
 							</div>
@@ -119,22 +120,27 @@ const MainPage: React.FC = () => {
 								</div>
 								<div className="px-10 py-5 flex flex-col space-y-4">
 									<Button
-										onClick={handleGame}
+										onClick={() => handleGame()}
 										text={"내기하기"}
 										className={
 											"bg-primary-color text-sm text-white w-full py-3"
 										}
 									/>
-									{/* 주문 목록이 비었으면, inactive 컬러, 버튼 비활성화 */}
 									<Button
-										onClick={handlePurchase}
+										onClick={() => {
+											if (cartList.length > 0) {
+												handlePurchase();
+											}
+										}}
 										text={"결제하기"}
-										className={
-											"bg-inactive-color text-sm text-white w-full py-3"
-										}
+										className={`${
+											cartList.length > 0
+												? "bg-active-color"
+												: "bg-inactive-color"
+										} text-sm text-white w-full py-3`}
 									/>
 									<Button
-										onClick={goToEntry}
+										onClick={() => goToEntry()}
 										text={"처음으로"}
 										className={"bg-bg-color text-sm text-white w-full py-3"}
 									/>

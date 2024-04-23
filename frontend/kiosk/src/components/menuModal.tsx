@@ -50,7 +50,7 @@ const MenuModal: React.FC = () => {
 			} else {
 				const menuInfo = {
 					name: selectedMenu.name,
-					price: totalPrice,
+					price: totalPrice / count,
 					count,
 					options: [] as string[],
 				};
@@ -89,9 +89,9 @@ const MenuModal: React.FC = () => {
 			{selectedMenu && (
 				<div
 					id="inner-layer"
-					className="relative bg-white w-5/6 h-[1600px] mx-auto my-64 z-20 rounded-2xl"
+					className="relative bg-white w-5/6 mx-auto my-64 z-20 rounded-2xl"
 				>
-					<div className="overflow-auto w-full h-[1400px]">
+					<div className="overflow-auto w-full max-h-[1600px] min-h-[1000px] pb-[400px]">
 						<div
 							id="header"
 							className="bg-primary-color rounded-t-2xl h-28 py-4 text-base text-white"
