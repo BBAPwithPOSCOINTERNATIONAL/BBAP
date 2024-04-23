@@ -1,0 +1,68 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import Header from "../components/header";
+import Button from "../components/button";
+
+const PurchaseLoginPage: React.FC = () => {
+	const navigation = useNavigate();
+	const [idNumber, setIdNumber] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+
+	const handleLogin = () => {
+		// TODO
+		// idNumber, password 담아서 서버에 로그인 요청
+		// 로그인 되면 다음 페이지로 넘어감
+		// 안되면 경고 모달 뜸
+		if (idNumber && password) {
+			console.log({ idNumber, password });
+			navigation("/purchase-final");
+		}
+	};
+	return (
+		<>
+			<Header text="결제하기" className="" />
+			<div id="body">
+				<div className="flex flex-col space-y-20 font-bold text-lg text-primary-color my-52">
+					<div className="flex flex-col space-y-10 items-center">
+						<label htmlFor="id-number">사원번호</label>
+						<input
+							type="text"
+							id="id-number"
+							className="border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center"
+							value={idNumber}
+							onChange={(e) => setIdNumber(e.target.value)}
+						/>
+					</div>
+					<div className="flex flex-col space-y-10 items-center">
+						<label htmlFor="password">비밀번호</label>
+						<input
+							type="password"
+							id="password"
+							className="border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+						/>
+					</div>
+				</div>
+				<Button
+					className={`absolute bottom-[320px] left-[400px] ${
+						idNumber && password ? "bg-primary-color" : "bg-inactive-color"
+					} text-white text-xl w-1/3 py-5`}
+					text="다음"
+					onClick={() => {
+						handleLogin();
+					}}
+				/>
+				<Button
+					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
+					text="이전으로"
+					onClick={() => {
+						navigation("/purchase");
+					}}
+				/>
+			</div>
+		</>
+	);
+};
+
+export default PurchaseLoginPage;

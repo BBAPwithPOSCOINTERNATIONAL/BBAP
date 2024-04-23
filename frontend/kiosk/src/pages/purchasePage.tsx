@@ -2,18 +2,14 @@ import React from "react";
 import { useNavigate } from "react-router";
 import useCartStore from "../store/cartStore";
 import Button from "../components/button";
+import Header from "../components/header";
 
 const PurchasePage: React.FC = () => {
 	const { totalPrice } = useCartStore();
 	const navigation = useNavigate();
 	return (
 		<>
-			<div
-				id="header"
-				className="h-38 bg-primary-color text-white text-center font-bold text-2xl py-6 shadow shadow-lg"
-			>
-				결제하기
-			</div>
+			<Header text="결제하기" className="" />
 			<div id="body">
 				<div className="flex justify-center space-x-20 text-xl font-bold mt-32 mb-52">
 					<span>총 결제금액</span>
@@ -27,6 +23,9 @@ const PurchasePage: React.FC = () => {
 							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[450px] h-[600px]"
 							style={{
 								boxShadow: "15px 15px 5px lightgray",
+							}}
+							onClick={() => {
+								navigation("/purchase-tag");
 							}}
 						>
 							<img
@@ -42,6 +41,9 @@ const PurchasePage: React.FC = () => {
 							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[450px] h-[600px]"
 							style={{
 								boxShadow: "15px 15px 5px lightgray",
+							}}
+							onClick={() => {
+								navigation("/purchase-face");
 							}}
 						>
 							<img
@@ -59,21 +61,22 @@ const PurchasePage: React.FC = () => {
 						style={{
 							boxShadow: "15px 15px 5px lightgray",
 						}}
+						onClick={() => {
+							navigation("/purchase-login");
+						}}
 					>
 						<p className="text-3xl text-primary-color font-bold">
 							사번 입력으로 결제
 						</p>
 					</div>
 				</div>
-				<div className="flex mt-[250px] justify-center items-center">
-					<Button
-						className="bg-bg-color text-white text-xl w-1/3 py-5"
-						text="이전으로"
-						onClick={() => {
-							navigation(-1);
-						}}
-					/>
-				</div>
+				<Button
+					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
+					text="이전으로"
+					onClick={() => {
+						navigation("/main");
+					}}
+				/>
 			</div>
 		</>
 	);
