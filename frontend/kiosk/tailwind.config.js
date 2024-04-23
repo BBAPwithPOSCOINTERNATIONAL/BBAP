@@ -10,8 +10,8 @@ export default {
 			base: "52px",
 			lg: "60px",
 			xl: "68px",
-			"3xl": "76px",
-			"4xl": "80px",
+			"2xl": "76px",
+			"3xl": "80px",
 		},
 		extend: {
 			fontFamily: {
