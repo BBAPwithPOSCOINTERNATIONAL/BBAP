@@ -41,10 +41,6 @@ const MainPage: React.FC = () => {
 		setActiveTapItem(tap);
 	};
 
-	const handleGame = () => {
-		// TODO
-		// 게임 시작 화면으로 감
-	};
 	const handlePurchase = () => {
 		// TODO
 		// 내기 화면으로 감
@@ -129,7 +125,7 @@ const MainPage: React.FC = () => {
 									<Button
 										onClick={() => {
 											if (cartList.length > 0) {
-												handlePurchase();
+												navigation("/purchase");
 											}
 										}}
 										text={"결제하기"}
