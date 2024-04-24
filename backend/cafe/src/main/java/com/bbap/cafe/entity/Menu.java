@@ -1,7 +1,8 @@
-package com.bbap.cafe.dto;
+package com.bbap.cafe.entity;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collation = "menus")
-public class MenuDto {
+public class Menu {
+	@Id
 	private String id;
 	private String cafeId;
 	private String name;

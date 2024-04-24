@@ -1,4 +1,8 @@
-package com.bbap.cafe.dto;
+package com.bbap.cafe.dto.response;
+
+import java.util.List;
+
+import com.bbap.cafe.entity.Cafe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +13,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Choice {
-	private String choiceName;
-	private int price;
+public class CafeList {
+	List<Cafe> cafeList;
 }

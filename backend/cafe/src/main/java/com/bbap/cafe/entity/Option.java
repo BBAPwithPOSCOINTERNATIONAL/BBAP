@@ -1,4 +1,4 @@
-package com.bbap.cafe.dto;
+package com.bbap.cafe.entity;
 
 import java.util.List;
 
