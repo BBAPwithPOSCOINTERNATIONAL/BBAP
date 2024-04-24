@@ -120,7 +120,7 @@ function RestaurantMainPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <select
           value={restaurant}
           onChange={(e) => setRestaurant(e.target.value)}

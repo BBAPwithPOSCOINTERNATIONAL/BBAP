@@ -6,7 +6,6 @@ function LoginPage() {
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
-
   const handleLogin = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("Login Attempted with:", employeeId, password);

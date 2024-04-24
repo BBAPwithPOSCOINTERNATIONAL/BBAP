@@ -4,9 +4,9 @@ import BottomTabBar from "../../components/BottomTabBar";
 
 function MainPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-bg-color">
+    <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden">
       <NavBar />
-      <div className="flex-grow p-4">
+      <div className="p-4">
         <div className="text-center mt-8">
           <h1 className="text-4xl font-hyemin-bold text-white">OO 님의 O월</h1>
           <p className="text-4xl mt-4 font-hyemin-bold text-white">BBAP 로그</p>
