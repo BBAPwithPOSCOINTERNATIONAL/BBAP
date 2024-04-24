@@ -9,6 +9,7 @@ import CafeMainPage from "./pages/cafe/CafeMainPage";
 import RestaurantMainPage from "./pages/RestaurantMainPage";
 import MyReceiptPage from "./pages/MyReceiptPage";
 import MyProfilePage from "./pages/users/MyProfilePage";
+import TogetherOrderPage from "./pages/cafe/TogetherOrderPage";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "receipt",
     element: <MyReceiptPage />,
+  },
+  {
+    path: "together",
+    element: <TogetherOrderPage />,
   },
 ]);
 

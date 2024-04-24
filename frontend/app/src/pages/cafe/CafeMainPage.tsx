@@ -9,20 +9,12 @@ import together from "../../assets/together.png";
 import MenuButtons from "../../components/cafe/MenuButtons";
 import CafeSelector from "../../components/cafe/CafeSelector";
 import useMoveScroll from "../../hooks/useMoveScroll";
+import { useNavigate } from "react-router-dom";
 
 function CafeMainPage() {
+  const navigate = useNavigate();
   const [content, setContent] = useState("alone");
   const [selectedMenu, setSelectedMenu] = useState("coffee");
-  const [selectedCafe, setSelectedCafe] = useState("A카페");
-  const cafes = [
-    { value: "A카페", label: "A카페" },
-    { value: "B카페", label: "B카페" },
-    { value: "C카페", label: "C카페" },
-  ];
-
-  const handleCafeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCafe(e.target.value);
-  };
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
@@ -112,11 +104,7 @@ function CafeMainPage() {
               className="sticky top-[110px] z-10 bg-white"
               style={{ paddingTop: `${couponAndButtonsHeight}px` }}
             >
-              <CafeSelector
-                cafes={cafes}
-                selectedCafe={selectedCafe}
-                onCafeSelect={handleCafeSelect}
-              />
+              <CafeSelector />
               <CafeCoupon orderCount={orderCount} couponCount={couponCount} />
               <div className="flex mt-1">
                 <MenuButtons
@@ -132,11 +120,7 @@ function CafeMainPage() {
         )}
         {content === "together" && (
           <>
-            <CafeSelector
-              cafes={cafes}
-              selectedCafe={selectedCafe}
-              onCafeSelect={handleCafeSelect}
-            />
+            <CafeSelector />
             <div className="mt-2 flex flex-col items-center">
               <div className="bg-light-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center">
                 <h2 className="m-8 text-4xl">우리같이 주문 할래 ?</h2>
@@ -158,7 +142,7 @@ function CafeMainPage() {
 
               <button
                 className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
-                onClick={() => console.log("gogo")}
+                onClick={() => navigate("/together")}
               >
                 방 만들러 가기
               </button>

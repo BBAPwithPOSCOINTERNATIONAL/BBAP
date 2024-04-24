@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiBell, FiHome, FiArrowLeft } from "react-icons/fi";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   const location = useLocation();
@@ -19,6 +19,11 @@ const NavBar: React.FC = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <div
@@ -29,9 +34,9 @@ const NavBar: React.FC = () => {
           {/* MainPage가 아닐 때 뒤로가기와 홈 버튼 표시 */}
           {!isMainPage && (
             <>
-              <Link to="/main">
+              <button onClick={goBack}>
                 <FiArrowLeft className="text-2xl cursor-pointer text-white" />
-              </Link>
+              </button>
               <Link to="/main">
                 <FiHome className="text-2xl cursor-pointer text-white" />
               </Link>
