@@ -11,14 +11,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ResponseDto {
 	@Schema(description = "응답 메시지", example = "Success.")
 	private String message = "Success.";
 
-	public ResponseDto() {
-		this.message = message;
-	}
 	public static ResponseEntity<ResponseDto> success() {
 		ResponseDto responseBody = new ResponseDto();
 		return ResponseEntity.status(HttpStatus.OK).body(responseBody);
