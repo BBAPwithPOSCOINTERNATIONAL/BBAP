@@ -1,5 +1,9 @@
 import React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import {
+  Outlet,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import Coffee from "../assets/bottom/Coffe.png";
 import myprofile from "../assets/bottom/myprofile.png";
 import myprofileClick from "../assets/bottom/myprofileClick.png";
@@ -16,7 +20,9 @@ function BottomTabBar() {
     defaultImg: string,
     activeImg: string
   ): string => {
-    return location.pathname === path ? activeImg : defaultImg;
+    return location.pathname === path
+      ? activeImg
+      : defaultImg;
   };
 
   return (
@@ -32,15 +38,24 @@ function BottomTabBar() {
           <ul className="flex justify-around list-none m-0 p-0">
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link to="/cafemain">
-                <img src={Coffee} alt="cafe" />
+                <img
+                  src={Coffee}
+                  alt="cafe"
+                  style={{ width: "3rem" }}
+                />
                 카페가기
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link to="/restaurantmain">
                 <img
-                  src={getImage("/restaurantmain", res, resClick)}
+                  src={getImage(
+                    "/restaurantmain",
+                    res,
+                    resClick
+                  )}
                   alt="restaurant"
+                  style={{ width: "3rem" }}
                 />
                 식당가기
               </Link>
@@ -48,8 +63,13 @@ function BottomTabBar() {
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link to="/receipt">
                 <img
-                  src={getImage("/receipt", receipts, receiptsClick)}
+                  src={getImage(
+                    "/receipt",
+                    receipts,
+                    receiptsClick
+                  )}
                   alt="receipts"
+                  style={{ width: "3rem" }}
                 />
                 내영수증
               </Link>
@@ -57,8 +77,13 @@ function BottomTabBar() {
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link to="/profile">
                 <img
-                  src={getImage("/profile", myprofile, myprofileClick)}
+                  src={getImage(
+                    "/profile",
+                    myprofile,
+                    myprofileClick
+                  )}
                   alt="myprofile"
+                  style={{ width: "3rem" }}
                 />
                 내프로필
               </Link>
