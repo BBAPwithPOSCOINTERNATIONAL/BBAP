@@ -47,7 +47,7 @@ const employees: Employee[] = [
   },
 ];
 
-function EmployeeSearch(): JSX.Element {
+function Approve(): JSX.Element {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] =
     useState<string>("");
@@ -223,4 +223,4 @@ function EmployeeSearch(): JSX.Element {
   );
 }
 
-export default EmployeeSearch;
+export default Approve;

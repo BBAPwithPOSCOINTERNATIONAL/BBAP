@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 
 import poscoimg from "../../assets/posco.png";
@@ -7,11 +10,14 @@ import EmployeeSubsidy from "../../components/employeesubsidy";
 import EmployeeSearch from "../../components/filter";
 
 interface AdminNavProps {
-  adminId: string;
+  adminId: number;
 }
 
 const today = new Date();
-const year = today.getFullYear().toString().slice(-2);
+const year = today
+  .getFullYear()
+  .toString()
+  .slice(-2);
 const month = today.getMonth();
 
 const LeftNav = styled.div`
@@ -49,11 +55,17 @@ const RightSide = styled.div`
 `;
 // const Inputtag = styled.input``;
 
-const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
-  const [activeTab, setActiveTab] = useState<"조회" | "결재">("조회");
+const AdminNav: React.FC<AdminNavProps> = ({
+  adminId = "1053713",
+}) => {
+  const [activeTab, setActiveTab] = useState<
+    "조회" | "결재"
+  >("조회");
   const history = useNavigate();
 
-  const handleTabClick = (tab: "조회" | "결재") => {
+  const handleTabClick = (
+    tab: "조회" | "결재"
+  ) => {
     setActiveTab(tab);
   };
 
@@ -71,7 +83,12 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
       <LeftNav className="flex-auto">
         <div>
           <button
@@ -104,12 +121,25 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
         </div>
       </LeftNav>
       <RightSide>
-        <img src={poscoimg} alt="Login Logo" className="fixed top-3 right-4" />
+        <img
+          src={poscoimg}
+          alt="Login Logo"
+          className="fixed top-3 right-4"
+        />
         {/* 조회 탭 눌렀을 경우 */}
         {activeTab === "조회" && (
-          <div style={{ marginLeft: "23rem", marginTop: "1%" }}>
-            <div className=" font-hyemin-bold text-[40px] mb-3">조회👀</div>
-            <div className=" font-hyemin-bold text-[30px]">기간설정</div>
+          <div
+            style={{
+              marginLeft: "23rem",
+              marginTop: "1%",
+            }}
+          >
+            <div className=" font-hyemin-bold text-[40px] mb-3">
+              조회👀
+            </div>
+            <div className=" font-hyemin-bold text-[30px]">
+              기간설정
+            </div>
             <div className=" font-hyemin-bold ">
               <EmployeeSubsidy />
             </div>
@@ -123,12 +153,21 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
         )}
         {/* 결재 탭 눌렀을 경우 */}
         {activeTab === "결재" && (
-          <div style={{ marginLeft: "23rem", marginTop: "1%" }}>
+          <div
+            style={{
+              marginLeft: "23rem",
+              marginTop: "1%",
+            }}
+          >
             <div className=" font-hyemin-bold text-[40px]">
               {year}년 {month}월 결재📄
             </div>
-            <div className=" font-hyemin-bold text-[30px]">사원검색</div>
-            <div className=" font-hyemin-bold">탭 내용</div>
+            <div className=" font-hyemin-bold text-[30px]">
+              사원검색
+            </div>
+            <div className=" font-hyemin-bold">
+              탭 내용
+            </div>
           </div>
         )}
       </RightSide>

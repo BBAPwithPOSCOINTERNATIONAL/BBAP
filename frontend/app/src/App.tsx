@@ -1,9 +1,12 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import LoginPage from "./pages/users/LoginPage";
 import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminInquiryPage from "./pages/admin/AdminInquiryPage";
+import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 
 const router = createBrowserRouter([
@@ -20,7 +23,7 @@ const router = createBrowserRouter([
     element: <AdminInquiryPage />,
   },
   {
-    path: "/employee/:id",
+    path: "/employee/:employeeId",
     element: <PeriodInquiryPage />,
   },
 ]);
