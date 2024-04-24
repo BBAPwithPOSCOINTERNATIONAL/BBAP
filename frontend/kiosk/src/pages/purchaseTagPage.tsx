@@ -3,10 +3,9 @@ import { useNavigate } from "react-router";
 import Header from "../components/header";
 import Button from "../components/button";
 
-// 한영 전환 수정 필요함
+// 키보드입력 한영 전환
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
-const englishKeys =
-	"qwe r t y u i o p a s d f g h j k l ; ' z x c v b n m , . /";
+const englishKeys = "qwertyuiopasdfghjklzxcvbnm";
 
 const PurchaseTagPage: React.FC = () => {
 	const navigation = useNavigate();
@@ -22,7 +21,7 @@ const PurchaseTagPage: React.FC = () => {
 	const activeEnter = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			let result = "";
-			for (let char of tagValue) {
+			for (const char of tagValue) {
 				const idx = koreanKeys.indexOf(char);
 				if (idx !== -1) {
 					result += englishKeys[idx];
@@ -31,11 +30,10 @@ const PurchaseTagPage: React.FC = () => {
 				}
 			}
 
-			console.log(result);
+			console.log("카드번호: ", result);
 			setTagValue("");
 			// TODO:
-			// 키보드 영문 입력만 되도록 앱 차원에서 막아야 함
-			// 카드번호 담아서 서버에 사원정보 요청 => 에러나면 에러 모달 뜨도록 하기
+			// 카드번호 담아서 서버에 사원정보 요청 => 에러나면 네모박스 색 변경 및 경고 문구 아래에 뜨도록하기
 		}
 	};
 
@@ -48,7 +46,7 @@ const PurchaseTagPage: React.FC = () => {
 					type="text"
 					id="tag-value"
 					style={{ imeMode: "inactive" }}
-					// className="absolute top-[-9999px] w-2"
+					className="absolute top-[-9999px] w-2"
 					value={tagValue}
 					onChange={(e) => setTagValue(e.target.value)}
 					onKeyDown={(e) => {

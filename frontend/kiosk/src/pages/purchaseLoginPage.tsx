@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import Header from "../components/header";
 import Button from "../components/button";
+import CustomKeyboard from "../components/customKeyboard.jsx";
 
 const PurchaseLoginPage: React.FC = () => {
 	const navigation = useNavigate();
 	const [idNumber, setIdNumber] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
+	const [focusId, setFocusId] = useState<string>("");
+	const [keyboardVisibility, setKeyboardVisibility] = useState(false);
 
 	const handleLogin = () => {
 		// TODO
@@ -18,29 +21,55 @@ const PurchaseLoginPage: React.FC = () => {
 			navigation("/purchase-final");
 		}
 	};
+
+	const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+		const { id } = event.target;
+		setFocusId(id);
+		setKeyboardVisibility(true);
+	};
+
+	const handleOutsideClick = (
+		event: React.MouseEvent<HTMLDivElement, MouseEvent>
+	) => {
+		const { id } = event.target as HTMLDivElement;
+		if (id === "outer" && keyboardVisibility) {
+			setKeyboardVisibility(false);
+			setFocusId("");
+		}
+	};
+
 	return (
 		<>
 			<Header text="결제하기" className="" />
-			<div id="body">
-				<div className="flex flex-col space-y-20 font-bold text-lg text-primary-color my-52">
-					<div className="flex flex-col space-y-10 items-center">
+			<div id="body" onClick={handleOutsideClick}>
+				<div
+					id="outer"
+					className="flex flex-col space-y-20 font-bold text-lg text-primary-color py-52 h-[2000px]"
+				>
+					<div id="outer" className="flex flex-col space-y-10 items-center">
 						<label htmlFor="id-number">사원번호</label>
 						<input
 							type="text"
 							id="id-number"
-							className="border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center"
+							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center ${
+								focusId === "id-number" && "border-4"
+							}`}
 							value={idNumber}
 							onChange={(e) => setIdNumber(e.target.value)}
+							onFocus={handleFocus}
 						/>
 					</div>
-					<div className="flex flex-col space-y-10 items-center">
+					<div id="outer" className="flex flex-col space-y-10 items-center">
 						<label htmlFor="password">비밀번호</label>
 						<input
 							type="password"
 							id="password"
-							className="border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center"
+							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center ${
+								focusId === "password" && "border-4"
+							}`}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
+							onFocus={handleFocus}
 						/>
 					</div>
 				</div>
@@ -61,6 +90,13 @@ const PurchaseLoginPage: React.FC = () => {
 					}}
 				/>
 			</div>
+			{keyboardVisibility && (
+				<div className="absolute bottom-[530px] left-[100px]">
+					<CustomKeyboard
+						setInput={focusId == "id-number" ? setIdNumber : setPassword}
+					/>
+				</div>
+			)}
 		</>
 	);
 };
