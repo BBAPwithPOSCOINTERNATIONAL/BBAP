@@ -18,9 +18,11 @@ import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.dto.responseDto.ResponseDto;
 import com.bbap.cafe.entity.Cafe;
 import com.bbap.cafe.entity.Menu;
+import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
+import com.bbap.cafe.repository.StampRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +33,7 @@ public class CafeServiceImpl implements CafeService {
 	private final Logger logger = LogManager.getLogger(CafeServiceImpl.class);
 	private final CafeRepository cafeRepository;
 	private final MenuRepository menuRepository;
+	private final StampRepository stampRepository;
 	@Override
 	public ResponseEntity<DataResponseDto<CafeListResponseDto>> listAllCafe(String cafeId) {
 		if (cafeId.equals("-1")) {
@@ -50,12 +53,13 @@ public class CafeServiceImpl implements CafeService {
 		List<CafeSummaryDto> cafeSummaries = cafeRepository.findAll().stream()
 			.map(c -> new CafeSummaryDto(c.getId(), c.getName(), workPlaceName))
 			.collect(Collectors.toList());
+
 		CafeListResponseDto response = new CafeListResponseDto(cafeSummaries, selectedCafe);
 
 		return DataResponseDto.of(response);
 	}
 
-	private static SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
+	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
 		List<MenuSummaryDto> coffeeMenus = new ArrayList<>();
 		List<MenuSummaryDto> beverageMenus = new ArrayList<>();
 		List<MenuSummaryDto> dessertMenus = new ArrayList<>();
@@ -75,14 +79,22 @@ public class CafeServiceImpl implements CafeService {
 					break;
 			}
 		}
+		int stampCount = getStampCount(cafe.getId(), 1);
 
 		return new SelectedCafeDto(
 			cafe.getId(),
 			cafe.getOpenTime(),
 			cafe.getCloseTime(),
+			stampCount,
 			coffeeMenus,
 			beverageMenus,
 			dessertMenus
 		);
+	}
+
+	private int getStampCount(String cafeId, Integer empId) {
+		logger.info("Querying stamp for cafeId: " + cafeId + ", empId: " + empId);
+		Stamp stamp = stampRepository.findByCafeIdAndEmpId(cafeId, empId);
+		return (stamp != null) ? stamp.getStampCnt() : 0;
 	}
 }
