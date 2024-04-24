@@ -1,8 +1,7 @@
 package com.bbap.cafe.dto;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -14,12 +13,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "cafes")
-public class CafeDto {
-	@Id
-	private Integer id;
+@Document(collation = "menus")
+public class MenuDto {
+	private String id;
+	private String cafeId;
 	private String name;
-	private Integer workPlaceId;
-	private LocalDateTime openTime;
-	private LocalDateTime closeTime;
+	private int price;
+	private String menuCategory;
+	private List<Option> options;
 }
+
