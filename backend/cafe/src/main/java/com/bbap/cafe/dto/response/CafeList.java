@@ -14,5 +14,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CafeList {
-	List<Cafe> cafeList;
+	List<CafeResponseDto> cafeList;
 }
