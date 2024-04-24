@@ -1,7 +1,6 @@
 package com.bbap.cafe.dto.response;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,10 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CafeResponseDto {
+public class SelectedCafeDto {
 	private String id;
-	private String name;
-	private String workPlaceName;
 	private String openTime;
 	private String closeTime;
+	private List<MenuSummaryDto> menuListCoffee;
+	private List<MenuSummaryDto> menuListBeverage;
+	private List<MenuSummaryDto> menuListDesert;
 }

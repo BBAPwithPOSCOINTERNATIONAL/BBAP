@@ -1,13 +1,12 @@
 package com.bbap.cafe.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bbap.cafe.dto.response.CafeList;
+import com.bbap.cafe.dto.response.CafeListResponseDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.service.CafeService;
 
@@ -29,14 +28,15 @@ public class CafeController {
 
 	@Operation(
 		summary = "카페 목록",
-		description = "회사 전체의 카페 목록을 불러온다."
+		description = "회사 전체의 카페 목록을 불러온다. 해당 페이지에서 보여줘야할 카페의 메뉴를 가져온다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success.",
 			content = @Content(schema = @Schema(implementation = DataResponseDto.class))),
 	})
-	@GetMapping("/list")
-	ResponseEntity<DataResponseDto<CafeList>> listCafe() {
-		return cafeService.listAllCafe();
+	@GetMapping("/list/{cafeId}")
+	ResponseEntity<DataResponseDto<CafeListResponseDto>> listCafe(@PathVariable String cafeId) {
+
+		return cafeService.listAllCafe(cafeId);
 	}
 }
