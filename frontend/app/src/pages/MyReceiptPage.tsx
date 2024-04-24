@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NavBar from "../components/Navbar";
 import BottomTabBar from "../components/BottomTabBar";
-import CalendarComponent from "../components/CalenderComponent";
+import CalendarComponent from "../components/calendar/CalenderComponent";
 
 function MyReceiptPage() {
   const [date, setDate] = useState(new Date());
