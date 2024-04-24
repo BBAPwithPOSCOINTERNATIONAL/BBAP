@@ -5,7 +5,7 @@ import Button from "../components/button";
 import Webcam from "react-webcam";
 
 const PurchaseFacePage: React.FC = () => {
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const webcamRef = React.useRef<any>(null);
 	return (
@@ -47,7 +47,7 @@ const PurchaseFacePage: React.FC = () => {
 				className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
 				text="이전으로"
 				onClick={() => {
-					navigation("/purchase");
+					navigate("/purchase");
 				}}
 			/>
 		</>

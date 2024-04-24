@@ -5,7 +5,7 @@ import Button from "../components/button";
 import CustomKeyboard from "../components/customKeyboard.jsx";
 
 const PurchaseLoginPage: React.FC = () => {
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 	const [idNumber, setIdNumber] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [focusId, setFocusId] = useState<string>("");
@@ -18,7 +18,7 @@ const PurchaseLoginPage: React.FC = () => {
 		// 안되면 경고 모달 뜸
 		if (idNumber && password) {
 			console.log({ idNumber, password });
-			navigation("/purchase-final");
+			navigate("/purchase-final");
 		}
 	};
 
@@ -86,7 +86,7 @@ const PurchaseLoginPage: React.FC = () => {
 					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
 					text="이전으로"
 					onClick={() => {
-						navigation("/purchase");
+						navigate("/purchase");
 					}}
 				/>
 			</div>

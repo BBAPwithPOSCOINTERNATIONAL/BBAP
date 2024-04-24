@@ -6,6 +6,7 @@ import PurchaseTagPage from "./pages/purchaseTagPage";
 import PurchaseFacePage from "./pages/purchaseFacePage";
 import PurchaseLoginPage from "./pages/purchaseLoginPage";
 import PurchaseFinalPage from "./pages/purchaseFinalPage";
+import GamePage from "./pages/gamePage";
 
 function App() {
 	return (
@@ -17,6 +18,7 @@ function App() {
 			<Route path="/purchase-face" element={<PurchaseFacePage />}></Route>
 			<Route path="/purchase-login" element={<PurchaseLoginPage />}></Route>
 			<Route path="/purchase-final" element={<PurchaseFinalPage />}></Route>
+			<Route path="/game" element={<GamePage />}></Route>
 		</Routes>
 	);
 }

@@ -8,7 +8,7 @@ const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋ
 const englishKeys = "qwertyuiopasdfghjklzxcvbnm";
 
 const PurchaseTagPage: React.FC = () => {
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 	const [tagValue, setTagValue] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,7 +61,7 @@ const PurchaseTagPage: React.FC = () => {
 						}}
 					>
 						<img
-							src="assets/images/사원증.png"
+							src="assets/images/사원증태그동작.gif"
 							alt=""
 							className="h-2/3 my-6 mx-auto z-50"
 						/>
@@ -75,7 +75,7 @@ const PurchaseTagPage: React.FC = () => {
 					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
 					text="이전으로"
 					onClick={() => {
-						navigation("/purchase");
+						navigate("/purchase");
 					}}
 				/>
 			</div>

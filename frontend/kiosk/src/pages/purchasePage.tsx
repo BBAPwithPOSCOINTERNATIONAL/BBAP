@@ -6,7 +6,7 @@ import Header from "../components/header";
 
 const PurchasePage: React.FC = () => {
 	const { totalPrice } = useCartStore();
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 	return (
 		<>
 			<Header text="결제하기" className="" />
@@ -25,7 +25,7 @@ const PurchasePage: React.FC = () => {
 								boxShadow: "15px 15px 5px lightgray",
 							}}
 							onClick={() => {
-								navigation("/purchase-tag");
+								navigate("/purchase-tag");
 							}}
 						>
 							<img
@@ -43,7 +43,7 @@ const PurchasePage: React.FC = () => {
 								boxShadow: "15px 15px 5px lightgray",
 							}}
 							onClick={() => {
-								navigation("/purchase-face");
+								navigate("/purchase-face");
 							}}
 						>
 							<img
@@ -62,7 +62,7 @@ const PurchasePage: React.FC = () => {
 							boxShadow: "15px 15px 5px lightgray",
 						}}
 						onClick={() => {
-							navigation("/purchase-login");
+							navigate("/purchase-login");
 						}}
 					>
 						<p className="text-3xl text-primary-color font-bold">
@@ -74,7 +74,7 @@ const PurchasePage: React.FC = () => {
 					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
 					text="이전으로"
 					onClick={() => {
-						navigation("/main");
+						navigate("/main");
 					}}
 				/>
 			</div>
