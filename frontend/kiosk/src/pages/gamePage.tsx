@@ -143,7 +143,7 @@ const GamePage: React.FC = () => {
 					}}
 					className={`w-1/5 rounded-full py-8 text-center ${
 						touchPoints.length == 0 || gameStarted
-							? "bg-slate-400"
+							? "bg-inactive-color"
 							: "bg-red-400"
 					}`}
 				>
@@ -177,8 +177,8 @@ const GamePage: React.FC = () => {
 						isPulsing={gameStarted}
 						key={point.id}
 						style={{
-							left: `${point.x}px`,
-							top: `${point.y}px`,
+							left: `${point.x - 100}px`,
+							top: `${point.y - 100}px`,
 							backgroundColor: `${point.color}`,
 						}}
 					>
@@ -189,8 +189,8 @@ const GamePage: React.FC = () => {
 					<PointDiv
 						isPulsing={true}
 						style={{
-							left: `${selectedPoint.x}px`,
-							top: `${selectedPoint.y}px`,
+							left: `${selectedPoint.x - 100}px`,
+							top: `${selectedPoint.y - 100}px`,
 							backgroundColor: `${selectedPoint.color}`,
 						}}
 					>
@@ -198,7 +198,16 @@ const GamePage: React.FC = () => {
 					</PointDiv>
 				)}
 			</div>
-			<div className="w-full absolute bottom-[150px] text-center">
+			<div className="w-full absolute bottom-[150px] flex flex-col items-center space-y-10">
+				{selectedPoint && (
+					<Button
+						className="bg-active-color text-white text-xl w-1/3 py-5"
+						text="결제하러가기"
+						onClick={() => {
+							navigate("/purchase");
+						}}
+					/>
+				)}
 				<Button
 					className="bg-bg-color text-white text-xl w-1/3 py-5"
 					text="이전으로"

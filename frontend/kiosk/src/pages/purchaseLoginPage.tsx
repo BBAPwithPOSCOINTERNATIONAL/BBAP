@@ -93,7 +93,7 @@ const PurchaseLoginPage: React.FC = () => {
 				</div>
 			</div>
 			{keyboardVisibility && (
-				<div className="absolute bottom-[530px] left-[100px]">
+				<div className="w-full absolute bottom-[600px] flex justify-center">
 					<CustomKeyboard
 						setInput={focusId == "id-number" ? setIdNumber : setPassword}
 					/>

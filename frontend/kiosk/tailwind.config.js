@@ -22,7 +22,7 @@ export default {
 				"primary-color": "#163760",
 				"bg-color": "#8AB9D4",
 				"active-color": "#179F0B",
-				"inactive-color": "#777777",
+				"inactive-color": "#DFDFDF",
 			},
 		},
 	},
