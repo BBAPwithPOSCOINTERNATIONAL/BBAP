@@ -5,16 +5,22 @@ import CafeCoupon from "../../components/cafe/CafeCoupon";
 import menu from "../../assets/cafe-menu.json";
 import MenuSection from "../../components/cafe/MenuSection";
 import together from "../../assets/together.png";
+import Button from "../../components/button";
 
 import MenuButtons from "../../components/cafe/MenuButtons";
 import CafeSelector from "../../components/cafe/CafeSelector";
 import useMoveScroll from "../../hooks/useMoveScroll";
 import { useNavigate } from "react-router-dom";
+import useCartStore from "../../store/cartStore";
 
 function CafeMainPage() {
   const navigate = useNavigate();
   const [content, setContent] = useState("alone");
   const [selectedMenu, setSelectedMenu] = useState("coffee");
+  const { totalPrice, totalCount } = useCartStore((state) => ({
+    totalPrice: state.totalPrice,
+    totalCount: state.totalCount,
+  }));
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
@@ -116,6 +122,27 @@ function CafeMainPage() {
             <MenuSection ref={coffeeRef} items={menu.coffee} title="커피" />
             <MenuSection ref={beverageRef} items={menu.beverage} title="음료" />
             <MenuSection ref={dessertRef} items={menu.dessert} title="디저트" />
+            {totalCount > 0 && (
+              <div className="fixed bottom-0 left-0 right-0 bg-stone-100">
+                {/* 총 주문 금액 표시 */}
+                <h2 className="text-center text-xs font-bold py-2">
+                  총 주문 금액: {totalPrice.toLocaleString()}원
+                </h2>
+                {/* 장바구니 페이지로 이동하는 버튼 */}
+                <Button
+                  onClick={() => navigate("/cart")}
+                  text={
+                    <>
+                      장바구니 보기
+                      <span className="bg-white text-red-500 font-bold rounded-full ml-2 px-2.5 py-1 text-xs">
+                        {totalCount}
+                      </span>
+                    </>
+                  }
+                  className="bg-primary-color w-full py-2 text-white font-bold mb-2"
+                />
+              </div>
+            )}
           </>
         )}
         {content === "together" && (

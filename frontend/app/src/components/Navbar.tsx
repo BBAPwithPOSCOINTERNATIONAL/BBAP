@@ -43,7 +43,12 @@ const NavBar: React.FC = () => {
             </>
           )}
         </div>
-        <div className="text-3xl font-hyemin-bold text-white">BBAP</div>
+        <div
+          className="text-3xl font-hyemin-bold text-white"
+          style={{ transform: "translateX(-20px)" }}
+        >
+          BBAP
+        </div>
 
         <div className="text-right">
           <FiBell className="text-2xl cursor-pointer text-white" />

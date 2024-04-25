@@ -3,7 +3,7 @@
     {
       "name": "아메리카노",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "진하게 로스팅한 커피 원두에서 에스프레소를 추출하여 투썸 고유의 원두 풍미를 느낄 수 있는 에스프레소 음료입니다.",
       "price": 2500,
       "images": "src/assets/cafe-images/아메리카노.png",
@@ -19,7 +19,7 @@
     {
       "name": "카페라떼",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "풍부하고 진한 농도의 에스프레소와 스팀밀크 위에 부드러운 우유 거품을 살짝 올려준 에스프레소 음료입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/카페라떼.png",
@@ -35,7 +35,7 @@
     {
       "name": "카푸치노",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "풍부하고 진한 농도의 에스프레소 위에 스팀밀크와 부드럽고 풍부한 양의 우유거품을 올린 에스프레소 음료입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/카푸치노.png",
@@ -51,7 +51,7 @@
     {
       "name": "바닐라라떼",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "달콤한 바닐라 향과 풍부한 에스프레소가 조화를 이룬 부드러운 라떼입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/바닐라라떼.png",
@@ -67,7 +67,7 @@
     {
       "name": "카페모카",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "진한 초콜릿 모카 시럽과 풍부하고 진한 농도의 에스프레소를 스팀밀크와 혼합하여 부드러운 휘핑크림을 올린 달콤한 에스프레소 음료입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/카페모카.png",
@@ -83,7 +83,7 @@
     {
       "name": "카라멜 마끼아또",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "바닐라 향을 넣은 스팀밀크 위에 에스프레소 샷을 넣고 카라멜 소스를 뿌린 달콤한 에스프레소 음료입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/카라멜마끼아또.png",
@@ -99,7 +99,7 @@
     {
       "name": "아이스크림 라떼",
       "temperature": ["ICE"],
-      "size": ["medium"],
+      "size": { "medium": 0 },
       "description": "소프트 아이스크림이 더해진 달콤하고 부드러운 카페 라떼입니다.",
       "price": 3500,
       "images": "src/assets/cafe-images/아이스크림라떼.png",
@@ -115,7 +115,7 @@
     {
       "name": "더치커피",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "커피 본연의 깊은 풍미와 단맛이 느껴지는 부드럽고 깔끔한 콜드브루 커피입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/더치커피.png",
@@ -131,7 +131,7 @@
     {
       "name": "더치커피 라떼",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "콜드브루와 우유가 어우러져 더욱 부드럽게 즐길 수 있는 콜드브루 라떼입니다.",
       "price": 3500,
       "images": "src/assets/cafe-images/더치커피라떼.png",
@@ -149,7 +149,7 @@
     {
       "name": "허니 레몬에이드",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "프레시한 레몬을 듬뿍 넣어 상큼한 레몬향이 가득한 클래식 에이드입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/허니레몬에이드.png",
@@ -165,7 +165,7 @@
     {
       "name": "초콜릿 라떼",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "프레시한 레몬을 듬뿍 넣어 상큼한 레몬향이 가득한 클래식 에이드입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/초콜릿라떼.png",
@@ -181,7 +181,7 @@
     {
       "name": "오렌지에이드",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "달콤한 오렌지의 맛과 스파클링의 청량함이 느껴지는 오렌지 에이드입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/오렌지에이드.png",
@@ -197,7 +197,7 @@
     {
       "name": "자몽에이드",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "자몽의 상큼함과 스파클링의 청량감이 입 안 가득 느껴지는 자몽 에이드입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/자몽에이드.png",
@@ -213,7 +213,7 @@
     {
       "name": "잉글리쉬 브렉퍼스트",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "최고급 실론티 잎을 선별하여 블렌딩 맛이 진하고 바디감이 강하며 꽃향기가 나는 TWG 잉글리쉬브렉퍼스트입니다.",
       "price": 2000,
       "images": "src/assets/cafe-images/잉글리쉬브렉퍼스트.png",
@@ -229,7 +229,7 @@
     {
       "name": "얼그레이",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "산뜻한 과일향과 수레국화의 향긋한 향이 느껴지는 TWG TEA 입니다.",
       "price": 2000,
       "images": "src/assets/cafe-images/얼그레이.png",
@@ -245,7 +245,7 @@
     {
       "name": "녹차",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "유기농 녹차 티백만을 사용한 티로 맑은 수색과 고유의 풍미가 뛰어난 녹차입니다.",
       "price": 2000,
       "images": "src/assets/cafe-images/녹차.png",
@@ -261,7 +261,7 @@
     {
       "name": "민트차",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "홍차, 녹차, 민트가 블렌딩 된 청량한 타입의 TWG TEA 입니다.",
       "price": 2000,
       "images": "src/assets/cafe-images/민트.png",
@@ -277,7 +277,7 @@
     {
       "name": "카모마일",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "카페인이 없어 누구나 편안하게 즐길 수 있는 허브티로, 풍부한 벌꿀향과 황금빛이 특징인 TWG TEA 입니다.",
       "price": 2000,
       "images": "src/assets/cafe-images/카모마일.png",
@@ -293,7 +293,7 @@
     {
       "name": "허니레몬티",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "진한 TWG TEA 프렌치 얼그레이 베이스에 달콤한 꿀과 상큼한 레몬이 더해진 TWG 베리에이션 티입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/허니레몬티.png",
@@ -309,7 +309,7 @@
     {
       "name": "그린티 라떼",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "그린티 파우더와 우유가 조화로운 부드러운 티 라떼입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/그린티라떼.png",
@@ -325,7 +325,7 @@
     {
       "name": "밀크티",
       "temperature": ["HOT", "ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "향긋한 홍차향과 부드러운 우유가 어우러진 정통 밀크티입니다.",
       "price": 3000,
       "images": "src/assets/cafe-images/밀크티.png",
@@ -341,7 +341,7 @@
     {
       "name": "복숭아아이스티",
       "temperature": ["ICE"],
-      "size": ["small", "medium", "large"],
+      "size": { "small": 0, "medium": 500, "large": 1000 },
       "description": "깊은 맛의 홍차와 달콤한 복숭아의 은은한 향이 어우러진 아이스티입니다.",
       "price": 2500,
       "images": "src/assets/cafe-images/복숭아아이스티.png",

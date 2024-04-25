@@ -213,9 +213,9 @@ function RestaurantMainPage() {
                 {menu.mainMenu}
               </h1>
             </div>
+            <hr className="h-1 bg-[#346186]" />
             <div className="flex-grow p-4 md:p-5">
               {" "}
-              {/* Added flex-grow here */}
               {menu.imageUrl && (
                 <img
                   src={menu.imageUrl}
@@ -224,10 +224,12 @@ function RestaurantMainPage() {
                   style={{ maxHeight: "200px" }}
                 />
               )}
+              <hr className="h-1 bg-[#346186]" />
               <p className="mt-2 text-center text-gray-500 dark:text-neutral-400">
-                Submenus: {menu.subMenus.join(" / ")}
+                {menu.subMenus.join(" / ")}
               </p>
             </div>
+            <hr className="h-1 bg-[#346186]" />
             <div className="bg-cafe-primary-color rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
               <p className="mt-1 text-lg text-center">
                 {menu.price.toFixed(2)} 원
