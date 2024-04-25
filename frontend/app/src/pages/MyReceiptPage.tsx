@@ -4,6 +4,7 @@ import BottomTabBar from "../components/BottomTabBar";
 import CalendarComponent from "../components/calendar/CalenderComponent";
 import question from "../assets/button/question.png";
 import Modal from "../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
+import WeeklySummary from "../components/receipt/Summary";
 
 function MyReceiptPage() {
   const [date, setDate] = useState(new Date());
@@ -44,6 +45,7 @@ function MyReceiptPage() {
           questData={questData}
           setClick={handleClickDate}
         />
+        <WeeklySummary />
       </div>
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img
