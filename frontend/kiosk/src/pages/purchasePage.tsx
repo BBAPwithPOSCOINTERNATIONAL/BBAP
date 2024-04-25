@@ -70,13 +70,15 @@ const PurchasePage: React.FC = () => {
 						</p>
 					</div>
 				</div>
-				<Button
-					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
-					text="이전으로"
-					onClick={() => {
-						navigate("/main");
-					}}
-				/>
+				<div className="w-full absolute bottom-[150px] text-center">
+					<Button
+						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						text="이전으로"
+						onClick={() => {
+							navigate("/main");
+						}}
+					/>
+				</div>
 			</div>
 		</>
 	);

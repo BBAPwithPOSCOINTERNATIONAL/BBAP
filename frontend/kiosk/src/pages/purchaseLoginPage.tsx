@@ -73,22 +73,24 @@ const PurchaseLoginPage: React.FC = () => {
 						/>
 					</div>
 				</div>
-				<Button
-					className={`absolute bottom-[320px] left-[400px] ${
-						idNumber && password ? "bg-primary-color" : "bg-inactive-color"
-					} text-white text-xl w-1/3 py-5`}
-					text="다음"
-					onClick={() => {
-						handleLogin();
-					}}
-				/>
-				<Button
-					className="absolute bottom-[130px] left-[400px] bg-bg-color text-white text-xl w-1/3 py-5"
-					text="이전으로"
-					onClick={() => {
-						navigate("/purchase");
-					}}
-				/>
+				<div className="w-full absolute bottom-[150px] flex flex-col space-y-10 items-center">
+					<Button
+						className={`${
+							idNumber && password ? "bg-primary-color" : "bg-inactive-color"
+						} text-white text-xl w-1/3 py-5`}
+						text="다음"
+						onClick={() => {
+							handleLogin();
+						}}
+					/>
+					<Button
+						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						text="이전으로"
+						onClick={() => {
+							navigate("/purchase");
+						}}
+					/>
+				</div>
 			</div>
 			{keyboardVisibility && (
 				<div className="absolute bottom-[530px] left-[100px]">
