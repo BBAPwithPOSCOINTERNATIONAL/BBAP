@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.cafe.dto.response.CafeListResponseDto;
+import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.service.CafeService;
 
@@ -31,12 +32,24 @@ public class CafeController {
 		description = "회사 전체의 카페 목록을 불러온다. 해당 페이지에서 보여줘야할 카페의 메뉴를 가져온다."
 	)
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Success.",
-			content = @Content(schema = @Schema(implementation = DataResponseDto.class))),
+		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/list/{cafeId}")
 	ResponseEntity<DataResponseDto<CafeListResponseDto>> listCafe(@PathVariable String cafeId) {
 
 		return cafeService.listAllCafe(cafeId);
+	}
+
+	@Operation(
+		summary = "메뉴 목록",
+		description = "카페의 정보(오픈시간 마감시간 사용자별 카페 스탬프보유수) 와 해당 카페의 메뉴목록을 가져온다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping("/menu-list/{cafeId}")
+	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(@PathVariable String cafeId) {
+
+		return cafeService.cafeDetail(cafeId);
 	}
 }

@@ -1,5 +1,7 @@
 package com.bbap.cafe.service;
 
+import static com.bbap.cafe.util.MakeKeyUtil.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import com.bbap.cafe.exception.CafeEntityNotFoundException;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
 import com.bbap.cafe.repository.StampRepository;
+import com.bbap.cafe.util.MakeKeyUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,13 +62,25 @@ public class CafeServiceImpl implements CafeService {
 		return DataResponseDto.of(response);
 	}
 
+	@Override
+	public ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(String cafeId) {
+		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
+		List<Menu> menus = menuRepository.findByCafeId(cafeId);
+
+		//보여줄 카페의 메뉴들과 상세 정보 가져오기
+		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
+
+		return DataResponseDto.of(selectedCafe);
+	}
+
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
 		List<MenuSummaryDto> coffeeMenus = new ArrayList<>();
 		List<MenuSummaryDto> beverageMenus = new ArrayList<>();
 		List<MenuSummaryDto> dessertMenus = new ArrayList<>();
 
 		for (Menu menu : menus) {
-			MenuSummaryDto menuSummary = new MenuSummaryDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription());
+			String imageUrl = menuImage(menu.getCafeId(), menu.getId());
+			MenuSummaryDto menuSummary = new MenuSummaryDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription(), imageUrl);
 
 			switch (menu.getMenuCategory()) {
 				case "coffee":
