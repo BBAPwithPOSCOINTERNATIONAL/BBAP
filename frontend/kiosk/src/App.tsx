@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useAutoReset } from "./hooks/useAutoReset";
 import EntryPage from "./pages/entryPage";
 import MainPage from "./pages/mainPage";
 import PurchasePage from "./pages/purchasePage";
@@ -9,6 +10,8 @@ import PurchaseFinalPage from "./pages/purchaseFinalPage";
 import GamePage from "./pages/gamePage";
 
 function App() {
+	// 특정 시간 후, 초기 화면으로 돌아가는 훅
+	useAutoReset(5 * 60 * 1000);
 	return (
 		<Routes>
 			<Route path="/" element={<EntryPage />}></Route>
