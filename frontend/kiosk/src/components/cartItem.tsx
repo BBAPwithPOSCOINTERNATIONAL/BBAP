@@ -59,7 +59,7 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 						/>
 					</div>
 				</div>
-				<div className="text-2xs">
+				<div className="text-xs">
 					{(props.price * props.count).toLocaleString()} 원
 				</div>
 				{/* 삭제 버튼 */}

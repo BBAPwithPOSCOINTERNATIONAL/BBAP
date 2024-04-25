@@ -41,10 +41,6 @@ const MainPage: React.FC = () => {
 		setActiveTapItem(tap);
 	};
 
-	const handleGame = () => {
-		navigate("/game");
-	};
-
 	const goToEntry = () => {
 		navigate("/");
 		resetCart();
@@ -116,11 +112,17 @@ const MainPage: React.FC = () => {
 								</div>
 								<div className="px-10 py-5 flex flex-col space-y-4">
 									<Button
-										onClick={() => handleGame()}
+										onClick={() => {
+											if (cartList.length > 0) {
+												navigate("/game");
+											}
+										}}
 										text={"내기하기"}
-										className={
-											"bg-primary-color text-sm text-white w-full py-3"
-										}
+										className={`${
+											cartList.length > 0
+												? "bg-primary-color"
+												: "bg-inactive-color"
+										} text-sm text-white w-full py-3`}
 									/>
 									<Button
 										onClick={() => {

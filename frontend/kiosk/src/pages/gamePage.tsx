@@ -32,8 +32,8 @@ const pulseStyles = (props: { isPulsing: boolean }) => css`
 
 const PointDiv = styled.div<{ isPulsing: boolean }>`
 	position: absolute;
-	width: 200px;
-	height: 200px;
+	width: 300px;
+	height: 300px;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
@@ -145,7 +145,7 @@ const GamePage: React.FC = () => {
 						touchPoints.length == 0 || gameStarted
 							? "bg-inactive-color"
 							: "bg-red-400"
-					}`}
+					} ${gameStarted && "text-black"}`}
 				>
 					{gameStarted ? countdown : "시작"}
 				</div>
@@ -177,8 +177,8 @@ const GamePage: React.FC = () => {
 						isPulsing={gameStarted}
 						key={point.id}
 						style={{
-							left: `${point.x - 100}px`,
-							top: `${point.y - 100}px`,
+							left: `${point.x - 150}px`,
+							top: `${point.y - 150}px`,
 							backgroundColor: `${point.color}`,
 						}}
 					>
@@ -189,8 +189,8 @@ const GamePage: React.FC = () => {
 					<PointDiv
 						isPulsing={true}
 						style={{
-							left: `${selectedPoint.x - 100}px`,
-							top: `${selectedPoint.y - 100}px`,
+							left: `${selectedPoint.x - 150}px`,
+							top: `${selectedPoint.y - 150}px`,
 							backgroundColor: `${selectedPoint.color}`,
 						}}
 					>
