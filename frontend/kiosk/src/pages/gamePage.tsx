@@ -26,11 +26,11 @@ const pulseAnimation = keyframes`
   }
 `;
 
-const pulseStyles = (props: { isPulsing: boolean }) => css`
-	animation: ${props.isPulsing ? pulseAnimation : "none"} 1.2s infinite;
+const pulseStyles = (props: { $isPulsing: boolean }) => css`
+	animation: ${props.$isPulsing ? pulseAnimation : "none"} 1.2s infinite;
 `;
 
-const PointDiv = styled.div<{ isPulsing: boolean }>`
+const PointDiv = styled.div<{ $isPulsing: boolean }>`
 	position: absolute;
 	width: 300px;
 	height: 300px;
@@ -174,7 +174,7 @@ const GamePage: React.FC = () => {
 				</div>
 				{touchPoints.map((point, index) => (
 					<PointDiv
-						isPulsing={gameStarted}
+						$isPulsing={gameStarted}
 						key={point.id}
 						style={{
 							left: `${point.x - 150}px`,
@@ -187,7 +187,7 @@ const GamePage: React.FC = () => {
 				))}
 				{selectedPoint && (
 					<PointDiv
-						isPulsing={true}
+						$isPulsing={true}
 						style={{
 							left: `${selectedPoint.x - 150}px`,
 							top: `${selectedPoint.y - 150}px`,
