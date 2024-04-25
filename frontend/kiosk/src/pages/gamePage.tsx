@@ -131,23 +131,24 @@ const GamePage: React.FC = () => {
 				)}
 			</div>
 			<div className="flex justify-center space-x-20 font-bold text-lg text-white">
-				<Button
-					text="다시"
+				<div
 					onClick={handleReset}
-					className="w-1/5 rounded-full bg-amber-300 py-8"
-				/>
-
-				<Button
-					text={gameStarted ? countdown : "시작"}
+					className="w-1/5 rounded-full bg-amber-300 py-8 text-center"
+				>
+					다시
+				</div>
+				<div
 					onClick={() => {
 						!gameStarted && handleStartGame();
 					}}
-					className={`w-1/5 rounded-full py-8 ${
+					className={`w-1/5 rounded-full py-8 text-center ${
 						touchPoints.length == 0 || gameStarted
 							? "bg-slate-400"
 							: "bg-red-400"
 					}`}
-				/>
+				>
+					{gameStarted ? countdown : "시작"}
+				</div>
 			</div>
 			<div
 				onTouchStart={handleTouchStart}
