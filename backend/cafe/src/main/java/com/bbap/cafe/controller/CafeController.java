@@ -6,14 +6,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bbap.cafe.dto.response.CafeListResponseDto;
+import com.bbap.cafe.dto.response.CafeListDto;
+import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.service.CafeService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +34,7 @@ public class CafeController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/list/{cafeId}")
-	ResponseEntity<DataResponseDto<CafeListResponseDto>> listCafe(@PathVariable String cafeId) {
+	ResponseEntity<DataResponseDto<CafeListDto>> listCafe(@PathVariable String cafeId) {
 
 		return cafeService.listAllCafe(cafeId);
 	}
@@ -52,4 +51,17 @@ public class CafeController {
 
 		return cafeService.cafeDetail(cafeId);
 	}
+
+	@Operation(
+		summary = "메뉴 상세",
+		description = "메뉴 정보를 들고온다. 옵션을 포함한"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping("/menu/{menuId}")
+	ResponseEntity<DataResponseDto<MenuDto>> menuDetail(@PathVariable String menuId) {
+		return cafeService.menuDetail(menuId);
+	}
+
 }

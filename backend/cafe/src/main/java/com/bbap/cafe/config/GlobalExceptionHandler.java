@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.bbap.cafe.dto.responseDto.ResponseDto;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
 import com.bbap.cafe.exception.CustomException;
+import com.bbap.cafe.exception.MenuEntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,7 +21,13 @@ public class GlobalExceptionHandler {
 
     //존재하지 않는 카페 아이디
 	@ExceptionHandler(CafeEntityNotFoundException.class)
-	public ResponseEntity<ResponseDto> FaceNotFoundExceptionHandler(CafeEntityNotFoundException e) {
+	public ResponseEntity<ResponseDto> cafeNotFoundExceptionHandler(CafeEntityNotFoundException e) {
+		return handleException(e);
+	}
+
+	//존재하지 않는 메뉴 아이디
+	@ExceptionHandler(MenuEntityNotFoundException.class)
+	public ResponseEntity<ResponseDto> menuNotFoundExcptionHandler(MenuEntityNotFoundException e) {
 		return handleException(e);
 	}
 

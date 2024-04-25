@@ -1,7 +1,5 @@
 package com.bbap.cafe.dto.response;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CafeListResponseDto {
-	List<CafeSummaryDto> cafeList;
-	SelectedCafeDto selectedCafe;
+public class ChoiceDto {
+	private String choiceName;
+	private int price;
 }

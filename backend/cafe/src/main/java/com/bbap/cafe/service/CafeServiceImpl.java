@@ -12,20 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbap.cafe.dto.response.CafeListResponseDto;
+import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.CafeSummaryDto;
+import com.bbap.cafe.dto.response.ChoiceDto;
+import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.MenuSummaryDto;
+import com.bbap.cafe.dto.response.OptionDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
-import com.bbap.cafe.dto.responseDto.ResponseDto;
 import com.bbap.cafe.entity.Cafe;
+import com.bbap.cafe.entity.Choice;
 import com.bbap.cafe.entity.Menu;
+import com.bbap.cafe.entity.Option;
 import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
+import com.bbap.cafe.exception.MenuEntityNotFoundException;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
 import com.bbap.cafe.repository.StampRepository;
-import com.bbap.cafe.util.MakeKeyUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +42,7 @@ public class CafeServiceImpl implements CafeService {
 	private final MenuRepository menuRepository;
 	private final StampRepository stampRepository;
 	@Override
-	public ResponseEntity<DataResponseDto<CafeListResponseDto>> listAllCafe(String cafeId) {
+	public ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(String cafeId) {
 		if (cafeId.equals("-1")) {
 			//근무지 찾아와서 우선순위의 카페 넣기
 			cafeId = "66276af2412ced9137ecabe9";
@@ -57,7 +61,7 @@ public class CafeServiceImpl implements CafeService {
 			.map(c -> new CafeSummaryDto(c.getId(), c.getName(), workPlaceName))
 			.collect(Collectors.toList());
 
-		CafeListResponseDto response = new CafeListResponseDto(cafeSummaries, selectedCafe);
+		CafeListDto response = new CafeListDto(cafeSummaries, selectedCafe);
 
 		return DataResponseDto.of(response);
 	}
@@ -71,6 +75,25 @@ public class CafeServiceImpl implements CafeService {
 		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
 
 		return DataResponseDto.of(selectedCafe);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<MenuDto>> menuDetail(String menuId) {
+		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuEntityNotFoundException::new);
+
+		List<OptionDto> optionDtoList = new ArrayList<>();
+		for (Option option : menu.getOptions()) {
+			List<ChoiceDto> choiceDtoList = new ArrayList<>();
+			List<Choice> choices = option.getChoices();
+			for(Choice choice : choices) {
+				choiceDtoList.add(new ChoiceDto(choice.getChoiceName(), choice.getPrice()));
+			}
+			optionDtoList.add(new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList));
+		}
+		String imageUrl = menuImage(menu.getCafeId(), menu.getId());
+		MenuDto menuDto = new MenuDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription(),imageUrl,optionDtoList);
+
+		return DataResponseDto.of(menuDto);
 	}
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
