@@ -40,7 +40,7 @@ async def train(file, empId):
     with open(MODEL_PATH, 'wb') as f:
         pickle.dump(knn_clf, f)
     
-    return "모델이 성공적으로 업데이트 되었습니다."
+    return "Success"
 
 async def predict(file):
     # 메모리에서 이미지 처리

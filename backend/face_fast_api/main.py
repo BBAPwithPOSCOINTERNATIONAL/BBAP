@@ -7,14 +7,14 @@ app = FastAPI(swagger_ui=True)
 router = APIRouter(prefix="/api/v1", tags=["api"])
 
 @router.post("/train",tags=["api"])
-async def train_model(file: UploadFile = File(...), empId: str = Form(...)):
-
-    return {"message": await train(file, empId)}
+async def train_model(faceImage: UploadFile = File(...), empId: int = Form(...)):
+ 
+    return {"message": await train(faceImage, empId)}
 
 @router.post("/predict",tags=["api"])
-async def predict_image(file: UploadFile = File(...)):
+async def predict_image(faceImage: UploadFile = File(...)):
     
-    return {"predictions": await predict(file)}
+    return {"message":"Success.","data" : {"empId":int(await predict(faceImage))}}
 
 # 앱에 라우터 추가
 app.include_router(router)
