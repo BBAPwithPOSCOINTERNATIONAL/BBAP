@@ -208,9 +208,7 @@ const MenuModal: React.FC = () => {
 							{warningText && (
 								<p className="text-sm text-red-500 font-bold">{warningText}</p>
 							)}
-							<p className="text-base font-bold text-center">
-								총 결제가격: {totalPrice?.toLocaleString()} 원
-							</p>
+
 							{/* 수량 변경 */}
 							<div className="my-6 flex items-center justify-center text-base font-bold space-x-10">
 								<p>수량</p>
@@ -244,6 +242,9 @@ const MenuModal: React.FC = () => {
 									/>
 								</div>
 							</div>
+							<p className="text-base font-bold text-center">
+								총 결제가격: {totalPrice?.toLocaleString()} 원
+							</p>
 							<div className="text-base flex justify-center space-x-20 my-3">
 								<Button
 									onClick={closeMenuModal}

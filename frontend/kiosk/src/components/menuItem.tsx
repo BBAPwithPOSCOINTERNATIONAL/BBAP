@@ -45,7 +45,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 			/>
 			<div id="menu-info" className="absolute w-full pr-10 bottom-4">
 				<p className="text-xs break-keep">{menuItemData.name}</p>
-				<p className="text-2xs text-end font-bold">
+				<p className="text-xs text-end font-bold">
 					{menuItemData.price.toLocaleString()} 원
 				</p>
 			</div>

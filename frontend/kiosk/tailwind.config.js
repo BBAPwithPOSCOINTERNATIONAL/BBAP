@@ -10,8 +10,8 @@ export default {
 			base: "52px",
 			lg: "60px",
 			xl: "68px",
-			"3xl": "76px",
-			"4xl": "80px",
+			"2xl": "76px",
+			"3xl": "80px",
 		},
 		extend: {
 			fontFamily: {
@@ -22,7 +22,7 @@ export default {
 				"primary-color": "#163760",
 				"bg-color": "#8AB9D4",
 				"active-color": "#179F0B",
-				"inactive-color": "#777777",
+				"inactive-color": "#DFDFDF",
 			},
 		},
 	},

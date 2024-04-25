@@ -27,7 +27,7 @@ const MainPage: React.FC = () => {
 	const [menuData, setMenuData] = useState<MenuData>();
 	const { isMenuModalOpen } = useModalStore();
 	const { cartList, totalPrice, totalCount, resetCart } = useCartStore();
-	const navigation = useNavigate();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setMenuData(cafeMenuData);
@@ -41,16 +41,8 @@ const MainPage: React.FC = () => {
 		setActiveTapItem(tap);
 	};
 
-	const handleGame = () => {
-		// TODO
-		// 게임 시작 화면으로 감
-	};
-	const handlePurchase = () => {
-		// TODO
-		// 내기 화면으로 감
-	};
 	const goToEntry = () => {
-		navigation("/");
+		navigate("/");
 		resetCart();
 	};
 
@@ -120,16 +112,22 @@ const MainPage: React.FC = () => {
 								</div>
 								<div className="px-10 py-5 flex flex-col space-y-4">
 									<Button
-										onClick={() => handleGame()}
+										onClick={() => {
+											if (cartList.length > 0) {
+												navigate("/game");
+											}
+										}}
 										text={"내기하기"}
-										className={
-											"bg-primary-color text-sm text-white w-full py-3"
-										}
+										className={`${
+											cartList.length > 0
+												? "bg-primary-color"
+												: "bg-inactive-color"
+										} text-sm text-white w-full py-3`}
 									/>
 									<Button
 										onClick={() => {
 											if (cartList.length > 0) {
-												handlePurchase();
+												navigate("/payment");
 											}
 										}}
 										text={"결제하기"}
