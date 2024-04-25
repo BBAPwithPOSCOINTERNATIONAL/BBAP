@@ -9,4 +9,5 @@ import com.bbap.cafe.entity.Menu;
 
 public interface MenuRepository extends MongoRepository<Menu, String> {
 	List<Menu> findByCafeId(String cafeId);
+	List<Menu> findByCafeIdAndMenuCategory(String cafeId, String menuCategory);
 }

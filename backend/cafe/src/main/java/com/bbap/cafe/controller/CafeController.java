@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.MenuDto;
+import com.bbap.cafe.dto.response.MenuListDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
@@ -76,5 +77,18 @@ public class CafeController {
 	ResponseEntity<DataResponseDto<StampDto>> stampCnt(@PathVariable String cafeId) {
 		return cafeService.stampCnt(cafeId);
 	}
+
+	@Operation(
+		summary = "키오스크용 분류별 메뉴리스트",
+		description = "카페의 메뉴리스트를 분류별로 들고온다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping("/kiosk/menus/{cafeId}/{menuCategory}")
+	ResponseEntity<DataResponseDto<MenuListDto>> menuListKiosk(@PathVariable String cafeId, @PathVariable Integer menuCategory) {
+		return cafeService.menuList(cafeId, menuCategory);
+	}
+
 
 }

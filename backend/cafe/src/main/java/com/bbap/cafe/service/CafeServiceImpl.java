@@ -16,6 +16,7 @@ import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.CafeSummaryDto;
 import com.bbap.cafe.dto.response.ChoiceDto;
 import com.bbap.cafe.dto.response.MenuDto;
+import com.bbap.cafe.dto.response.MenuListDto;
 import com.bbap.cafe.dto.response.MenuSummaryDto;
 import com.bbap.cafe.dto.response.OptionDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
@@ -33,12 +34,13 @@ import com.bbap.cafe.repository.MenuRepository;
 import com.bbap.cafe.repository.StampRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Transactional
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CafeServiceImpl implements CafeService {
-	private final Logger logger = LogManager.getLogger(CafeServiceImpl.class);
 	private final CafeRepository cafeRepository;
 	private final MenuRepository menuRepository;
 	private final StampRepository stampRepository;
@@ -105,6 +107,35 @@ public class CafeServiceImpl implements CafeService {
 		return DataResponseDto.of(stampDto);
 	}
 
+	@Override
+	public ResponseEntity<DataResponseDto<MenuListDto>> menuList(String cafeId, Integer menuCategory) {
+		String menuCategoryId = "";
+		switch (menuCategory) {
+			case 0:
+				menuCategoryId = "coffee";
+				break;
+			case 1:
+				menuCategoryId = "beverage";
+				break;
+			case 2:
+				menuCategoryId = "desert";
+				break;
+			case 3:
+				//인기리스트
+				break;
+		}
+		List<Menu> menus = menuRepository.findByCafeIdAndMenuCategory(cafeId, menuCategoryId);
+		List<MenuSummaryDto> menuList = new ArrayList<>();
+		for (Menu menu : menus) {
+			String imageUrl = menuImage(menu.getCafeId(), menu.getId());
+			MenuSummaryDto menuSummary = new MenuSummaryDto(menu.getId(), menu.getName(),
+				menu.getPrice(), menu.getDescription(), imageUrl);
+			menuList.add(menuSummary);
+		}
+		MenuListDto menuListDto = new MenuListDto(menuList);
+		return DataResponseDto.of(menuListDto);
+	}
+
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
 		List<MenuSummaryDto> coffeeMenus = new ArrayList<>();
 		List<MenuSummaryDto> beverageMenus = new ArrayList<>();
@@ -140,7 +171,7 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	private int getStampCount(String cafeId, Integer empId) {
-		logger.info("Querying stamp for cafeId: " + cafeId + ", empId: " + empId);
+		log.info("Querying stamp for cafeId: " + cafeId + ", empId: " + empId);
 		Stamp stamp = stampRepository.findByCafeIdAndEmpId(cafeId, empId);
 		return (stamp != null) ? stamp.getStampCnt() : 0;
 	}
