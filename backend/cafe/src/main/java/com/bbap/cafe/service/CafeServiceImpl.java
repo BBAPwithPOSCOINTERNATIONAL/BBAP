@@ -19,6 +19,7 @@ import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.MenuSummaryDto;
 import com.bbap.cafe.dto.response.OptionDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
+import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.entity.Cafe;
 import com.bbap.cafe.entity.Choice;
@@ -94,6 +95,14 @@ public class CafeServiceImpl implements CafeService {
 		MenuDto menuDto = new MenuDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription(),imageUrl,optionDtoList);
 
 		return DataResponseDto.of(menuDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<StampDto>> stampCnt(String cafeId) {
+		int empId = 1; //수정할 부분
+		int stampCnt = getStampCount(cafeId, empId);
+		StampDto stampDto = new StampDto(stampCnt);
+		return DataResponseDto.of(stampDto);
 	}
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {

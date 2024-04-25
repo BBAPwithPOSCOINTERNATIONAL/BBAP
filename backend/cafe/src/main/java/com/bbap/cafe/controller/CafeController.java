@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
+import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.service.CafeService;
 
@@ -62,6 +63,18 @@ public class CafeController {
 	@GetMapping("/menu/{menuId}")
 	ResponseEntity<DataResponseDto<MenuDto>> menuDetail(@PathVariable String menuId) {
 		return cafeService.menuDetail(menuId);
+	}
+
+	@Operation(
+		summary = "카페의 스탬프 수",
+		description = "유저의 스탬프 수를 조회한다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping("/stamp/{cafeId}")
+	ResponseEntity<DataResponseDto<StampDto>> stampCnt(@PathVariable String cafeId) {
+		return cafeService.stampCnt(cafeId);
 	}
 
 }
