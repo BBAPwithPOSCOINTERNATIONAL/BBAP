@@ -2,15 +2,15 @@ package com.bbap.restaurant.entity;
 
 import java.sql.Date;
 
-import com.bbap.restaurant.entity.compositeKey.MenuId;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,17 +18,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "restaurant_menu")
+@Table(name = "restaurant_menu", indexes = {
+	@Index(name = "idx_restaurant_menu", columnList = "restaurant_id, menu_date, meal_classification")
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantMenuEntity {
-	@EmbeddedId
-	private MenuId menuId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "restaurant_menu_id", nullable = false)
+	private Integer restaurantMenuId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("restaurantId")
 	@JoinColumn(name = "restaurant_id", nullable = false)
 	RestaurantEntity restaurantEntity;
 
