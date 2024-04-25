@@ -5,13 +5,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbap.face.dto.request.FaceRequestDto;
+import com.bbap.face.dto.request.RegisterFaceRequestDto;
 import com.bbap.face.dto.response.CheckFaceResponseData;
 import com.bbap.face.dto.response.DataResponseDto;
 import com.bbap.face.dto.response.ResponseDto;
 import com.bbap.face.entity.FaceEntity;
+import com.bbap.face.exception.FaceNotFoundException;
+import com.bbap.face.exception.FaceUnprocessException;
 import com.bbap.face.exception.RegisterNotFoundException;
+import com.bbap.face.feign.FaceServiceFeignClient;
 import com.bbap.face.repository.FaceRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class FaceServiceImpl implements FaceService {
+	private final FaceServiceFeignClient faceServiceFeignClient;
+
 	private final FaceRepository faceRepository;
 
 	@Override
@@ -31,29 +38,40 @@ public class FaceServiceImpl implements FaceService {
 		if (!faceRepository.existsById(empId)) {
 			FaceEntity faceEntity = new FaceEntity(empId);
 			faceRepository.save(faceEntity);
-			log.info("얼굴 첫 등록");
+			log.info("{} : 얼굴 첫 등록", empId);
 		}
 
-		//등록 처리 코드
-		//fast api로 file과 empId를 보내 train 요청.
+		//fast api로 등록 처리
+		RegisterFaceRequestDto feignRequest = new RegisterFaceRequestDto(request.getFaceImage(), empId);
+		try {
+			log.info("{} : 얼굴 정보 등록 성공", empId);
+			return faceServiceFeignClient.registerFace(feignRequest);
 
-		return ResponseDto.success();
+		} catch (FeignException e) {
+			log.debug("{} : 얼굴 등록 실패", empId);
+			throw new FaceUnprocessException();
+		}
 	}
 
 	@Override
 	public ResponseEntity<DataResponseDto<CheckFaceResponseData>> checkFace(FaceRequestDto request) {
-		//test코드
-		int empId = 1;
-
 		//얼굴 인식 처리
-		//fast api 로 file을 보내 predict 요청
+		try {
+			ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
+				= faceServiceFeignClient.predictFace(request);
 
-		//기존에 등록되지 않은 경우
-		// if (처리결과가 -1 인 경우)
-		// 	throw new FaceNotFoundException();
+			if (response.getBody() == null || response.getBody().getData().getEmpId() == -1) {
+				log.debug("등록되지 않은 얼굴");
+				throw new FaceNotFoundException();
+			}
 
-		CheckFaceResponseData data = new CheckFaceResponseData(empId);
-		return DataResponseDto.of(data);
+			log.info("인식된 empId : {}", response.getBody().getData().getEmpId());
+			return response;
+
+		} catch (FeignException e) {
+			log.debug("얼굴 인식 실패");
+			throw new FaceUnprocessException();
+		}
 	}
 
 	@Override
@@ -63,6 +81,7 @@ public class FaceServiceImpl implements FaceService {
 
 		//기존에 등록되지 않은 경우
 		if (!faceRepository.existsById(empId)) {
+			log.debug("{} : 얼굴 정보를 등록하지 않은 사원", empId);
 			throw new RegisterNotFoundException();
 		}
 
