@@ -204,7 +204,7 @@ const GamePage: React.FC = () => {
 						className="bg-active-color text-white text-xl w-1/3 py-5"
 						text="결제하러가기"
 						onClick={() => {
-							navigate("/purchase");
+							navigate("/payment");
 						}}
 					/>
 				)}

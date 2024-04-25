@@ -127,7 +127,7 @@ const MainPage: React.FC = () => {
 									<Button
 										onClick={() => {
 											if (cartList.length > 0) {
-												navigate("/purchase");
+												navigate("/payment");
 											}
 										}}
 										text={"결제하기"}

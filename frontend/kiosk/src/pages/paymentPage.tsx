@@ -4,7 +4,7 @@ import useCartStore from "../store/cartStore";
 import Button from "../components/button";
 import Header from "../components/header";
 
-const PurchasePage: React.FC = () => {
+const PaymentPage: React.FC = () => {
 	const { totalPrice } = useCartStore();
 	const navigate = useNavigate();
 	return (
@@ -25,7 +25,7 @@ const PurchasePage: React.FC = () => {
 								boxShadow: "15px 15px 5px lightgray",
 							}}
 							onClick={() => {
-								navigate("/purchase-tag");
+								navigate("/payment-tag");
 							}}
 						>
 							<img
@@ -43,7 +43,7 @@ const PurchasePage: React.FC = () => {
 								boxShadow: "15px 15px 5px lightgray",
 							}}
 							onClick={() => {
-								navigate("/purchase-face");
+								navigate("/payment-face");
 							}}
 						>
 							<img
@@ -62,7 +62,7 @@ const PurchasePage: React.FC = () => {
 							boxShadow: "15px 15px 5px lightgray",
 						}}
 						onClick={() => {
-							navigate("/purchase-login");
+							navigate("/payment-login");
 						}}
 					>
 						<p className="text-3xl text-primary-color font-bold">
@@ -84,4 +84,4 @@ const PurchasePage: React.FC = () => {
 	);
 };
 
-export default PurchasePage;
+export default PaymentPage;

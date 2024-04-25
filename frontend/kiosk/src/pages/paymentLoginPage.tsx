@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import Header from "../components/header";
-import Button from "../components/button";
-import CustomKeyboard from "../components/customKeyboard.jsx";
+import Header from "../components/header.js";
+import Button from "../components/button.js";
+import CustomKeyboard from "../components/customKeyboard.js";
 
-const PurchaseLoginPage: React.FC = () => {
+const PaymentLoginPage: React.FC = () => {
 	const navigate = useNavigate();
 	const [idNumber, setIdNumber] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -18,7 +18,7 @@ const PurchaseLoginPage: React.FC = () => {
 		// 안되면 경고 모달 뜸
 		if (idNumber && password) {
 			console.log({ idNumber, password });
-			navigate("/purchase-final");
+			navigate("/payment-final");
 		}
 	};
 
@@ -87,7 +87,7 @@ const PurchaseLoginPage: React.FC = () => {
 						className="bg-bg-color text-white text-xl w-1/3 py-5"
 						text="이전으로"
 						onClick={() => {
-							navigate("/purchase");
+							navigate("/payment");
 						}}
 					/>
 				</div>
@@ -103,4 +103,4 @@ const PurchaseLoginPage: React.FC = () => {
 	);
 };
 
-export default PurchaseLoginPage;
+export default PaymentLoginPage;

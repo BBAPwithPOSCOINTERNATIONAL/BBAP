@@ -7,7 +7,7 @@ import Button from "../components/button";
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
 const englishKeys = "qwertyuiopasdfghjklzxcvbnm";
 
-const PurchaseTagPage: React.FC = () => {
+const PaymentTagPage: React.FC = () => {
 	const navigate = useNavigate();
 	const [tagValue, setTagValue] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +76,7 @@ const PurchaseTagPage: React.FC = () => {
 						className="bg-bg-color text-white text-xl w-1/3 py-5"
 						text="이전으로"
 						onClick={() => {
-							navigate("/purchase");
+							navigate("/payment");
 						}}
 					/>
 				</div>
@@ -85,4 +85,4 @@ const PurchaseTagPage: React.FC = () => {
 	);
 };
 
-export default PurchaseTagPage;
+export default PaymentTagPage;

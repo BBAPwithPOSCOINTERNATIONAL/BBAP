@@ -29,7 +29,7 @@ const OrderItem: React.FC<{ data: MenuInfo }> = ({ data }) => {
 	);
 };
 
-const PurchaseFinalPage: React.FC = () => {
+const PaymentFinalPage: React.FC = () => {
 	const navigate = useNavigate();
 	const [couponCount, setCouponCount] = useState<number>(0);
 	const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
@@ -98,9 +98,16 @@ const PurchaseFinalPage: React.FC = () => {
 		},
 	];
 
-	const totalPrice = 15000;
+	const totalPrice = 2000;
+	// 가능한 지원금 금액과 결제 금액을 비교함
+	// 1. 지원금 <= 결제 금액: 지원금 전체를 사용
+	// 2. 지원금 > 결제 금액: 결제 금액 만큼만 지원금으로 사용
+	const support =
+		totalPrice <= ordererInfo.remainMoney
+			? totalPrice
+			: ordererInfo.remainMoney;
 
-	const handlePurchase = () => {
+	const handlePayment = () => {
 		// TODO 서버로 결제요청 보냄
 		console.log("결제");
 		// 결제에 성공하면 => 주문번호 받아서 모달 띄움
@@ -142,7 +149,7 @@ const PurchaseFinalPage: React.FC = () => {
 				</p>
 				<div
 					id="order-list"
-					className="mx-auto w-3/4 h-[600px] overflow-y-auto text-sm"
+					className="mx-auto w-3/4 h-[500px] overflow-y-auto text-sm"
 				>
 					<table className="table-auto w-full">
 						<thead className="border-b bg-gray-100 sticky top-0">
@@ -175,8 +182,7 @@ const PurchaseFinalPage: React.FC = () => {
 					<div className="flex justify-between font-bold">
 						<span>할인금액</span>
 						<span className="text-active-color">
-							-{(couponCount * 3000 + ordererInfo.remainMoney).toLocaleString()}{" "}
-							원
+							-{(couponCount * 3000 + support).toLocaleString()} 원
 						</span>
 					</div>
 					<div className="ms-10">
@@ -184,18 +190,14 @@ const PurchaseFinalPage: React.FC = () => {
 							쿠폰할인 : {(couponCount * 3000).toLocaleString()} 원
 						</p>
 						<p className="text-sm">
-							회사지원금 : {ordererInfo.remainMoney.toLocaleString()} 원
+							회사지원금 : {support.toLocaleString()} 원
 						</p>
 					</div>
 				</div>
 				<div className="flex justify-between font-bold">
 					<span>본인부담금</span>
 					<span className="text-blue-700">
-						{(
-							totalPrice -
-							(couponCount * 3000 + ordererInfo.remainMoney)
-						).toLocaleString()}{" "}
-						원
+						{(totalPrice - (couponCount * 3000 + support)).toLocaleString()} 원
 					</span>
 				</div>
 			</div>
@@ -205,14 +207,14 @@ const PurchaseFinalPage: React.FC = () => {
 					className="bg-bg-color text-white text-xl w-1/4 py-5"
 					text="취소"
 					onClick={() => {
-						navigate("/purchase");
+						navigate("/payment");
 					}}
 				/>
 				<Button
 					className="bg-active-color text-white text-xl w-1/4 py-5"
 					text="결제"
 					onClick={() => {
-						handlePurchase();
+						handlePayment();
 					}}
 				/>
 			</div>
@@ -221,4 +223,4 @@ const PurchaseFinalPage: React.FC = () => {
 	);
 };
 
-export default PurchaseFinalPage;
+export default PaymentFinalPage;

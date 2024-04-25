@@ -2,11 +2,11 @@ import { Route, Routes } from "react-router-dom";
 import { useAutoReset } from "./hooks/useAutoReset";
 import EntryPage from "./pages/entryPage";
 import MainPage from "./pages/mainPage";
-import PurchasePage from "./pages/purchasePage";
-import PurchaseTagPage from "./pages/purchaseTagPage";
-import PurchaseFacePage from "./pages/purchaseFacePage";
-import PurchaseLoginPage from "./pages/purchaseLoginPage";
-import PurchaseFinalPage from "./pages/purchaseFinalPage";
+import PaymentPage from "./pages/paymentPage";
+import PaymentTagPage from "./pages/paymentTagPage";
+import PaymentFacePage from "./pages/paymentFacePage";
+import PaymentLoginPage from "./pages/paymentLoginPage";
+import PaymentFinalPage from "./pages/paymentFinalPage";
 import GamePage from "./pages/gamePage";
 
 function App() {
@@ -16,11 +16,11 @@ function App() {
 		<Routes>
 			<Route path="/" element={<EntryPage />}></Route>
 			<Route path="/main" element={<MainPage />}></Route>
-			<Route path="/purchase" element={<PurchasePage />}></Route>
-			<Route path="/purchase-tag" element={<PurchaseTagPage />}></Route>
-			<Route path="/purchase-face" element={<PurchaseFacePage />}></Route>
-			<Route path="/purchase-login" element={<PurchaseLoginPage />}></Route>
-			<Route path="/purchase-final" element={<PurchaseFinalPage />}></Route>
+			<Route path="/payment" element={<PaymentPage />}></Route>
+			<Route path="/payment-tag" element={<PaymentTagPage />}></Route>
+			<Route path="/payment-face" element={<PaymentFacePage />}></Route>
+			<Route path="/payment-login" element={<PaymentLoginPage />}></Route>
+			<Route path="/payment-final" element={<PaymentFinalPage />}></Route>
 			<Route path="/game" element={<GamePage />}></Route>
 		</Routes>
 	);
