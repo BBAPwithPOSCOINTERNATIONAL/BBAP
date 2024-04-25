@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import {
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import poscoimg from "../../assets/posco.png";
-import EmployeeSearch from "../../components/filter";
-import Approve from "../../components/approval";
+import EmployeeSearch from "../../components/admin/filter";
+import Approve from "../../components/admin/approval";
 
 interface AdminNavProps {
   adminId: number;
 }
 
 const today = new Date();
-const year = today
-  .getFullYear()
-  .toString()
-  .slice(-2);
+const year = today.getFullYear().toString().slice(-2);
 const month = today.getMonth();
 
 const LeftNav = styled.div`
@@ -55,23 +49,17 @@ const RightSide = styled.div`
 `;
 // const Inputtag = styled.input``;
 
-const AdminNav: React.FC<AdminNavProps> = ({
-  adminId = "1053713",
-}) => {
+const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
   const history = useNavigate();
   const location = useLocation();
-  const query = new URLSearchParams(
-    location.search
-  );
+  const query = new URLSearchParams(location.search);
   const tabParam = query.get("tab");
 
-  const [activeTab, setActiveTab] = useState<
-    "조회" | "결재"
-  >(tabParam === "결재" ? "결재" : "조회");
+  const [activeTab, setActiveTab] = useState<"조회" | "결재">(
+    tabParam === "결재" ? "결재" : "조회"
+  );
 
-  const handleTabClick = (
-    tab: "조회" | "결재"
-  ) => {
+  const handleTabClick = (tab: "조회" | "결재") => {
     setActiveTab(tab);
   };
 
@@ -119,11 +107,7 @@ const AdminNav: React.FC<AdminNavProps> = ({
         </div>
       </LeftNav>
       <RightSide>
-        <img
-          src={poscoimg}
-          alt="Login Logo"
-          className="fixed top-3 right-4"
-        />
+        <img src={poscoimg} alt="Login Logo" className="fixed top-3 right-4" />
         {/* 조회 탭 눌렀을 경우 */}
         {activeTab === "조회" && (
           <div
@@ -132,12 +116,8 @@ const AdminNav: React.FC<AdminNavProps> = ({
               marginTop: "1%",
             }}
           >
-            <div className=" font-hyemin-bold text-[40px] mb-3">
-              조회👀
-            </div>
-            <div className=" font-hyemin-bold text-[30px]">
-              사원검색
-            </div>
+            <div className=" font-hyemin-bold text-[40px] mb-3">조회👀</div>
+            <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold ">
               {/* <Inputtag
                 className=" font-hyemin-bold mt-2 text-[17px] w-40 focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md  pl-3 ring-2 ring-slate-300 shadow-sm"
@@ -161,9 +141,7 @@ const AdminNav: React.FC<AdminNavProps> = ({
             <div className=" font-hyemin-bold text-[40px]  mb-3">
               {year}년 {month}월 결재📄
             </div>
-            <div className=" font-hyemin-bold text-[30px]">
-              사원검색
-            </div>
+            <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold">
               <Approve />
             </div>

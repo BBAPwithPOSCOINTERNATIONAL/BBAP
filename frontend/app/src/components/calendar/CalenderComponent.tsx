@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  addDays,
-  addMonths,
-  subMonths,
-  isSameMonth,
-  isSameDay,
-} from "date-fns";
+import { Icon } from "@iconify/react";
+import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
+import { isSameMonth, isSameDay, addDays, parse } from "date-fns";
+
+import group from "../../assets/group.png";
+import back from "../../assets/button/back.png";
+import next from "../../assets/button/next.png";
+import "./_style.scss";
+
+import { transparentize } from "polished";
+const green = "#179F0B";
+const blue = "#0214BA";
+
+const transparentColor = transparentize(0.6, green);
 
 interface RenderHeaderProps {
   currentMonth: Date;
@@ -22,111 +25,126 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
   currentMonth,
   prevMonth,
   nextMonth,
-}) => {
+}: RenderHeaderProps) => {
   return (
-    <div style={{}}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          fontSize: "30px",
-        }}
-      >
-        <div>
+    <div
+      className="font-hyemin-bold"
+      style={{
+        display: "flex",
+        justifyContent: "flex-start",
+        padding: "1rem",
+        width: "100vw",
+        height: "20vh",
+        backgroundColor: "#EFF7FF",
+        boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
+        position: "fixed",
+        gap: "0.7rem",
+      }}
+    >
+      <div>
+        <div
+          style={{
+            display: "flex",
+            // flexDirection: "row",
+            gap: "0.7rem",
+            marginBottom: "0.3rem",
+            fontSize: "25px",
+            alignItems: "center",
+          }}
+        >
           <img
-            src="../../assets/button/back.png"
-            style={{ width: "30px" }}
-            alt="Previous Month"
+            src={back}
             onClick={prevMonth}
+            style={{ height: "1.3rem", paddingLeft: "0.5rem" }}
           />
-        </div>
-        <div className="col col-start">
-          <span className="text">
-            <span className="text month">
-              {format(currentMonth, "yyyy")}년 {format(currentMonth, "M")}월
+          <div>
+            <span className="text">
+              <span className="text month">
+                {format(currentMonth, "yyyy")}년
+              </span>
+              {"  "}
+              {format(currentMonth, "M")}월
             </span>
-          </span>
+          </div>
+          <img src={next} onClick={nextMonth} style={{ height: "1.3rem" }} />
         </div>
-        <div className="col col-end">
-          <img
-            src="../button/next.png"
-            alt="Next Month"
-            style={{ width: "30px" }}
-            onClick={nextMonth}
-          />
+        <div style={{ paddingLeft: "0.5rem", fontSize: "18px" }}>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+            <div style={{ width: "26vw" }}>총 결제금액</div>
+            <div>300,000 원</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+            <div style={{ width: "26vw" }}>총 지원금</div>
+            <div style={{ color: "green" }}>26,000 원</div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+            <div style={{ width: "26vw" }}>총 본인부담금</div>
+            <div style={{ color: "blue" }}>14,000 원</div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const RenderDays: React.FC = () => {
-  const days: JSX.Element[] = [];
-  const date: string[] = [
-    "월요일",
-    "화요일",
-    "수요일",
-    "목요일",
-    "금요일",
-    "토요일",
-    "일요일",
-  ];
+const RenderDays = () => {
+  const days = [];
+  const date = ["일", "월", "화", "수", "목", "금", "토"];
 
   for (let i = 0; i < 7; i++) {
     days.push(
-      <div
-        className="col"
-        key={i}
-        style={{ marginLeft: "0.1rem", marginRight: "0.1rem" }}
-      >
+      <div className="col" key={i} style={{}}>
         {date[i]}
       </div>
     );
   }
 
   return (
-    <div className="days row" style={{ display: "flex", marginLeft: "1px" }}>
-      {days}
+    // 일월화수목금토 나열스타일링
+    <div
+      className="font-hyemin-bold"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        width: "90vw",
+        marginTop: "0.5rem",
+        marginLeft: "5vw",
+        marginRight: "5vw",
+        fontSize: "18px",
+      }}
+    >
+      {days.map((day, index) => (
+        <div className="col" key={index}>
+          {day}
+        </div>
+      ))}
     </div>
   );
 };
 
-interface RenderCellsProps {
-  currentMonth: Date;
-  selectedDate: Date;
-  onDateClick: (day: Date) => void;
-}
+const isToday = (date: Date): boolean => {
+  const today = new Date();
+  return isSameDay(date, today);
+};
 
-const RenderCells: React.FC<RenderCellsProps> = ({
-  currentMonth,
-  selectedDate,
-  onDateClick,
-}) => {
+const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
   const endDate = endOfWeek(monthEnd);
 
-  const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
-    const target = event.target as HTMLDivElement;
-    target.classList.add("hovered");
-  };
+  const totalWeeks = differenceInWeeks(endDate, startDate); // 총 주 수 계산
+  const rowHeight = totalWeeks === 5 ? "10vh" : "12vh"; // 주 수에 따라 높이 지정
 
-  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
-    const target = event.target as HTMLDivElement;
-    target.classList.remove("hovered");
-  };
-
-  const rows: JSX.Element[] = [];
-  let days: JSX.Element[] = [];
+  const rows = [];
+  let days = [];
   let day = startDate;
   let formattedDate = "";
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
-      const cloneDay = addDays(day, 1);
-      formattedDate = format(cloneDay, "d");
+      formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
+      const cloneDay = day;
       days.push(
         <div
           className={`col cell ${
@@ -137,52 +155,97 @@ const RenderCells: React.FC<RenderCellsProps> = ({
               : format(currentMonth, "M") !== format(day, "M")
               ? "not-valid"
               : "valid"
-          }`}
-          key={day.getTime()} // Ensure unique key
-          onClick={() => onDateClick(cloneDay)} // Pass the date object directly
+          } ${isToday(day) ? "today" : ""}`}
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            flex: 1,
+          }}
+          key={day}
+          onClick={() => onDateClick(parse(cloneDay, "yyyy-MM-dd", new Date()))}
         >
           <span
-            className={
+            className={`
+            ${
               format(currentMonth, "M") !== format(day, "M")
                 ? "text not-valid"
                 : ""
             }
+            border border-black // 선 스타일링
+            bg-blue-100 // 배경색 
+          `}
+            // 일자별 숫자나오는칸 스타일링
+            style={{
+              borderLeft: "2px solid rgb(38, 28, 111)",
+              borderRight: "2px solid rgb(38, 28, 111)",
+              borderTop: "2px solid rgb(38, 28, 111)",
+              height: "1.3rem",
+              fontSize: "15px",
+              justifyContent: "center",
+              paddingLeft: "1rem",
+            }}
           >
             {formattedDate}
           </span>
+          {/* 일자별 지원금과 본인부담금 나오는 칸 스타일링 */}
+          <div
+            className="
+             hover:bg-blue-200"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "90%",
+              width: "100%",
+              justifyContent: "center",
+              marginRight: "0.5rem",
+              marginBottom: "0.5rem",
+              border: "2px solid rgb(38, 28, 111)",
+              overflow: "auto",
+              alignItems: "center",
+            }}
+          >
+            {/* 지원금 및 본인 부담금 */}
+            <div style={{ color: "green" }}>5,000</div>
+            <div style={{ color: "blue" }}>2,000</div>
+          </div>
         </div>
       );
       day = addDays(day, 1);
     }
     rows.push(
-      <div className="row" key={day.getTime()}>
+      // 달력전체
+      <div
+        style={{
+          height: rowHeight,
+          display: "flex",
+          flexDirection: "row",
+          marginLeft: "1vw",
+          marginRight: "1vw",
+        }}
+        key={day}
+      >
         {days}
       </div>
     );
     days = [];
   }
   return (
-    <div className="body">
-      {React.Children.map(rows, (row, rowIndex) => (
-        <div className="row" key={rowIndex}>
-          {React.Children.map(row.props.children, (cell, cellIndex) => (
-            <div
-              className={cell.props.className}
-              key={cellIndex}
-              onClick={cell.props.onClick}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              {cell.props.children}
-            </div>
-          ))}
-        </div>
-      ))}
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
+      {rows}
     </div>
   );
 };
 
-export const CalendarComponent: React.FC = () => {
+export const CalendarComponent = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -196,11 +259,27 @@ export const CalendarComponent: React.FC = () => {
     setSelectedDate(day);
   };
   return (
-    <div className="calendar">
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "start",
+      }}
+    >
       <RenderHeader
         currentMonth={currentMonth}
         prevMonth={prevMonth}
         nextMonth={nextMonth}
+      />
+      <img
+        src={group}
+        alt="지원금 및 본인부담금"
+        style={{
+          paddingTop: "22vh",
+          marginLeft: "1rem",
+        }}
       />
       <RenderDays />
       <RenderCells
@@ -211,4 +290,5 @@ export const CalendarComponent: React.FC = () => {
     </div>
   );
 };
+
 export default CalendarComponent;
