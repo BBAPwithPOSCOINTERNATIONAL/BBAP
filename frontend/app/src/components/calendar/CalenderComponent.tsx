@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Icon } from "@iconify/react";
 import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 import { isSameMonth, isSameDay, addDays, parse } from "date-fns";
@@ -9,12 +8,7 @@ import back from "../../assets/button/back.png";
 import next from "../../assets/button/next.png";
 import "./_style.scss";
 
-import { transparentize } from "polished";
-const green = "#179F0B";
-const blue = "#0214BA";
-
-const transparentColor = transparentize(0.6, green);
-
+import { useNavigate } from "react-router-dom";
 interface RenderHeaderProps {
   currentMonth: Date;
   prevMonth: () => void;
@@ -127,7 +121,15 @@ const isToday = (date: Date): boolean => {
   return isSameDay(date, today);
 };
 
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+const RenderCells = ({
+  currentMonth,
+  selectedDate,
+  onDateClick,
+}: {
+  currentMonth: Date;
+  selectedDate: Date;
+  onDateClick: (date: Date) => void;
+}) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -135,6 +137,8 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
 
   const totalWeeks = differenceInWeeks(endDate, startDate); // 총 주 수 계산
   const rowHeight = totalWeeks === 5 ? "10vh" : "12vh"; // 주 수에 따라 높이 지정
+
+  const navigate = useNavigate();
 
   const rows = [];
   let days = [];
@@ -147,6 +151,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
       const cloneDay = day;
       days.push(
         <div
+          key={day.toISOString()}
           className={`col cell ${
             !isSameMonth(day, monthStart)
               ? "disabled"
@@ -163,8 +168,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
             width: "100%",
             flex: 1,
           }}
-          key={day}
-          onClick={() => onDateClick(parse(cloneDay, "yyyy-MM-dd", new Date()))}
+          onClick={() => navigate("/receiptDetail")}
         >
           <span
             className={`
@@ -178,9 +182,9 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
           `}
             // 일자별 숫자나오는칸 스타일링
             style={{
-              borderLeft: "2px solid rgb(38, 28, 111)",
-              borderRight: "2px solid rgb(38, 28, 111)",
-              borderTop: "2px solid rgb(38, 28, 111)",
+              borderLeft: "2px solid rgb(105, 103, 126)",
+              borderRight: "2px solid rgb(105, 103, 126)",
+              borderTop: "2px solid rgb(105, 103, 126)",
               height: "1.3rem",
               fontSize: "15px",
               justifyContent: "center",
@@ -201,12 +205,11 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
               justifyContent: "center",
               marginRight: "0.5rem",
               marginBottom: "0.5rem",
-              border: "2px solid rgb(38, 28, 111)",
+              border: "2px solid rgb(105, 103, 126)",
               overflow: "auto",
               alignItems: "center",
             }}
           >
-            {/* 지원금 및 본인 부담금 */}
             <div style={{ color: "green" }}>5,000</div>
             <div style={{ color: "blue" }}>2,000</div>
           </div>
@@ -217,6 +220,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
     rows.push(
       // 달력전체
       <div
+        key={format(day, "yyyy-MM-dd")}
         style={{
           height: rowHeight,
           display: "flex",
@@ -224,7 +228,6 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
           marginLeft: "1vw",
           marginRight: "1vw",
         }}
-        key={day}
       >
         {days}
       </div>
@@ -248,6 +251,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
 export const CalendarComponent = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const navigate = useNavigate();
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
@@ -256,6 +260,8 @@ export const CalendarComponent = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
   const onDateClick = (day: Date) => {
+    console.log("클릭");
+    navigate("/receiptDetail");
     setSelectedDate(day);
   };
   return (

@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import poscoimg from "../../assets/posco.png";
 import EmployeeSubsidy from "../../components/admin/employeesubsidy";
-import EmployeeSearch from "../../components/admin/filter";
 
 interface AdminNavProps {
   adminId: number;

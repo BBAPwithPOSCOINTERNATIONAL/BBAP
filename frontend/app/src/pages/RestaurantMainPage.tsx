@@ -184,7 +184,7 @@ function RestaurantMainPage() {
         </div>
         <hr className="h-2  mx-auto w-11/12" />
       </div>
-      <div className="mx-1">
+      <div className="mx-1 flex flex-wrap justify-start">
         {mealTypes.map((type) => (
           <button
             key={type}
@@ -192,7 +192,13 @@ function RestaurantMainPage() {
               setMealType(type);
               fetchMenus(selectedDay);
             }}
-            className={`m-2 font-hyemin-bold py-2 px-2 rounded ${
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            className={`m-2 font-hyemin-bold py-2 px-2 rounded-full w-16 h-8 ${
               mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
             }`}
           >
@@ -215,7 +221,6 @@ function RestaurantMainPage() {
             </div>
             <hr className="h-1 bg-[#346186]" />
             <div className="flex-grow p-4 md:p-5">
-              {" "}
               {menu.imageUrl && (
                 <img
                   src={menu.imageUrl}
