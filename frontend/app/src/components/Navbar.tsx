@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiBell, FiHome, FiArrowLeft } from "react-icons/fi";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   const location = useLocation();
@@ -19,26 +19,36 @@ const NavBar: React.FC = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <div
         ref={navBarRef}
-        className="fixed top-0 left-0 right-0 z-50 bg-primary-color text-black p-4 flex justify-between items-center"
+        className="fixed top-0 left-0 right-0 z-50 bg-primary-color text-black p-4 flex justify-between items-center overflow-hidden"
       >
         <div className="text-left flex items-center space-x-4">
           {/* MainPage가 아닐 때 뒤로가기와 홈 버튼 표시 */}
           {!isMainPage && (
             <>
-              <Link to="/main">
+              <button onClick={goBack}>
                 <FiArrowLeft className="text-2xl cursor-pointer text-white" />
-              </Link>
+              </button>
               <Link to="/main">
                 <FiHome className="text-2xl cursor-pointer text-white" />
               </Link>
             </>
           )}
         </div>
-        <div className="text-3xl font-hyemin-bold text-white">BBAP</div>
+        <div
+          className="text-3xl font-hyemin-bold text-white"
+          style={{ transform: "translateX(-20px)" }}
+        >
+          BBAP
+        </div>
 
         <div className="text-right">
           <FiBell className="text-2xl cursor-pointer text-white" />

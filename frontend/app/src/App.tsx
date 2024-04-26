@@ -15,6 +15,9 @@ import CafeMainPage from "./pages/cafe/CafeMainPage";
 import RestaurantMainPage from "./pages/RestaurantMainPage";
 import MyReceiptPage from "./pages/MyReceiptPage";
 import MyProfilePage from "./pages/users/MyProfilePage";
+import TogetherOrderPage from "./pages/cafe/TogetherOrderPage";
+import MenuDetailPage from "./pages/cafe/MenuDetailPage";
+import CartPage from "./pages/cafe/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +55,18 @@ const router = createBrowserRouter([
   {
     path: "receipt",
     element: <MyReceiptPage />,
+  },
+  {
+    path: "together",
+    element: <TogetherOrderPage />,
+  },
+  {
+    path: "detail",
+    element: <MenuDetailPage />,
+  },
+  {
+    path: "cart",
+    element: <CartPage />,
   },
 ]);
 

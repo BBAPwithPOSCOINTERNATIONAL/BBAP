@@ -1,0 +1,228 @@
+import React, { useEffect, useState } from "react";
+import useCartStore from "../../store/cartStore";
+import Button from "../../components/button";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { useNavigate } from "react-router-dom";
+import Coupon from "../../components/cafe/Coupon";
+
+function CartPage() {
+  const navigate = useNavigate();
+  const [couponCount, setCouponCount] = useState<number>(0);
+  const [selectedTime, setSelectedTime] = useState<number>(0);
+  const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
+
+  // useCartStore에서 cartList를 추출
+  const { cartList, removeFromCart, totalPrice, setCartCount } = useCartStore(
+    (state) => ({
+      cartList: state.cartList,
+      removeFromCart: state.removeFromCart,
+      totalPrice: state.totalPrice,
+      setCartCount: state.setCartCount,
+    })
+  );
+
+  useEffect(() => {
+    if (totalPrice - ((couponCount + 1) * 3000 + ordererInfo.remainMoney) < 0) {
+      setIsAddAvailable(false);
+    } else {
+      setIsAddAvailable(true);
+    }
+  }, [couponCount]);
+
+  const ordererInfo = {
+    name: "젠킨스",
+    remainMoney: 3000,
+    coupon: 10,
+  };
+
+  // 장바구니 아이템을 삭제하는 함수
+  const handleRemove = (index: number) => {
+    removeFromCart(index);
+  };
+
+  const handleDecrease = (index: number) => {
+    const item = cartList[index];
+    if (item.count > 1) {
+      setCartCount(index, -1);
+    }
+  };
+
+  const support =
+    totalPrice <= ordererInfo.remainMoney
+      ? totalPrice
+      : ordererInfo.remainMoney;
+
+  const handleIncrease = (index: number) => {
+    const item = cartList[index];
+    if (item.count < 99) {
+      setCartCount(index, 1);
+    }
+  };
+
+  const handleSelectTime = (time: number) => {
+    // 선택된 시간에 따라 처리하는 로직 추가
+    setSelectedTime(time);
+  };
+
+  const handleAddMoreItems = () => {
+    navigate(-1);
+  };
+
+  return (
+    <div>
+      <h1 className="m-2 text-center text-3xl font-hyemin-bold">
+        카페이름 나올 예정
+      </h1>
+      <hr className="h-1 border-1 bg-black mb-2" />
+      <h1 className="m-3 text-2xl font-hyemin-bold">주문목록</h1>
+      <ul className="list-none p-0 m-3">
+        {cartList.map((item, index) => (
+          <li key={index} className="flex justify-between items-center mb-2.5">
+            <div className="flex-1">
+              <span className="text-base font-bold">{item.name}</span>
+              {item.options.length > 0 && (
+                <p className="text-sm text-gray-500 mt-1">
+                  옵션: {item.options.join(", ")}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center">
+              <div className="my-3 flex items-center justify-center text-base font-bold space-x-1">
+                <div onClick={() => handleDecrease(index)}>
+                  <RemoveCircleOutlineIcon
+                    sx={{
+                      fontSize: 25,
+                      color: `${item.count === 1 ? "lightGray" : "black"}`,
+                    }}
+                  />
+                </div>
+                <p>{item.count}</p>
+                <div onClick={() => handleIncrease(index)}>
+                  <AddCircleOutlineIcon
+                    sx={{
+                      fontSize: 25,
+                      color: `${item.count === 99 ? "lightGray" : "black"}`,
+                    }}
+                  />
+                </div>
+              </div>
+              <span className="m-2 font-bold">
+                {item.price.toLocaleString()}원
+              </span>
+            </div>
+            <Button
+              onClick={() => handleRemove(index)}
+              text="X"
+              className="mr-2"
+            />
+          </li>
+        ))}
+      </ul>
+      {cartList.length === 0 && <p>장바구니가 비어 있습니다.</p>}
+      <div className="flex justify-center">
+        <Button
+          onClick={handleAddMoreItems}
+          text="🛒 메뉴 더담기"
+          className="m-2 items-center font-hyemin-bold"
+        />
+      </div>
+      <hr className="h-2 bg-[#92A9DB]" />
+      <h1 className="m-3 text-2xl font-hyemin-bold">예상 수령시간</h1>
+      <div className="flex flex-col items-center">
+        <div className="flex justify-center">
+          <button
+            className={`m-2 px-2 py-2 border-2 rounded-lg ${
+              selectedTime === 0
+                ? "bg-gray-500 text-white"
+                : "bg-white text-gray-500"
+            }`}
+            onClick={() => handleSelectTime(0)}
+          >
+            지금
+          </button>
+          <button
+            className={`m-2 px-2 py-2 border-2 rounded-lg ${
+              selectedTime === 5
+                ? "bg-gray-500 text-white"
+                : "bg-white text-gray-500"
+            }`}
+            onClick={() => handleSelectTime(5)}
+          >
+            +5분
+          </button>
+          <button
+            className={`m-2 px-2 py-2 border-2 rounded-lg ${
+              selectedTime === 10
+                ? "bg-gray-500 text-white"
+                : "bg-white text-gray-500"
+            }`}
+            onClick={() => handleSelectTime(10)}
+          >
+            +10분
+          </button>
+          <button
+            className={`m-2 px-2 py-2 border-2 rounded-lg ${
+              selectedTime === 20
+                ? "bg-gray-500 text-white"
+                : "bg-white text-gray-500"
+            }`}
+            onClick={() => handleSelectTime(20)}
+          >
+            +20분
+          </button>
+          <button
+            className={`m-2 px-2 py-2 border-2 rounded-lg ${
+              selectedTime === 30
+                ? "bg-gray-500 text-white"
+                : "bg-white text-gray-500"
+            }`}
+            onClick={() => handleSelectTime(30)}
+          >
+            +30분
+          </button>
+        </div>
+      </div>
+
+      <hr className="h-2 bg-[#92A9DB]" />
+
+      <Coupon
+        allCouponCount={ordererInfo.coupon}
+        setCouponCount={setCouponCount}
+        isAddAvailable={isAddAvailable}
+      />
+
+      <hr className="h-2 bg-[#92A9DB]" />
+      <div className="text-lg w-2/3 mx-auto space-y-5">
+        <div className="flex justify-between font-bold">
+          <span>총 주문금액</span>
+          <span>{totalPrice.toLocaleString()} 원</span>
+        </div>
+        <div>
+          <div className="flex justify-between font-bold">
+            <span>할인금액</span>
+            <span className="text-active-color">
+              -{(couponCount * 3000 + support).toLocaleString()} 원
+            </span>
+          </div>
+          <div className="ms-10">
+            <p className="text-sm">
+              쿠폰할인 : {(couponCount * 3000).toLocaleString()} 원
+            </p>
+            <p className="text-sm">
+              회사지원금 : {support.toLocaleString()} 원
+            </p>
+          </div>
+        </div>
+        <div className="flex justify-between font-bold">
+          <span>본인부담금</span>
+          <span className="text-blue-700">
+            {(totalPrice - (couponCount * 3000 + support)).toLocaleString()} 원
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default CartPage;

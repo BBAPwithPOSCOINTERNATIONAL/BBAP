@@ -26,9 +26,8 @@ function BottomTabBar() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {" "}
-      <div className="flex-grow">
+    <div>
+      <div>
         <Outlet /> {/* 메인 콘텐츠 */}
       </div>
       <footer className="bg-white text-center p-4 fixed inset-x-0 bottom-0 border-t border-gray-300">
