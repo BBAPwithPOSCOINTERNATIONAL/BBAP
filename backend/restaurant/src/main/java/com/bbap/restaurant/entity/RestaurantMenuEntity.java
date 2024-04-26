@@ -44,7 +44,7 @@ public class RestaurantMenuEntity {
 	@Column(name = "menu_name", nullable = false, length = 30)
 	private String menuName;
 
-	@Column(name = "menu_image", length = 50)
+	@Column(name = "menu_image", length = 255)
 	private String menuImage;
 
 	@Column(name = "menu_detail", columnDefinition = "TEXT")
