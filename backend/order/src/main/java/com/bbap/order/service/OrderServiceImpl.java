@@ -1,8 +1,12 @@
 package com.bbap.order.service;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
+
+	private final RedisTemplate<String, String> redisTemplate;
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> order(PayRequestDto dto) {
 		List<OrderMenu> orderMenus = getOrderMenus(dto);
@@ -41,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
 		//레디스에서 방 번호 가져오기
-		int orderNum = 1;
+		Long orderNum = incrementOrderNumber(dto.getCafeId());
 		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
 		return DataResponseDto.of(payResponseDto);
 	}
@@ -68,6 +74,12 @@ public class OrderServiceImpl implements OrderService {
 			orderMenus.add(new OrderMenu(menuOptional.getName(), menu.getCnt(), price,options));
 		}
 		return orderMenus;
+	}
+
+	private Long incrementOrderNumber(String cafeId) {
+		String key = "orderNum:" + cafeId + ":" + LocalDate.now().toString();
+		redisTemplate.expire(key, Duration.ofDays(1));
+		return redisTemplate.opsForValue().increment(key);
 	}
 
 }
