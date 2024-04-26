@@ -17,5 +17,5 @@ public class OptionRequestDto {
 	private String optionName;
 	private String type;
 	private boolean required;
-	private List<Choice> choiceOptions;
+	private List<ChoiceRequestDto> choiceOptions;
 }
