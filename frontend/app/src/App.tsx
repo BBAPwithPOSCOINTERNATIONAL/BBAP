@@ -25,15 +25,15 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/admin",
+    path: "admin",
     element: <AdminLoginPage />,
   },
   {
-    path: "/admininquiry",
+    path: "admininquiry",
     element: <AdminInquiryPage />,
   },
   {
-    path: "/employee/:employeeId",
+    path: "employee/:employeeId",
     element: <PeriodInquiryPage />,
   },
   {
