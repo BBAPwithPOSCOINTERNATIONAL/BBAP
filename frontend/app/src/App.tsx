@@ -1,7 +1,4 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
@@ -18,6 +15,7 @@ import MyProfilePage from "./pages/users/MyProfilePage";
 import TogetherOrderPage from "./pages/cafe/TogetherOrderPage";
 import MenuDetailPage from "./pages/cafe/MenuDetailPage";
 import CartPage from "./pages/cafe/CartPage";
+import RoulettePage from "./pages/cafe/RoulettePage";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +65,10 @@ const router = createBrowserRouter([
   {
     path: "cart",
     element: <CartPage />,
+  },
+  {
+    path: "roulette",
+    element: <RoulettePage />,
   },
 ]);
 

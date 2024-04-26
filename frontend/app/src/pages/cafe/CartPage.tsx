@@ -5,12 +5,24 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router-dom";
 import Coupon from "../../components/cafe/Coupon";
+import Modal from "../../components/cafe/Modal";
 
 function CartPage() {
   const navigate = useNavigate();
   const [couponCount, setCouponCount] = useState<number>(0);
   const [selectedTime, setSelectedTime] = useState<number>(0);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
+
+  // 모달
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   // useCartStore에서 cartList를 추출
   const { cartList, removeFromCart, totalPrice, setCartCount } = useCartStore(
@@ -22,19 +34,19 @@ function CartPage() {
     })
   );
 
+  const ordererInfo = {
+    name: "젠킨스",
+    remainMoney: 3000,
+    coupon: 10,
+  };
+
   useEffect(() => {
     if (totalPrice - ((couponCount + 1) * 3000 + ordererInfo.remainMoney) < 0) {
       setIsAddAvailable(false);
     } else {
       setIsAddAvailable(true);
     }
-  }, [couponCount]);
-
-  const ordererInfo = {
-    name: "젠킨스",
-    remainMoney: 3000,
-    coupon: 10,
-  };
+  }, [couponCount, totalPrice, ordererInfo.remainMoney]);
 
   // 장바구니 아이템을 삭제하는 함수
   const handleRemove = (index: number) => {
@@ -71,9 +83,16 @@ function CartPage() {
 
   return (
     <div>
-      <h1 className="m-2 text-center text-3xl font-hyemin-bold">
-        카페이름 나올 예정
-      </h1>
+      <div className="flex items-center justify-between m-1">
+        <button onClick={handleOpenModal} className="text-4xl ml-2">
+          x
+        </button>
+        <h1 className="text-center text-3xl font-hyemin-bold flex-1">
+          카페이름 나올 예정
+        </h1>
+        <div></div>{" "}
+        {/* 이 div는 h1을 중앙에 위치시키기 위한 더미 요소입니다. */}
+      </div>
       <hr className="h-1 border-1 bg-black mb-2" />
       <h1 className="m-3 text-2xl font-hyemin-bold">주문목록</h1>
       <ul className="list-none p-0 m-3">
@@ -127,7 +146,7 @@ function CartPage() {
           className="m-2 items-center font-hyemin-bold"
         />
       </div>
-      <hr className="h-2 bg-[#92A9DB]" />
+      <hr className="h-2 bg-[#E3E9F6]" />
       <h1 className="m-3 text-2xl font-hyemin-bold">예상 수령시간</h1>
       <div className="flex flex-col items-center">
         <div className="flex justify-center">
@@ -184,7 +203,7 @@ function CartPage() {
         </div>
       </div>
 
-      <hr className="h-2 bg-[#92A9DB]" />
+      <hr className="h-2 bg-[#E3E9F6]" />
 
       <Coupon
         allCouponCount={ordererInfo.coupon}
@@ -192,35 +211,48 @@ function CartPage() {
         isAddAvailable={isAddAvailable}
       />
 
-      <hr className="h-2 bg-[#92A9DB]" />
-      <div className="text-lg w-2/3 mx-auto space-y-5">
+      <hr className="h-2 bg-[#E3E9F6] my-4" />
+      <div className="text-2xl w-11/12 mx-auto space-y-2 font-hyemin-bold">
         <div className="flex justify-between font-bold">
           <span>총 주문금액</span>
           <span>{totalPrice.toLocaleString()} 원</span>
         </div>
         <div>
-          <div className="flex justify-between font-bold">
+          <div className="flex justify-between font-bold text-[#179F0B]">
             <span>할인금액</span>
-            <span className="text-active-color">
-              -{(couponCount * 3000 + support).toLocaleString()} 원
-            </span>
+            <span>-{(couponCount * 3000 + support).toLocaleString()} 원</span>
           </div>
           <div className="ms-10">
-            <p className="text-sm">
-              쿠폰할인 : {(couponCount * 3000).toLocaleString()} 원
+            <p className="text-base text-[#179F0B]">
+              쿠폰할인 {(couponCount * 3000).toLocaleString()}
             </p>
-            <p className="text-sm">
-              회사지원금 : {support.toLocaleString()} 원
+            <p className="text-base text-[#179F0B]">
+              회사지원금 {support.toLocaleString()}
             </p>
           </div>
         </div>
-        <div className="flex justify-between font-bold">
+        <div className="flex justify-between font-bold text-blue-700">
           <span>본인부담금</span>
-          <span className="text-blue-700">
+          <span>
             {(totalPrice - (couponCount * 3000 + support)).toLocaleString()} 원
           </span>
         </div>
+
+        <hr className="bg-[#D2DBF0] h-0.5" />
+        <div className="text-sm text-center">
+          결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
+        </div>
+        <Button
+          onClick={() => console.log("결제결제")}
+          text="결제하기"
+          className="w-full text-3xl bg-primary-color text-white h-16"
+        />
       </div>
+      <Modal isOpen={showModal} onClose={handleCloseModal}>
+        <h2 className="text-xl font-bold">주문 취소</h2>
+        <p>정말로 장바구니를 비우고 주문을 </p>
+        <p>취소 하시겠습니까 ?</p>
+      </Modal>
     </div>
   );
 }
