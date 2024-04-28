@@ -30,6 +30,7 @@ const MainPage: React.FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		// TODO: /api/v1/cafes/kiosk/menus/{cafeId} 로 GET 요청해서 메뉴 정보 받기
 		setMenuData(cafeMenuData);
 	}, []);
 

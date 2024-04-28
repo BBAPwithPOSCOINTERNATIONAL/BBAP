@@ -8,6 +8,7 @@ import PaymentFacePage from "./pages/paymentFacePage";
 import PaymentLoginPage from "./pages/paymentLoginPage";
 import PaymentFinalPage from "./pages/paymentFinalPage";
 import GamePage from "./pages/gamePage";
+import RestaurantPage from "./pages/restaurantPage";
 
 function App() {
 	// 특정 시간 후, 초기 화면으로 돌아가는 훅
@@ -22,6 +23,7 @@ function App() {
 			<Route path="/payment-login" element={<PaymentLoginPage />}></Route>
 			<Route path="/payment-final" element={<PaymentFinalPage />}></Route>
 			<Route path="/game" element={<GamePage />}></Route>
+			<Route path="/restaurant" element={<RestaurantPage />}></Route>
 		</Routes>
 	);
 }
