@@ -4,6 +4,12 @@ COPY  . /app
 
 ENV PYTHONUNBUFFERED=1
 
+RUN apt-get update && apt-get install -y \
+    gcc \
+    default-libmysqlclient-dev \
+    libmariadb-dev-compat \
+    pkg-config
+
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 
@@ -24,4 +30,4 @@ EXPOSE 80
 
 WORKDIR /app
 
-CMD ["python", "./your_app.py"]
+CMD ["python", "./main.py"]
