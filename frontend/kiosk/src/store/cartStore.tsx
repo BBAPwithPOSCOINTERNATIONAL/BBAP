@@ -1,16 +1,11 @@
 import { create } from "zustand";
+import { CartItem } from "../types";
 
-interface MenuInfo {
-	name: string;
-	price: number;
-	count: number;
-	options: string[];
-}
 interface CartState {
 	totalPrice: number;
 	totalCount: number;
-	cartList: MenuInfo[];
-	addToCart: (menuInfo: MenuInfo) => void;
+	cartList: CartItem[];
+	addToCart: (menuInfo: CartItem) => void;
 	removeFromCart: (index: number) => void;
 	resetCart: () => void;
 	setCartCount: (index: number, number: number) => void;
@@ -20,28 +15,45 @@ const useCartStore = create<CartState>((set) => ({
 	totalPrice: 0,
 	totalCount: 0,
 	cartList: [],
-	addToCart: (menuInfo: MenuInfo) =>
+	addToCart: (menuInfo: CartItem) =>
 		set((state) => {
 			// 이름과 옵션 내용이 같은 menu가 cart에 존재하는지 확인 => 있으면 cartList 추가가 아니라 count만 늘리는 방식으로 add
-			const existingItemIndex = state.cartList.findIndex(
-				(item) =>
+			const existingItemIndex = state.cartList.findIndex((item) => {
+				const existingOptions = item.options.reduce((acc: string[], option) => {
+					option.choices.forEach((choice) => {
+						acc.push(choice.choice_name);
+					});
+					return acc;
+				}, []);
+				const inputOptions = menuInfo.options.reduce(
+					(acc: string[], option) => {
+						option.choices.forEach((choice) => {
+							acc.push(choice.choice_name);
+						});
+						return acc;
+					},
+					[]
+				);
+
+				return (
 					item.name === menuInfo.name &&
-					item.options.every((option) => menuInfo.options.includes(option))
-			);
+					existingOptions.sort().join(", ") === inputOptions.sort().join(", ")
+				);
+			});
 
 			if (existingItemIndex !== -1) {
 				const newCartList = [...state.cartList];
-				newCartList[existingItemIndex].count += menuInfo.count;
+				newCartList[existingItemIndex].cnt += menuInfo.cnt;
 				return {
 					cartList: newCartList,
-					totalPrice: state.totalPrice + menuInfo.count * menuInfo.price,
-					totalCount: state.totalCount + menuInfo.count,
+					totalPrice: state.totalPrice + menuInfo.cnt * menuInfo.price,
+					totalCount: state.totalCount + menuInfo.cnt,
 				};
 			} else {
 				return {
 					cartList: [...state.cartList, menuInfo],
-					totalPrice: state.totalPrice + menuInfo.count * menuInfo.price,
-					totalCount: state.totalCount + menuInfo.count,
+					totalPrice: state.totalPrice + menuInfo.cnt * menuInfo.price,
+					totalCount: state.totalCount + menuInfo.cnt,
 				};
 			}
 		}),
@@ -49,8 +61,8 @@ const useCartStore = create<CartState>((set) => ({
 		set((state) => {
 			const newCartList = [...state.cartList];
 			const removedItemPrice =
-				newCartList[index].price * newCartList[index].count;
-			const removedItemCount = newCartList[index].count;
+				newCartList[index].price * newCartList[index].cnt;
+			const removedItemCount = newCartList[index].cnt;
 			newCartList.splice(index, 1);
 			return {
 				cartList: newCartList,
@@ -61,7 +73,7 @@ const useCartStore = create<CartState>((set) => ({
 	setCartCount: (index, number) =>
 		set((state) => {
 			const newCartList = [...state.cartList];
-			newCartList[index].count += number;
+			newCartList[index].cnt += number;
 			return {
 				cartList: newCartList,
 				totalPrice: state.totalPrice + number * newCartList[index].price,

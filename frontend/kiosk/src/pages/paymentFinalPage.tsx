@@ -6,24 +6,24 @@ import useCartStore from "../store/cartStore";
 import Button from "../components/button";
 import Coupon from "../components/coupon";
 import ConfirmModal from "../components/confirmModal";
+import { CartItem } from "../types";
 
-interface MenuInfo {
-	name: string;
-	price: number;
-	count: number;
-	options: string[];
-}
-
-const OrderItem: React.FC<{ data: MenuInfo }> = ({ data }) => {
+const OrderItem: React.FC<{ data: CartItem }> = ({ data }) => {
+	const options = data.options.reduce((acc: string[], option) => {
+		option.choices.forEach((choice) => {
+			acc.push(choice.choice_name);
+		});
+		return acc;
+	}, []);
 	return (
 		<tr className="border-b">
 			<td className="px-4 py-2">
 				<p>{data.name}</p>
-				<p className="text-2xs">{data.options.join(", ")}</p>
+				<p className="text-2xs">{options.join(", ")}</p>
 			</td>
-			<td className="px-4 py-2 text-center">{data.count}</td>
+			<td className="px-4 py-2 text-center">{data.cnt}</td>
 			<td className="px-4 py-2 text-center">
-				{(data.price * data.count).toLocaleString()}
+				{(data.price * data.cnt).toLocaleString()}
 			</td>
 		</tr>
 	);
@@ -34,8 +34,7 @@ const PaymentFinalPage: React.FC = () => {
 	const [couponCount, setCouponCount] = useState<number>(0);
 	const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
 	const { openConfirmModal, isConfirmModalOpen } = useModalStore();
-	// const { cartList, totalPrice, resetCart } = useCartStore();
-	const { resetCart } = useCartStore();
+	const { cartList, totalPrice, resetCart } = useCartStore();
 
 	useEffect(() => {
 		if (totalPrice - ((couponCount + 1) * 3000 + ordererInfo.remainMoney) < 0) {
@@ -47,58 +46,60 @@ const PaymentFinalPage: React.FC = () => {
 
 	// 사원 정보 -> 이름, 남은 지원금, 해당 카페의 쿠폰 수
 	const ordererInfo = {
+		empId: "12312313",
 		name: "젠킨스",
 		remainMoney: 3000,
 		coupon: 10,
 	};
 
 	// 주문 목록
-	const cartList = [
-		{
-			name: "아메리카노",
-			price: 3500,
-			count: 2,
-			options: ["medium", "1샷 추가", "헤이즐넛시럽 추가"],
-		},
-		{
-			name: "딸기마카롱",
-			price: 1500,
-			count: 2,
-			options: [],
-		},
-		{
-			name: "오렌지에이드",
-			price: 4500,
-			count: 1,
-			options: ["large"],
-		},
-		{
-			name: "더치커피",
-			price: 3500,
-			count: 1,
-			options: ["small"],
-		},
-		{
-			name: "더치커피",
-			price: 3500,
-			count: 1,
-			options: ["small"],
-		},
-		{
-			name: "더치커피",
-			price: 3500,
-			count: 1,
-			options: ["small"],
-		},
-		{
-			name: "더치커피",
-			price: 3500,
-			count: 1,
-			options: ["small"],
-		},
-	];
+	// const cartList = [
+	// 	{
+	// 		name: "아메리카노",
+	// 		price: 3500,
+	// 		count: 2,
+	// 		options: ["medium", "1샷 추가", "헤이즐넛시럽 추가"],
+	// 	},
+	// 	{
+	// 		name: "딸기마카롱",
+	// 		price: 1500,
+	// 		count: 2,
+	// 		options: [],
+	// 	},
+	// 	{
+	// 		name: "오렌지에이드",
+	// 		price: 4500,
+	// 		count: 1,
+	// 		options: ["large"],
+	// 	},
+	// 	{
+	// 		name: "더치커피",
+	// 		price: 3500,
+	// 		count: 1,
+	// 		options: ["small"],
+	// 	},
+	// 	{
+	// 		name: "더치커피",
+	// 		price: 3500,
+	// 		count: 1,
+	// 		options: ["small"],
+	// 	},
+	// 	{
+	// 		name: "더치커피",
+	// 		price: 3500,
+	// 		count: 1,
+	// 		options: ["small"],
+	// 	},
+	// 	{
+	// 		name: "더치커피",
+	// 		price: 3500,
+	// 		count: 1,
+	// 		options: ["small"],
+	// 	},
+	// ];
 
-	const totalPrice = 2000;
+	// const totalPrice = 2000;
+
 	// 가능한 지원금 금액과 결제 금액을 비교함
 	// 1. 지원금 <= 결제 금액: 지원금 전체를 사용
 	// 2. 지원금 > 결제 금액: 결제 금액 만큼만 지원금으로 사용
@@ -109,6 +110,33 @@ const PaymentFinalPage: React.FC = () => {
 
 	const handlePayment = () => {
 		// TODO 서버로 결제요청 보냄
+		const menuList = cartList.reduce((acc: object[], item) => {
+			const tmp = { menuId: item.menuId, cnt: item.cnt, options: {} };
+			const options = item.options.map((option) => {
+				const choiceOptions = option.choices.map((choice) => {
+					return {
+						choiceName: choice.choice_name,
+						price: choice.price,
+					};
+				});
+				return {
+					optionName: option.option_name,
+					type: option.type,
+					required: option.required,
+					choiceOptions: choiceOptions,
+				};
+			});
+			tmp["options"] = options;
+			acc.push(tmp);
+			return acc;
+		}, []);
+		// body에 담아서 보내야하는 데이터
+		const payload = {
+			cafeId: "",
+			empId: ordererInfo.empId,
+			usedSubsidy: support,
+			menuList,
+		};
 		console.log("결제");
 		// 결제에 성공하면 => 주문번호 받아서 모달 띄움
 		const orderId = 123;

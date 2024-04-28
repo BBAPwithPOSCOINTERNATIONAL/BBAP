@@ -97,14 +97,16 @@ const MenuModal: React.FC = () => {
 	};
 
 	const handleAddCart = () => {
-		checkOptions() &&
+		if (checkOptions()) {
 			addToCart({
-				menuId: selectedMenu?.id,
+				menuId: selectedMenu ? selectedMenu.id : "",
 				cnt: count,
-				name: selectedMenu,
+				name: selectedMenu ? selectedMenu.name : "",
 				price: totalPrice / count,
 				options: selectedOptions,
 			});
+			closeMenuModal();
+		}
 	};
 
 	return (
@@ -179,7 +181,7 @@ const MenuModal: React.FC = () => {
 																	: ""
 															} ${
 																selectedTemp === choice.choice_name &&
-																"bg-yellow-100 border-8"
+																"bg-gray-200 border-8"
 															}
                       `}
 														/>
@@ -205,7 +207,7 @@ const MenuModal: React.FC = () => {
 															}
 															className={`border border-4 border-black w-52 py-2 font-bold text-black text-sm ${
 																selectedSize === choice.choice_name &&
-																"bg-yellow-100 border-8"
+																"bg-gray-200 border-8"
 															}
                       `}
 														/>

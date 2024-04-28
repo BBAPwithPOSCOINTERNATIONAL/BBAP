@@ -16,3 +16,11 @@ export interface Menu {
 	imageUrl: string;
 	options: Option[];
 }
+
+export interface CartItem {
+	menuId: string;
+	name: string;
+	price: number;
+	cnt: number;
+	options: Option[];
+}
