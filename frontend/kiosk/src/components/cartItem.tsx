@@ -46,7 +46,7 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 					<div
 						className="flex items-center"
 						onClick={() => {
-							if (props.count < 99) {
+							if (props.count < 30) {
 								setCartCount(index, 1);
 							}
 						}}
@@ -54,7 +54,7 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 						<AddCircleOutlineIcon
 							sx={{
 								fontSize: 45,
-								color: `${props.count === 99 ? "lightGray" : "black"}`,
+								color: `${props.count === 30 ? "lightGray" : "black"}`,
 							}}
 						/>
 					</div>

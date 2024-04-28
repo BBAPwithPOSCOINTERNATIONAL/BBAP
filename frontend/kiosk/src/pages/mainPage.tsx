@@ -17,10 +17,10 @@ interface MenuData {
 const MainPage: React.FC = () => {
 	const tapItems: string[] = ["인기", "커피", "음료", "디저트"];
 	const tapMapping: { [key: string]: string } = {
-		인기: "popular",
-		커피: "coffee",
-		음료: "beverage",
-		디저트: "dessert",
+		인기: "menuListPopular",
+		커피: "menuListCoffee",
+		음료: "menuListBeverage",
+		디저트: "menuListDessert",
 	};
 	const [activeTapItem, setActiveTapItem] = useState<string>(tapItems[0]);
 	const [activeMenu, setActiveMenu] = useState<Menu[]>();
@@ -81,11 +81,13 @@ const MainPage: React.FC = () => {
 						id="menu-body"
 						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1650px] flex flex-col divide-y-2 divide-primary-color"
 					>
-						<div className="flex-grow overflow-y-auto grid grid-cols-3 my-1">
-							{activeMenu &&
-								activeMenu.map((item: Menu, index: number) => (
-									<MenuItem menuItemData={item} key={index} />
-								))}
+						<div className="flex-grow overflow-y-auto my-1">
+							<div className="grid grid-cols-3">
+								{activeMenu &&
+									activeMenu.map((item: Menu, index: number) => (
+										<MenuItem menuItemData={item} key={index} />
+									))}
+							</div>
 						</div>
 						<div className="min-h-[450px] max-h-[450px] flex divide-x-2 divide-primary-color">
 							<div className="flex-grow px-3 py-5">
