@@ -20,8 +20,8 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 	}, []);
 	return (
 		<div className="flex justify-between items-center">
-			<div className="max-w-[260px]">
-				<p className="text-xs font-bold my-0">{props.name}</p>
+			<div className="max-w-[280px]">
+				<p className="text-xs font-bold my-0 break-keep">{props.name}</p>
 				<p className="text-2xs break-keep">{options.join(", ")}</p>
 			</div>
 			<div className="flex items-center justify-center text-xs font-bold space-x-5">
@@ -59,8 +59,8 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 						/>
 					</div>
 				</div>
-				{/* TODO: 10만보다 price가 커지면 두줄로 렌더링 */}
-				<div className="text-xs">
+
+				<div className={`${props.cnt < 15 ? "text-xs" : "text-2xs"}`}>
 					{(props.price * props.cnt).toLocaleString()} 원
 				</div>
 				{/* 삭제 버튼 */}
