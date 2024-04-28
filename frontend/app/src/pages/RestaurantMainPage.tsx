@@ -2,8 +2,27 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import BottomTabBar from "../components/BottomTabBar";
 import { menuDatas, DailyMenu, MenuItem } from "../components/menuDatas";
+// import { RestaurantData } from "../api/restaurantAPI";
+// import { useQuery } from "@tanstack/react-query";
 
 function RestaurantMainPage() {
+  // const { data, isError, isLoading, error } = useQuery(
+  //   ["restaurant", restaurantId],
+  //   () => RestaurantData(restaurantId),
+  //   {
+  //     // 조건부 쿼리 실행
+  //     enabled: restaurantId !== -1,
+  //   }
+  // );
+
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError)
+  //   return (
+  //     <div>
+  //       Error: {error instanceof Error ? error.message : "Unknown error"}
+  //     </div>
+  //   );
+
   const [restaurant, setRestaurant] = useState<string>("A");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [weekDates, setWeekDates] = useState<string[]>([]);
