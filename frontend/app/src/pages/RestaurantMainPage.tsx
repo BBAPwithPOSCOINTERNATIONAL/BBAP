@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import BottomTabBar from "../components/BottomTabBar";
 import { menuDatas, DailyMenu, MenuItem } from "../components/menuDatas";

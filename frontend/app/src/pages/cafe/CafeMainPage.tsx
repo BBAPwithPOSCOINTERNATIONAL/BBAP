@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import CafeTabs from "../../components/cafe/CafeTabs";
 import CafeCoupon from "../../components/cafe/CafeCoupon";
@@ -71,8 +71,8 @@ function CafeMainPage() {
     };
   }, []);
 
-  const [orderCount, setOrderCount] = useState(10);
-  const [couponCount, setCouponCount] = useState(7);
+  const [orderCount] = useState(10);
+  const [couponCount] = useState(7);
 
   const navBarHeight = 50; // NavBar의 높이 추정값
   const tabsHeight = 50; // CafeTabs의 높이 추정값

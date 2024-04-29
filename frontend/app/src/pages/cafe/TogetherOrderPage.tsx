@@ -1,4 +1,3 @@
-import React from "react";
 import NavBar from "../../components/Navbar";
 import CafeSelector from "../../components/cafe/CafeSelector";
 

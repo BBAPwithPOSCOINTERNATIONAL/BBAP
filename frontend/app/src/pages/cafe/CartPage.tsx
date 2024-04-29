@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useCartStore from "../../store/cartStore";
 import Button from "../../components/button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";

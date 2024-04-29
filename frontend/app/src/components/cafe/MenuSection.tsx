@@ -1,15 +1,15 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useCafe from "../../store/useCafe"; // 스토어 임포트
 
 // Assuming the MenuItem interface is defined elsewhere and imported accordingly.
 export interface MenuItem {
   name: string;
-  price: number;
-  description: string;
-  images: string;
   temperature?: string[];
-  size?: Record<string, number>;
+  size?: Partial<Record<string, number>>;
+  description: string;
+  price: number;
+  images: string;
   options?: Record<string, number>;
 }
 
