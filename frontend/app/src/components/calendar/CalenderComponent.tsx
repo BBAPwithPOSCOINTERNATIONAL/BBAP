@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { isSameMonth, isSameDay, addDays, parse } from "date-fns";
+import { isSameMonth, isSameDay, addDays } from "date-fns";
 
 import group from "../../assets/group.png";
 import back from "../../assets/button/back.png";
@@ -124,7 +124,6 @@ const isToday = (date: Date): boolean => {
 const RenderCells = ({
   currentMonth,
   selectedDate,
-  onDateClick,
 }: {
   currentMonth: Date;
   selectedDate: Date;
@@ -148,7 +147,6 @@ const RenderCells = ({
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
       formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
-      const cloneDay = day;
       days.push(
         <div
           key={day.toISOString()}

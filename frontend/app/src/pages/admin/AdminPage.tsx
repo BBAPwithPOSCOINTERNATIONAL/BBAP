@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import poscoimg from "../../assets/posco.png";
 import EmployeeSearch from "../../components/admin/filter";
 import Approve from "../../components/admin/approval";
-
-interface AdminNavProps {
-  adminId: number;
-}
 
 const today = new Date();
 const year = today.getFullYear().toString().slice(-2);
@@ -49,7 +45,7 @@ const RightSide = styled.div`
 `;
 // const Inputtag = styled.input``;
 
-const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
+const AdminPage = () => {
   const history = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -96,7 +92,7 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
         </div>
         <div>
           <div className=" font-hyemin-bold text-[18px] text-white">
-            관리자 사번: {adminId}
+            관리자 사번:{1053713}
           </div>
           <button
             className=" font-hyemin-bold text-[18px] bg-[#EFF7FF] text-black w-36 p-4 rounded-md m-5"
@@ -152,4 +148,4 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
   );
 };
 
-export default AdminNav;
+export default AdminPage;
