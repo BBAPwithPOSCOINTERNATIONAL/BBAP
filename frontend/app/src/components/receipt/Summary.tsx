@@ -5,7 +5,7 @@ interface WeeklySummaryProps {
   weekNumber: number;
   startDate: string;
   endDate: string;
-  amount: number;
+  amount: number[];
 }
 
 const WeeklySummary: React.FC<WeeklySummaryProps> = ({
@@ -16,7 +16,7 @@ const WeeklySummary: React.FC<WeeklySummaryProps> = ({
   amount,
 }: WeeklySummaryProps) => {
   return (
-    <div className="m-4 font-hyemin-bold">
+    <div className="m-4 font-hyemin-bold pb-100">
       <p>주별 요약</p>
       <p>
         {month} {weekNumber}주 ({startDate} ~ {endDate}) : {amount}원

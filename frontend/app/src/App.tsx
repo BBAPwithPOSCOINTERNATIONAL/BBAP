@@ -10,11 +10,13 @@ import LoginPage from "./pages/users/LoginPage";
 import MainPage from "./pages/users/MainPage";
 import CafeMainPage from "./pages/cafe/CafeMainPage";
 import RestaurantMainPage from "./pages/RestaurantMainPage";
-import MyReceiptPage from "./pages/MyReceiptPage";
+import MyReceiptPage from "./pages/myReceipt/MyReceiptPage";
 import MyProfilePage from "./pages/users/MyProfilePage";
 import TogetherOrderPage from "./pages/cafe/TogetherOrderPage";
 import MenuDetailPage from "./pages/cafe/MenuDetailPage";
 import CartPage from "./pages/cafe/CartPage";
+import ReceiptDetail from "./pages/myReceipt/ReceiptDetail";
+import MoreDetail from "./pages/myReceipt/MoreDetailPage";
 import RoulettePage from "./pages/cafe/RoulettePage";
 
 const router = createBrowserRouter([
@@ -53,6 +55,14 @@ const router = createBrowserRouter([
   {
     path: "receipt",
     element: <MyReceiptPage />,
+  },
+  {
+    path: "receiptDetail",
+    element: <ReceiptDetail />,
+  },
+  {
+    path: "moredetail",
+    element: <MoreDetail />,
   },
   {
     path: "together",
