@@ -17,6 +17,7 @@ import MenuDetailPage from "./pages/cafe/MenuDetailPage";
 import CartPage from "./pages/cafe/CartPage";
 import ReceiptDetail from "./pages/myReceipt/ReceiptDetail";
 import MoreDetail from "./pages/myReceipt/MoreDetailPage";
+import RoulettePage from "./pages/cafe/RoulettePage";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
   {
     path: "cart",
     element: <CartPage />,
+  },
+  {
+    path: "roulette",
+    element: <RoulettePage />,
   },
 ]);
 

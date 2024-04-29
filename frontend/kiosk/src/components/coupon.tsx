@@ -50,7 +50,7 @@ const Coupon: React.FC<CouponProps> = ({
 					<div
 						className="flex items-center"
 						onClick={() => {
-							if (count <= allCouponCount && isAddAvailable) {
+							if (count < allCouponCount && isAddAvailable) {
 								setCount((prev) => prev + 1);
 							}
 						}}
