@@ -1,12 +1,11 @@
 package com.bbap.hr.service;
 
 
+import com.bbap.hr.dto.CustomUserDetails;
 import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
-import com.bbap.hr.dto.response.DataResponseDto;
-import com.bbap.hr.dto.response.LoginResponseData;
-import com.bbap.hr.dto.response.ResponseDto;
+import com.bbap.hr.dto.response.*;
 import com.bbap.hr.entity.EmployeeEntity;
 import com.bbap.hr.exception.EmployeeNotFoundException;
 import com.bbap.hr.exception.InvalidPasswordException;
@@ -17,10 +16,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -47,6 +49,45 @@ public class AuthServiceImpl implements AuthService {
         employeeRepository.save(newEmployee);
         log.info("새로운 사용자 {} 가 성공적으로 등록되었습니다.", requestBody.getEmpNo());
         return ResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<EmployeeInfoData>> getUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        Long empId = customUserDetails.getEmpId();
+        EmployeeEntity employee = employeeRepository.findById(empId)
+                .orElseThrow(EmployeeNotFoundException::new);
+
+
+        DepartmentData departmentData = employee.getDepartment() == null ? null : DepartmentData.builder()
+                .departmentId(employee.getDepartment().getDepartmentId())
+                .departmentName(employee.getDepartment().getDepartmentName())
+                .build();
+
+        PositionData positionData = employee.getPosition() == null ? null : PositionData.builder()
+                .positionId(employee.getPosition().getPositionId())
+                .positionName(employee.getPosition().getPositionName())
+                .build();
+
+        WorkplaceData workplaceData = employee.getWorkplace() == null ? null : WorkplaceData.builder()
+                .workplaceId(employee.getWorkplace().getWorkplaceId())
+                .workplaceName(employee.getWorkplace().getWorkplaceName())
+                .build();
+
+
+        EmployeeInfoData employeeInfoData = EmployeeInfoData.builder()
+                .empId(employee.getEmpId())
+                .empNo(employee.getEmpNo())
+                .empName(employee.getEmpName())
+                .department(departmentData)
+                .position(positionData)
+                .workplace(workplaceData)
+                .build();
+
+        log.info("사용자 정보 조회 : {}", employee.getEmpNo());
+        return DataResponseDto.of(employeeInfoData);
     }
 
 

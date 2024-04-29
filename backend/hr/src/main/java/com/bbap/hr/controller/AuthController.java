@@ -4,6 +4,7 @@ import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
 import com.bbap.hr.dto.response.DataResponseDto;
+import com.bbap.hr.dto.response.EmployeeInfoData;
 import com.bbap.hr.dto.response.LoginResponseData;
 import com.bbap.hr.dto.response.ResponseDto;
 import com.bbap.hr.service.AuthService;
@@ -34,6 +35,11 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto> logout(@RequestBody @Valid LogoutRequestDto requestBody) {
         return authService.logout(requestBody);
+    }
+
+    @GetMapping("/user-info")
+    public ResponseEntity<DataResponseDto<EmployeeInfoData>> userInfo() {
+        return authService.getUserInfo();
     }
 
 

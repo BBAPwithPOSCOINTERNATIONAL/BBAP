@@ -1,5 +1,6 @@
 package com.bbap.hr.filter;
 
+import com.bbap.hr.dto.CustomUserDetails;
 import com.bbap.hr.exception.CustomJwtException;
 import com.bbap.hr.provider.JwtProvider;
 import io.jsonwebtoken.Claims;
@@ -10,11 +11,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 
 @Component
@@ -34,6 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             Jws<Claims> parsedToken = jwtProvider.validateToken(token);
+            Long empId = parsedToken.getPayload().get("employeeId", Long.class);
+
+            CustomUserDetails customUserDetails = new CustomUserDetails(empId);
+
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+            AbstractAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(customUserDetails, null, Collections.emptyList());// 1: 유저정보
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            securityContext.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(securityContext);
 
 
         } catch (CustomJwtException e) {
@@ -43,10 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseBearerToken(HttpServletRequest request) {// request 객체부터 token 값을 가져옴
+    private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        boolean hasAuthorization = StringUtils.hasText(authorization);// 실제고 값이 Text 가 존재하는지 찾아즘 = hasText
+        boolean hasAuthorization = StringUtils.hasText(authorization);
         if (!hasAuthorization) return null;
 
         boolean isBearer = authorization.startsWith("Bearer ");
