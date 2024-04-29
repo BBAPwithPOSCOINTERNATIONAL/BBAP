@@ -28,31 +28,10 @@ function MenuDetailPage() {
 	const [count, setCount] = useState<number>(1);
 	const navigate = useNavigate();
 
-	// // 커피/음료 메뉴 -> 온도/사이즈 선택지가 있음
-	// const isHasOptions =
-	// 	selectedItem &&
-	// 	Object.prototype.hasOwnProperty.call(selectedItem, "temperature") &&
-	// 	Object.prototype.hasOwnProperty.call(selectedItem, "size");
-
-	// const sizeArr: string[] | undefined =
-	// 	selectedItem?.size && Object.keys(selectedItem.size);
-
-	// useEffect(() => {
-	// 	// option과 size 선택에 따라 totalPrice가 달라지도록 함
-	// 	let totalPrice = selectedItem?.price || 0;
-
-	// 	if (selectedItem && selectedItem.options && selectedOptions) {
-	// 		selectedOptions.forEach((item) => {
-	// 			totalPrice += selectedItem.options ? selectedItem.options[item] : 0;
-	// 		});
-	// 	}
-
-	// 	if (selectedItem && selectedItem.size && selectedSize) {
-	// 		totalPrice += selectedItem.size[selectedSize] || 0;
-	// 	}
-
-	// 	setTotalPrice(totalPrice * count);
-	// }, [selectedOptions, selectedSize, selectedItem, count]);
+	useEffect(() => {
+		// 페이지가 처음 렌더링될 때 스크롤을 맨 위로 이동
+		window.scrollTo(0, 0);
+	}, []);
 
 	const optionOrder = ["온도", "사이즈", "에스프레소 샷", "추가옵션"];
 	const initialSelectedOptions: Option[] = [];
