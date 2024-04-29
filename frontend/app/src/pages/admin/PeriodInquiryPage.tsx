@@ -1,14 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import poscoimg from "../../assets/posco.png";
 import EmployeeSubsidy from "../../components/admin/employeesubsidy";
-import EmployeeSearch from "../../components/admin/filter";
-
-interface AdminNavProps {
-  adminId: number;
-}
 
 const today = new Date();
 const year = today.getFullYear().toString().slice(-2);
@@ -49,13 +44,9 @@ const RightSide = styled.div`
 `;
 // const Inputtag = styled.input``;
 
-const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
-  const [activeTab, setActiveTab] = useState<"조회" | "결재">("조회");
+const AdminNav = () => {
+  const [activeTab] = useState<"조회" | "결재">("조회");
   const history = useNavigate();
-
-  const handleTabClick = (tab: "조회" | "결재") => {
-    setActiveTab(tab);
-  };
 
   const handleLogout = () => {
     // 로그아웃 처리
@@ -98,7 +89,7 @@ const AdminNav: React.FC<AdminNavProps> = ({ adminId = "1053713" }) => {
         </div>
         <div>
           <div className=" font-hyemin-bold text-[18px] text-white">
-            관리자 사번: {adminId}
+            관리자 사번: {1053713}
           </div>
           <button
             className=" font-hyemin-bold text-[18px] bg-[#EFF7FF] text-black w-36 p-4 rounded-md m-5"

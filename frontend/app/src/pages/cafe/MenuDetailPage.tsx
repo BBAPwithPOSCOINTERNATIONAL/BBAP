@@ -156,7 +156,9 @@ function MenuDetailPage() {
                               <p className="text-xs">
                                 +{" "}
                                 {selectedItem.size &&
-                                  selectedItem.size[item].toLocaleString()}{" "}
+                                  selectedItem.size[
+                                    item
+                                  ]?.toLocaleString()}{" "}
                                 원
                               </p>
                             </div>
