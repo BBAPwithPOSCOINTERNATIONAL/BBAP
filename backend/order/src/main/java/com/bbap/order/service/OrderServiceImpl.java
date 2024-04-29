@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbap.order.dto.BaseOrderDto;
 import com.bbap.order.dto.request.FaceRequestDto;
 import com.bbap.order.dto.request.MenuRequestDto;
+import com.bbap.order.dto.request.PayInfoAuthRequestDto;
 import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
@@ -110,6 +111,24 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto) {
 		//card번호로 사원Id 와 사원이름 가져오기
+		int empId = 1;
+		String empName = "다희";
+
+		//스탬프 수 가져오기
+		ResponseEntity<DataResponseDto<StampResponseDto>> stampResponse
+			= cafeServiceFeignClient.getStampCnt(dto.getCafeId());
+		int stampCnt = stampResponse.getBody().getData().getStampCnt();
+		//지원금 가져오기
+		int availableSubsidy = 1000;
+		PayInfoResponseDto responseDto = new PayInfoResponseDto(
+			empId, empName, stampCnt, availableSubsidy
+		);
+		return DataResponseDto.of(responseDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto) {
+		//아이디 비번으로 사원 pk랑 이름 가져오기
 		int empId = 1;
 		String empName = "다희";
 

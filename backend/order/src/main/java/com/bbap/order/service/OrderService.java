@@ -2,6 +2,7 @@ package com.bbap.order.service;
 
 import org.springframework.http.ResponseEntity;
 
+import com.bbap.order.dto.request.PayInfoAuthRequestDto;
 import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
@@ -15,4 +16,5 @@ public interface OrderService {
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto);
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto);
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bbap.order.dto.request.PayInfoAuthRequestDto;
 import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
@@ -78,5 +79,17 @@ public class OrderController {
 	@PostMapping(value="/payInfo/card")
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(@RequestBody PayInfoCardRequestDto requestDto) {
 		return orderService.getPayInfoByCard(requestDto);
+	}
+
+	@Operation(
+		summary = "결제 정보 확인 - 아이디, 비번",
+		description = "아이디, 비번으로 결제 정보 확인하기"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@PostMapping(value="/payInfo/auth")
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(@RequestBody PayInfoAuthRequestDto requestDto) {
+		return orderService.getPayInfoByAuth(requestDto);
 	}
 }
