@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.order.dto.BaseOrderDto;
 import com.bbap.order.dto.request.MenuRequestDto;
+import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -58,7 +60,20 @@ public class OrderServiceImpl implements OrderService {
 		return DataResponseDto.of(payResponseDto);
 	}
 
-	private List<OrderMenu> getOrderMenus(PayRequestDto dto) {
+	@Override
+	public ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto) {
+		List<OrderMenu> orderMenus = getOrderMenus(dto);
+		//사원 아이디
+		Order order = new Order(dto.getCafeId(), dto.getEmpId(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), orderMenus);
+		orderRepository.insert(order); // 주문 db에 넣기
+		//결제 서비스 보내기
+		//레디스에서 방 번호 가져오기
+		Long orderNum = incrementOrderNumber(dto.getCafeId());
+		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
+		return DataResponseDto.of(payResponseDto);
+	}
+
+	private <T extends BaseOrderDto> List<OrderMenu> getOrderMenus(T dto) {
 		List<MenuRequestDto> menuRequestDtos = dto.getMenuList();
 
 		// Extract menu IDs and fetch menus in bulk

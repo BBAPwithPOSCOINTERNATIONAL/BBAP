@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -36,5 +37,17 @@ public class OrderController {
 	@PostMapping("/pay")
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderApp(@RequestBody PayRequestDto requestDto) {
 		return orderService.order(requestDto);
+	}
+
+	@Operation(
+		summary = "키오스크 주문 하기",
+		description = "키오스크에서 주문하기 ( 사원 Id 필요 )"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@PostMapping("/pay/kiosk")
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(@RequestBody PayKioskRequestDto requestDto) {
+		return orderService.orderKiosk(requestDto);
 	}
 }

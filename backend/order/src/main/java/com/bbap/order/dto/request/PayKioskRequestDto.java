@@ -2,6 +2,8 @@ package com.bbap.order.dto.request;
 
 import java.util.List;
 
+import com.bbap.order.dto.BaseOrderDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +13,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PayKioskRequestDto {
+public class PayKioskRequestDto implements BaseOrderDto {
 	private String cafeId;
-	private String empId;
+	private Integer empId;
 	private int usedSubsidy;
 	private List<MenuRequestDto> menuList;
 }
