@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class EmployeeInfoData {
-    private Long empId;
+    private Integer empId;
     private String empNo;
     private String empName;
     private DepartmentDto department;

@@ -27,7 +27,7 @@ public class HrServiceImpl implements HrService {
 
     @Override
     public ResponseEntity<DataResponseDto<ListSubsidyData>> getSubsidyByWorkplace(Integer workplaceId) {
-        List<SubsidyEntity> subsidyEntities = subsidyRepository.findByWorkplace_Id(workplaceId);
+        List<SubsidyEntity> subsidyEntities = subsidyRepository.findByWorkplace_WorkplaceId(workplaceId);
 
 
         List<SubsidyDto> subsidyDtos = subsidyEntities.stream().map(entity ->

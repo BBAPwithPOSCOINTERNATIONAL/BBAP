@@ -25,7 +25,7 @@ public class JwtProvider {
     private String secretKey;
 
     public String createToken(
-            long employeeId, long duration, ChronoUnit unit
+            Integer employeeId, long duration, ChronoUnit unit
     ) {
 
         Date expiredDate = Date.from(Instant.now().plus(duration, unit));

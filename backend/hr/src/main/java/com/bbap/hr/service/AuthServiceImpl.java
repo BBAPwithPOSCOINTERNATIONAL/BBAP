@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        Long empId = customUserDetails.getEmpId();
+        Integer empId = customUserDetails.getEmpId();
         EmployeeEntity employee = employeeRepository.findById(empId)
                 .orElseThrow(EmployeeNotFoundException::new);
 

@@ -22,7 +22,7 @@ public class PositionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="position_id")
-    private Long positionId;
+    private Integer positionId;
 
     @Column(name="position_name")
     private String positionName;

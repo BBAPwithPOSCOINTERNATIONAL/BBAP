@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PositionDto {
-    private Long positionId;
+    private Integer positionId;
     private String positionName;
 }

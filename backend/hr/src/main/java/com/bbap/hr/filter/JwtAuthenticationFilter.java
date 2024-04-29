@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             Jws<Claims> parsedToken = jwtProvider.validateToken(token);
-            Long empId = parsedToken.getPayload().get("employeeId", Long.class);
+            Integer empId = parsedToken.getPayload().get("employeeId", Integer.class);
 
             CustomUserDetails customUserDetails = new CustomUserDetails(empId);
 

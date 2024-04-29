@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class WorkplaceDto {
-    private Long workplaceId;
+    private Integer workplaceId;
     private String workplaceName;
 }

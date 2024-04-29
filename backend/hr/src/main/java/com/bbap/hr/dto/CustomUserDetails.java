@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CustomUserDetails {
-    private Long empId;
+    private Integer empId;
 }
