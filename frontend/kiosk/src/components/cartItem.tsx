@@ -3,26 +3,26 @@ import useCartStore from "../store/cartStore";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-interface MenuInfo {
-	name: string;
-	price: number;
-	count: number;
-	options: string[];
-}
+import { CartItem } from "../types";
 
 interface CartItemProps {
-	props: MenuInfo;
+	props: CartItem;
 	index: number;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 	const { setCartCount, removeFromCart } = useCartStore();
+	const options = props.options.reduce((acc: string[], option) => {
+		option.choices.forEach((choice) => {
+			acc.push(choice.choice_name);
+		});
+		return acc;
+	}, []);
 	return (
 		<div className="flex justify-between items-center">
-			<div>
-				<p className="text-xs font-bold my-0">{props.name}</p>
-				<p className="text-2xs">{props.options.join(", ")}</p>
+			<div className="max-w-[280px]">
+				<p className="text-xs font-bold my-0 break-keep">{props.name}</p>
+				<p className="text-2xs break-keep">{options.join(", ")}</p>
 			</div>
 			<div className="flex items-center justify-center text-xs font-bold space-x-5">
 				{/* 수량 변경 */}
@@ -30,7 +30,7 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 					<div
 						className="flex items-center"
 						onClick={() => {
-							if (props.count > 1) {
+							if (props.cnt > 1) {
 								setCartCount(index, -1);
 							}
 						}}
@@ -38,15 +38,15 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 						<RemoveCircleOutlineIcon
 							sx={{
 								fontSize: 45,
-								color: `${props.count === 1 ? "lightGray" : "black"}`,
+								color: `${props.cnt === 1 ? "lightGray" : "black"}`,
 							}}
 						/>
 					</div>
-					<p>{props.count}</p>
+					<p>{props.cnt}</p>
 					<div
 						className="flex items-center"
 						onClick={() => {
-							if (props.count < 99) {
+							if (props.cnt < 30) {
 								setCartCount(index, 1);
 							}
 						}}
@@ -54,13 +54,14 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 						<AddCircleOutlineIcon
 							sx={{
 								fontSize: 45,
-								color: `${props.count === 99 ? "lightGray" : "black"}`,
+								color: `${props.cnt === 30 ? "lightGray" : "black"}`,
 							}}
 						/>
 					</div>
 				</div>
-				<div className="text-xs">
-					{(props.price * props.count).toLocaleString()} 원
+
+				<div className={`${props.cnt < 15 ? "text-xs" : "text-2xs"}`}>
+					{(props.price * props.cnt).toLocaleString()} 원
 				</div>
 				{/* 삭제 버튼 */}
 				<div

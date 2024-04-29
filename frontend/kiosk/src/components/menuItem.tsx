@@ -8,9 +8,12 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 	const { openMenuModal } = useModalStore();
-	const tempLen: number = menuItemData.temperature
-		? menuItemData.temperature.length
-		: 0;
+	const tempOption = menuItemData.options.find(
+		(option) => option.option_name === "온도"
+	);
+	const tempChoices =
+		tempOption && tempOption.choices.map((choice) => choice.choice_name);
+
 	return (
 		<div
 			id="menu-item"
@@ -19,19 +22,19 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 				openMenuModal(menuItemData);
 			}}
 		>
-			{menuItemData.temperature && (
+			{tempChoices && (
 				<div className="flex justify-start space-x-3 text-2xs font-bold mb-2">
-					{menuItemData.temperature.map((item, index) => {
+					{tempChoices.map((item, index) => {
 						if (item === "HOT") {
 							return (
 								<p className="text-red-500" key={index}>
-									{item} {tempLen == 1 && "Only"}
+									{item} {tempChoices.length == 1 && "Only"}
 								</p>
 							);
 						} else if (item === "ICE") {
 							return (
 								<p className="text-blue-500" key={index}>
-									{item} {tempLen == 1 && "Only"}
+									{item} {tempChoices.length == 1 && "Only"}
 								</p>
 							);
 						}
@@ -39,7 +42,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 				</div>
 			)}
 			<img
-				src={menuItemData.image}
+				src={menuItemData.imageUrl}
 				alt={menuItemData.name}
 				className="w-1/2 absolute top-24 left-20"
 			/>

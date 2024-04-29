@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 const CurrentTime: React.FC = () => {
 	const [currentTime, setCurrentTime] = useState<string>("");
+	const [count, setCount] = useState<number>(0);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -19,8 +23,18 @@ const CurrentTime: React.FC = () => {
 		return () => clearInterval(intervalId);
 	}, []);
 
+	useEffect(() => {
+		if (count === 5) {
+			navigate("/restaurant");
+		}
+	}, [count]);
+
 	return (
-		<div>
+		<div
+			onClick={() => {
+				setCount((prev) => prev + 1);
+			}}
+		>
 			<p className="text-sm font-bold text-primary-color">{currentTime}</p>
 		</div>
 	);
