@@ -4,7 +4,7 @@ import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
 import com.bbap.hr.dto.response.DataResponseDto;
-import com.bbap.hr.dto.response.EmployeeInfoData;
+import com.bbap.hr.dto.EmployeeDto;
 import com.bbap.hr.dto.response.LoginResponseData;
 import com.bbap.hr.dto.response.ResponseDto;
 import com.bbap.hr.service.AuthService;
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<DataResponseDto<EmployeeInfoData>> userInfo() {
+    public ResponseEntity<DataResponseDto<EmployeeDto>> userInfo() {
         return authService.getUserInfo();
     }
 

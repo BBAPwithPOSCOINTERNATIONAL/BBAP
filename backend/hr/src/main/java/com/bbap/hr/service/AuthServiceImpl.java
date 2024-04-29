@@ -1,10 +1,7 @@
 package com.bbap.hr.service;
 
 
-import com.bbap.hr.dto.CustomUserDetails;
-import com.bbap.hr.dto.DepartmentDto;
-import com.bbap.hr.dto.PositionDto;
-import com.bbap.hr.dto.WorkplaceDto;
+import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
@@ -54,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<DataResponseDto<EmployeeInfoData>> getUserInfo() {
+    public ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -79,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
 
-        EmployeeInfoData employeeInfoData = EmployeeInfoData.builder()
+        EmployeeDto employeeInfoData = EmployeeDto.builder()
                 .empId(employee.getEmpId())
                 .empNo(employee.getEmpNo())
                 .empName(employee.getEmpName())
