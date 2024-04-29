@@ -1,5 +1,8 @@
 package com.bbap.hr.dto.response;
 
+import com.bbap.hr.dto.DepartmentDto;
+import com.bbap.hr.dto.PositionDto;
+import com.bbap.hr.dto.WorkplaceDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +14,8 @@ public class EmployeeInfoData {
     private Long empId;
     private String empNo;
     private String empName;
-    private DepartmentData department;
-    private PositionData position;
-    private WorkplaceData workplace;
+    private DepartmentDto department;
+    private PositionDto position;
+    private WorkplaceDto workplace;
 
 }

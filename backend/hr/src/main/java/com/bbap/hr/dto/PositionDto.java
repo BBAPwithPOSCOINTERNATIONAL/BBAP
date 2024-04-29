@@ -1,4 +1,4 @@
-package com.bbap.hr.dto.response;
+package com.bbap.hr.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PositionData {
+public class PositionDto {
     private Long positionId;
     private String positionName;
 }

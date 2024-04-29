@@ -1,11 +1,12 @@
 package com.bbap.hr.controller;
 
 
+import com.bbap.hr.dto.response.DataResponseDto;
+import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.service.HrService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -16,5 +17,9 @@ public class HrController {
 
     private final HrService hrService;
 
+    @GetMapping("/subsidy/{workplaceId}")
+    public ResponseEntity<DataResponseDto<ListSubsidyData>> getSubsidyByWorkplaceId(@PathVariable Integer workplaceId) {
+        return hrService.getSubsidyByWorkplace(workplaceId);
+    }
 
 }

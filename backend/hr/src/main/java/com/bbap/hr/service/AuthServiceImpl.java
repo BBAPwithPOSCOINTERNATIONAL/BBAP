@@ -2,6 +2,9 @@ package com.bbap.hr.service;
 
 
 import com.bbap.hr.dto.CustomUserDetails;
+import com.bbap.hr.dto.DepartmentDto;
+import com.bbap.hr.dto.PositionDto;
+import com.bbap.hr.dto.WorkplaceDto;
 import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
@@ -22,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -61,17 +63,17 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(EmployeeNotFoundException::new);
 
 
-        DepartmentData departmentData = employee.getDepartment() == null ? null : DepartmentData.builder()
+        DepartmentDto departmentData = employee.getDepartment() == null ? null : DepartmentDto.builder()
                 .departmentId(employee.getDepartment().getDepartmentId())
                 .departmentName(employee.getDepartment().getDepartmentName())
                 .build();
 
-        PositionData positionData = employee.getPosition() == null ? null : PositionData.builder()
+        PositionDto positionData = employee.getPosition() == null ? null : PositionDto.builder()
                 .positionId(employee.getPosition().getPositionId())
                 .positionName(employee.getPosition().getPositionName())
                 .build();
 
-        WorkplaceData workplaceData = employee.getWorkplace() == null ? null : WorkplaceData.builder()
+        WorkplaceDto workplaceData = employee.getWorkplace() == null ? null : WorkplaceDto.builder()
                 .workplaceId(employee.getWorkplace().getWorkplaceId())
                 .workplaceName(employee.getWorkplace().getWorkplaceName())
                 .build();
