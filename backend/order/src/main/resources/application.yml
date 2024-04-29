@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: ${profile}
+
+springdoc:
+  api-docs:
+    path: /api/v1/api-docs
+  swagger-ui:
+    path: /api/v1/
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE
+
+
+server:
+  port: 8081

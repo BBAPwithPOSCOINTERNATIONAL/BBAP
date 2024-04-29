@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 	//유효성 검사
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseDto> validationExceptionHandler(MethodArgumentNotValidException e) {
-		ResponseDto responseBody = new ResponseDto("유효성 실패");
+		ResponseDto responseBody = new ResponseDto("유효하지 않은 요청입니다.");
 		return ResponseEntity.status(e.getStatusCode()).body(responseBody);
 	}
 
