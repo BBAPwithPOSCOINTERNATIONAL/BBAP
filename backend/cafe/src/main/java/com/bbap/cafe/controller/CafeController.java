@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.MenuListDto;
@@ -90,5 +91,16 @@ public class CafeController {
 		return cafeService.menuList(cafeId, menuCategory);
 	}
 
+	@Operation(
+		summary = "내부 api용 카페 이름, 근무지 이름",
+		description = "내부 api용 카페 이름, 근무지 이름을 가져온다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping("/order-list/{cafeId}")
+	ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(@PathVariable String cafeId) {
+		return cafeService.cafeInfoForOrderList(cafeId);
+	}
 
 }

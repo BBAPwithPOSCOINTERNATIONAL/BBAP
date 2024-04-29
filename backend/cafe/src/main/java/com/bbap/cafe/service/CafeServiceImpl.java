@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.CafeSummaryDto;
 import com.bbap.cafe.dto.response.ChoiceDto;
@@ -134,6 +135,19 @@ public class CafeServiceImpl implements CafeService {
 		}
 		MenuListDto menuListDto = new MenuListDto(menuList);
 		return DataResponseDto.of(menuListDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId) {
+		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException:: new);
+		int workPlaceId = cafe.getWorkPlaceId();
+
+		//근무지 이름 가져오기
+		String workPlaceName = "부산";
+
+		CafeInfoOrderListDto response = new CafeInfoOrderListDto(cafe.getName(), workPlaceName);
+
+		return DataResponseDto.of(response);
 	}
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
