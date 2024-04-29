@@ -23,13 +23,13 @@ public class EmployeeEntity {
     @Column(name = "emp_no", nullable = false)
     private String empNo;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 200)
     private String password;
 
-    @Column(name = "emp_name", nullable = false)
+    @Column(name = "emp_name", nullable = false, length = 10)
     private String empName;
 
-    @Column(name = "emp_card", nullable = true, unique = true)
+    @Column(name = "emp_card", nullable = true, unique = true, length = 20)
     private String empCard;
 
     @ManyToOne(fetch = FetchType.LAZY)
