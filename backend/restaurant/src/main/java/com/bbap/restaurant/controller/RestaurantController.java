@@ -6,16 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bbap.restaurant.dto.request.AddEatRequestDto;
 import com.bbap.restaurant.dto.response.DataResponseDto;
 import com.bbap.restaurant.dto.response.ListMenuResponseData;
 import com.bbap.restaurant.dto.response.ListRestaurantResponseData;
-import com.bbap.restaurant.dto.response.ResponseDto;
+import com.bbap.restaurant.dto.response.PayMenuResponseData;
 import com.bbap.restaurant.service.RestaurantService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,16 +61,16 @@ public class RestaurantController {
 	}
 
 	@Operation(
-		summary = "먹은 인원 추가",
-		description = "결제가 발생했을 때 해당 메뉴의 먹은 인원 수를 추가한다."
+		summary = "결제 메뉴 정보 조회",
+		description = "결제 처리를 위해 메뉴 정보를 제공하고 먹은 인원 수를 추가한다."
 	)
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "먹은 인원 추가 성공."),
+		@ApiResponse(responseCode = "200", description = "조회 성공."),
 		@ApiResponse(responseCode = "401", description = "토큰 인증 실패."),
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
-	@PutMapping("/menus")
-	public ResponseEntity<ResponseDto> addEat(@RequestBody AddEatRequestDto request) {
-		return restaurantService.addEat(request);
+	@GetMapping("/menus/{menuId}")
+	public ResponseEntity<DataResponseDto<PayMenuResponseData>> payMenu(@PathVariable int menuId) {
+		return restaurantService.payMenu(menuId);
 	}
 }

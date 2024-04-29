@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.bbap.restaurant.dto.MenuDto;
+import com.bbap.restaurant.dto.response.PayMenuResponseData;
 import com.bbap.restaurant.entity.RestaurantMenuEntity;
 
 import jakarta.transaction.Transactional;
@@ -23,4 +24,9 @@ public interface RestaurantMenuRepository extends JpaRepository<RestaurantMenuEn
 	@Transactional
 	@Query("update RestaurantMenuEntity m set m.eatCount=m.eatCount+1 where m.restaurantMenuId=:restaurantMenuId")
 	void addEat(int restaurantMenuId);
+
+	@Query(
+		"select new com.bbap.restaurant.dto.response.PayMenuResponseData(r.restaurantName,m.menuName, m.menuPrice) "
+			+ "from RestaurantMenuEntity m join m.restaurantEntity r where m.restaurantMenuId=:menuId")
+	PayMenuResponseData findPayMenu(int menuId);
 }
