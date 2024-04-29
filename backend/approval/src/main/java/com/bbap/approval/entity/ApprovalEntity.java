@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 public class ApprovalEntity {
 
-    private Long approvalId;
-
     private Integer empId;
 
     private Boolean approvalStatus;
