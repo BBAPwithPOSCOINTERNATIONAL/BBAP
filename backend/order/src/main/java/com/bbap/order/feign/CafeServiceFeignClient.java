@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.bbap.order.dto.request.FaceRequestDto;
+import com.bbap.order.dto.response.CafeInfoForOrderListDto;
+import com.bbap.order.dto.response.OrderListResponseDto;
 import com.bbap.order.dto.response.StampResponseDto;
 import com.bbap.order.dto.responseDto.CheckFaceResponseData;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -18,4 +20,7 @@ public interface CafeServiceFeignClient {
 
 	@GetMapping(value = "/stamp/{cafeId}")
 	ResponseEntity<DataResponseDto<StampResponseDto>> getStampCnt(@PathVariable String cafeId);
+
+	@GetMapping(value = "/order-list/{cafeId}")
+	ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> getCafeInfo(@PathVariable String cafeId);
 }

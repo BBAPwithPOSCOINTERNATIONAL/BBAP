@@ -3,6 +3,8 @@ package com.bbap.order.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +24,11 @@ import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.response.CafeInfoForOrderListDto;
+import com.bbap.order.dto.response.OrderDetailMenuDto;
+import com.bbap.order.dto.response.OrderDetailResponseDto;
+import com.bbap.order.dto.response.OrderDto;
+import com.bbap.order.dto.response.OrderListResponseDto;
 import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.response.StampResponseDto;
@@ -34,6 +41,7 @@ import com.bbap.order.entity.Order;
 import com.bbap.order.entity.OrderMenu;
 import com.bbap.order.exception.BadOrderRequestException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
+import com.bbap.order.exception.OrderEntityNotFoundException;
 import com.bbap.order.feign.CafeServiceFeignClient;
 import com.bbap.order.feign.FaceServiceFeignClient;
 import com.bbap.order.repository.MenuRepository;
@@ -64,9 +72,10 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderMenu> orderMenus = getOrderMenus(dto);
 		//사원 아이디
 		int empId = 1;
-		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(), orderMenus);
+		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(),dto.getUsedSubsidy(),orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
+
 		//레디스에서 방 번호 가져오기
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
 		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
@@ -77,7 +86,8 @@ public class OrderServiceImpl implements OrderService {
 	public ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto) {
 		List<OrderMenu> orderMenus = getOrderMenus(dto);
 		//사원 아이디
-		Order order = new Order(dto.getCafeId(), dto.getEmpId(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), orderMenus);
+		Order order = new Order(dto.getCafeId(), dto.getEmpId(), LocalDateTime.now(),
+			LocalDateTime.now().plusMinutes(5),dto.getUsedSubsidy(), orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
 		//레디스에서 방 번호 가져오기
@@ -160,6 +170,74 @@ public class OrderServiceImpl implements OrderService {
 			empId, empName, stampCnt, availableSubsidy
 		);
 		return DataResponseDto.of(responseDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer month, Integer year) {
+		// 해당 월의 첫 날과 마지막 날을 계산
+		LocalDateTime startOfMonth = YearMonth.of(year, month).atDay(1).atStartOfDay();
+		LocalDateTime endOfMonth = YearMonth.of(year, month).atEndOfMonth().atTime(23, 59, 59);
+		//사원 ID 토큰에서 까기
+		Integer empId = 1;
+
+		List<Order> orderList = orderRepository.findByEmployeeAndPickUpTimeBetween(startOfMonth, endOfMonth, empId);
+		List<OrderDto> orderDtos = new ArrayList<>();
+		for (Order order : orderList) {
+			ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeResponse = cafeServiceFeignClient.getCafeInfo(order.getCafeId());
+			// 주문의 모든 메뉴의 가격 합산
+			int totalOrderPrice = order.getMenus().stream()
+				.mapToInt(OrderMenu::getPrice)
+				.sum();
+			// OrderDto 생성
+			OrderDto orderDto = new OrderDto(
+				order.getId(),
+				order.getPickUpTime(),
+				cafeResponse.getBody().getData().getCafeName(),
+				order.getMenus().get(0).getName(),
+				order.getMenus().size(),
+				totalOrderPrice, // 계산된 총 가격
+				cafeResponse.getBody().getData().getWorkPlaceName()
+			);
+			orderDtos.add(orderDto); // 생성된 OrderDto를 리스트에 추가
+		}
+		OrderListResponseDto responseDto = new OrderListResponseDto(orderDtos);
+		return DataResponseDto.of(responseDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(String orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderEntityNotFoundException:: new);
+		List<OrderMenu> menus = order.getMenus();
+		List<OrderDetailMenuDto> orderDetailMenuDtos = new ArrayList<>();
+		int totalOrderPrice = 0;  // 전체 주문 가격을 저장할 변수
+		for(OrderMenu orderMenu: menus) {
+			// 각 메뉴의 옵션들에서 선택된 choice 이름을 문자열로 결합
+			String optionText = orderMenu.getOptions().stream()
+				.flatMap(option -> option.getChoices().stream())
+				.map(Choice::getChoiceName)
+				.collect(Collectors.joining(", "));  // 선택지 이름을 쉼표로 구분하여 하나의 문자열로 만듦
+
+			OrderDetailMenuDto orderDetailMenuDto = new OrderDetailMenuDto(
+				orderMenu.getName(),
+				orderMenu.getPrice(),
+				orderMenu.getCnt(),
+				optionText
+			);
+			totalOrderPrice += orderMenu.getPrice();  // 메뉴 가격을 총합에 더함
+			orderDetailMenuDtos.add(orderDetailMenuDto);
+		}
+		ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeInfo = cafeServiceFeignClient.getCafeInfo(order.getCafeId());
+		OrderDetailResponseDto response = new OrderDetailResponseDto(
+			cafeInfo.getBody().getData().getCafeName(),
+			totalOrderPrice,
+			cafeInfo.getBody().getData().getWorkPlaceName(),
+			order.getUsedSubsidy(),
+			order.getOrderTime(),
+			order.getPickUpTime(),
+			orderDetailMenuDtos
+		);
+
+		return DataResponseDto.of(response);
 	}
 
 	private <T extends BaseOrderDto> List<OrderMenu> getOrderMenus(T dto) {

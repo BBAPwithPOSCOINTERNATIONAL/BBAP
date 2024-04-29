@@ -9,6 +9,7 @@ import com.bbap.order.dto.responseDto.ResponseDto;
 import com.bbap.order.exception.BadOrderRequestException;
 import com.bbap.order.exception.CustomException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
+import com.bbap.order.exception.OrderEntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
 	//잘못된 주문 요청
 	@ExceptionHandler(BadOrderRequestException.class)
 	public ResponseEntity<ResponseDto> BadOrderRequestExceptionHandler(BadOrderRequestException e) {
+		return handleException(e);
+	}
+	//존재하지 않는 주문 아이디
+	@ExceptionHandler(OrderEntityNotFoundException.class)
+	public ResponseEntity<ResponseDto> orderNotFoundExceptionHandler(OrderEntityNotFoundException e) {
 		return handleException(e);
 	}
 

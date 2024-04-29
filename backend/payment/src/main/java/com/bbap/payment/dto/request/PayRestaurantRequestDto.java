@@ -1,4 +1,4 @@
-package com.bbap.restaurant.dto.request;
+package com.bbap.payment.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -13,8 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class AddEatRequestDto {
+public class PayRestaurantRequestDto {
 	@NotNull
-	@Schema(description = "결제 메뉴ID")
+	@Schema(description = "사원 카드 번호")
+	private String cardId;
+
+	@NotNull
+	@Schema(description = "메뉴 번호")
 	private int menuId;
 }
