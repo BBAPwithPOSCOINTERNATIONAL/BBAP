@@ -10,7 +10,7 @@ interface CartItemProps {
 	index: number;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
+const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 	const { setCartCount, removeFromCart } = useCartStore();
 	const options = props.options.reduce((acc: string[], option) => {
 		option.choices.forEach((choice) => {
@@ -80,4 +80,4 @@ const CartItem: React.FC<CartItemProps> = ({ props, index }) => {
 	);
 };
 
-export default CartItem;
+export default CartItemDiv;

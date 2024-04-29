@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import Header from "../components/header.js";
 import Button from "../components/button.js";
 import CustomKeyboard from "../components/customKeyboard.js";
+import { payInfoByLogin } from "../api/paymentApi.js";
 
 const PaymentLoginPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -10,15 +11,18 @@ const PaymentLoginPage: React.FC = () => {
 	const [password, setPassword] = useState<string>("");
 	const [focusId, setFocusId] = useState<string>("");
 	const [keyboardVisibility, setKeyboardVisibility] = useState(false);
+	const [warningMsg, setWarningMsg] = useState<string>("");
 
-	const handleLogin = () => {
-		// TODO
-		// idNumber, password 담아서 서버에 로그인 요청
-		// 로그인 되면 다음 페이지로 넘어감
-		// 안되면 경고 모달 뜸
+	const handleLogin = async () => {
 		if (idNumber && password) {
-			console.log({ idNumber, password });
-			navigate("/payment-final");
+			// console.log({ idNumber, password });
+			try {
+				const response = await payInfoByLogin({ empNo: idNumber, password });
+				navigate("/payment-final", { state: response.data });
+			} catch (error) {
+				setKeyboardVisibility(false);
+				setWarningMsg("등록되지 않은 사원입니다");
+			}
 		}
 	};
 
@@ -72,6 +76,11 @@ const PaymentLoginPage: React.FC = () => {
 							onFocus={handleFocus}
 						/>
 					</div>
+					{warningMsg && (
+						<p className="text-xl text-red-500 font-bold text-center my-10">
+							{warningMsg}
+						</p>
+					)}
 				</div>
 				<div className="w-full absolute bottom-[150px] flex flex-col space-y-10 items-center">
 					<Button
@@ -92,8 +101,9 @@ const PaymentLoginPage: React.FC = () => {
 					/>
 				</div>
 			</div>
+
 			{keyboardVisibility && (
-				<div className="w-full absolute bottom-[600px] flex justify-center">
+				<div className="w-full absolute bottom-[600px] flex justify-center z-50">
 					<CustomKeyboard
 						setInput={focusId == "id-number" ? setIdNumber : setPassword}
 					/>

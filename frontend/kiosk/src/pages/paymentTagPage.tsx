@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import Header from "../components/header";
 import Button from "../components/button";
+import { payInfoByCard } from "../api/paymentApi";
 
 // 키보드입력 한영 전환
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
@@ -10,6 +11,7 @@ const englishKeys = "qwertyuiopasdfghjklzxcvbnm";
 const PaymentTagPage: React.FC = () => {
 	const navigate = useNavigate();
 	const [tagValue, setTagValue] = useState<string>("");
+	const [warningMsg, setWarningMsg] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -18,7 +20,7 @@ const PaymentTagPage: React.FC = () => {
 		}
 	});
 
-	const activeEnter = (e: React.KeyboardEvent) => {
+	const activeEnter = async (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			let result = "";
 			for (const char of tagValue) {
@@ -32,8 +34,12 @@ const PaymentTagPage: React.FC = () => {
 
 			console.log("카드번호: ", result);
 			setTagValue("");
-			// TODO:
-			// 카드번호 담아서 서버에 사원정보 요청 => 에러나면 네모박스 색 변경 및 경고 문구 아래에 뜨도록하기
+			try {
+				const response = await payInfoByCard(result);
+				navigate("/payment-final", { state: response.data });
+			} catch (error) {
+				setWarningMsg("등록되지 않은 카드입니다");
+			}
 		}
 	};
 
@@ -53,9 +59,13 @@ const PaymentTagPage: React.FC = () => {
 						activeEnter(e);
 					}}
 				/>
-				<div className="flex space-x-20 my-48 justify-center">
+				<div className="flex space-x-20 mt-48 justify-center">
 					<div
-						className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[850px] h-[1100px] px-10"
+						className={`border ${
+							warningMsg
+								? "border-8 border-red-500"
+								: "border-2 border-primary-color"
+						} bg-[#E2F1FF] rounded-2xl w-[850px] h-[1100px] px-10`}
 						style={{
 							boxShadow: "15px 15px 5px lightgray",
 						}}
@@ -71,6 +81,11 @@ const PaymentTagPage: React.FC = () => {
 						</p>
 					</div>
 				</div>
+				{warningMsg && (
+					<p className="text-xl text-red-500 font-bold text-center my-10">
+						{warningMsg}
+					</p>
+				)}
 				<div className="w-full absolute bottom-[150px] text-center">
 					<Button
 						className="bg-bg-color text-white text-xl w-1/3 py-5"

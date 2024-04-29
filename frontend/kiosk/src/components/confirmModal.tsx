@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import useModalStore from "../store/modalStore";
 
 const ConfirmModal: React.FC<{ handleClose: () => void }> = ({

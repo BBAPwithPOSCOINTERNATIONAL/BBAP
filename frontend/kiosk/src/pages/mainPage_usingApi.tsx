@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import CurrentTime from "../components/currentTime";
 import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
@@ -9,8 +9,8 @@ import Button from "../components/button";
 import MenuModal from "../components/menuModal";
 import useModalStore from "../store/modalStore";
 import useCartStore from "../store/cartStore";
-import CartItemDiv from "../components/cartItem";
-// import { fetchMenuData } from "../api/menuApi";
+import CartItem from "../components/cartItem";
+import { fetchMenuData } from "../api/menuApi";
 
 interface MenuData {
 	[key: string]: Menu[];
@@ -26,17 +26,22 @@ const MainPage: React.FC = () => {
 	};
 	const [activeTapItem, setActiveTapItem] = useState<string>(tapItems[0]);
 	const [activeMenu, setActiveMenu] = useState<Menu[]>();
-	const [menuData, setMenuData] = useState<MenuData>();
+	// const [menuData, setMenuData] = useState<MenuData>();
 	const { isMenuModalOpen } = useModalStore();
 	const { cartList, totalPrice, totalCount, resetCart } = useCartStore();
 	const navigate = useNavigate();
 
+	const {
+		data: response,
+		isLoading,
+		isError,
+	} = useQuery({ queryKey: ["menuData"], queryFn: fetchMenuData });
+
 	useEffect(() => {
-		setMenuData(cafeMenuData);
-	}, []);
-	useEffect(() => {
+		// const menuData: MenuData | undefined = response?.data;
+		const menuData: MenuData = cafeMenuData;
 		setActiveMenu(menuData ? menuData[tapMapping[activeTapItem]] : undefined);
-	}, [menuData, activeTapItem]);
+	}, [response, activeTapItem]);
 
 	const handleTapItemClick = (tap: string) => {
 		setActiveTapItem(tap);
@@ -83,8 +88,14 @@ const MainPage: React.FC = () => {
 						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1650px] flex flex-col divide-y-2 divide-primary-color"
 					>
 						<div className="flex-grow overflow-y-auto my-1">
+							{isLoading && <div className="text-lg m-10">Loading...</div>}
+							{isError && (
+								<div className="text-lg m-10">Error fetching data</div>
+							)}
 							<div className="grid grid-cols-3">
-								{activeMenu &&
+								{!isLoading &&
+									!isError &&
+									activeMenu &&
 									activeMenu.map((item: Menu, index: number) => (
 										<MenuItem menuItemData={item} key={index} />
 									))}
@@ -96,7 +107,7 @@ const MainPage: React.FC = () => {
 								<div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
 									{/* store에 저장된 주문내역 렌더링 */}
 									{cartList.map((item, index) => (
-										<CartItemDiv props={item} key={index} index={index} />
+										<CartItem props={item} key={index} index={index} />
 									))}
 								</div>
 							</div>
