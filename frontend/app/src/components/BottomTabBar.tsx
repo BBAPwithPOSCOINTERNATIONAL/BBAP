@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import Coffee from "../assets/bottom/Coffe.png";
 import myprofile from "../assets/bottom/myprofile.png";

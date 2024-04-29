@@ -2,6 +2,7 @@ import { useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import IdPhoto from "../../assets/image1.png";
+import guide from "../../assets/guideLine.png";
 
 function MyProfilePage() {
   const profile = {
@@ -18,7 +19,6 @@ function MyProfilePage() {
     try {
       setShowVideo(true);
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      // Do something with the camera stream, such as displaying it in a video element
       console.log(stream);
       const videoElement = document.getElementById(
         "cameraPreview"
@@ -70,22 +70,33 @@ function MyProfilePage() {
       <div className="flex-grow p-5">
         <div className="bg-white shadow-lg rounded-lg p-5">
           <div className="flex flex-col items-center">
-            <img className="w-24 h-25" src={profile.imageUrl} alt="Profile" />
-            {showVideo && <video id="cameraPreview" autoPlay></video>}
+            <img
+              className="w-24 h-24 mb-4"
+              src={profile.imageUrl}
+              alt="Profile"
+            />
+            {showVideo && (
+              <>
+                {/* <div className="absolute top-0 left-0 w-full h-5/6 flex justify-center items-center z-20">
+                  <img src={guide} alt="guide line" className="w-44" />
+                </div> */}
+                <video
+                  id="cameraPreview"
+                  className="scale-x-[-1]"
+                  autoPlay
+                ></video>
+              </>
+            )}
             <button
-              className="mt-4 bg-primary-color hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                handleCameraAccess();
-              }}
+              className="mt-4 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+              onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? " ✅" : ""}
             </button>
             {showVideo && (
               <button
-                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  handleCaptureImage();
-                }}
+                className="mt-4 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+                onClick={handleCaptureImage}
               >
                 사진찍기
               </button>
