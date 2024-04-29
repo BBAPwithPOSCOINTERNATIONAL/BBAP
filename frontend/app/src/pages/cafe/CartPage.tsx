@@ -243,7 +243,7 @@ function CartPage() {
           결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
         </div>
         <Button
-          onClick={() => console.log("결제결제")}
+          onClick={() => navigate("/after")}
           text="결제하기"
           className="w-full text-3xl bg-primary-color text-white h-16"
         />

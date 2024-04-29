@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import NavBar from "../../components/Navbar";
 import CafeSelector from "../../components/cafe/CafeSelector";
 import game from "../../assets/game.png";
 import share from "../../assets/share.png";
+import GameModal from "../../components/cafe/GameModal";
 
 interface Product {
   owner: boolean;
@@ -67,6 +68,20 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setModalOpen(false);
+    navigate("/roulette");
+  };
 
   const products: Product[] = [
     {
@@ -133,7 +148,7 @@ function TogetherOrderPage() {
       >
         <div className="flex justify-between items-center">
           <div className="text-xl ml-4">총 주문 인원: {products.length}</div>
-          <button onClick={() => navigate("/roulette")}>
+          <button onClick={handleOpenModal}>
             <img src={game} className="mr-4"></img>
           </button>
         </div>
@@ -152,6 +167,11 @@ function TogetherOrderPage() {
           </button>
         </div>
       </footer>
+      <GameModal
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
+      />
     </>
   );
 }

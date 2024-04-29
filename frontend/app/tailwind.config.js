@@ -33,7 +33,7 @@ export default {
         "bg-color": "#739DB5",
         "active-color": "#AC2323",
         "inactive-color": "#777777",
-        "light-primary-color": "#4786C1",
+        "light-primary-color": "#669ACB",
         "cafe-primary-color": "#E2F1FF",
         // 추가컬러
         "main-color": "#aa5b42",

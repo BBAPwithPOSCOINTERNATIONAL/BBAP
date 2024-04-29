@@ -12,10 +12,12 @@ import CafeSelector from "../../components/cafe/CafeSelector";
 import useMoveScroll from "../../hooks/useMoveScroll";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../store/cartStore";
+import useContentStore from "../../store/useContent";
 
 function CafeMainPage() {
   const navigate = useNavigate();
-  const [content, setContent] = useState("alone");
+  const { content, setContent } = useContentStore();
+  // const [content, setContent] = useState("alone");
   const [selectedMenu, setSelectedMenu] = useState("coffee");
   const { totalPrice, totalCount } = useCartStore((state) => ({
     totalPrice: state.totalPrice,

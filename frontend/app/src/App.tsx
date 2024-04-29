@@ -18,6 +18,8 @@ import CartPage from "./pages/cafe/CartPage";
 import ReceiptDetail from "./pages/myReceipt/ReceiptDetail";
 import MoreDetail from "./pages/myReceipt/MoreDetailPage";
 import RoulettePage from "./pages/cafe/RoulettePage";
+import AfterPaymentPage from "./pages/cafe/AfterPaymentPage";
+import WinnerPage from "./pages/cafe/WinnerPage";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +81,14 @@ const router = createBrowserRouter([
   {
     path: "roulette",
     element: <RoulettePage />,
+  },
+  {
+    path: "after",
+    element: <AfterPaymentPage />,
+  },
+  {
+    path: "winner/:winner",
+    element: <WinnerPage />,
   },
 ]);
 
