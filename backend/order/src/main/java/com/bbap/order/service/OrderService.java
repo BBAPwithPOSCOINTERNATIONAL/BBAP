@@ -17,4 +17,5 @@ public interface OrderService {
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto);
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(String cafeId);
 }

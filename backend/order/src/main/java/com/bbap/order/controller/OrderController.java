@@ -92,4 +92,16 @@ public class OrderController {
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(@RequestBody PayInfoAuthRequestDto requestDto) {
 		return orderService.getPayInfoByAuth(requestDto);
 	}
+
+	@Operation(
+		summary = "결제 정보 확인 - 앱",
+		description = "결제 정보 확인하기"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping(value="/payInfo/{cafeId}")
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@PathVariable String cafeId) {
+		return orderService.getPayInfo(cafeId);
+	}
 }
