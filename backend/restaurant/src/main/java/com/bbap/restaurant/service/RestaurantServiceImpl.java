@@ -7,11 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbap.restaurant.dto.request.AddEatRequestDto;
 import com.bbap.restaurant.dto.response.DataResponseDto;
 import com.bbap.restaurant.dto.response.ListMenuResponseData;
 import com.bbap.restaurant.dto.response.ListRestaurantResponseData;
-import com.bbap.restaurant.dto.response.ResponseDto;
+import com.bbap.restaurant.dto.response.PayMenuResponseData;
 import com.bbap.restaurant.repository.RestaurantMenuRepository;
 import com.bbap.restaurant.repository.RestaurantRepository;
 
@@ -57,10 +56,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> addEat(AddEatRequestDto request) {
-		restaurantMenuRepository.addEat(request.getMenuId());
+	public ResponseEntity<DataResponseDto<PayMenuResponseData>> payMenu(int menuId) {
+		restaurantMenuRepository.addEat(menuId);
 
-		return ResponseDto.success();
+		return DataResponseDto.of(restaurantMenuRepository.findPayMenu(menuId));
 	}
 
 	//시간별 식사 분류 지정
