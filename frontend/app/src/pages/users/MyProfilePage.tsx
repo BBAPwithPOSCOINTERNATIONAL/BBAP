@@ -73,7 +73,7 @@ function MyProfilePage() {
             <img className="w-24 h-25" src={profile.imageUrl} alt="Profile" />
             {showVideo && <video id="cameraPreview" autoPlay></video>}
             <button
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="mt-4 bg-primary-color hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
                 handleCameraAccess();
               }}
