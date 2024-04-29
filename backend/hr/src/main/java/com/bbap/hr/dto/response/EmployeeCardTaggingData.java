@@ -7,8 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmployeeNameData {
+public class EmployeeCardTaggingData {
     private Integer empId;
     private String empName;
+    private Integer subsidy;
 
 }

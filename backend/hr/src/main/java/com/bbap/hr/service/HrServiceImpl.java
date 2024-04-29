@@ -3,12 +3,15 @@ package com.bbap.hr.service;
 import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
-import com.bbap.hr.dto.response.EmployeeNameData;
+import com.bbap.hr.dto.response.EmployeeCardTaggingData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.entity.EmployeeEntity;
 import com.bbap.hr.entity.SubsidyEntity;
+import com.bbap.hr.entity.WorkplaceEntity;
 import com.bbap.hr.exception.EmployeeNotFoundException;
+import com.bbap.hr.exception.EmployeeWorkplaceNotFoundException;
+import com.bbap.hr.exception.SubsidyNotFoundException;
 import com.bbap.hr.repository.EmployeeRepository;
 import com.bbap.hr.repository.SubsidyRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -94,16 +99,30 @@ public class HrServiceImpl implements HrService {
     }
 
     @Override
-    public ResponseEntity<DataResponseDto<EmployeeNameData>> getEmployeeDataByEmpCard(String empCard) {
+    public ResponseEntity<DataResponseDto<EmployeeCardTaggingData>> getEmployeeDataByEmpCard(String empCard) {
+        log.info("직원의 카드 정보로 직원 정보를 조회합니다: {}", empCard);
+
         EmployeeEntity employee = employeeRepository.findByEmpCard(empCard)
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        EmployeeNameData data = EmployeeNameData
+        WorkplaceEntity workplace = employee.getWorkplace();
+        if (workplace == null) {
+            throw new EmployeeWorkplaceNotFoundException();
+        }
+
+        SubsidyEntity subsidy = subsidyRepository.findSubsidyByWorkplaceAndCurrentTime(workplace, LocalTime.now())
+                .orElseThrow(SubsidyNotFoundException::new);
+
+
+        EmployeeCardTaggingData data = EmployeeCardTaggingData
                 .builder()
                 .empId(employee.getEmpId())
                 .empName(employee.getEmpName())
+                .subsidy(subsidy.getSubsidy())
                 .build();
 
+        log.info("직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
+                data.getEmpId(), data.getEmpName(), LocalTime.now(), data.getSubsidy());
         return DataResponseDto.of(data);
     }
 }
