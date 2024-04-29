@@ -1,15 +1,19 @@
 package com.bbap.order.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
 import com.bbap.order.service.OrderService;
@@ -22,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/orders", produces = "application/json; charset=UTF8")
+@RequestMapping(value = "/api/v1/orders")
 @Tag(name = "order", description = "주문 API")
 public class OrderController {
 	private final OrderService orderService;
@@ -49,5 +53,17 @@ public class OrderController {
 	@PostMapping("/pay/kiosk")
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(@RequestBody PayKioskRequestDto requestDto) {
 		return orderService.orderKiosk(requestDto);
+	}
+
+	@Operation(
+		summary = "결제 정보 확인 - 얼굴",
+		description = "얼굴 사진으로 결제 정보 확인하기"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@PostMapping(value="/payInfo/face", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(@ModelAttribute PayInfoFaceRequestDto requestDto) {
+		return orderService.getPayInfoByFace(requestDto);
 	}
 }
