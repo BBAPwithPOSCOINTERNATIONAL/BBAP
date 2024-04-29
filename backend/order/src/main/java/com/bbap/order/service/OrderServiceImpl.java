@@ -3,6 +3,8 @@ package com.bbap.order.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +24,9 @@ import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.response.CafeInfoForOrderListDto;
+import com.bbap.order.dto.response.OrderDto;
+import com.bbap.order.dto.response.OrderListResponseDto;
 import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.response.StampResponseDto;
@@ -159,6 +164,38 @@ public class OrderServiceImpl implements OrderService {
 		PayInfoResponseDto responseDto = new PayInfoResponseDto(
 			empId, empName, stampCnt, availableSubsidy
 		);
+		return DataResponseDto.of(responseDto);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer month, Integer year) {
+		// 해당 월의 첫 날과 마지막 날을 계산
+		LocalDateTime startOfMonth = YearMonth.of(year, month).atDay(1).atStartOfDay();
+		LocalDateTime endOfMonth = YearMonth.of(year, month).atEndOfMonth().atTime(23, 59, 59);
+		//사원 ID 토큰에서 까기
+		Integer empId = 1;
+
+		List<Order> orderList = orderRepository.findByEmployeeAndPickUpTimeBetween(startOfMonth, endOfMonth, empId);
+		List<OrderDto> orderDtos = new ArrayList<>();
+		for (Order order : orderList) {
+			ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeResponse = cafeServiceFeignClient.getCafeInfo(order.getCafeId());
+			// 주문의 모든 메뉴의 가격 합산
+			int totalOrderPrice = order.getMenus().stream()
+				.mapToInt(OrderMenu::getPrice)
+				.sum();
+			// OrderDto 생성
+			OrderDto orderDto = new OrderDto(
+				order.getId(),
+				order.getPickUpTime(),
+				cafeResponse.getBody().getData().getCafeName(),
+				order.getMenus().get(0).getName(),
+				order.getMenus().size(),
+				totalOrderPrice, // 계산된 총 가격
+				cafeResponse.getBody().getData().getWorkPlaceName()
+			);
+			orderDtos.add(orderDto); // 생성된 OrderDto를 리스트에 추가
+		}
+		OrderListResponseDto responseDto = new OrderListResponseDto(orderDtos);
 		return DataResponseDto.of(responseDto);
 	}
 

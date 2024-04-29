@@ -7,6 +7,7 @@ import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.response.OrderListResponseDto;
 import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -18,4 +19,5 @@ public interface OrderService {
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(String cafeId);
+	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer month, Integer year);
 }
