@@ -74,15 +74,15 @@ const AdminPage = () => {
       <LeftNav className="flex-auto">
         <div>
           <button
-            className="font-hyemin-bold bg-[#F2F2F2] rounded-md ml-5 mt-24
-            p-4 text-[20px] sm:text-[20px] md:text-[22px] lg:text-[25px]
+            className="font-hyemin-bold bg-[#F2F2F2] rounded-md mt-24
+            p-4 px-10 text-[20px] sm:text-[20px] md:text-[22px] lg:text-[25px]
             w-48 sm:w-44 md:w-52 lg:w-full"
             onClick={() => handleTabClick("조회")}
           >
             조회
           </button>
           <button
-            className="font-hyemin-bold bg-[#F2F2F2] rounded-md m-5 
+            className="font-hyemin-bold bg-[#F2F2F2] rounded-md m-5 ml-0 
              p-4 text-[20px] sm:text-[20px] md:text-[22px] lg:text-[25px]
              w-44 sm:w-44 md:w-52 lg:w-full"
             onClick={() => handleTabClick("결재")}
@@ -112,7 +112,7 @@ const AdminPage = () => {
               marginTop: "1%",
             }}
           >
-            <div className=" font-hyemin-bold text-[40px] mb-3">조회👀</div>
+            <div className=" font-hyemin-bold text-[40px] mb-3">조회</div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold ">
               {/* <Inputtag
@@ -135,7 +135,7 @@ const AdminPage = () => {
             }}
           >
             <div className=" font-hyemin-bold text-[40px]  mb-3">
-              {year}년 {month}월 결재📄
+              {year}년 {month}월 결재
             </div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold">

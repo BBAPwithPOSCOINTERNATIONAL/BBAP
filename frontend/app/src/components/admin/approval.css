@@ -1,0 +1,14 @@
+.checkbox {
+  transform: scale(1.5);
+}
+
+th {
+  /* border-right: 1px solid #e5e7eb; */
+  text-align: center;
+  padding: 0px 10px;
+}
+
+td {
+  text-align: center;
+  padding: 0px 10px;
+}

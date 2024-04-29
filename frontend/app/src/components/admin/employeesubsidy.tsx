@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import "./approval.css";
 
 interface Employee {
   employeeId: number;
   name: string;
-  location: string;
-  rank: string;
+  workplace: string;
+  position: string;
   department: string;
   transactions: Transaction[];
 }
@@ -21,12 +22,12 @@ const employees: Employee[] = [
   {
     employeeId: 1,
     name: "홍길동",
-    location: "서울역 그랜드센트럴",
-    rank: "부장",
+    workplace: "서울역 그랜드센트럴",
+    position: "부장",
     department: "섹션리더",
     transactions: [
       {
-        date: "2024-04-01",
+        date: "2024-04-07",
         totalPayment: 200000,
         subsidy: 150000,
         personalPayment: 50000,
@@ -60,61 +61,69 @@ function EmployeeSubsidy(): JSX.Element {
   );
 
   return (
-    <div className="w-5/6 text-[30px]">
+    <div className="w-5/6 text-[30px] ">
       <input
         type="date"
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
-        className="font-hyemin-bold mt-2 mr-4 text-[17px] w-40"
+        className="font-hyemin-bold rounded-md mt-2 mr-4 text-[17px] w-50 p-1 px-4"
       />
+      ~
       <input
         type="date"
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
-        className="font-hyemin-bold mt-2 mr-4 text-[17px] w-40"
+        className="font-hyemin-bold rounded-md mt-2 ml-4 text-[17px] w-50 p-1 px-4"
       />
-      <div className="font-hyemin-bold mt-2 mr-4 text-[20px] w-40">
-        사원번호 :{employeeId}
+      <div className="font-hyemin-bold mt-4 mr-4 text-[20px] w-40">
+        사원 : 사원명 ({employeeId})
       </div>
       <table className="mt-4 w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-yellow-100 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="py-3 px-6 text-[20px]">
-              사원명
-            </th>
-            <th scope="col" className="py-3 px-6 text-[20px]">
+            <th scope="col" className="py-3 px-6 text-[22px]">
               일자
             </th>
-            <th scope="col" className="py-3 px-6 text-[20px]">
+            <th scope="col" className="py-3 px-6 text-[22px]">
               총 결제금액
             </th>
-            <th scope="col" className="py-3 px-6 text-[20px]">
+            <th scope="col" className="py-3 px-6 text-[22px]">
               지원금
             </th>
-            <th scope="col" className="py-3 px-6 text-[20px]">
+            <th scope="col" className="py-3 px-6 text-[22px]">
               본인부담금
             </th>
           </tr>
         </thead>
         <tbody>
-          {filteredTransactions.map((transaction) => (
-            <tr
-              key={`${transaction.id}-${transaction.date}`}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10"
-            >
-              <td className="py-4 px-6 text-[18px]">{transaction.name}</td>
-              <td className="py-4 px-6 text-[18px]">{transaction.date}</td>
-              <td className="py-4 px-6 text-[18px]">
-                {transaction.totalPayment.toLocaleString()}
-              </td>
-              <td className="py-4 px-6 text-[18px]">
-                {transaction.subsidy.toLocaleString()}
-              </td>
-              <td className="py-4 px-6 text-[18px]">
-                {transaction.personalPayment.toLocaleString()}
+          {filteredTransactions.length === 0 ? (
+            <tr>
+              <td
+                colSpan={4}
+                className="py-4 px-6 text-[20px] text-center text-gray-500 dark:text-gray-400"
+              >
+                해당기간에 사용내역이 없습니다.
               </td>
             </tr>
-          ))}
+          ) : (
+            filteredTransactions.map((transaction) => (
+              <tr
+                key={`${transaction.id}-${transaction.date}`}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10"
+              >
+                <td className="py-4 px-6 text-[18px]">{transaction.date}</td>
+                <td className="py-4 px-6 text-[18px]">
+                  {transaction.totalPayment.toLocaleString()}
+                </td>
+                <td className="py-4 px-6 text-[18px]">
+                  {transaction.subsidy.toLocaleString()}
+                </td>
+                <td className="py-4 px-6 text-[18px]">
+                  {transaction.personalPayment.toLocaleString()}
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
