@@ -15,6 +15,8 @@ import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.response.OrderDetailResponseDto;
+import com.bbap.order.dto.response.OrderListResponseDto;
 import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -103,5 +105,28 @@ public class OrderController {
 	@GetMapping(value="/payInfo/{cafeId}")
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@PathVariable String cafeId) {
 		return orderService.getPayInfo(cafeId);
+	}
+	@Operation(
+		summary = "주문 내역 리스트",
+		description = "월별 주문 내역 리스트"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping(value="/list/{year}/{month}")
+	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(@PathVariable Integer month, @PathVariable Integer year) {
+		return orderService.orderList(month, year);
+	}
+
+	@Operation(
+		summary = "주문 내역 상세",
+		description = "주문 내역 상세를 보여준다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@GetMapping(value="/{orderId}")
+	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(@PathVariable String orderId) {
+		return orderService.orderDetail(orderId);
 	}
 }

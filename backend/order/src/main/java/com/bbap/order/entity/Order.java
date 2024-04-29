@@ -28,13 +28,17 @@ public class Order {
 	private LocalDateTime orderTime;
 	@Field("pick_up_time")
 	private LocalDateTime pickUpTime;
+	@Field("used_subsidy")
+	private int usedSubsidy;
 	private List<OrderMenu> menus;
 
-	public Order(String cafeId, Integer empId, LocalDateTime orderTime, LocalDateTime pickUpTime, List<OrderMenu> menus) {
+
+	public Order(String cafeId, Integer empId, LocalDateTime orderTime, LocalDateTime pickUpTime,int usedSubsidy, List<OrderMenu> menus) {
 		this.cafeId = cafeId;
 		this.empId = empId;
 		this.orderTime = orderTime;
 		this.pickUpTime = pickUpTime;
+		this.usedSubsidy = usedSubsidy;
 		this.menus = menus;
 	}
 }

@@ -15,4 +15,5 @@ public interface FaceServiceFeignClient {
 
 	@PostMapping(value = "/check", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<DataResponseDto<CheckFaceResponseData>> predictFace(@ModelAttribute FaceRequestDto request);
+
 }
