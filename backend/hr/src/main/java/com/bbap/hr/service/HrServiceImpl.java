@@ -3,10 +3,12 @@ package com.bbap.hr.service;
 import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
+import com.bbap.hr.dto.response.EmployeeNameData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.entity.EmployeeEntity;
 import com.bbap.hr.entity.SubsidyEntity;
+import com.bbap.hr.exception.EmployeeNotFoundException;
 import com.bbap.hr.repository.EmployeeRepository;
 import com.bbap.hr.repository.SubsidyRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,19 +65,19 @@ public class HrServiceImpl implements HrService {
                         .empNo(entity.getEmpNo())
                         .empName(entity.getEmpName())
                         .department(
-                                DepartmentDto.builder()
+                                entity.getDepartment() == null ? null : DepartmentDto.builder()
                                         .departmentId(entity.getDepartment().getDepartmentId())
                                         .departmentName(entity.getDepartment().getDepartmentName())
                                         .build()
                         )
                         .position(
-                                PositionDto.builder()
+                                entity.getPosition() == null ? null : PositionDto.builder()
                                         .positionId(entity.getPosition().getPositionId())
                                         .positionName(entity.getPosition().getPositionName())
                                         .build()
                         )
                         .workplace(
-                                WorkplaceDto.builder()
+                                entity.getWorkplace() == null ? null : WorkplaceDto.builder()
                                         .workplaceId(entity.getWorkplace().getWorkplaceId())
                                         .workplaceName(entity.getWorkplace().getWorkplaceName())
                                         .build()
@@ -89,5 +91,19 @@ public class HrServiceImpl implements HrService {
                 .build();
 
         return DataResponseDto.of(listEmployeeData);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<EmployeeNameData>> getEmployeeDataByEmpCard(String empCard) {
+        EmployeeEntity employee = employeeRepository.findByEmpCard(empCard)
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        EmployeeNameData data = EmployeeNameData
+                .builder()
+                .empId(employee.getEmpId())
+                .empName(employee.getEmpName())
+                .build();
+
+        return DataResponseDto.of(data);
     }
 }

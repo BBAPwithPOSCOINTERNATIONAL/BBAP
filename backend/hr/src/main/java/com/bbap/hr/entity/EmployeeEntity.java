@@ -12,32 +12,35 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="employee")
+@Table(name = "employee")
 public class EmployeeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="emp_id", nullable = false)
+    @Column(name = "emp_id", nullable = false)
     private Integer empId;
 
-    @Column(name="emp_no", nullable = false)
+    @Column(name = "emp_no", nullable = false)
     private String empNo;
 
-    @Column(name="password", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name="emp_name", nullable = false)
+    @Column(name = "emp_name", nullable = false)
     private String empName;
 
+    @Column(name = "emp_card", nullable = true, unique = true)
+    private String empCard;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="department_id")
+    @JoinColumn(name = "department_id")
     private DepartmentEntity department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="position_id")
+    @JoinColumn(name = "position_id")
     private PositionEntity position;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="workplace_id")
+    @JoinColumn(name = "workplace_id")
     private WorkplaceEntity workplace;
 }

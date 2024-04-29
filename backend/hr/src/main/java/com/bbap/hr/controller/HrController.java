@@ -1,8 +1,10 @@
 package com.bbap.hr.controller;
 
 
+import com.bbap.hr.dto.EmployeeDto;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
+import com.bbap.hr.dto.response.EmployeeNameData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.service.HrService;
@@ -27,6 +29,12 @@ public class HrController {
     @GetMapping("/employees")
     public ResponseEntity<DataResponseDto<ListEmployeeData>> searchEmployees(EmployeeSearchDto employeeSearchDto) {
         return hrService.searchEmployees(employeeSearchDto);
+    }
+
+    @GetMapping("/employees/card/{empCard}")
+    public ResponseEntity<DataResponseDto<EmployeeNameData>> getEmployeeDataByEmpCard(@PathVariable String empCard) {
+
+        return hrService.getEmployeeDataByEmpCard(empCard);
     }
 
 
