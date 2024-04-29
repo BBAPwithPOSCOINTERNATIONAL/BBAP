@@ -3,17 +3,18 @@ package com.bbap.order.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbap.order.dto.request.ChoiceRequestDto;
 import com.bbap.order.dto.request.MenuRequestDto;
-import com.bbap.order.dto.request.OptionRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
 import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.responseDto.DataResponseDto;
@@ -22,6 +23,7 @@ import com.bbap.order.entity.Menu;
 import com.bbap.order.entity.Option;
 import com.bbap.order.entity.Order;
 import com.bbap.order.entity.OrderMenu;
+import com.bbap.order.exception.BadOrderRequestException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
 import com.bbap.order.repository.MenuRepository;
 import com.bbap.order.repository.OrderRepository;
@@ -40,6 +42,10 @@ public class OrderServiceImpl implements OrderService {
 	private final RedisTemplate<String, String> redisTemplate;
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> order(PayRequestDto dto) {
+		// Validate pick-up time
+		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
+			throw new BadOrderRequestException();
+		}
 		List<OrderMenu> orderMenus = getOrderMenus(dto);
 		//사원 아이디
 		int empId = 1;
@@ -52,28 +58,37 @@ public class OrderServiceImpl implements OrderService {
 		return DataResponseDto.of(payResponseDto);
 	}
 
-	private List<OrderMenu> getOrderMenus (PayRequestDto dto) {
+	private List<OrderMenu> getOrderMenus(PayRequestDto dto) {
 		List<MenuRequestDto> menuRequestDtos = dto.getMenuList();
-		List<OrderMenu> orderMenus= new ArrayList<>();
-		for (MenuRequestDto menu: menuRequestDtos) {
-			Menu menuOptional = menuRepository.findById(menu.getMenuId()).orElseThrow(MenuEntityNotFoundException::new);
-			int price = menuOptional.getPrice();
-			List<Option> options = new ArrayList<>();
-			List<OptionRequestDto> optionRequests = menu.getOptions();
-			for (OptionRequestDto optionRequestDto : optionRequests) {
-				List<Choice> choices = new ArrayList<>();
-				List<ChoiceRequestDto> choiceRequestDtos = optionRequestDto.getChoiceOptions();
-				for (ChoiceRequestDto choiceRequestDto : choiceRequestDtos) {
-					choices.add(new Choice(choiceRequestDto.getChoiceName(), choiceRequestDto.getPrice()));
-					price += choiceRequestDto.getPrice();
-				}
-				options.add(new Option(optionRequestDto.getOptionName(),
-					optionRequestDto.getType(), optionRequestDto.isRequired(), choices));
+
+		// Extract menu IDs and fetch menus in bulk
+		List<String> menuIds = menuRequestDtos.stream().map(MenuRequestDto::getMenuId).collect(Collectors.toList());
+		List<Menu> menus = menuRepository.findAllById(menuIds);
+		Map<String, Menu> menuMap = menus.stream().collect(Collectors.toMap(Menu::getId, Function.identity()));
+
+		return menuRequestDtos.stream().map(menuDto -> {
+			Menu menu = menuMap.get(menuDto.getMenuId());
+			if (menu == null) {
+				throw new MenuEntityNotFoundException();
 			}
-			price *= menu.getCnt();
-			orderMenus.add(new OrderMenu(menuOptional.getName(), menu.getCnt(), price,options));
-		}
-		return orderMenus;
+
+			AtomicInteger price = new AtomicInteger(menu.getPrice());
+			List<Option> options = menuDto.getOptions().stream().map(optionDto -> {
+				List<Choice> choices = optionDto.getChoiceOptions().stream().map(choiceDto ->
+					new Choice(choiceDto.getChoiceName(), choiceDto.getPrice())
+				).collect(Collectors.toList());
+
+				if (optionDto.getType().equals("single") && choices.size() > 1) {
+					throw new BadOrderRequestException();
+				}
+
+				price.addAndGet(choices.stream().mapToInt(Choice::getPrice).sum());
+				return new Option(optionDto.getOptionName(), optionDto.getType(), optionDto.isRequired(), choices);
+			}).collect(Collectors.toList());
+
+			int finalPrice = price.get() * menuDto.getCnt();
+			return new OrderMenu(menu.getName(), menuDto.getCnt(), finalPrice, options);
+		}).collect(Collectors.toList());
 	}
 
 	private Long incrementOrderNumber(String cafeId) {

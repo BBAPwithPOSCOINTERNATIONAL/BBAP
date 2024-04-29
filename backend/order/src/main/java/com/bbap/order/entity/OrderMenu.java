@@ -1,6 +1,7 @@
 package com.bbap.order.entity;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 

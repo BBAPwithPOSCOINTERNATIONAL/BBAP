@@ -1,4 +1,4 @@
-package com.bbap.order;
+package com.bbap.order.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
