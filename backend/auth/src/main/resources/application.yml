@@ -1,0 +1,19 @@
+secret-key: ThisIsSSAFYEFiveIsJwtSecretKeyDoNotUseThisStatement
+spring:
+  profiles:
+    active: ${profile}
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE
+#logging:
+#  level:
+#    com.bbap: DEBUG
+#    org.springframework: INFO
+#    root: WARN
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
