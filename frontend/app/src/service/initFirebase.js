@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getToken, getMessaging } from "firebase/messaging";
+// import { sendTokenToServer } from "../api/fcmTokenAPI.tsx";
 
-// TODO: 로그인한 사용자에 한해서만 실행되도록 수정 필요함
+// TODO: 로그인할 때마다 실행되도록 수정 필요함
 const apiKey = import.meta.env.VITE_FB_API_KEY;
 const authDomain = import.meta.env.VITE_FB_AUTH_DOMAIN;
 const projectId = import.meta.env.VITE_FB_PROJECT_ID;
