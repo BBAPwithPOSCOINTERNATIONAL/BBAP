@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import Button from "../components/button";
 import styled, { keyframes } from "styled-components";
+import { paymentRestaurantReq } from "../api/paymentApi";
 
 // 키보드입력 한영 전환
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
@@ -34,7 +35,7 @@ const RestaurantPage: React.FC = () => {
 		}
 	});
 
-	const activeEnter = (e: React.KeyboardEvent) => {
+	const activeEnter = async (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
 			let result = "";
 			for (const char of tagValue) {
@@ -49,12 +50,11 @@ const RestaurantPage: React.FC = () => {
 			console.log("카드번호: ", result);
 			setTagValue("");
 			// TODO: 정보 담아서 서버로 POST 요청
-			const payload = {
-				cardId: result,
-				menuPrice: 7000,
-				menuName: "순대국밥",
-				payStore: "구내식당A",
-			};
+			try {
+				await paymentRestaurantReq(result);
+			} catch (error) {
+				console.error("식당 결제 오류:", error);
+			}
 		}
 	};
 

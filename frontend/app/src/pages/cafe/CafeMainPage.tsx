@@ -119,9 +119,9 @@ function CafeMainPage() {
                 />
               </div>
             </div>
-            <MenuSection ref={coffeeRef} items={menu.coffee} title="커피" />
-            <MenuSection ref={beverageRef} items={menu.beverage} title="음료" />
-            <MenuSection ref={dessertRef} items={menu.dessert} title="디저트" />
+            <MenuSection ref={coffeeRef} items={menu.menuListCoffee} title="커피" />
+            <MenuSection ref={beverageRef} items={menu.menuListBeverage} title="음료" />
+            <MenuSection ref={dessertRef} items={menu.menuListDessert} title="디저트" />
             {totalCount > 0 && (
               <div className="fixed bottom-0 left-0 right-0 bg-stone-100">
                 {/* 총 주문 금액 표시 */}

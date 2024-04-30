@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+// import { useQuery } from "@tanstack/react-query";
 import CurrentTime from "../components/currentTime";
 import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
@@ -8,7 +9,8 @@ import Button from "../components/button";
 import MenuModal from "../components/menuModal";
 import useModalStore from "../store/modalStore";
 import useCartStore from "../store/cartStore";
-import CartItem from "../components/cartItem";
+import CartItemDiv from "../components/cartItem";
+// import { fetchMenuData } from "../api/menuApi";
 
 interface MenuData {
 	[key: string]: Menu[];
@@ -30,10 +32,8 @@ const MainPage: React.FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		// TODO: /api/v1/cafes/kiosk/menus/{cafeId} 로 GET 요청해서 메뉴 정보 받기
 		setMenuData(cafeMenuData);
 	}, []);
-
 	useEffect(() => {
 		setActiveMenu(menuData ? menuData[tapMapping[activeTapItem]] : undefined);
 	}, [menuData, activeTapItem]);
@@ -96,7 +96,7 @@ const MainPage: React.FC = () => {
 								<div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
 									{/* store에 저장된 주문내역 렌더링 */}
 									{cartList.map((item, index) => (
-										<CartItem props={item} key={index} index={index} />
+										<CartItemDiv props={item} key={index} index={index} />
 									))}
 								</div>
 							</div>
