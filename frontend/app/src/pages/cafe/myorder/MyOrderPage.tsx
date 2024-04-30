@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 // import { getMyOrder } from "../../../api/Order";
+import DetailModal from "./DetailModal";
 import back from "../../../assets/button/back.png";
 import next from "../../../assets/button/next.png";
 
@@ -80,6 +81,8 @@ const MyOrderPage = () => {
     month: new Date().getMonth() + 1,
   });
   const [orders, setOrders] = useState<Order[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const monthString = `${date.year}-${date.month
@@ -112,6 +115,15 @@ const MyOrderPage = () => {
   //     setOrders(data.data.orderList);
   //   });
   // }, [date]);
+
+  const handleCardClick = (order: Order) => {
+    setSelectedOrder(order);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handlePrevMonth = () => {
     setDate((prev) => {
@@ -173,6 +185,7 @@ const MyOrderPage = () => {
             return (
               <div
                 key={order.orderId}
+                onClick={() => handleCardClick(order)}
                 className={`flex justify-between border rounded-lg m-5 p-5 shadow-lg ${
                   statusText === "수령완료" ? "bg-[#EFF7FF]" : "bg-[#C5E2FF]"
                 }`}
@@ -202,6 +215,9 @@ const MyOrderPage = () => {
           <div className="flex items-center justify-center w-full mt-20 text-3xl">
             <p>데이터가 없습니다.</p>
           </div>
+        )}
+        {showModal && (
+          <DetailModal order={selectedOrder} onClose={handleCloseModal} />
         )}
       </div>
     </div>

@@ -31,7 +31,7 @@ interface Menu {
   eatCount: number;
 }
 
-interface ApiResponse {
+export interface ApiResponse {
   message: string;
   data: {
     restaurantList: Restaurant[];
@@ -47,10 +47,11 @@ export async function fetchRestaurantData(
 ): Promise<ApiResponse> {
   try {
     const effectiveRestaurantId = restaurantId === -1 ? 0 : restaurantId; // 근무지 정보로 ID 대체
-    const { data } = await apiClient.get<ApiResponse>(
+    const response = await apiClient.get<ApiResponse>(
       `/api/v1/restaurants/${effectiveRestaurantId}`
     );
-    return data;
+    console.log(response);
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || "Failed to data");

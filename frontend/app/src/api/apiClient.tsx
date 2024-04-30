@@ -1,11 +1,13 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from "axios";
 
-const env = import.meta.env.VITE_IS_PRODUCTION || "development";
-const isProduction: boolean = env === "production";
+// const env = import.meta.env.VITE_IS_PRODUCTION || "development";
+// const isProduction: boolean = env === "production";
 
-const HOST: string = isProduction ? "https://i10s210.p.ssafy.io" : "http://localhost";
-const PORT: string = ":8443";
-const URL: string = isProduction ? HOST : `${HOST}${PORT}`;
+// const HOST: string = isProduction ? "https://pobap.com" : "http://localhost";
+// const PORT: string = ":8080";
+// const URL: string = isProduction ? HOST : `${HOST}${PORT}`;
+
+const URL: string = "https://pobap.com";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: URL,
