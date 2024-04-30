@@ -14,7 +14,7 @@ const CafeSelector: React.FC = () => {
   };
 
   return (
-    <div className="mt-2 flex flex-col items-center">
+    <div className="mt-2 flex flex-col w-full items-center">
       <select
         id="cafe-select"
         value={selectedCafe}

@@ -29,37 +29,49 @@ function BottomTabBar() {
         <nav>
           <ul className="flex justify-around list-none m-0 p-0">
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
-              <Link to="/cafemain">
-                <img src={Coffee} alt="cafe" style={{ width: "3rem" }} />
-                카페가기
+              <Link
+                to="/cafemain"
+                className="flex flex-col items-center justify-center"
+              >
+                <img src={Coffee} alt="cafe" className="w-12" />{" "}
+                <span>카페가기</span>
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
-              <Link to="/restaurantmain">
+              <Link
+                to="/restaurantmain"
+                className="flex flex-col items-center justify-center"
+              >
                 <img
                   src={getImage("/restaurantmain", res, resClick)}
                   alt="restaurant"
-                  style={{ width: "3rem" }}
+                  className="w-12"
                 />
                 식당가기
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
-              <Link to="/receipt">
+              <Link
+                to="/receipt"
+                className="flex flex-col items-center justify-center"
+              >
                 <img
                   src={getImage("/receipt", receipts, receiptsClick)}
                   alt="receipts"
-                  style={{ width: "3rem" }}
+                  className="w-12"
                 />
                 내영수증
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
-              <Link to="/profile">
+              <Link
+                to="/profile"
+                className="flex flex-col items-center justify-center"
+              >
                 <img
                   src={getImage("/profile", myprofile, myprofileClick)}
                   alt="myprofile"
-                  style={{ width: "3rem" }}
+                  className="w-12"
                 />
                 내프로필
               </Link>

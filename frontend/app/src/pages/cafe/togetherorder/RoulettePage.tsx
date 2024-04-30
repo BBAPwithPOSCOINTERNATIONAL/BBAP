@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../../../components/Navbar";
 
 type Name = string[];
 
@@ -7,18 +8,15 @@ const RoulettePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [winner, setWinner] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [rouletteText, setRouletteText] = useState("돌려 돌려 돌림판"); // 기본 텍스트 설정
 
   const teamNames: Name = [
-    "떡볶이",
-    "돈가스",
-    "초밥",
-    "피자",
-    "냉면",
-    "치킨",
-    "족발",
-    "삼겹살",
-    "오겹살",
-    "카레",
+    "박영진",
+    "조혜원",
+    "이시은",
+    "강성은",
+    "이성완",
+    "김다희",
   ];
 
   const colors = [
@@ -74,6 +72,7 @@ const RoulettePage = () => {
   }, []);
 
   const rotate = () => {
+    console.log(winner);
     const canvas = canvasRef.current;
     if (canvas) {
       const randomIndex = Math.floor(Math.random() * teamNames.length);
@@ -81,17 +80,24 @@ const RoulettePage = () => {
       const rotateDeg = randomIndex * arc + 3600 + arc * 3 - arc / 4;
       canvas.style.transition = "transform 2s";
       canvas.style.transform = `rotate(-${rotateDeg}deg)`;
+      setRouletteText("누가 누가 걸릴까");
 
       setTimeout(() => {
-        setWinner(teamNames[randomIndex]);
+        const selectedWinner = teamNames[randomIndex];
+        setWinner(selectedWinner);
 
-        navigate(`/winner/${winner}`);
+        // 상태 업데이트 후 네비게이션 실행
+        setTimeout(() => {
+          navigate(`/winner/${selectedWinner}`);
+        }, 100);
       }, 2000);
     }
   };
 
   return (
     <div className="flex flex-col items-center relative w-full overflow-hidden">
+      <NavBar />
+      <h1 className="font-hyemin-bold text-4xl my-4">{rouletteText}</h1>
       <canvas
         ref={canvasRef}
         width="380"

@@ -1,35 +1,83 @@
-import { useState } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import IdPhoto from "../../assets/image1.png";
+// import guide from "../../assets/guideLine.png";
+
+interface ModalProps {
+  isOpen: boolean;
+  children: ReactNode;
+}
+
+function Modal({ isOpen, children }: ModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <div className="bg-white p-5 rounded-lg">
+        <div className="text-center font-hyemin-bold text-2xl my-5">
+          얼굴을 등록해주세요
+        </div>
+        {/* <div className="text-center text-lg my-5">
+          가이드라인 안쪽으로 <br />
+          얼굴을 위치시켜주세요
+        </div> */}
+        {children}
+        {/* <div className="flex flex-col items-center">
+          <button
+            className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={onClose}
+          >
+            닫기
+          </button>
+        </div> */}
+        {/* <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-10">
+          <img
+            src={guide}
+            alt="guide"
+            className="w-40"
+            style={{ pointerEvents: "none" }}
+          ></img>
+        </div> */}
+      </div>
+    </div>
+  );
+}
 
 function MyProfilePage() {
   const profile = {
     name: "김싸피",
     employeeId: "1234567",
     location: "서울",
-    imageUrl: IdPhoto, // Corrected image URL assignment
+    imageUrl: IdPhoto,
   };
 
   const [showVideo, setShowVideo] = useState(false);
   const [captured, setCaptured] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const handleCameraAccess = async () => {
     try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+      setStream(mediaStream);
       setShowVideo(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      // Do something with the camera stream, such as displaying it in a video element
-      console.log(stream);
-      const videoElement = document.getElementById(
-        "cameraPreview"
-      ) as HTMLVideoElement;
-      if (videoElement) {
-        videoElement.srcObject = stream;
-      }
+      setModalOpen(true);
     } catch (error) {
       console.error("Error accessing camera:", error);
     }
   };
+
+  useEffect(() => {
+    const videoElement = document.getElementById(
+      "cameraPreview"
+    ) as HTMLVideoElement | null;
+    if (videoElement && stream) {
+      videoElement.srcObject = stream;
+    }
+  }, [modalOpen, stream]);
 
   const handleCaptureImage = async () => {
     const videoElement = document.getElementById(
@@ -59,9 +107,18 @@ function MyProfilePage() {
 
       setShowVideo(false); // 비디오 표시 상태 업데이트
       setCaptured(true);
+      setModalOpen(false);
     } else {
       console.error("Failed to get drawing context from canvas");
     }
+  };
+
+  const handleCloseModal = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    setModalOpen(false); // 모달 상태를 false로 변경하여 닫습니다.
+    setShowVideo(false); // 비디오 표시 상태도 업데이트
   };
 
   return (
@@ -70,26 +127,43 @@ function MyProfilePage() {
       <div className="flex-grow p-5">
         <div className="bg-white shadow-lg rounded-lg p-5">
           <div className="flex flex-col items-center">
-            <img className="w-24 h-25" src={profile.imageUrl} alt="Profile" />
-            {showVideo && <video id="cameraPreview" autoPlay></video>}
+            <img
+              className="w-24 h-24 mb-4"
+              src={profile.imageUrl}
+              alt="Profile"
+            />
             <button
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                handleCameraAccess();
-              }}
+              className="mt-4 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+              onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? " ✅" : ""}
             </button>
-            {showVideo && (
-              <button
-                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  handleCaptureImage();
-                }}
-              >
-                사진찍기
-              </button>
-            )}
+            <Modal isOpen={modalOpen}>
+              {showVideo && (
+                <>
+                  <video
+                    id="cameraPreview"
+                    className="scale-x-[-1] z-10"
+                    autoPlay
+                  ></video>
+                  <div className="flex flex-row justify-center items-center mt-4">
+                    {" "}
+                    <button
+                      className="mr-5 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleCaptureImage}
+                    >
+                      사진찍기
+                    </button>
+                    <button
+                      className="ml-5 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleCloseModal}
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </>
+              )}
+            </Modal>
             <h1 className="text-2xl font-bold mt-2">{profile.name} 님</h1>
             <div className="bg-blue-200 rounded-lg p-2 mt-2 w-64 text-center">
               <p className="text-gray-600 font-hyemin-bold">

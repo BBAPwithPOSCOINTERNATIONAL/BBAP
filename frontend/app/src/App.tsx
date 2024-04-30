@@ -12,12 +12,14 @@ import CafeMainPage from "./pages/cafe/CafeMainPage";
 import RestaurantMainPage from "./pages/RestaurantMainPage";
 import MyReceiptPage from "./pages/myReceipt/MyReceiptPage";
 import MyProfilePage from "./pages/users/MyProfilePage";
-import TogetherOrderPage from "./pages/cafe/TogetherOrderPage";
+import TogetherOrderPage from "./pages/cafe/togetherorder/TogetherOrderPage";
 import MenuDetailPage from "./pages/cafe/MenuDetailPage";
 import CartPage from "./pages/cafe/CartPage";
 import ReceiptDetail from "./pages/myReceipt/ReceiptDetail";
 import MoreDetail from "./pages/myReceipt/MoreDetailPage";
-import RoulettePage from "./pages/cafe/RoulettePage";
+import RoulettePage from "./pages/cafe/togetherorder/RoulettePage";
+import AfterPaymentPage from "./pages/cafe/AfterPaymentPage";
+import WinnerPage from "./pages/cafe/togetherorder/WinnerPage";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +81,14 @@ const router = createBrowserRouter([
   {
     path: "roulette",
     element: <RoulettePage />,
+  },
+  {
+    path: "after",
+    element: <AfterPaymentPage />,
+  },
+  {
+    path: "winner/:winner",
+    element: <WinnerPage />,
   },
 ]);
 
