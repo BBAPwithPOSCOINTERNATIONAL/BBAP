@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import NavBar from "../../components/Navbar";
-import CafeSelector from "../../components/cafe/CafeSelector";
-import game from "../../assets/game.png";
-import share from "../../assets/share.png";
-import GameModal from "../../components/cafe/GameModal";
+import NavBar from "../../../components/Navbar";
+import CafeSelector from "../../../components/cafe/CafeSelector";
+import game from "../../../assets/game.png";
+import share from "../../../assets/share.png";
+import GameModal from "../../../components/cafe/GameModal";
 
 interface Product {
   owner: boolean;

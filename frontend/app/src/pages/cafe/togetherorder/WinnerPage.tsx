@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import NavBar from "../../components/Navbar";
+import NavBar from "../../../components/Navbar";
 
 function WinnerPage() {
   const { winner } = useParams(); // useParams를 사용하여 winner 파라미터를 가져옵니다.

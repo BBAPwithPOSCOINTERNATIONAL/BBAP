@@ -13,6 +13,7 @@ import useMoveScroll from "../../hooks/useMoveScroll";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../store/cartStore";
 import useContentStore from "../../store/useContent";
+import MyOrderPage from "./myorder/MyOrderPage";
 
 function CafeMainPage() {
   const navigate = useNavigate();
@@ -178,7 +179,11 @@ function CafeMainPage() {
             </div>
           </>
         )}
-        {content === "history" && <div>주문 내역을 보는 페이지입니다.</div>}
+        {content === "history" && (
+          <>
+            <MyOrderPage />
+          </>
+        )}
       </div>
     </div>
   );

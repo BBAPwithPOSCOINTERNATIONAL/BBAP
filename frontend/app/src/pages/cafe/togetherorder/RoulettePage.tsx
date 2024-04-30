@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/Navbar";
+import NavBar from "../../../components/Navbar";
 
 type Name = string[];
 
