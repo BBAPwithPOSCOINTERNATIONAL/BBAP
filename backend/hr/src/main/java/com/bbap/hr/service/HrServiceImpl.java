@@ -20,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -113,16 +115,27 @@ public class HrServiceImpl implements HrService {
         SubsidyEntity subsidy = subsidyRepository.findSubsidyByWorkplaceAndCurrentTime(workplace, LocalTime.now())
                 .orElseThrow(SubsidyNotFoundException::new);
 
+        Date date = new Date();
+        Time time = new Time(date.getTime());
 
         EmployeeCardTaggingData data = EmployeeCardTaggingData
                 .builder()
                 .empId(employee.getEmpId())
                 .empName(employee.getEmpName())
-                .subsidy(subsidy.getSubsidy())
+                .subsidy(
+                        SubsidyDto.builder()
+                                .startTime(subsidy.getStartTime())
+                                .endTime(subsidy.getEndTime())
+                                .mealClassification(subsidy.getMealClassification())
+                                .subsidy(subsidy.getSubsidy())
+                                .build()
+                )
+                .currTime(time)
                 .build();
 
+
         log.info("직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
-                data.getEmpId(), data.getEmpName(), LocalTime.now(), data.getSubsidy());
+                data.getEmpId(), data.getEmpName(), time, data.getSubsidy());
         return DataResponseDto.of(data);
     }
 }
