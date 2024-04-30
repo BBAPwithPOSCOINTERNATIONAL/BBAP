@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,8 +70,8 @@ public class PaymentController {
 	})
 	@GetMapping("/month/{yearMonth}")
 	public ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(
-		@PathVariable YearMonth yearMonth) {
-		return paymentService.listMonthPayment(yearMonth);
+		@RequestHeader int empId, @PathVariable YearMonth yearMonth) {
+		return paymentService.listMonthPayment(empId, yearMonth);
 	}
 
 	@Operation(
@@ -81,8 +82,10 @@ public class PaymentController {
 		@ApiResponse(responseCode = "200", description = "조회 성공."),
 	})
 	@GetMapping("/day/{date}")
-	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(@PathVariable LocalDate date) {
-		return paymentService.listDayPayment(date);
+	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(@RequestHeader int empId,
+		@PathVariable LocalDate date
+	) {
+		return paymentService.listDayPayment(empId, date);
 	}
 
 	@Operation(

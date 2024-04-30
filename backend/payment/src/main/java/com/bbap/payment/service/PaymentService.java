@@ -18,9 +18,9 @@ public interface PaymentService {
 
 	ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request);
 
-	ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(YearMonth yearMonth);
+	ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(int empId, YearMonth yearMonth);
 
-	ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(LocalDate date);
+	ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(int empId, LocalDate date);
 
 	ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId);
 }
