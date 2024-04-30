@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./approval.css";
+import Pagination from "./pagination";
 
 interface Employee {
   employeeId: number;
@@ -124,6 +125,216 @@ const employees: Employee[] = [
       },
     ],
   },
+  {
+    employeeId: 6,
+    name: "신사원",
+    workplace: "송도본사",
+    position: "사원",
+    department: "영업",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 7,
+    name: "이영재",
+    workplace: "포스코센터",
+    position: "대리",
+    department: "자원개발",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 8,
+    name: "김영희",
+    workplace: "서울역 그랜드센트럴",
+    position: "과장",
+    department: "LNG사업",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 9,
+    name: "박철수",
+    workplace: "청라 인천발전소",
+    position: "차장",
+    department: "발전사업",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 10,
+    name: "김영수",
+    workplace: "광양 LNG터미널",
+    position: "리더",
+    department: "사업개발",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 11,
+    name: "이미희",
+    workplace: "송도본사",
+    position: "부장",
+    department: "터미널사업",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 12,
+    name: "최종철",
+    workplace: "포스코센터",
+    position: "리더",
+    department: "기획/재무",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 13,
+    name: "정지훈",
+    workplace: "서울역 그랜드센트럴",
+    position: "차장",
+    department: "에너지정책",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 14,
+    name: "김유진",
+    workplace: "청라 인천발전소",
+    position: "사원",
+    department: "경영지원",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
+  {
+    employeeId: 15,
+    name: "박예진",
+    workplace: "광양 LNG터미널",
+    position: "대리",
+    department: "경영지원",
+    transactions: [
+      {
+        date: "2024-04-07",
+        totalPayment: 200000,
+        subsidy: 150000,
+        personalPayment: 50000,
+      },
+      {
+        date: "2024-04-15",
+        totalPayment: 300000,
+        subsidy: 225000,
+        personalPayment: 75000,
+      },
+    ],
+  },
 ];
 
 function Approve(): JSX.Element {
@@ -133,6 +344,30 @@ function Approve(): JSX.Element {
   const [department, setDepartment] = useState<string>("");
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const employeesPerPage = 10;
+  const filteredEmployees = employees.filter((employee) => {
+    return (
+      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      employee.workplace.includes(location) &&
+      employee.position.includes(rank) &&
+      employee.department.includes(department)
+    );
+  });
+  const totalFilteredPages = Math.ceil(
+    filteredEmployees.length / employeesPerPage
+  );
+
+  // 현재 페이지의 직원들을 나타내기 위한 인덱스 범위를 계산합니다.
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = filteredEmployees.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -147,7 +382,7 @@ function Approve(): JSX.Element {
 
   const handleApprove = () => {
     if (selectedEmployees.length === 0) {
-      alert("선택된 항목이 없습니다");
+      alert("선택된 항목이 없습니다. 승인할 항목을 선택해주세요 :) ");
     } else if (selectedEmployees.length === employees.length) {
       openModalAllApprove(); // 모두 승인 모달
     } else {
@@ -177,13 +412,16 @@ function Approve(): JSX.Element {
   };
 
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
-
   const handleCheckboxChange = (employeeId: number) => {
     if (selectedEmployees.includes(employeeId)) {
       setSelectedEmployees(selectedEmployees.filter((id) => id !== employeeId));
     } else {
       setSelectedEmployees([...selectedEmployees, employeeId]);
     }
+  };
+
+  const handleRowClick = (employeeId: number) => {
+    handleCheckboxChange(employeeId);
   };
   const handleAllCheckboxChange = () => {
     const allEmployeeIds = employees.map((employee) => employee.employeeId);
@@ -193,14 +431,6 @@ function Approve(): JSX.Element {
       setSelectedEmployees(allEmployeeIds);
     }
   };
-  const filteredEmployees = employees.filter((employee) => {
-    return (
-      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      employee.workplace.includes(location) &&
-      employee.position.includes(rank) &&
-      employee.department.includes(department)
-    );
-  });
 
   return (
     <div className="w-[61rem] text-[30px] ">
@@ -254,46 +484,20 @@ function Approve(): JSX.Element {
       </select>
       <button
         onClick={handleApprove}
-        className="fixed right-8 top-[117px] font-hyemin-bold text-[18px] bg-[#163760] text-white w-36 p-2 rounded-md m-5"
+        className={`fixed right-8 top-[117px] font-hyemin-bold text-[18px] ${
+          selectedEmployees.length === 0
+            ? "bg-[#163760]" // 하나도 선택되지 않은 경우
+            : selectedEmployees.length === employees.length
+            ? "bg-[#179F0B]" // 모두 선택된 경우
+            : "bg-[#179F0B]" // 하나 이상 선택된 경우
+        } text-white w-36 p-2 rounded-md m-5`}
       >
         {selectedEmployees.length === employees.length
           ? "모두 승인"
+          : selectedEmployees.length === 0
+          ? "승인"
           : "선택 승인"}
       </button>
-      {/* 버튼누르면 열리는 모달 */}
-      {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-light-primary-color text-white rounded-lg p-12 text-[40px]">
-            <p>
-              {selectedEmployees.length === employees.length
-                ? "전체 승인 하시겠습니까?"
-                : "선택한 항목을 승인하시겠습니까?"}
-            </p>
-            <p className=" text-[30px] text-center mt-4">
-              승인하시면 조회 페이지에서
-              <br /> 목록 조회만 가능합니다.
-            </p>
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={closeModal}
-                className="bg-gray-300 text-gray-700 px-8 py-2 rounded mr-16 text-[30px]"
-              >
-                취소
-              </button>
-              <button
-                onClick={() => {
-                  // 여기에 승인 처리 로직 추가
-                  closeModal(); // 모달 닫기
-                }}
-                className="text-white bg-[#163760] px-8 py-2  rounded text-[30px] "
-              >
-                승인
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* 모달 끝*/}
 
       <table
         className="mt-4 text-sm text-left text-gray-500 dark:text-gray-400"
@@ -339,31 +543,73 @@ function Approve(): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.map((employee) => (
-            <tr
-              key={employee.employeeId}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
-            >
-              <td className="py-2 px-4 text-[17px]">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={selectedEmployees.includes(employee.employeeId)}
-                  onChange={() => handleCheckboxChange(employee.employeeId)}
-                />
-              </td>
-              <td className="py-2 px-4 text-[17px]">{employee.employeeId}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.name}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.workplace}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.department}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-              <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-            </tr>
-          ))}
+          {filteredEmployees
+            .slice(indexOfFirstEmployee, indexOfLastEmployee)
+            .map((employee) => (
+              <tr
+                key={employee.employeeId}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
+                onClick={() => handleRowClick(employee.employeeId)}
+              >
+                <td className="py-2 px-4 text-[17px]">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={selectedEmployees.includes(employee.employeeId)}
+                    onChange={() => handleCheckboxChange(employee.employeeId)}
+                  />
+                </td>
+                <td className="py-2 px-4 text-[17px]">{employee.employeeId}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.name}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.workplace}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.department}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
+      <Pagination
+        totalPages={totalFilteredPages}
+        onPageChange={setCurrentPage}
+        currentPage={currentPage}
+      />
+      {/* 버튼누르면 열리는 모달 */}
+      {isModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-light-primary-color text-white rounded-lg p-12 text-[40px]">
+            <p>
+              {selectedEmployees.length === employees.length
+                ? "전체 승인 하시겠습니까?"
+                : "선택한 항목을 승인하시겠습니까?"}
+            </p>
+            <p className=" text-[30px] text-center mt-4">
+              승인하시면 조회 페이지에서
+              <br /> 목록 조회만 가능합니다.
+            </p>
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={closeModal}
+                className="bg-gray-300 text-gray-700 px-8 py-2 rounded mr-16 text-[30px]"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  // 여기에 승인 처리 로직 추가
+                  closeModal(); // 모달 닫기
+                }}
+                className="text-white bg-[#163760] px-8 py-2  rounded text-[30px] "
+              >
+                승인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 모달 끝*/}
     </div>
   );
 }

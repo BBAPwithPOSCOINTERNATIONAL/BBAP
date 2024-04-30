@@ -50,19 +50,19 @@ function AdminLoginPage() {
       >
         <Inputtag>
           <input
-            className=" font-hyemin-bold text-[25px] focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-300 shadow-sm"
+            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-300 shadow-sm"
             type="text"
             aria-label="Id"
             value={adminId}
             placeholder="사원번호"
             onChange={(e) => setAdminId(e.target.value)}
             required
-            style={{ marginTop: "20px" }}
+            style={{ marginTop: "20px", paddingLeft: "0" }}
           />
         </Inputtag>
         <Inputtag>
           <input
-            className=" font-hyemin-bold text-[25px] focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-200 shadow-sm"
+            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-200 shadow-sm"
             type="password"
             aria-label="PW"
             id="password"
@@ -70,6 +70,7 @@ function AdminLoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            style={{ paddingLeft: "0" }}
           />
         </Inputtag>
         <button

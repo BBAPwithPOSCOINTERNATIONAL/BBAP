@@ -115,7 +115,9 @@ const AdminNav = () => {
               <EmployeeSubsidy />
             </div>
             <button
-              className="font-hyemin-bold text-[18px] bg-[#163760] text-white w-44 p-4 rounded-md m-5 fixed bottom-0 left-1/2 transform -translate-x-1/2"
+              className="font-hyemin-bold text-[18px] 
+              bg-[#163760] text-white w-36 p-4 rounded-md
+               m-5 fixed bottom-0 right-2 "
               onClick={gotoback}
             >
               목록으로

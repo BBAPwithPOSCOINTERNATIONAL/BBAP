@@ -13,8 +13,8 @@ const PaginationContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   position: fixed;
-  bottom: 10px;
-  width: 73vw;
+  bottom: 2vh;
+  width: 63vw;
 `;
 
 const PaginationButton = styled.button<{ isActive?: boolean }>`
@@ -33,7 +33,7 @@ const PaginationButton = styled.button<{ isActive?: boolean }>`
   }
 `;
 
-const Pagination: React.FC<PaginationProps> = ({
+const DetailPagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
   currentPage,
@@ -117,4 +117,4 @@ const Pagination: React.FC<PaginationProps> = ({
   );
 };
 
-export default Pagination;
+export default DetailPagination;
