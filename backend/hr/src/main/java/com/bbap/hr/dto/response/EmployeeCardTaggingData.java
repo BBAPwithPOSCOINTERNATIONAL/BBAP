@@ -1,6 +1,9 @@
 package com.bbap.hr.dto.response;
 
+import com.bbap.hr.dto.SubsidyDto;
 import lombok.*;
+
+import java.sql.Time;
 
 @Getter
 @Setter
@@ -10,6 +13,7 @@ import lombok.*;
 public class EmployeeCardTaggingData {
     private Integer empId;
     private String empName;
-    private Integer subsidy;
+    private SubsidyDto subsidy;
+    private Time currTime;
 
 }
