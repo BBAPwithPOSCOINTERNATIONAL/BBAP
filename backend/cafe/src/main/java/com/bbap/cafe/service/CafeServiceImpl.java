@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,18 +16,15 @@ import com.bbap.cafe.dto.response.CafeSummaryDto;
 import com.bbap.cafe.dto.response.ChoiceDto;
 import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.MenuListDto;
-import com.bbap.cafe.dto.response.MenuSummaryDto;
 import com.bbap.cafe.dto.response.OptionDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.entity.Cafe;
-import com.bbap.cafe.entity.Choice;
 import com.bbap.cafe.entity.Menu;
 import com.bbap.cafe.entity.Option;
 import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
-import com.bbap.cafe.exception.MenuEntityNotFoundException;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
 import com.bbap.cafe.repository.StampRepository;
@@ -82,25 +77,6 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<MenuDto>> menuDetail(String menuId) {
-		Menu menu = menuRepository.findById(menuId).orElseThrow(MenuEntityNotFoundException::new);
-
-		List<OptionDto> optionDtoList = new ArrayList<>();
-		for (Option option : menu.getOptions()) {
-			List<ChoiceDto> choiceDtoList = new ArrayList<>();
-			List<Choice> choices = option.getChoices();
-			for(Choice choice : choices) {
-				choiceDtoList.add(new ChoiceDto(choice.getChoiceName(), choice.getPrice()));
-			}
-			optionDtoList.add(new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList));
-		}
-		String imageUrl = menuImage(menu.getCafeId(), menu.getId());
-		MenuDto menuDto = new MenuDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription(),imageUrl,optionDtoList);
-
-		return DataResponseDto.of(menuDto);
-	}
-
-	@Override
 	public ResponseEntity<DataResponseDto<StampDto>> stampCnt(String cafeId) {
 		int empId = 1; //수정할 부분
 		int stampCnt = getStampCount(cafeId, empId);
@@ -109,31 +85,34 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<MenuListDto>> menuList(String cafeId, Integer menuCategory) {
-		String menuCategoryId = "";
-		switch (menuCategory) {
-			case 0:
-				menuCategoryId = "coffee";
-				break;
-			case 1:
-				menuCategoryId = "beverage";
-				break;
-			case 2:
-				menuCategoryId = "desert";
-				break;
-			case 3:
-				//인기리스트
-				break;
-		}
-		List<Menu> menus = menuRepository.findByCafeIdAndMenuCategory(cafeId, menuCategoryId);
-		List<MenuSummaryDto> menuList = new ArrayList<>();
+	public ResponseEntity<DataResponseDto<MenuListDto>> menuList(String cafeId) {
+		List<Menu> menus = menuRepository.findByCafeId(cafeId);
+		List<MenuDto> coffeeMenus = new ArrayList<>();
+		List<MenuDto> beverageMenus = new ArrayList<>();
+		List<MenuDto> dessertMenus = new ArrayList<>();
+		List<MenuDto> popularMenus = new ArrayList<>();
+
 		for (Menu menu : menus) {
-			String imageUrl = menuImage(menu.getCafeId(), menu.getId());
-			MenuSummaryDto menuSummary = new MenuSummaryDto(menu.getId(), menu.getName(),
-				menu.getPrice(), menu.getDescription(), imageUrl);
-			menuList.add(menuSummary);
+			MenuDto menuDto = createMenuDto(menu);
+			// 메뉴를 카테고리에 따라 적절한 리스트에 추가
+			switch (menu.getMenuCategory()) {
+				case "coffee":
+					coffeeMenus.add(menuDto);
+					break;
+				case "beverage":
+					beverageMenus.add(menuDto);
+					break;
+				case "dessert":
+					dessertMenus.add(menuDto);
+					break;
+				case "popular":
+					popularMenus.add(menuDto);
+					break;
+			}
 		}
-		MenuListDto menuListDto = new MenuListDto(menuList);
+
+		// 모든 카테고리별 메뉴 리스트를 포함하는 DTO 생성
+		MenuListDto menuListDto = new MenuListDto(cafeId, coffeeMenus, beverageMenus, dessertMenus, popularMenus);
 		return DataResponseDto.of(menuListDto);
 	}
 
@@ -151,28 +130,49 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
-		List<MenuSummaryDto> coffeeMenus = new ArrayList<>();
-		List<MenuSummaryDto> beverageMenus = new ArrayList<>();
-		List<MenuSummaryDto> dessertMenus = new ArrayList<>();
+		List<MenuDto> coffeeMenus = new ArrayList<>();
+		List<MenuDto> beverageMenus = new ArrayList<>();
+		List<MenuDto> dessertMenus = new ArrayList<>();
 
 		for (Menu menu : menus) {
 			String imageUrl = menuImage(menu.getCafeId(), menu.getId());
-			MenuSummaryDto menuSummary = new MenuSummaryDto(menu.getId(), menu.getName(), menu.getPrice(), menu.getDescription(), imageUrl);
 
+			// 각 메뉴의 옵션을 포함한 상세 정보 생성
+			List<OptionDto> optionDtoList = new ArrayList<>();
+			for (Option option : menu.getOptions()) {
+				List<ChoiceDto> choiceDtoList = option.getChoices().stream()
+					.map(choice -> new ChoiceDto(choice.getChoiceName(), choice.getPrice()))
+					.collect(Collectors.toList());
+				optionDtoList.add(new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList));
+			}
+
+			// MenuDto 객체 생성
+			MenuDto menuDto = new MenuDto(
+				menu.getId(),
+				menu.getName(),
+				menu.getPrice(),
+				menu.getDescription(),
+				imageUrl,
+				optionDtoList
+			);
+
+			// 메뉴를 적절한 카테고리 리스트에 추가
 			switch (menu.getMenuCategory()) {
 				case "coffee":
-					coffeeMenus.add(menuSummary);
+					coffeeMenus.add(menuDto);
 					break;
 				case "beverage":
-					beverageMenus.add(menuSummary);
+					beverageMenus.add(menuDto);
 					break;
-				case "desert":
-					dessertMenus.add(menuSummary);
+				case "dessert":
+					dessertMenus.add(menuDto);
 					break;
 			}
 		}
-		int stampCount = getStampCount(cafe.getId(), 1);
 
+		int stampCount = getStampCount(cafe.getId(), 1);  // 직원 ID 예시로 '1' 사용, 실제로는 파라미터로 받거나 세션에서 가져올 수 있음
+
+		// 선택된 카페의 모든 정보와 메뉴 리스트를 포함하여 SelectedCafeDto 객체 생성
 		return new SelectedCafeDto(
 			cafe.getId(),
 			cafe.getOpenTime(),
@@ -189,4 +189,24 @@ public class CafeServiceImpl implements CafeService {
 		Stamp stamp = stampRepository.findByCafeIdAndEmpId(cafeId, empId);
 		return (stamp != null) ? stamp.getStampCnt() : 0;
 	}
+
+	private MenuDto createMenuDto(Menu menu) {
+		List<OptionDto> optionDtoList = menu.getOptions().stream().map(option -> {
+			List<ChoiceDto> choiceDtoList = option.getChoices().stream()
+				.map(choice -> new ChoiceDto(choice.getChoiceName(), choice.getPrice()))
+				.collect(Collectors.toList());
+			return new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList);
+		}).collect(Collectors.toList());
+
+		String imageUrl = menuImage(menu.getCafeId(), menu.getId());
+		return new MenuDto(
+			menu.getId(),
+			menu.getName(),
+			menu.getPrice(),
+			menu.getDescription(),
+			imageUrl,
+			optionDtoList
+		);
+	}
+
 }

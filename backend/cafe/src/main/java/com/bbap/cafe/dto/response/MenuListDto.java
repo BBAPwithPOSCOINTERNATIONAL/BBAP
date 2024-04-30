@@ -12,5 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuListDto {
-	List<MenuSummaryDto> menuList;
+	private String id;
+	private List<MenuDto> menuListCoffee;
+	private List<MenuDto> menuListBeverage;
+	private List<MenuDto> menuListDesert;
+	private List<MenuDto> menuListPopular;
 }

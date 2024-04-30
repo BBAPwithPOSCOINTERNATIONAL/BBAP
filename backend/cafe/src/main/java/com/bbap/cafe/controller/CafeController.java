@@ -56,18 +56,6 @@ public class CafeController {
 	}
 
 	@Operation(
-		summary = "메뉴 상세",
-		description = "메뉴 정보를 들고온다. 옵션을 포함한"
-	)
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Success."),
-	})
-	@GetMapping("/menu/{menuId}")
-	ResponseEntity<DataResponseDto<MenuDto>> menuDetail(@PathVariable String menuId) {
-		return cafeService.menuDetail(menuId);
-	}
-
-	@Operation(
 		summary = "카페의 스탬프 수",
 		description = "유저의 스탬프 수를 조회한다."
 	)
@@ -86,9 +74,9 @@ public class CafeController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@GetMapping("/kiosk/menus/{cafeId}/{menuCategory}")
-	ResponseEntity<DataResponseDto<MenuListDto>> menuListKiosk(@PathVariable String cafeId, @PathVariable Integer menuCategory) {
-		return cafeService.menuList(cafeId, menuCategory);
+	@GetMapping("/kiosk/menus/{cafeId}")
+	ResponseEntity<DataResponseDto<MenuListDto>> menuListKiosk(@PathVariable String cafeId) {
+		return cafeService.menuList(cafeId);
 	}
 
 	@Operation(
