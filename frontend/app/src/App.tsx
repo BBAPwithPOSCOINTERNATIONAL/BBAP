@@ -4,6 +4,8 @@ import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
+import "./service/initFirebase.js";
+import "./service/foregroundMessage.js";
 
 // Page들
 import LoginPage from "./pages/users/LoginPage";
@@ -20,78 +22,78 @@ import MoreDetail from "./pages/myReceipt/MoreDetailPage";
 import RoulettePage from "./pages/cafe/RoulettePage";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <LoginPage />,
-  },
-  {
-    path: "admin",
-    element: <AdminLoginPage />,
-  },
-  {
-    path: "admininquiry",
-    element: <AdminInquiryPage />,
-  },
-  {
-    path: "employee/:employeeId",
-    element: <PeriodInquiryPage />,
-  },
-  {
-    path: "cafemain",
-    element: <CafeMainPage />,
-  },
-  {
-    path: "main",
-    element: <MainPage />,
-  },
-  {
-    path: "profile",
-    element: <MyProfilePage />,
-  },
-  {
-    path: "restaurantmain",
-    element: <RestaurantMainPage />,
-  },
-  {
-    path: "receipt",
-    element: <MyReceiptPage />,
-  },
-  {
-    path: "receiptDetail",
-    element: <ReceiptDetail />,
-  },
-  {
-    path: "moredetail",
-    element: <MoreDetail />,
-  },
-  {
-    path: "together",
-    element: <TogetherOrderPage />,
-  },
-  {
-    path: "detail",
-    element: <MenuDetailPage />,
-  },
-  {
-    path: "cart",
-    element: <CartPage />,
-  },
-  {
-    path: "roulette",
-    element: <RoulettePage />,
-  },
+	{
+		path: "/",
+		element: <LoginPage />,
+	},
+	{
+		path: "admin",
+		element: <AdminLoginPage />,
+	},
+	{
+		path: "admininquiry",
+		element: <AdminInquiryPage />,
+	},
+	{
+		path: "employee/:employeeId",
+		element: <PeriodInquiryPage />,
+	},
+	{
+		path: "cafemain",
+		element: <CafeMainPage />,
+	},
+	{
+		path: "main",
+		element: <MainPage />,
+	},
+	{
+		path: "profile",
+		element: <MyProfilePage />,
+	},
+	{
+		path: "restaurantmain",
+		element: <RestaurantMainPage />,
+	},
+	{
+		path: "receipt",
+		element: <MyReceiptPage />,
+	},
+	{
+		path: "receiptDetail",
+		element: <ReceiptDetail />,
+	},
+	{
+		path: "moredetail",
+		element: <MoreDetail />,
+	},
+	{
+		path: "together",
+		element: <TogetherOrderPage />,
+	},
+	{
+		path: "detail",
+		element: <MenuDetailPage />,
+	},
+	{
+		path: "cart",
+		element: <CartPage />,
+	},
+	{
+		path: "roulette",
+		element: <RoulettePage />,
+	},
 ]);
 
 function App() {
-  return (
-    <>
-      <div>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div>
+				<QueryClientProvider client={queryClient}>
+					<RouterProvider router={router} />
+				</QueryClientProvider>
+			</div>
+		</>
+	);
 }
 
 export default App;
