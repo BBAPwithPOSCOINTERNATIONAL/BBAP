@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
 
-    @PostMapping("/verify")
+    @GetMapping("/verify")
     public ResponseEntity<?> verifyToken(@RequestHeader(value="Authorization") String token) {
         boolean isValid = authService.isValid(token);
 
