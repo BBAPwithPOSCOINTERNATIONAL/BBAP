@@ -7,6 +7,7 @@ import com.bbap.hr.dto.response.EmployeeCardTaggingData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.service.HrService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,15 @@ public class HrController {
     public ResponseEntity<DataResponseDto<EmployeeCardTaggingData>> getEmployeeDataByEmpCard(@PathVariable String empCard) {
 
         return hrService.getEmployeeDataByEmpCard(empCard);
+    }
+
+    @GetMapping("/token-test")
+    public ResponseEntity<?> tokenTest(@RequestHeader(value="X-Employee-Id", required = false) String employeeId) {
+        if (employeeId == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(employeeId);
+        }
     }
 
 
