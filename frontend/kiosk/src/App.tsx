@@ -2,11 +2,11 @@ import { Route, Routes } from "react-router-dom";
 import { useAutoReset } from "./hooks/useAutoReset";
 import EntryPage from "./pages/entryPage";
 import MainPage from "./pages/mainPage";
-import PaymentPage from "./pages/paymentPage";
-import PaymentTagPage from "./pages/paymentTagPage";
-import PaymentFacePage from "./pages/paymentFacePage";
-import PaymentLoginPage from "./pages/paymentLoginPage";
-import PaymentFinalPage from "./pages/paymentFinalPage";
+import PaymentPage from "./pages/payment/paymentPage";
+import PaymentTagPage from "./pages/payment/paymentTagPage";
+import PaymentFacePage from "./pages/payment/paymentFacePage";
+import PaymentLoginPage from "./pages/payment/paymentLoginPage";
+import PaymentFinalPage from "./pages/payment/paymentFinalPage";
 import GamePage from "./pages/gamePage";
 import RestaurantPage from "./pages/restaurantPage";
 

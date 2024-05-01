@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import useCartStore from "../store/cartStore";
-import Button from "../components/button";
-import Header from "../components/header";
+import useCartStore from "../../store/cartStore";
+import Button from "../../components/button";
+import Header from "../../components/header";
 
 const PaymentPage: React.FC = () => {
 	const { totalPrice } = useCartStore();

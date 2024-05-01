@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import Header from "../components/header.js";
-import Button from "../components/button.js";
-import CustomKeyboard from "../components/customKeyboard.js";
-import { payInfoByLogin } from "../api/paymentApi.js";
+import Header from "../../components/header.js";
+import Button from "../../components/button.js";
+import CustomKeyboard from "../../components/customKeyboard.js";
+import { payInfoByLogin } from "../../api/paymentApi.js";
 
 const PaymentLoginPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -103,7 +103,7 @@ const PaymentLoginPage: React.FC = () => {
 			</div>
 
 			{keyboardVisibility && (
-				<div className="w-full absolute bottom-[600px] flex justify-center z-50">
+				<div className="w-full absolute bottom-[500px] flex justify-center z-50">
 					<CustomKeyboard
 						setInput={focusId == "id-number" ? setIdNumber : setPassword}
 					/>

@@ -80,7 +80,7 @@ const MainPage: React.FC = () => {
 					</div>
 					<div
 						id="menu-body"
-						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[1650px] flex flex-col divide-y-2 divide-primary-color"
+						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[80vh] flex flex-col divide-y-2 divide-primary-color"
 					>
 						<div className="flex-grow overflow-y-auto my-1">
 							<div className="grid grid-cols-3">
