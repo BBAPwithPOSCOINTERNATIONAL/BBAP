@@ -4,8 +4,9 @@ import { queryClient } from "./api/tanstackQuery";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
-import "./service/initFirebase.js";
-import "./service/foregroundMessage.js";
+// Firebase 사용하려면 아래 주석해제 해야함
+// import "./service/initFirebase.js";
+// import "./service/foregroundMessage.js";
 
 // Page들
 import LoginPage from "./pages/users/LoginPage";

@@ -1,11 +1,12 @@
 import apiClient from "./apiClient";
 import axios from "axios";
 
-interface Notice {
+export interface Notice {
 	noticeId: number;
 	noticeClassification: string;
 	noticeText: string;
 	noticeUrl: string;
+	storeName: string;
 	noticeDate: string;
 }
 interface ApiResponse {
