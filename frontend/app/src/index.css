@@ -4,10 +4,10 @@
 
 @font-face {
   font-family: "IM_Hyemin-Bold";
-  src: url("assets/fonts/IM_HYEMIN-BOLD.TTF");
+  src: url("/assets/fonts/IM_HYEMIN-BOLD.TTF");
 }
 
 @font-face {
   font-family: "IM_Hyemin-Regular";
-  src: url("assets/fonts/IM_HYEMIN-REGULAR.TTF");
+  src: url("/assets/fonts/IM_HYEMIN-REGULAR.TTF");
 }
