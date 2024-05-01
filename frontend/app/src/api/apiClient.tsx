@@ -1,17 +1,11 @@
 import axios, { AxiosInstance } from "axios";
 
-// const env = import.meta.env.VITE_IS_PRODUCTION || "development";
-// const isProduction: boolean = env === "production";
-
-// const HOST: string = isProduction ? "https://pobap.com" : "http://localhost";
-// const PORT: string = ":8080";
-// const URL: string = isProduction ? HOST : `${HOST}${PORT}`;
-
-const URL: string = "https://pobap.com";
-
 const apiClient: AxiosInstance = axios.create({
-  baseURL: URL,
-  withCredentials: true,
+  baseURL: "https://pobap.com",
+  headers: {
+    "Content-Type": "application/json",
+    withCredentials: true,
+  },
 });
 
 apiClient.interceptors.request.use((config) => {
