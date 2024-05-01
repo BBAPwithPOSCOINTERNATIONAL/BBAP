@@ -4,12 +4,12 @@
 
 @font-face {
 	font-family: "IM_Hyemin-Bold";
-	src: url("assets/fonts/IM_Hyemin-Bold.ttf");
+	src: url("/assets/fonts/IM_Hyemin-Bold.ttf");
 }
 
 @font-face {
 	font-family: "IM_Hyemin-Regular";
-	src: url("assets/fonts/IM_Hyemin-Regular.ttf");
+	src: url("/assets/fonts/IM_Hyemin-Regular.ttf");
 }
 
 :root {
