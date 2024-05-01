@@ -23,7 +23,7 @@ public interface RestaurantMenuRepository extends JpaRepository<RestaurantMenuEn
 	@Modifying
 	@Transactional
 	@Query("update RestaurantMenuEntity m set m.eatCount=m.eatCount+1 where m.restaurantMenuId=:restaurantMenuId")
-	void addEat(int restaurantMenuId);
+	int addEat(int restaurantMenuId);
 
 	@Query(
 		"select new com.bbap.restaurant.dto.response.PayMenuResponseData(r.restaurantName,m.menuName, m.menuPrice) "
