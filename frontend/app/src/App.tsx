@@ -20,7 +20,7 @@ import CartPage from "./pages/cafe/CartPage";
 import ReceiptDetail from "./pages/myReceipt/ReceiptDetail";
 import MoreDetail from "./pages/myReceipt/MoreDetailPage";
 import RoulettePage from "./pages/cafe/RoulettePage";
-import AlertPage from "./pages/AlertPage.js";
+import NotificationPage from "./pages/NotificationPage.js";
 
 const router = createBrowserRouter([
 	{
@@ -84,8 +84,8 @@ const router = createBrowserRouter([
 		element: <RoulettePage />,
 	},
 	{
-		path: "alert",
-		element: <AlertPage />,
+		path: "notification",
+		element: <NotificationPage />,
 	},
 ]);
 
