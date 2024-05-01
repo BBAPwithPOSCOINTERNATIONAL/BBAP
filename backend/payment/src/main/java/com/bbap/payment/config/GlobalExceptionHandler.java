@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.bbap.payment.dto.response.ResponseDto;
 import com.bbap.payment.exception.CustomException;
 import com.bbap.payment.exception.HistoryNotFoundException;
+import com.bbap.payment.exception.SubsidyNotMatchException;
 
 import feign.FeignException;
 
@@ -29,6 +30,12 @@ public class GlobalExceptionHandler {
 	//없는 결제 내역
 	@ExceptionHandler(HistoryNotFoundException.class)
 	public ResponseEntity<ResponseDto> HistoryNotFoundExceptionHandler(HistoryNotFoundException e) {
+		return handleException(e);
+	}
+
+	//결제 지원금 불일치
+	@ExceptionHandler(SubsidyNotMatchException.class)
+	public ResponseEntity<ResponseDto> SubsidyNotMatchExceptionHandler(SubsidyNotMatchException e) {
 		return handleException(e);
 	}
 

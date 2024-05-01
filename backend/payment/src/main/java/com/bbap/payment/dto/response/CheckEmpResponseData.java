@@ -1,6 +1,5 @@
 package com.bbap.payment.dto.response;
 
-import java.sql.Time;
 import java.time.LocalTime;
 
 import com.bbap.payment.dto.SubsidyDto;
@@ -14,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckCardResponseData {
+public class CheckEmpResponseData {
 	private int empId;
 	private String empName;
 	private SubsidyDto subsidy;

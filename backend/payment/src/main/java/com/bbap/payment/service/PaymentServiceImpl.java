@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bbap.payment.dto.DayPaymentDto;
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
 import com.bbap.payment.dto.request.ProcessPayRequestDto;
-import com.bbap.payment.dto.response.CheckCardResponseData;
+import com.bbap.payment.dto.request.SendNoticeRequestDto;
+import com.bbap.payment.dto.response.CheckEmpResponseData;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -20,7 +21,9 @@ import com.bbap.payment.dto.response.PayMenuResponseData;
 import com.bbap.payment.dto.response.ResponseDto;
 import com.bbap.payment.entity.PaymentHistoryEntity;
 import com.bbap.payment.exception.HistoryNotFoundException;
+import com.bbap.payment.exception.SubsidyNotMatchException;
 import com.bbap.payment.feign.HrServiceFeignClient;
+import com.bbap.payment.feign.NoticeServiceFeignClient;
 import com.bbap.payment.feign.RestaurantServiceFeignClient;
 import com.bbap.payment.repository.PaymentHistoryRepository;
 
@@ -34,43 +37,52 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentServiceImpl implements PaymentService {
 	private final HrServiceFeignClient hrServiceFeignClient;
 	private final RestaurantServiceFeignClient restaurantServiceFeignClient;
+	private final NoticeServiceFeignClient noticeServiceFeignClient;
 
 	private final PaymentHistoryRepository paymentHistoryRepository;
 
 	@Override
 	public ResponseEntity<ResponseDto> payRestaurant(PayRestaurantRequestDto request) {
-		//메뉴 정보를 받아옴
-		PayMenuResponseData menuData = restaurantServiceFeignClient.payMenu(request.getMenuId()).getBody().getData();
-
 		//cardID를 통해 사원 정보를 받아옴
-		CheckCardResponseData empData = hrServiceFeignClient.checkCard(request.getCardId()).getBody().getData();
+		CheckEmpResponseData empData = hrServiceFeignClient.checkCard(request.getCardId()).getBody().getData();
 
-		//사용 가능한 지원금 계산 처리
-		LocalDateTime start = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getStartTime());
-		LocalDateTime end = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getEndTime());
+		//사용 가능한 지원금 계산
+		int availSubsidy = calSubsidy(empData);
 
-		int usedSubsidy = paymentHistoryRepository.sumUseSubsidy(empData.getEmpId(), start, end).orElse(0);
+		//메뉴 정보를 받아오고 먹은 인원 증가 처리
+		PayMenuResponseData menuData = restaurantServiceFeignClient.payMenu(request.getMenuId()).getBody().getData();
 
 		//결제 내역 처리
 		PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
 			.empId(empData.getEmpId())
 			.payStore(menuData.getStoreName())
 			.totalPaymentAmount(menuData.getMenuPrice())
-			.useSubsidy(Math.min(menuData.getMenuPrice(), empData.getSubsidy().getSubsidy() - usedSubsidy))
+			.useSubsidy(Math.min(menuData.getMenuPrice(), availSubsidy))
 			.paymentDetail(menuData.getMenuName())
 			.paymentDate(LocalDateTime.now())
 			.build();
 
 		paymentHistoryRepository.save(entity);
 
+		//알림 전송
+		sendPayNotice(entity);
+
+		log.info("{} : 식당 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
+			entity.getUseSubsidy());
+
 		return ResponseDto.success();
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request) {
-		//현재의 정보와 결제 정보가 맞는 지 확인
-		//HR에서 empId를 이용해 사원정보를 받아옴
+		//HR에서 empId를 이용해 사원정보를 받아옴(테스트 코드)
+		CheckEmpResponseData empData = new CheckEmpResponseData();
+
 		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
+		int availSubsidy = calSubsidy(empData);
+
+		if (availSubsidy < request.getUseSubsidy())
+			throw new SubsidyNotMatchException();
 
 		//결제 내역 처리
 		PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
@@ -83,6 +95,12 @@ public class PaymentServiceImpl implements PaymentService {
 			.build();
 
 		paymentHistoryRepository.save(entity);
+
+		//알림 전송
+		sendPayNotice(entity);
+
+		log.info("{} : 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
+			entity.getUseSubsidy());
 
 		return ResponseDto.success();
 	}
@@ -130,5 +148,30 @@ public class PaymentServiceImpl implements PaymentService {
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId) {
 		return DataResponseDto.of(paymentHistoryRepository.findByHistoryId(historyId).orElseThrow(
 			HistoryNotFoundException::new));
+	}
+
+	//결제 알림 전송
+	public void sendPayNotice(PaymentHistoryEntity entity) {
+		//결제 알림
+		SendNoticeRequestDto noticeRequest = SendNoticeRequestDto.builder()
+			.empId(entity.getEmpId())
+			//결제 알림 템플릿 - 1
+			.noticeTemplateId(1)
+			//url 수정 필요
+			.noticeUrl(entity.getHistoryId().toString())
+			.storeName(entity.getPayStore()).build();
+
+		noticeServiceFeignClient.sendNotice(noticeRequest);
+	}
+
+	//사용 가능 지원금 계산
+	public int calSubsidy(CheckEmpResponseData empData) {
+		//사용 가능한 지원금 계산 처리
+		LocalDateTime start = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getStartTime());
+		LocalDateTime end = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getEndTime());
+
+		int usedSubsidy = paymentHistoryRepository.sumUseSubsidy(empData.getEmpId(), start, end).orElse(0);
+
+		return empData.getSubsidy().getSubsidy() - usedSubsidy;
 	}
 }
