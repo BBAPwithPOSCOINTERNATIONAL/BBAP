@@ -1,4 +1,4 @@
-FROM node:16-alpine as build-deps
+FROM node:lts-alpine3.18 as build-deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
