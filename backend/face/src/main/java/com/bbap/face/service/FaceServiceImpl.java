@@ -30,10 +30,7 @@ public class FaceServiceImpl implements FaceService {
 	private final FaceRepository faceRepository;
 
 	@Override
-	public ResponseEntity<ResponseDto> registerFace(FaceRequestDto request) {
-		//test코드
-		int empId = 1;
-
+	public ResponseEntity<ResponseDto> registerFace(int empId, FaceRequestDto request) {
 		//기존에 등록되지 않은 경우
 		if (!faceRepository.existsById(empId)) {
 			FaceEntity faceEntity = new FaceEntity(empId);
@@ -75,16 +72,13 @@ public class FaceServiceImpl implements FaceService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> checkRegister() {
-		//test코드
-		int empId = 1;
-
+	public ResponseEntity<ResponseDto> checkRegister(int empId) {
 		//기존에 등록되지 않은 경우
 		if (!faceRepository.existsById(empId)) {
 			log.debug("{} : 얼굴 정보를 등록하지 않은 사원", empId);
 			throw new RegisterNotFoundException();
 		}
-
+		
 		return ResponseDto.success();
 	}
 }

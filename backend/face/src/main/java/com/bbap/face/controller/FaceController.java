@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,8 +41,8 @@ public class FaceController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<ResponseDto> registerFace(@ModelAttribute FaceRequestDto request) {
-		return faceService.registerFace(request);
+	public ResponseEntity<ResponseDto> registerFace(@RequestHeader int empId, @ModelAttribute FaceRequestDto request) {
+		return faceService.registerFace(empId, request);
 	}
 
 	@Operation(
@@ -69,7 +70,7 @@ public class FaceController {
 		@ApiResponse(responseCode = "404", description = "등록되지 않은 이용자.")
 	})
 	@GetMapping
-	public ResponseEntity<ResponseDto> checkRegister() {
-		return faceService.checkRegister();
+	public ResponseEntity<ResponseDto> checkRegister(@RequestHeader int empId) {
+		return faceService.checkRegister(empId);
 	}
 }
