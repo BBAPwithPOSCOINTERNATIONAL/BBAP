@@ -15,6 +15,7 @@ import com.bbap.notice.dto.response.ListNoticeResponseData;
 import com.bbap.notice.dto.response.ResponseDto;
 import com.bbap.notice.entity.NoticeEntity;
 import com.bbap.notice.entity.NoticeTemplateEntity;
+import com.bbap.notice.exception.TemplateNotFoundException;
 import com.bbap.notice.repository.NoticeRepository;
 import com.bbap.notice.repository.NoticeTemplateRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -37,10 +38,7 @@ public class NoticeServiceImpl implements NoticeService {
 	private final RedisTemplate<String, String> redisTemplate;
 
 	@Override
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice() {
-		//테스트 코드
-		int empId = 1;
-
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice(int empId) {
 		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
 		return DataResponseDto.of(data);
 	}
@@ -48,15 +46,13 @@ public class NoticeServiceImpl implements NoticeService {
 	@SneakyThrows
 	@Override
 	public ResponseEntity<ResponseDto> sendNotice(SendNoticeRequestDto request) {
-		//테스트 코드
-		int empId = 1;
-
-		NoticeTemplateEntity template = noticeTemplateRepository.findById(request.getNoticeTemplateId()).orElseThrow();
+		NoticeTemplateEntity template = noticeTemplateRepository.findById(request.getNoticeTemplateId())
+			.orElseThrow(TemplateNotFoundException::new);
 
 		//알림 목록에 저장
 		NoticeEntity noticeEntity = NoticeEntity.builder()
 			.noticeTemplateEntity(template)
-			.empId(empId)
+			.empId(request.getEmpId())
 			.noticeUrl(request.getNoticeUrl())
 			.storeName(request.getStoreName())
 			.noticeDate(LocalDateTime.now())
@@ -71,16 +67,24 @@ public class NoticeServiceImpl implements NoticeService {
 		// 	.setBody(request.getStoreName() + template.getNoticeText())
 		// 	.build();
 
-		//일반 알림
-		Message message = Message.builder()
-			.putData("title", template.getNoticeClassification())
-			.putData("body", request.getStoreName() + template.getNoticeText())
-			.putData("url", request.getNoticeUrl())
-			.setToken(
-				"c0w0nAelt-DSN9XghA0gIk:APA91bEjNgZCOV61z5vx6loJ2qehRK0UbfqlgzQ7AqMJ35Az0VS1zrV7sS4mQyMUU-21-SCk1nAdmDLbsaMgmD18w-JQrpFCzKtHhI-EFjuZIY4Usj0N7UQ8Bl_AMCxg-i711yok61w4")
-			.build();
+		//redis 에서 해당 유저의 fcm 토큰을 찾아내고 발송
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		String fcmToken = valueOperations.get(String.valueOf(request.getEmpId()));
 
-		FirebaseMessaging.getInstance().send(message);
+		//일반 알림
+		if (fcmToken != null) {
+			Message message = Message.builder()
+				.putData("title", template.getNoticeClassification())
+				.putData("body", request.getStoreName() + template.getNoticeText())
+				.putData("url", request.getNoticeUrl())
+				.setToken(fcmToken)
+				.build();
+
+			FirebaseMessaging.getInstance().send(message);
+
+		} else {
+			log.info("푸시 알림 전송 실패");
+		}
 
 		log.info("알림 전송 성공");
 
@@ -88,21 +92,15 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(int noticeId) {
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(int empId, int noticeId) {
 		noticeRepository.deleteOne(noticeId);
-
-		//테스트 코드
-		int empId = 1;
 
 		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
 		return DataResponseDto.of(data);
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice() {
-		//테스트 코드
-		int empId = 1;
-
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(int empId) {
 		noticeRepository.deleteAllbyEmpId(empId);
 
 		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
@@ -110,15 +108,7 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> saveFcm(SaveFcmRequestDto request) {
-		// Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		// CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
-
-		// int userSeq = customUserDetails.getUserSeq();
-
-		//테스트 코드
-		int empId = 1;
-
+	public ResponseEntity<ResponseDto> saveFcm(int empId, SaveFcmRequestDto request) {
 		//레디스에 유저별 fcmToken저장
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 		valueOperations.set(String.valueOf(empId), request.getFcmToken());
@@ -127,11 +117,4 @@ public class NoticeServiceImpl implements NoticeService {
 
 		return ResponseDto.success();
 	}
-
-	// @Override
-	// public ResponseEntity<ResponseDto> addEat(AddEatRequestDto request) {
-	// 	restaurantMenuRepository.addEat(request.getMenuId());
-	//
-	// 	return ResponseDto.success();
-	// }
 }

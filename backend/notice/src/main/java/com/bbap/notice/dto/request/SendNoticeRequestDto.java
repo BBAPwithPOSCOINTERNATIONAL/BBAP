@@ -15,6 +15,10 @@ import lombok.ToString;
 @ToString
 public class SendNoticeRequestDto {
 	@NotNull
+	@Schema(description = "사원ID")
+	private int empId;
+
+	@NotNull
 	@Schema(description = "알림 분류ID")
 	private int noticeTemplateId;
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,8 +43,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@GetMapping
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice() {
-		return noticeService.listNotice();
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice(@RequestHeader int empId) {
+		return noticeService.listNotice(empId);
 	}
 
 	@Operation(
@@ -71,8 +72,9 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@DeleteMapping("{noticeId}")
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(@PathVariable int noticeId) {
-		return noticeService.deleteNotice(noticeId);
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(@RequestHeader int empId,
+		@PathVariable int noticeId) {
+		return noticeService.deleteNotice(empId, noticeId);
 	}
 
 	@Operation(
@@ -85,8 +87,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@DeleteMapping
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice() {
-		return noticeService.deleteAllNotice();
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(@RequestHeader int empId) {
+		return noticeService.deleteAllNotice(empId);
 	}
 
 	@Operation(
@@ -99,7 +101,7 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@PostMapping("/fcm")
-	public ResponseEntity<ResponseDto> saveFcm(@RequestBody SaveFcmRequestDto request) {
-		return noticeService.saveFcm(request);
+	public ResponseEntity<ResponseDto> saveFcm(@RequestHeader int empId, @RequestBody SaveFcmRequestDto request) {
+		return noticeService.saveFcm(empId, request);
 	}
 }
