@@ -42,6 +42,14 @@ export interface ApiResponse {
   };
 }
 
+/**
+ * 식당 조회
+ * @remarks
+ * GET 요청을 '/api/v1/restaurants/{restaurantId}' 엔드포인트에 보냅니다.
+ * @returns {Promise<ApiResponse>} "Success" 메시지와 data 를 반환합니다.
+ * @throws    오류를 반환할 수 있습니다.
+ */
+
 export async function fetchRestaurantData(
   restaurantId: number
 ): Promise<ApiResponse> {
@@ -56,7 +64,7 @@ export async function fetchRestaurantData(
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message || "Failed to data");
     } else {
-      throw new Error("Failed to data");
+      throw new Error("Failed");
     }
   }
 }
@@ -68,7 +76,13 @@ interface FetchMenuParams {
   mealClassification: number;
 }
 
-// 메뉴 조회 API 호출 함수
+/**
+ * 메뉴 조회
+ * @remarks
+ * GET 요청을 '/api/v1/restaurants/menus/{restaurantId}/{menuDate}/{mealClassification}' 엔드포인트에 보냅니다.
+ * @returns {Promise<MenuApiResponse>} "Success" 메시지와 menuList 를 반환합니다.
+ * @throws    오류를 반환할 수 있습니다.
+ */
 export const fetchMenus = async ({
   restaurantId,
   menuDate,
