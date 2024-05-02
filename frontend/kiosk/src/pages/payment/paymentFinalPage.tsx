@@ -8,7 +8,7 @@ import Button from "../../components/button";
 import Coupon from "../../components/coupon";
 import ConfirmModal from "../../components/confirmModal";
 import { CartItem } from "../../types";
-// import { paymentReq } from "../../api/paymentApi";
+import { paymentReq } from "../../api/paymentApi";
 
 interface Option {
 	optionName: string;
@@ -170,8 +170,8 @@ const PaymentFinalPage: React.FC = () => {
 
 		// TODO 서버로 결제요청 보냄
 		try {
-			// const response = await paymentReq(payload);
-			const response = { data: { orderNum: 120 } };
+			const response = await paymentReq(payload);
+			// const response = { data: { orderNum: 120 } };
 			console.log("결제");
 			const content = (
 				<div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">

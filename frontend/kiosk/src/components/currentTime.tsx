@@ -35,7 +35,7 @@ const CurrentTime: React.FC = () => {
 				setCount((prev) => prev + 1);
 			}}
 		>
-			<p className="text-sm font-bold text-primary-color">{currentTime}</p>
+			<p className="text-base font-bold text-primary-color">{currentTime}</p>
 		</div>
 	);
 };
