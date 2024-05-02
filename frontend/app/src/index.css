@@ -11,3 +11,17 @@
   font-family: "IM_Hyemin-Regular";
   src: url("/assets/fonts/IM_HYEMIN-REGULAR.TTF");
 }
+
+.custom-notification {
+	position: absolute;
+	top: 1%;
+	left: 50%;
+	transform: translate(-50%, 0%);
+	font-family: "IM_Hyemin-Regular";
+	width: 18rem;
+	background-color: #ffffff;
+	color: #000000;
+	padding: 7px;
+	border-radius: 20px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
