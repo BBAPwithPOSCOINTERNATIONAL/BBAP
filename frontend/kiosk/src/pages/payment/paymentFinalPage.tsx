@@ -215,7 +215,7 @@ const PaymentFinalPage: React.FC = () => {
 					<table className="table-auto w-full">
 						<thead className="border-b bg-gray-100 sticky top-0">
 							<tr>
-								<th className="px-4 py-2 text-start">메뉴</th>
+								<th className="px-4 py-2 w-2/3 text-start">메뉴</th>
 								<th className="px-4 py-2 text-center">수량</th>
 								<th className="px-4 py-2 text-center">가격</th>
 							</tr>
