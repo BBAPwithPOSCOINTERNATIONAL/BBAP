@@ -10,4 +10,6 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
     Optional<EmployeeEntity> findByEmpNo(String empNo);
 
     Optional<EmployeeEntity> findByEmpCard(String empCard);
+
+    Optional<EmployeeEntity> findByEmpId(int empId);
 }

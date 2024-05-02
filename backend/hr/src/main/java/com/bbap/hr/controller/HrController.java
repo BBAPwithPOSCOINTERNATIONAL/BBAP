@@ -3,11 +3,11 @@ package com.bbap.hr.controller;
 
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
-import com.bbap.hr.dto.response.EmployeeCardTaggingData;
+import com.bbap.hr.dto.response.EmployeePayData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.service.HrService;
-import lombok.Data;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +32,15 @@ public class HrController {
     }
 
     @GetMapping("/employees/card/{empCard}")
-    public ResponseEntity<DataResponseDto<EmployeeCardTaggingData>> getEmployeeDataByEmpCard(@PathVariable String empCard) {
+    public ResponseEntity<DataResponseDto<EmployeePayData>> getEmployeeDataByEmpCard(@PathVariable String empCard) {
 
         return hrService.getEmployeeDataByEmpCard(empCard);
+    }
+
+    @GetMapping("/employees/id/{empId}")
+    public ResponseEntity<DataResponseDto<EmployeePayData>> getEmployeeDataByEmpId(@PathVariable int empId) {
+
+        return hrService.getEmployeeDataByEmpId(empId);
     }
 
     @GetMapping("/token-test")

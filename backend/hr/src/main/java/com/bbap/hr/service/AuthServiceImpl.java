@@ -5,10 +5,12 @@ import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.request.LogoutRequestDto;
 import com.bbap.hr.dto.request.RegisterRequestDto;
+import com.bbap.hr.dto.request.SaveFcmRequestDto;
 import com.bbap.hr.dto.response.*;
 import com.bbap.hr.entity.EmployeeEntity;
 import com.bbap.hr.exception.EmployeeNotFoundException;
 import com.bbap.hr.exception.InvalidPasswordException;
+import com.bbap.hr.feign.NoticeServiceFeignClient;
 import com.bbap.hr.provider.JwtProvider;
 import com.bbap.hr.repository.EmployeeRepository;
 import com.bbap.hr.util.PasswordEncoderUtils;
@@ -29,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Transactional
 public class AuthServiceImpl implements AuthService {
-
+private final NoticeServiceFeignClient noticeServiceFeignClient;
 
     private final EmployeeRepository employeeRepository;
     private final JwtProvider jwtProvider;
@@ -113,18 +115,29 @@ public class AuthServiceImpl implements AuthService {
         redisTemplate.opsForValue().set(refreshToken, "active", 30, TimeUnit.DAYS);
         log.info("사용자 {} :: 로그인 성공", requestBody.getEmpNo());
 
+        try {
+            SaveFcmRequestDto saveFcmRequest = new SaveFcmRequestDto(requestBody.getFcmToken());
+            noticeServiceFeignClient.saveFcm(employee.getEmpId(),saveFcmRequest);
+        }catch (Exception e){
+            log.info("fcm 토큰 저장 실패");
+        }
+
         return DataResponseDto.of(responseData);
     }
 
 
     @Override
-    public ResponseEntity<ResponseDto> logout(LogoutRequestDto requestBody) {
+    public ResponseEntity<ResponseDto> logout(int empId,LogoutRequestDto requestBody) {
         redisTemplate.opsForValue().set(requestBody.getAccessToken(), "blacklisted", jwtProvider.getExpiryTime(requestBody.getAccessToken()), TimeUnit.SECONDS);
         redisTemplate.opsForValue().set(requestBody.getRefreshToken(), "blacklisted", jwtProvider.getExpiryTime(requestBody.getRefreshToken()), TimeUnit.SECONDS);
+
+        try {
+            noticeServiceFeignClient.saveFcm(empId,new SaveFcmRequestDto());
+        }catch (Exception e){
+            log.info("fcm 토큰 삭제 실패");
+        }
 
         log.info("사용자 로그아웃 - 액세스 토큰 : {}, 리프레시 토큰 : {}", requestBody.getAccessToken(), requestBody.getRefreshToken());
         return ResponseDto.success();
     }
-
-
 }

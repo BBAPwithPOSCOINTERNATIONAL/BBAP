@@ -10,7 +10,7 @@ import java.sql.Time;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmployeeCardTaggingData {
+public class EmployeePayData {
     private Integer empId;
     private String empName;
     private SubsidyDto subsidy;

@@ -33,8 +33,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logout(@RequestBody @Valid LogoutRequestDto requestBody) {
-        return authService.logout(requestBody);
+    public ResponseEntity<ResponseDto> logout(@RequestHeader(value = "X-Employee-Id") int empId, @RequestBody @Valid LogoutRequestDto requestBody) {
+        return authService.logout(empId,requestBody);
     }
 
     @GetMapping("/user-info")

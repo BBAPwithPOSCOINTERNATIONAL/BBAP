@@ -3,7 +3,7 @@ package com.bbap.hr.service;
 import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
-import com.bbap.hr.dto.response.EmployeeCardTaggingData;
+import com.bbap.hr.dto.response.EmployeePayData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.entity.EmployeeEntity;
@@ -24,7 +24,6 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -101,7 +100,7 @@ public class HrServiceImpl implements HrService {
     }
 
     @Override
-    public ResponseEntity<DataResponseDto<EmployeeCardTaggingData>> getEmployeeDataByEmpCard(String empCard) {
+    public ResponseEntity<DataResponseDto<EmployeePayData>> getEmployeeDataByEmpCard(String empCard) {
         log.info("직원의 카드 정보로 직원 정보를 조회합니다: {}", empCard);
 
         EmployeeEntity employee = employeeRepository.findByEmpCard(empCard)
@@ -118,7 +117,7 @@ public class HrServiceImpl implements HrService {
         Date date = new Date();
         Time time = new Time(date.getTime());
 
-        EmployeeCardTaggingData data = EmployeeCardTaggingData
+        EmployeePayData data = EmployeePayData
                 .builder()
                 .empId(employee.getEmpId())
                 .empName(employee.getEmpName())
@@ -136,6 +135,45 @@ public class HrServiceImpl implements HrService {
 
         log.info("직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
                 data.getEmpId(), data.getEmpName(), time, data.getSubsidy());
+        return DataResponseDto.of(data);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<EmployeePayData>> getEmployeeDataByEmpId(int empId) {
+        log.info("EMP ID 정보로 직원 정보를 조회합니다: {}", empId);
+
+        EmployeeEntity employee = employeeRepository.findByEmpId(empId)
+            .orElseThrow(EmployeeNotFoundException::new);
+
+        WorkplaceEntity workplace = employee.getWorkplace();
+        if (workplace == null) {
+            throw new EmployeeWorkplaceNotFoundException();
+        }
+
+        SubsidyEntity subsidy = subsidyRepository.findSubsidyByWorkplaceAndCurrentTime(workplace, LocalTime.now())
+            .orElseThrow(SubsidyNotFoundException::new);
+
+        Date date = new Date();
+        Time time = new Time(date.getTime());
+
+        EmployeePayData data = EmployeePayData
+            .builder()
+            .empId(employee.getEmpId())
+            .empName(employee.getEmpName())
+            .subsidy(
+                SubsidyDto.builder()
+                    .startTime(subsidy.getStartTime())
+                    .endTime(subsidy.getEndTime())
+                    .mealClassification(subsidy.getMealClassification())
+                    .subsidy(subsidy.getSubsidy())
+                    .build()
+            )
+            .currTime(time)
+            .build();
+
+
+        log.info("EMP ID 직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
+            data.getEmpId(), data.getEmpName(), time, data.getSubsidy());
         return DataResponseDto.of(data);
     }
 }
