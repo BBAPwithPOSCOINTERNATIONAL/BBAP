@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 // import { getMyOrder } from "../../../api/Order";
 import DetailModal from "./DetailModal";
-import back from "../../../assets/button/back.png";
-import next from "../../../assets/button/next.png";
+import back from "/assets/images/button/back.png";
+import next from "/assets/images/button/next.png";
 
 export type Order = {
   orderId: string;

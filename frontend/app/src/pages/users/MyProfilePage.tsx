@@ -1,7 +1,7 @@
 import { useState, ReactNode, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import IdPhoto from "../../assets/image1.png";
+import IdPhoto from "/assets/images/image1.png";
 // import guide from "../../assets/guideLine.png";
 
 interface ModalProps {

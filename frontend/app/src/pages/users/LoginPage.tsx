@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
-import logoimg from "../../assets/logo.png";
+import logoimg from "/assets/images/logo.png";
 
 function LoginPage() {
   const navigate = useNavigate();

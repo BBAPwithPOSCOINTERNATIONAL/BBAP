@@ -4,7 +4,7 @@ import CafeTabs from "../../components/cafe/CafeTabs";
 import CafeCoupon from "../../components/cafe/CafeCoupon";
 import menu from "../../assets/cafe-menu.json";
 import MenuSection from "../../components/cafe/MenuSection";
-import together from "../../assets/together.png";
+import together from "/assets/images/together.png";
 import Button from "../../components/button";
 
 import MenuButtons from "../../components/cafe/MenuButtons";
@@ -122,9 +122,21 @@ function CafeMainPage() {
                 />
               </div>
             </div>
-            <MenuSection ref={coffeeRef} items={menu.menuListCoffee} title="커피" />
-            <MenuSection ref={beverageRef} items={menu.menuListBeverage} title="음료" />
-            <MenuSection ref={dessertRef} items={menu.menuListDessert} title="디저트" />
+            <MenuSection
+              ref={coffeeRef}
+              items={menu.menuListCoffee}
+              title="커피"
+            />
+            <MenuSection
+              ref={beverageRef}
+              items={menu.menuListBeverage}
+              title="음료"
+            />
+            <MenuSection
+              ref={dessertRef}
+              items={menu.menuListDessert}
+              title="디저트"
+            />
             {totalCount > 0 && (
               <div className="fixed bottom-0 left-0 right-0 bg-stone-100">
                 {/* 총 주문 금액 표시 */}

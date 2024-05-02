@@ -1,11 +1,11 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import Coffee from "../assets/bottom/Coffe.png";
-import myprofile from "../assets/bottom/myprofile.png";
-import myprofileClick from "../assets/bottom/myprofileClick.png";
-import receipts from "../assets/bottom/receipts.png";
-import receiptsClick from "../assets/bottom/receiptsClick.png";
-import res from "../assets/bottom/res.png";
-import resClick from "../assets/bottom/resClick.png";
+import Coffee from "/assets/images/bottom/Coffe.png";
+import myprofile from "/assets/images/bottom/myprofile.png";
+import myprofileClick from "/assets/images/bottom/myprofileClick.png";
+import receipts from "/assets/images/bottom/receipts.png";
+import receiptsClick from "/assets/images/bottom/receiptsClick.png";
+import res from "/assets/images/bottom/res.png";
+import resClick from "/assets/images/bottom/resClick.png";
 
 function BottomTabBar() {
   const location = useLocation();

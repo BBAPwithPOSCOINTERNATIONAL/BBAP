@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import logoimg from "../../assets/logo.png";
+import logoimg from "/assets/images/logo.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
