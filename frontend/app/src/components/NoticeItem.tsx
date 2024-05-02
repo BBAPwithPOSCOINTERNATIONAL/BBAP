@@ -14,10 +14,10 @@ interface NoticeProps {
 }
 const NoticeItem: React.FC<NoticeProps> = ({ noticeData, handleDelete }) => {
 	const imgSrc: { [key: string]: string } = {
-		결제: "src/assets/notification/payment.png",
-		카페주문: "src/assets/notification/cafe.png",
-		함께주문: "src/assets/notification/game.png",
-		영수증: "src/assets/notification/receipt.png",
+		결제: "/assets/images/notification/payment.png",
+		카페주문: "/assets/images/notification/cafe.png",
+		함께주문: "/assets/images/notification/game.png",
+		영수증: "/assets/images/notification/receipt.png",
 	};
 	const urlText: { [key: string]: string } = {
 		결제: "결제내역 보러가기",
