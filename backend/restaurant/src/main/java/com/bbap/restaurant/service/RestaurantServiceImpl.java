@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalTime;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,11 +65,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayMenuResponseData>> payMenu(int menuId) {
-		int result = restaurantMenuRepository.addEat(menuId);
-		if (result==0)
-			throw new MenuNotFoundException();
+		return DataResponseDto.of(restaurantMenuRepository.findPayMenu(menuId).orElseThrow(MenuNotFoundException::new));
+	}
 
-		return DataResponseDto.of(restaurantMenuRepository.findPayMenu(menuId));
+	@KafkaListener(topics = "eat_topic", groupId = "restaurant-service-group")
+	public void eatMenu(String menuId) {
+		restaurantMenuRepository.addEat(Integer.parseInt(menuId));
+		log.info("{} 먹음",menuId);
 	}
 
 	//시간별 식사 분류 지정

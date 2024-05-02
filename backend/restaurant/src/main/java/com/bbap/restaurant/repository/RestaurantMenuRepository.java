@@ -2,6 +2,7 @@ package com.bbap.restaurant.repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,10 +24,10 @@ public interface RestaurantMenuRepository extends JpaRepository<RestaurantMenuEn
 	@Modifying
 	@Transactional
 	@Query("update RestaurantMenuEntity m set m.eatCount=m.eatCount+1 where m.restaurantMenuId=:restaurantMenuId")
-	int addEat(int restaurantMenuId);
+	void addEat(int restaurantMenuId);
 
 	@Query(
 		"select new com.bbap.restaurant.dto.response.PayMenuResponseData(r.restaurantName,m.menuName, m.menuPrice) "
 			+ "from RestaurantMenuEntity m join m.restaurantEntity r where m.restaurantMenuId=:menuId")
-	PayMenuResponseData findPayMenu(int menuId);
+	Optional<PayMenuResponseData> findPayMenu(int menuId);
 }
