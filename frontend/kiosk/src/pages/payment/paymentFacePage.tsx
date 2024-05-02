@@ -104,14 +104,14 @@ const PaymentFacePage: React.FC = () => {
 	return (
 		<>
 			<Header text="결제하기" className="" />
-			<div id="body" className="my-32">
-				<div className="text-center text-lg my-10">
+			<div id="body" className="my-6">
+				<div className="text-center text-lg my-8">
 					가이드라인 안쪽으로 <br />
 					얼굴을 위치시켜주세요
 				</div>
 				<div
 					id="frame"
-					className="border border-2 border-primary-color rounded-2xl w-[850px] h-[850px] px-10 mx-auto relative"
+					className="border border-2 border-primary-color rounded-2xl w-[500px] h-[500px] px-10 mx-auto relative"
 					style={{
 						boxShadow: "15px 15px 5px lightgray",
 						overflow: "hidden",
@@ -151,9 +151,9 @@ const PaymentFacePage: React.FC = () => {
 					</div>
 				)}
 			</div>
-			<div className="w-full absolute bottom-[150px] text-center">
+			<div className="w-full absolute bottom-[70px] text-center">
 				<Button
-					className="bg-bg-color text-white text-xl w-1/3 py-5"
+					className="bg-bg-color text-white text-xl w-1/3 py-4"
 					text="이전으로"
 					onClick={() => {
 						navigate("/payment");

@@ -125,16 +125,16 @@ const MenuModal: React.FC = () => {
 					id="inner-layer"
 					className="relative bg-white w-5/6 mx-auto my-64 z-20 rounded-2xl"
 				>
-					<div className="overflow-auto w-full max-h-[1600px] min-h-[1000px] pb-[400px]">
+					<div className="overflow-auto w-full max-h-[1000px] min-h-[800px] pb-[260px]">
 						<div
 							id="header"
-							className="bg-primary-color rounded-t-2xl h-28 py-4 text-base text-white"
+							className="bg-primary-color rounded-t-2xl h-20 py-4 text-base text-white"
 						>
 							메뉴 선택
 						</div>
 						<div id="body" className="mt-10">
 							<div id="menu-info">
-								<p className="text-sm font-bold">{selectedMenu.name}</p>
+								<p className="text-base font-bold">{selectedMenu.name}</p>
 								<img
 									src={selectedMenu.imageUrl}
 									alt={selectedMenu.name}
@@ -143,11 +143,11 @@ const MenuModal: React.FC = () => {
 								<p className="text-xs break-keep mx-40">
 									{selectedMenu.description}
 								</p>
-								<p className="text-xs font-bold my-3">
+								<p className="text-sm font-bold my-3">
 									{selectedMenu.price.toLocaleString()} 원
 								</p>
 							</div>
-							<div className="mx-20 text-start">
+							<div className="mx-10 text-start">
 								{optionOrder.map((optionName) => {
 									const option = selectedMenu.options.find(
 										(opt) => opt.option_name === optionName
@@ -165,7 +165,7 @@ const MenuModal: React.FC = () => {
 											</p>
 											{/* 온도 옵션 렌더링 */}
 											{option.option_name === "온도" && (
-												<div className="ml-16 my-5 space-x-10">
+												<div className="ml-10 my-5 space-x-6">
 													{option.choices.map((choice, index) => (
 														<Button
 															key={index}
@@ -173,7 +173,7 @@ const MenuModal: React.FC = () => {
 																handleOptionChange(option.option_name, choice)
 															}
 															text={choice.choice_name}
-															className={`border border-4 w-44 py-5 font-bold text-sm text-black ${
+															className={`border border-4 w-32 py-5 font-bold text-sm text-black ${
 																choice.choice_name === "HOT"
 																	? "border-red-500"
 																	: choice.choice_name === "ICE"
@@ -190,7 +190,7 @@ const MenuModal: React.FC = () => {
 											)}
 											{/* 사이즈 옵션 렌더링 */}
 											{option.option_name === "사이즈" && (
-												<div className="ml-16 my-5 space-x-10">
+												<div className="ml-10 my-5 space-x-6">
 													{option.choices.map((choice, index) => (
 														<Button
 															key={index}
@@ -205,7 +205,7 @@ const MenuModal: React.FC = () => {
 																	</p>
 																</div>
 															}
-															className={`border border-4 border-black w-52 py-2 font-bold text-black text-sm ${
+															className={`border border-4 border-black w-40 py-2 font-bold text-black text-sm ${
 																selectedSize === choice.choice_name &&
 																"bg-gray-200 border-8"
 															}
@@ -219,7 +219,7 @@ const MenuModal: React.FC = () => {
 												option.choices.map((choice) => (
 													<div
 														key={choice.choice_name}
-														className="flex space-x-10 ml-16 my-5 text-sm"
+														className="flex space-x-4 ml-10 my-5 text-sm items-center"
 													>
 														<input
 															id={choice.choice_name}
@@ -227,7 +227,7 @@ const MenuModal: React.FC = () => {
 																option.type === "single" ? "radio" : "checkbox"
 															}
 															name={option.option_name}
-															className="w-10"
+															className="w-8 h-8"
 															value={choice.choice_name}
 															onChange={() =>
 																handleOptionChange(option.option_name, choice)
@@ -250,7 +250,7 @@ const MenuModal: React.FC = () => {
 						<div
 							id="footer"
 							className={`absolute bottom-0 bg-stone-100 rounded-b-2xl py-3 w-full ${
-								warningText ? "h-[400px]" : "h-[350px]"
+								warningText ? "h-[290px]" : "h-[250px]"
 							}`}
 						>
 							{warningText && (
@@ -258,7 +258,7 @@ const MenuModal: React.FC = () => {
 							)}
 
 							{/* 수량 변경 */}
-							<div className="my-4 flex items-center justify-center text-base font-bold space-x-10">
+							<div className="my-4 flex items-center justify-center text-base font-bold space-x-5">
 								<p>수량</p>
 								<div
 									onClick={() => {
@@ -269,7 +269,7 @@ const MenuModal: React.FC = () => {
 								>
 									<RemoveCircleOutlineIcon
 										sx={{
-											fontSize: 55,
+											fontSize: 50,
 											color: `${count === 1 ? "lightGray" : "black"}`,
 										}}
 									/>
@@ -284,7 +284,7 @@ const MenuModal: React.FC = () => {
 								>
 									<AddCircleOutlineIcon
 										sx={{
-											fontSize: 55,
+											fontSize: 50,
 											color: `${count === 30 ? "lightGray" : "black"}`,
 										}}
 									/>
@@ -293,18 +293,18 @@ const MenuModal: React.FC = () => {
 							<p className="text-base font-bold text-center">
 								총 결제가격: {totalPrice?.toLocaleString()} 원
 							</p>
-							<div className="text-base flex justify-center space-x-20 my-3">
+							<div className="text-lg flex justify-center space-x-12 my-3">
 								<Button
 									onClick={closeMenuModal}
 									text="취소"
-									className="bg-bg-color w-1/3 py-2 text-white"
+									className="bg-bg-color w-1/4 py-2 text-white"
 								/>
 								<Button
 									onClick={() => {
 										handleAddCart();
 									}}
 									text="담기"
-									className="bg-primary-color w-1/3 py-2 text-white"
+									className="bg-primary-color w-1/4 py-2 text-white"
 								/>
 							</div>
 						</div>

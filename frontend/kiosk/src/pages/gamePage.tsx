@@ -32,8 +32,8 @@ const pulseStyles = (props: { $isPulsing: boolean }) => css`
 
 const PointDiv = styled.div<{ $isPulsing: boolean }>`
 	position: absolute;
-	width: 300px;
-	height: 300px;
+	width: 180px;
+	height: 180px;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
@@ -118,7 +118,7 @@ const GamePage: React.FC = () => {
 	return (
 		<div>
 			<Header text="내기하기" className="" />
-			<div className="text-base font-bold text-center my-20">
+			<div className="text-base font-bold text-center my-5">
 				{selectedPoint ? (
 					<p className="text-orange-500 text-2xl">
 						오늘 카페는 {selectedPoint.id}번이 쏜다!!!
@@ -130,7 +130,7 @@ const GamePage: React.FC = () => {
 					</p>
 				)}
 			</div>
-			<div className="flex justify-center space-x-20 font-bold text-lg text-white">
+			<div className="flex justify-center space-x-10 font-bold text-lg text-white">
 				<div
 					onClick={handleReset}
 					className="w-1/5 rounded-full bg-amber-300 py-8 text-center"
@@ -177,8 +177,8 @@ const GamePage: React.FC = () => {
 						$isPulsing={gameStarted}
 						key={point.id}
 						style={{
-							left: `${point.x - 150}px`,
-							top: `${point.y - 150}px`,
+							left: `${point.x - 90}px`,
+							top: `${point.y - 90}px`,
 							backgroundColor: `${point.color}`,
 						}}
 					>
@@ -189,8 +189,8 @@ const GamePage: React.FC = () => {
 					<PointDiv
 						$isPulsing={true}
 						style={{
-							left: `${selectedPoint.x - 150}px`,
-							top: `${selectedPoint.y - 150}px`,
+							left: `${selectedPoint.x - 90}px`,
+							top: `${selectedPoint.y - 90}px`,
 							backgroundColor: `${selectedPoint.color}`,
 						}}
 					>
@@ -198,10 +198,10 @@ const GamePage: React.FC = () => {
 					</PointDiv>
 				)}
 			</div>
-			<div className="w-full absolute bottom-[150px] flex flex-col items-center space-y-10">
+			<div className="w-full absolute bottom-[70px] flex flex-col items-center space-y-5">
 				{selectedPoint && (
 					<Button
-						className="bg-active-color text-white text-xl w-1/3 py-5"
+						className="bg-active-color text-white text-xl w-1/3 py-4"
 						text="결제하러가기"
 						onClick={() => {
 							navigate("/payment");
@@ -209,7 +209,7 @@ const GamePage: React.FC = () => {
 					/>
 				)}
 				<Button
-					className="bg-bg-color text-white text-xl w-1/3 py-5"
+					className="bg-bg-color text-white text-xl w-1/3 py-4"
 					text="이전으로"
 					onClick={() => {
 						navigate("/main");

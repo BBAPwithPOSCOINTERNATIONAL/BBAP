@@ -17,7 +17,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 	return (
 		<div
 			id="menu-item"
-			className="relative rounded-3xl shadow-xl h-[400px] m-8 p-5 flex flex-col bg-stone-100"
+			className="relative rounded-3xl shadow-xl h-[250px] m-4 p-4 flex flex-col bg-stone-100"
 			onClick={() => {
 				openMenuModal(menuItemData);
 			}}
@@ -44,9 +44,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
 			<img
 				src={menuItemData.imageUrl}
 				alt={menuItemData.name}
-				className="w-1/2 absolute top-24 left-20"
+				className="w-1/2 absolute top-14 left-14"
 			/>
-			<div id="menu-info" className="absolute w-full pr-10 bottom-4">
+			<div id="menu-info" className="absolute w-full pr-10 bottom-1">
 				<p className="text-xs break-keep">{menuItemData.name}</p>
 				<p className="text-xs text-end font-bold">
 					{menuItemData.price.toLocaleString()} 원

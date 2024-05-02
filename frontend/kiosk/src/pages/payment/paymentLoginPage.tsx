@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import Header from "../../components/header.js";
 import Button from "../../components/button.js";
 import CustomKeyboard from "../../components/customKeyboard.js";
-import { payInfoByLogin } from "../../api/paymentApi.js";
+// import { payInfoByLogin } from "../../api/paymentApi.js";
 
 const PaymentLoginPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -17,7 +17,15 @@ const PaymentLoginPage: React.FC = () => {
 		if (idNumber && password) {
 			// console.log({ idNumber, password });
 			try {
-				const response = await payInfoByLogin({ empNo: idNumber, password });
+				// const response = await payInfoByLogin({ empNo: idNumber, password });
+				const response = {
+					data: {
+						empId: 12,
+						empName: "젠킨스",
+						availableSubsidy: 3000,
+						stampCnt: 10,
+					},
+				};
 				navigate("/payment-final", { state: response.data });
 			} catch (error) {
 				setKeyboardVisibility(false);
@@ -48,14 +56,14 @@ const PaymentLoginPage: React.FC = () => {
 			<div id="body" onClick={handleOutsideClick}>
 				<div
 					id="outer"
-					className="flex flex-col space-y-20 font-bold text-lg text-primary-color py-52 h-[2000px]"
+					className="flex flex-col space-y-10 font-bold text-lg text-primary-color py-16 h-[80vh]"
 				>
-					<div id="outer" className="flex flex-col space-y-10 items-center">
+					<div id="outer" className="flex flex-col space-y-5 items-center">
 						<label htmlFor="id-number">사원번호</label>
 						<input
 							type="text"
 							id="id-number"
-							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center ${
+							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-3 text-center ${
 								focusId === "id-number" && "border-4"
 							}`}
 							value={idNumber}
@@ -63,12 +71,12 @@ const PaymentLoginPage: React.FC = () => {
 							onFocus={handleFocus}
 						/>
 					</div>
-					<div id="outer" className="flex flex-col space-y-10 items-center">
+					<div id="outer" className="flex flex-col space-y-5 items-center">
 						<label htmlFor="password">비밀번호</label>
 						<input
 							type="password"
 							id="password"
-							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-5 text-center ${
+							className={`outline-none border focus:border-4 border-primary-color bg-slate-200 rounded-2xl text-lg p-3 text-center ${
 								focusId === "password" && "border-4"
 							}`}
 							value={password}
@@ -82,18 +90,18 @@ const PaymentLoginPage: React.FC = () => {
 						</p>
 					)}
 				</div>
-				<div className="w-full absolute bottom-[150px] flex flex-col space-y-10 items-center">
+				<div className="w-full absolute bottom-[70px] flex flex-col space-y-5 items-center">
 					<Button
 						className={`${
 							idNumber && password ? "bg-primary-color" : "bg-inactive-color"
-						} text-white text-xl w-1/3 py-5`}
+						} text-white text-xl w-1/3 py-4`}
 						text="다음"
 						onClick={() => {
 							handleLogin();
 						}}
 					/>
 					<Button
-						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						className="bg-bg-color text-white text-xl w-1/3 py-4"
 						text="이전으로"
 						onClick={() => {
 							navigate("/payment");
@@ -103,7 +111,7 @@ const PaymentLoginPage: React.FC = () => {
 			</div>
 
 			{keyboardVisibility && (
-				<div className="w-full absolute bottom-[500px] flex justify-center z-50">
+				<div className="w-full absolute bottom-[320px] flex justify-center z-50">
 					<CustomKeyboard
 						setInput={focusId == "id-number" ? setIdNumber : setPassword}
 					/>

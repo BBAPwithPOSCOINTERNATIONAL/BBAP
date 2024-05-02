@@ -55,21 +55,21 @@ const MainPage: React.FC = () => {
 					<img
 						src="/assets/images/포스코인터내셔널_로고.png"
 						alt=""
-						className="w-[300px]"
+						className="w-[230px]"
 					/>
 					<CurrentTime />
 				</div>
-				<div id="menus" className="m-10">
+				<div id="menus" className="m-6 mt-0">
 					<div
 						id="menu-header"
-						className="text-lg text-center text-white flex justify-start space-x-5"
+						className="text-lg text-center text-white flex justify-start space-x-2"
 					>
 						{tapItems.map((item, index) => (
 							<div
 								className={`transition-all rounded-t-3xl ${
 									activeTapItem === item
-										? "w-1/4 bg-primary-color"
-										: "w-1/5 bg-bg-color"
+										? "w-[160px] bg-primary-color"
+										: "w-[130px] bg-bg-color"
 								} py-2`}
 								key={index}
 								onClick={() => handleTapItemClick(item)}
@@ -82,7 +82,7 @@ const MainPage: React.FC = () => {
 						id="menu-body"
 						className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[80vh] flex flex-col divide-y-2 divide-primary-color"
 					>
-						<div className="flex-grow overflow-y-auto my-1">
+						<div className="flex-grow overflow-y-auto my-1 p-4">
 							<div className="grid grid-cols-3">
 								{activeMenu &&
 									activeMenu.map((item: Menu, index: number) => (
@@ -90,8 +90,8 @@ const MainPage: React.FC = () => {
 									))}
 							</div>
 						</div>
-						<div className="min-h-[450px] max-h-[450px] flex divide-x-2 divide-primary-color">
-							<div className="flex-grow px-3 py-5">
+						<div className="min-h-[340px] max-h-[340px] flex divide-x-2 divide-primary-color">
+							<div className="flex-grow px-2 py-2">
 								<div className="text-base font-bold bg-white">주문 목록</div>
 								<div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
 									{/* store에 저장된 주문내역 렌더링 */}
@@ -100,20 +100,20 @@ const MainPage: React.FC = () => {
 									))}
 								</div>
 							</div>
-							<div className="w-[400px]">
-								<div className="mx-10 my-3">
-									<p className="flex justify-between text-2xs">
+							<div className="w-[250px]">
+								<div className="mx-3 my-3">
+									<p className="flex justify-between text-xs">
 										<span>총 주문개수</span>
 										<span className="font-bold">{totalCount} 개</span>
 									</p>
-									<p className="flex justify-between text-2xs">
+									<p className="flex justify-between text-xs">
 										<span>총 결제금액</span>
 										<span className="font-bold text-red-500">
 											{totalPrice.toLocaleString()} 원
 										</span>
 									</p>
 								</div>
-								<div className="px-10 py-5 flex flex-col space-y-4">
+								<div className="px-10 py-5 flex flex-col space-y-3">
 									<Button
 										onClick={() => {
 											if (cartList.length > 0) {
@@ -125,7 +125,7 @@ const MainPage: React.FC = () => {
 											cartList.length > 0
 												? "bg-primary-color"
 												: "bg-inactive-color"
-										} text-sm text-white w-full py-3`}
+										} text-base text-white w-full py-2`}
 									/>
 									<Button
 										onClick={() => {
@@ -138,12 +138,12 @@ const MainPage: React.FC = () => {
 											cartList.length > 0
 												? "bg-active-color"
 												: "bg-inactive-color"
-										} text-sm text-white w-full py-3`}
+										} text-base text-white w-full py-2`}
 									/>
 									<Button
 										onClick={() => goToEntry()}
 										text={"처음으로"}
-										className={"bg-bg-color text-sm text-white w-full py-3"}
+										className={"bg-bg-color text-base text-white w-full py-2"}
 									/>
 								</div>
 							</div>

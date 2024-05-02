@@ -1,6 +1,6 @@
 .react-simple-keyboard {
-	width: 1000px;
-	height: 400px;
+	width: 700px;
+	height: 330px;
 }
 
 .hg-theme-default .hg-button {
@@ -12,11 +12,11 @@
 	box-sizing: border-box;
 	cursor: pointer;
 	display: flex;
-	height: 74px;
+	height: 60px;
 	justify-content: center;
 	padding: 5px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	font-size: 32px;
+	font-size: 28px;
 }
 
 .hg-theme-default .hg-button-bksp {
