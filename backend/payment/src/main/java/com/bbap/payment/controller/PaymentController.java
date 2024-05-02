@@ -70,7 +70,7 @@ public class PaymentController {
 	})
 	@GetMapping("/month/{yearMonth}")
 	public ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(
-		@RequestHeader int empId, @PathVariable YearMonth yearMonth) {
+		@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable YearMonth yearMonth) {
 		return paymentService.listMonthPayment(empId, yearMonth);
 	}
 
@@ -82,8 +82,8 @@ public class PaymentController {
 		@ApiResponse(responseCode = "200", description = "조회 성공."),
 	})
 	@GetMapping("/day/{date}")
-	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(@RequestHeader int empId,
-		@PathVariable LocalDate date
+	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(
+		@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable LocalDate date
 	) {
 		return paymentService.listDayPayment(empId, date);
 	}
