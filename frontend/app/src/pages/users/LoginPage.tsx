@@ -5,60 +5,60 @@ import bbapimg from "/assets/images/bbap.png";
 import logoimg from "/assets/images/logo.png";
 
 function LoginPage() {
-  const navigate = useNavigate();
-  // const [loading, setLoading] = useState<boolean>(false);
-  const [employeeId, setEmployeeId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+	const navigate = useNavigate();
+	// const [loading, setLoading] = useState<boolean>(false);
+	const [employeeId, setEmployeeId] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
 
-  const employeeIdRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
+	const employeeIdRef = useRef<HTMLInputElement | null>(null);
+	const passwordRef = useRef<HTMLInputElement | null>(null);
 
-  const onChangeId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmployeeId(e.target.value.trim());
-  }, []);
+	const onChangeId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		setEmployeeId(e.target.value.trim());
+	}, []);
 
-  const onChangePassword = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPassword(e.target.value.trim());
-    },
-    []
-  );
+	const onChangePassword = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			setPassword(e.target.value.trim());
+		},
+		[]
+	);
 
-  //  const onSubmit = useCallback(
-  //    async (event: FormEvent) => {
-  //      event.preventDefault();
-  //      if (loading) {
-  //        return;
-  //      }
-  //      if (!employeeId || !password) {
-  //        alert("사원번호와 비밀번호를 모두 입력해주세요.");
-  //        return;
-  //      }
-  //      setLoading(true);
-  //      try {
-  //        const response = await axios.post(`${Config.API_URL}/login`, {
-  //          employeeId,
-  //          password,
-  //        });
-  //        console.log(response.data);
-  //        alert("로그인 되었습니다.");
-  //        // 세션 또는 로컬 스토리지에 토큰 저장 예제
-  //        sessionStorage.setItem("accessToken", response.data.data.accessToken);
-  //        navigate("/main"); // 로그인 성공 후 이동할 경로
-  //      } catch (error) {
-  //        alert("로그인 실패: " + error.response.data.message);
-  //      } finally {
-  //        setLoading(false);
-  //      }
-  //    },
-  //    [loading, email, password, navigate]
-  //  );
+	//  const onSubmit = useCallback(
+	//    async (event: FormEvent) => {
+	//      event.preventDefault();
+	//      if (loading) {
+	//        return;
+	//      }
+	//      if (!employeeId || !password) {
+	//        alert("사원번호와 비밀번호를 모두 입력해주세요.");
+	//        return;
+	//      }
+	//      setLoading(true);
+	//      try {
+	//        const response = await axios.post(`${Config.API_URL}/login`, {
+	//          employeeId,
+	//          password,
+	//        });
+	//        console.log(response.data);
+	//        alert("로그인 되었습니다.");
+	//        // 세션 또는 로컬 스토리지에 토큰 저장 예제
+	//        sessionStorage.setItem("accessToken", response.data.data.accessToken);
+	//        navigate("/main"); // 로그인 성공 후 이동할 경로
+	//      } catch (error) {
+	//        alert("로그인 실패: " + error.response.data.message);
+	//      } finally {
+	//        setLoading(false);
+	//      }
+	//    },
+	//    [loading, email, password, navigate]
+	//  );
 
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("Login Attempted with:", employeeId, password);
-    navigate("/main");
-  };
+	const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		console.log("Login Attempted with:", employeeId, password);
+		navigate("/main");
+	};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">

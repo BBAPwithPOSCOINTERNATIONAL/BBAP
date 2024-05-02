@@ -20,13 +20,13 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 	}, []);
 	return (
 		<div className="flex justify-between items-center">
-			<div className="max-w-[280px]">
+			<div className="max-w-[220px]">
 				<p className="text-xs font-bold my-0 break-keep">{props.name}</p>
 				<p className="text-2xs break-keep">{options.join(", ")}</p>
 			</div>
-			<div className="flex items-center justify-center text-xs font-bold space-x-5">
+			<div className="flex items-center justify-center text-xs font-bold space-x-2">
 				{/* 수량 변경 */}
-				<div className="flex space-x-2">
+				<div className="flex space-x-1">
 					<div
 						className="flex items-center"
 						onClick={() => {
@@ -37,7 +37,7 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 					>
 						<RemoveCircleOutlineIcon
 							sx={{
-								fontSize: 45,
+								fontSize: 35,
 								color: `${props.cnt === 1 ? "lightGray" : "black"}`,
 							}}
 						/>
@@ -53,7 +53,7 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 					>
 						<AddCircleOutlineIcon
 							sx={{
-								fontSize: 45,
+								fontSize: 35,
 								color: `${props.cnt === 30 ? "lightGray" : "black"}`,
 							}}
 						/>
@@ -70,7 +70,7 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 				>
 					<CancelIcon
 						sx={{
-							fontSize: 50,
+							fontSize: 35,
 							color: "red",
 						}}
 					/>

@@ -171,14 +171,14 @@ const PaymentFinalPage: React.FC = () => {
 		// TODO 서버로 결제요청 보냄
 		try {
 			const response = await paymentReq(payload);
+			// const response = { data: { orderNum: 120 } };
 			console.log("결제");
-
 			const content = (
-				<div className="w-[850px] h-[700px] p-20 flex flex-col justify-between">
+				<div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
 					<p className="text-lg font-bold text-primary-color">
 						주문이 완료되었습니다.
 					</p>
-					<p className="flex items-center justify-between mx-32">
+					<p className="flex items-center justify-between mx-16">
 						<span className="text-lg font-bold text-primary-color">
 							주문번호
 						</span>{" "}
@@ -204,18 +204,18 @@ const PaymentFinalPage: React.FC = () => {
 		<div>
 			<Header text="결제하기" className="" />
 			<div id="body">
-				<p className="text-lg mx-40 my-16">
+				<p className="text-lg mx-40 my-8">
 					<span className="font-bold">{ordererInfo.empName}</span> 님, 주문하신
 					내역입니다.
 				</p>
 				<div
 					id="order-list"
-					className="mx-auto w-3/4 h-[500px] overflow-y-auto text-sm"
+					className="mx-auto w-3/4 h-[300px] overflow-y-auto text-sm"
 				>
 					<table className="table-auto w-full">
 						<thead className="border-b bg-gray-100 sticky top-0">
 							<tr>
-								<th className="px-4 py-2 text-start">메뉴</th>
+								<th className="px-4 py-2 w-2/3 text-start">메뉴</th>
 								<th className="px-4 py-2 text-center">수량</th>
 								<th className="px-4 py-2 text-center">가격</th>
 							</tr>
@@ -234,7 +234,7 @@ const PaymentFinalPage: React.FC = () => {
 					isAddAvailable={isAddAvailable}
 				/>
 			</div>
-			<div className="text-lg w-2/3 mx-auto space-y-5">
+			<div className="text-lg w-2/3 mx-auto space-y-3">
 				<div className="flex justify-between font-bold">
 					<span>총 주문금액</span>
 					<span>{totalPrice.toLocaleString()} 원</span>
@@ -263,16 +263,16 @@ const PaymentFinalPage: React.FC = () => {
 				</div>
 			</div>
 
-			<div className="w-full absolute bottom-[100px] flex justify-center space-x-32">
+			<div className="w-full absolute bottom-[70px] flex justify-center space-x-16">
 				<Button
-					className="bg-bg-color text-white text-xl w-1/4 py-5"
+					className="bg-bg-color text-white text-xl w-1/4 py-4"
 					text="취소"
 					onClick={() => {
 						navigate("/payment");
 					}}
 				/>
 				<Button
-					className="bg-active-color text-white text-xl w-1/4 py-5"
+					className="bg-active-color text-white text-xl w-1/4 py-4"
 					text="결제"
 					onClick={() => {
 						handlePayment();

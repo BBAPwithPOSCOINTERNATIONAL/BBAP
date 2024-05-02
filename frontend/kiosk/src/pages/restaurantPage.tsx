@@ -61,15 +61,15 @@ const RestaurantPage: React.FC = () => {
 	return (
 		<>
 			<div id="body" className="text-center">
-				<p className="text-3xl font-bold mt-20">구내식당</p>
+				<p className="text-3xl font-bold mt-16">구내식당</p>
 				<img
 					src="/assets/images/구내식당.png"
 					alt="순대국밥 사진"
-					className="w-3/4 mx-auto my-48"
+					className="w-3/4 mx-auto my-20"
 				/>
 				<p className="text-xl">순대국밥</p>
 				<p className="text-xl">7,000 원</p>
-				<BlinkingText className="text-lg text-red-500 my-20">
+				<BlinkingText className="text-lg text-red-500 my-10">
 					사원증을 태그하세요
 				</BlinkingText>
 				<input
@@ -85,9 +85,9 @@ const RestaurantPage: React.FC = () => {
 					}}
 				/>
 
-				<div className="w-full absolute bottom-[150px] text-center">
+				<div className="w-full absolute bottom-[70px] text-center">
 					<Button
-						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						className="bg-bg-color text-white text-xl w-1/3 py-4"
 						text="처음으로"
 						onClick={() => {
 							navigate("/");

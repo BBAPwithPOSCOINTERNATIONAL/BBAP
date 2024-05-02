@@ -59,13 +59,13 @@ const PaymentTagPage: React.FC = () => {
 						activeEnter(e);
 					}}
 				/>
-				<div className="flex space-x-20 mt-48 justify-center">
+				<div className="flex space-x-20 mt-16 justify-center">
 					<div
 						className={`border ${
 							warningMsg
 								? "border-8 border-red-500"
 								: "border-2 border-primary-color"
-						} bg-[#E2F1FF] rounded-2xl w-[850px] h-[1100px] px-10`}
+						} bg-[#E2F1FF] rounded-2xl w-[600px] h-[750px] px-10`}
 						style={{
 							boxShadow: "15px 15px 5px lightgray",
 						}}
@@ -86,9 +86,9 @@ const PaymentTagPage: React.FC = () => {
 						{warningMsg}
 					</p>
 				)}
-				<div className="w-full absolute bottom-[150px] text-center">
+				<div className="w-full absolute bottom-[70px] text-center">
 					<Button
-						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						className="bg-bg-color text-white text-xl w-1/3 py-4"
 						text="이전으로"
 						onClick={() => {
 							navigate("/payment");

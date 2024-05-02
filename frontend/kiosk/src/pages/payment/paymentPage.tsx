@@ -11,16 +11,16 @@ const PaymentPage: React.FC = () => {
 		<>
 			<Header text="결제하기" className="" />
 			<div id="body">
-				<div className="flex justify-center space-x-20 text-xl font-bold mt-32 mb-52">
+				<div className="flex justify-center space-x-20 text-xl font-bold mt-16 mb-28">
 					<span>총 결제금액</span>
 					<span className="text-active-color">
 						{totalPrice.toLocaleString()} 원
 					</span>
 				</div>
-				<div className="flex flex-col space-y-20">
-					<div className="flex space-x-20 justify-center">
+				<div className="flex flex-col space-y-10">
+					<div className="flex space-x-10 justify-center">
 						<div
-							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[450px] h-[600px]"
+							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[300px] h-[400px]"
 							style={{
 								boxShadow: "15px 15px 5px lightgray",
 							}}
@@ -38,7 +38,7 @@ const PaymentPage: React.FC = () => {
 							</p>
 						</div>
 						<div
-							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[450px] h-[600px]"
+							className="border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[300px] h-[400px]"
 							style={{
 								boxShadow: "15px 15px 5px lightgray",
 							}}
@@ -57,7 +57,7 @@ const PaymentPage: React.FC = () => {
 						</div>
 					</div>
 					<div
-						className="mx-auto border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[980px] h-[200px] flex items-center justify-center"
+						className="mx-auto border border-2 border-primary-color bg-[#E2F1FF] rounded-2xl w-[640px] h-[120px] flex items-center justify-center"
 						style={{
 							boxShadow: "15px 15px 5px lightgray",
 						}}
@@ -70,9 +70,9 @@ const PaymentPage: React.FC = () => {
 						</p>
 					</div>
 				</div>
-				<div className="w-full absolute bottom-[150px] text-center">
+				<div className="w-full absolute bottom-[70px] text-center">
 					<Button
-						className="bg-bg-color text-white text-xl w-1/3 py-5"
+						className="bg-bg-color text-white text-xl w-1/3 py-4"
 						text="이전으로"
 						onClick={() => {
 							navigate("/main");

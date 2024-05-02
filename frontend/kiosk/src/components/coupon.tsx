@@ -19,7 +19,7 @@ const Coupon: React.FC<CouponProps> = ({
 	}, [count]);
 
 	return (
-		<div className="w-3/4 h-[180px] bg-gray-100 rounded-xl mx-auto my-16 px-10 py-5 flex justify-between">
+		<div className="w-3/4 h-[130px] bg-gray-100 rounded-xl mx-auto my-8 px-5 py-3 flex justify-between">
 			<p className="text-base items-center space-x-5">
 				<span className="font-bold">쿠폰</span>
 				<span className="text-xs">
@@ -30,7 +30,7 @@ const Coupon: React.FC<CouponProps> = ({
 
 			<div className="flex flex-col items-end space-y-3">
 				{/* 쿠폰 수량 변경 */}
-				<div id="change-coupon-count" className="flex space-x-2 mx-5">
+				<div id="change-coupon-count" className="flex space-x-2">
 					<div
 						className="flex items-center"
 						onClick={() => {
@@ -41,7 +41,7 @@ const Coupon: React.FC<CouponProps> = ({
 					>
 						<RemoveCircleOutlineIcon
 							sx={{
-								fontSize: 70,
+								fontSize: 50,
 								color: `${count === 0 ? "lightGray" : "black"}`,
 							}}
 						/>
@@ -57,7 +57,7 @@ const Coupon: React.FC<CouponProps> = ({
 					>
 						<AddCircleOutlineIcon
 							sx={{
-								fontSize: 70,
+								fontSize: 50,
 								color: `${
 									count === allCouponCount || !isAddAvailable
 										? "lightGray"
