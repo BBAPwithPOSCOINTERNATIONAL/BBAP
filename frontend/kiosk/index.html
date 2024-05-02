@@ -17,9 +17,8 @@
 	<script>
 		if ("serviceWorker" in navigator) {
 			window.addEventListener("load", () => {
-				navigator.serviceWorker.register("/src/service-worker.js", {
-					scope: "/src/",
-				});
+				navigator.serviceWorker.register("/service-worker.js");
+				console.log("service worker 등록");
 			});
 		}
 	</script>
