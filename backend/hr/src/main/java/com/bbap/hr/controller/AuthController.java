@@ -38,8 +38,8 @@ public class AuthController {
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<DataResponseDto<EmployeeDto>> userInfo() {
-        return authService.getUserInfo();
+    public ResponseEntity<DataResponseDto<EmployeeDto>> userInfo(@RequestHeader(value = "X-Employee-Id") int empId) {
+        return authService.getUserInfo(empId);
     }
 
 

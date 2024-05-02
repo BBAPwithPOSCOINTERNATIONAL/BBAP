@@ -17,5 +17,5 @@ public interface AuthService {
 
     ResponseEntity<ResponseDto> register(RegisterRequestDto requestBody);
 
-    ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo();
+    ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo(int empId);
 }

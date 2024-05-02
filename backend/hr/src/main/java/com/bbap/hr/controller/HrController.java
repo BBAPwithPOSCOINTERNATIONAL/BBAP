@@ -42,16 +42,4 @@ public class HrController {
 
         return hrService.getEmployeeDataByEmpId(empId);
     }
-
-    @GetMapping("/token-test")
-    public ResponseEntity<?> tokenTest(@RequestHeader(value="X-Employee-Id", required = false) String employeeId) {
-        if (employeeId == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(employeeId);
-        }
-    }
-
-
-
 }

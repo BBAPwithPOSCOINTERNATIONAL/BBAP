@@ -53,11 +53,7 @@ private final NoticeServiceFeignClient noticeServiceFeignClient;
     }
 
     @Override
-    public ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        Integer empId = customUserDetails.getEmpId();
+    public ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo(int empId) {
         EmployeeEntity employee = employeeRepository.findById(empId)
                 .orElseThrow(EmployeeNotFoundException::new);
 
