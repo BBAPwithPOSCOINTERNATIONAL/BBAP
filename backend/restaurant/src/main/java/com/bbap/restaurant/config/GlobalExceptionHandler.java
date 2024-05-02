@@ -9,6 +9,8 @@ import com.bbap.restaurant.dto.response.ResponseDto;
 import com.bbap.restaurant.exception.CustomException;
 import com.bbap.restaurant.exception.MenuNotFoundException;
 
+import feign.FeignException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	//유효성 검사
@@ -22,6 +24,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MenuNotFoundException.class)
 	public ResponseEntity<ResponseDto> MenuNotFoundExceptionHandler(MenuNotFoundException e) {
 		return handleException(e);
+	}
+
+	//feign
+	@ExceptionHandler(FeignException.class)
+	public ResponseEntity<String> FeignExceptionHandler(FeignException e) {
+		return ResponseEntity.status(e.status()).body(e.contentUTF8());
 	}
 
 	private ResponseEntity<ResponseDto> handleException(CustomException e) {

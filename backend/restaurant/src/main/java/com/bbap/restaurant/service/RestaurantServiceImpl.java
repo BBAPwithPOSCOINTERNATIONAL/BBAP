@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbap.restaurant.dto.response.DataResponseDto;
+import com.bbap.restaurant.dto.response.EmployeeDto;
 import com.bbap.restaurant.dto.response.ListMenuResponseData;
 import com.bbap.restaurant.dto.response.ListRestaurantResponseData;
 import com.bbap.restaurant.dto.response.PayMenuResponseData;
 import com.bbap.restaurant.exception.MenuNotFoundException;
+import com.bbap.restaurant.feign.HrServiceFeignClient;
 import com.bbap.restaurant.repository.RestaurantMenuRepository;
 import com.bbap.restaurant.repository.RestaurantRepository;
 
@@ -23,24 +25,28 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class RestaurantServiceImpl implements RestaurantService {
-	// private final FaceServiceFeignClient faceServiceFeignClient;
+	private final HrServiceFeignClient hrServiceFeignClient;
 
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantMenuRepository restaurantMenuRepository;
 
 	@Override
-	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(int restaurantId) {
+	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(int empId,int restaurantId) {
 		//restaurantId가 -1로 넘어왔을 경우 이용자의 근무지에 속해있는 사전순 제일 앞의 식당 정보를 보여준다.
-		//restaurantId를 사원에 맞게 변경 처리
-		Date todatDate = new Date(System.currentTimeMillis());
+		if(restaurantId==-1){
+			EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
+			restaurantId=restaurantRepository.findFirstByWorkplaceId(empData.getWorkplace().getWorkplaceId()).getRestaurantId();
+		}
+
+		Date todayDate = new Date(System.currentTimeMillis());
 		int mealClassification = classifyMealTime();
 
 		ListRestaurantResponseData data = ListRestaurantResponseData.builder()
 			.restaurantList(restaurantRepository.findAllDto())
 			.restaurantId(restaurantId)
-			.todayDate(todatDate)
+			.todayDate(todayDate)
 			.mealClassification(mealClassification)
-			.menuList(restaurantMenuRepository.findMenuList(restaurantId, todatDate, mealClassification))
+			.menuList(restaurantMenuRepository.findMenuList(restaurantId, todayDate, mealClassification))
 			.build();
 
 		log.info("{} : 식당 정보 정상 조회", restaurantId);
