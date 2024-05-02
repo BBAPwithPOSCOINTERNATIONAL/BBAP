@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import com.bbap.notice.repository.NoticeRepository;
 import com.bbap.notice.repository.NoticeTemplateRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
+import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,8 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class NoticeServiceImpl implements NoticeService {
-	// private final FaceServiceFeignClient faceServiceFeignClient;
-
 	private final NoticeRepository noticeRepository;
 	private final NoticeTemplateRepository noticeTemplateRepository;
 
@@ -43,9 +43,42 @@ public class NoticeServiceImpl implements NoticeService {
 		return DataResponseDto.of(data);
 	}
 
-	@SneakyThrows
 	@Override
-	public ResponseEntity<ResponseDto> sendNotice(SendNoticeRequestDto request) {
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(int empId, int noticeId) {
+		noticeRepository.deleteOne(noticeId);
+
+		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
+		return DataResponseDto.of(data);
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(int empId) {
+		noticeRepository.deleteAllbyEmpId(empId);
+
+		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
+		return DataResponseDto.of(data);
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> saveFcm(int empId, SaveFcmRequestDto request) {
+		//레디스에 유저별 fcmToken저장
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+		if (request.getFcmToken() == null)
+			redisTemplate.delete(String.valueOf(empId));
+		else
+			valueOperations.set(String.valueOf(empId), request.getFcmToken());
+
+		log.info("{} : 토큰 저장 - {}", empId, request.getFcmToken());
+
+		return ResponseDto.success();
+	}
+
+	@SneakyThrows
+	@KafkaListener(topics = "notice_topic", groupId = "notice-service-group")
+	public void sendNotice(String kafkaMessage) {
+		SendNoticeRequestDto request = new Gson().fromJson(kafkaMessage, SendNoticeRequestDto.class);
+
 		NoticeTemplateEntity template = noticeTemplateRepository.findById(request.getNoticeTemplateId())
 			.orElseThrow(TemplateNotFoundException::new);
 
@@ -87,38 +120,5 @@ public class NoticeServiceImpl implements NoticeService {
 		}
 
 		log.info("알림 전송 성공");
-
-		return ResponseDto.success();
-	}
-
-	@Override
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(int empId, int noticeId) {
-		noticeRepository.deleteOne(noticeId);
-
-		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
-		return DataResponseDto.of(data);
-	}
-
-	@Override
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(int empId) {
-		noticeRepository.deleteAllbyEmpId(empId);
-
-		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
-		return DataResponseDto.of(data);
-	}
-
-	@Override
-	public ResponseEntity<ResponseDto> saveFcm(int empId, SaveFcmRequestDto request) {
-		//레디스에 유저별 fcmToken저장
-		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-
-		if (request.getFcmToken() == null)
-			redisTemplate.delete(String.valueOf(empId));
-		else
-			valueOperations.set(String.valueOf(empId), request.getFcmToken());
-
-		log.info("{} : 토큰 저장 - {}", empId, request.getFcmToken());
-
-		return ResponseDto.success();
 	}
 }
