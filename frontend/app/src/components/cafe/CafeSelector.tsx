@@ -14,12 +14,12 @@ const CafeSelector: React.FC = () => {
   };
 
   return (
-    <div className="mt-2 flex flex-col w-full items-center">
+    <div className=" flex flex-col w-full items-center">
       <select
         id="cafe-select"
         value={selectedCafe}
         onChange={handleCafeSelect}
-        className="bg-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center"
+        className="bg-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center flex justify-center items-center h-9"
       >
         {cafes.map((cafe) => (
           <option key={cafe.value} value={cafe.value}>
