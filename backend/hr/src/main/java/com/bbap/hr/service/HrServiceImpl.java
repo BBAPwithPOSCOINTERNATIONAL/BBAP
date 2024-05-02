@@ -134,7 +134,7 @@ public class HrServiceImpl implements HrService {
 
 
         log.info("직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
-                data.getEmpId(), data.getEmpName(), time, data.getSubsidy());
+                data.getEmpId(), data.getEmpName(), time, data.getSubsidy().getSubsidy());
         return DataResponseDto.of(data);
     }
 
@@ -173,7 +173,7 @@ public class HrServiceImpl implements HrService {
 
 
         log.info("EMP ID 직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
-            data.getEmpId(), data.getEmpName(), time, data.getSubsidy());
+            data.getEmpId(), data.getEmpName(), time, data.getSubsidy().getSubsidy());
         return DataResponseDto.of(data);
     }
 }
