@@ -41,7 +41,8 @@ public class FaceController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<ResponseDto> registerFace(@RequestHeader int empId, @ModelAttribute FaceRequestDto request) {
+	public ResponseEntity<ResponseDto> registerFace(@RequestHeader(value = "X-Employee-Id") int empId,
+		@ModelAttribute FaceRequestDto request) {
 		return faceService.registerFace(empId, request);
 	}
 
@@ -70,7 +71,7 @@ public class FaceController {
 		@ApiResponse(responseCode = "404", description = "등록되지 않은 이용자.")
 	})
 	@GetMapping
-	public ResponseEntity<ResponseDto> checkRegister(@RequestHeader int empId) {
+	public ResponseEntity<ResponseDto> checkRegister(@RequestHeader(value = "X-Employee-Id") int empId) {
 		return faceService.checkRegister(empId);
 	}
 }
