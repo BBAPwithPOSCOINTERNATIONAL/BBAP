@@ -363,10 +363,10 @@ function Approve(): JSX.Element {
   // 현재 페이지의 직원들을 나타내기 위한 인덱스 범위를 계산합니다.
   const indexOfLastEmployee = currentPage * employeesPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
-  const currentEmployees = filteredEmployees.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
-  );
+  // const currentEmployees = filteredEmployees.slice(
+  //   indexOfFirstEmployee,
+  //   indexOfLastEmployee
+  // );
 
   const openModal = () => {
     setIsModalOpen(true);
