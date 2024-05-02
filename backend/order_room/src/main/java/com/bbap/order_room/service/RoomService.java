@@ -7,4 +7,5 @@ import com.bbap.order_room.dto.responseDto.DataResponseDto;
 
 public interface RoomService {
 	ResponseEntity<DataResponseDto<RoomParticipationDto>> checkHasRoom(Integer empId);
+	ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId);
 }
