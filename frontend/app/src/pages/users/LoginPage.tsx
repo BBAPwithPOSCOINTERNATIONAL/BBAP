@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import logoimg from "../../assets/logo.png";
+import bbapimg from "../../assets/bbap.png";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -62,10 +63,19 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">
       <div className="w-full max-w-xs">
-        <img src={logoimg} alt="Login Logo" className="mx-auto mb-6" />
-        <h1 className="text-center text-5xl font-hyemin-bold mb-6">BBAP</h1>
+        <img
+          src={logoimg}
+          alt="Login Logo"
+          className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full"
+        />
+        <img
+          src={bbapimg}
+          alt="Login Logo"
+          className="mx-auto mb-5 mt-0 w-5/6"
+        />
+        {/* <h1 className="text-center text-6xl font-hyemin-bold mb-1">BBAP</h1> */}
         <form onSubmit={handleLogin} className="px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
+          <div className="mb-5">
             <input
               type="text"
               id="employeeId"
@@ -74,10 +84,11 @@ function LoginPage() {
               ref={employeeIdRef}
               // required
               placeholder="사원번호"
-              className="font-hyemin-bold shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="font-hyemin-bold shadow appearance-none leading-10 border rounded w-full py-3 px-3 text-gray-700 text-center leading-tight focus:outline-none appearance-none ring-2 focus:ring-blue-300 focus:outline-none 
+              ring-slate-300 focus:shadow-outline text-[18px] "
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-7">
             <input
               type="password"
               id="password"
@@ -86,13 +97,14 @@ function LoginPage() {
               ref={passwordRef}
               // required
               placeholder="비밀번호"
-              className="font-hyemin-bold shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="font-hyemin-bold shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 mb-3 text-center leading-tight ring-2 focus:ring-blue-300 focus:outline-none 
+              text-[18px] ring-slate-300 focus:outline-none focus:shadow-outline p-0"
             />
           </div>
           <div className="flex items-center justify-center">
             <button
               type="submit"
-              className="bg-primary-color hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="font-hyemin-bold bg-primary-color shadow-lg hover:bg-blue-200 hover:text-black text-white text-2xl font-bold py-2 px-10 rounded-md focus:outline-none focus:shadow-outline"
             >
               로그인
             </button>
