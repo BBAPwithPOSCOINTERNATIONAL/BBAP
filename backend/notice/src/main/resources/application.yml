@@ -21,8 +21,8 @@ springdoc:
   api-docs:
     path: /api/v1/notices/api-docs
   swagger-ui:
-    path: /api/v1/notices
-    disable-swagger-default-url: true
+    path: /api/v1/notices/swagger
+    disable-swagger-default-url: false
     display-request-duration: true
     operations-sorter: alpha
 
