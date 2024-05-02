@@ -111,7 +111,11 @@ public class NoticeServiceImpl implements NoticeService {
 	public ResponseEntity<ResponseDto> saveFcm(int empId, SaveFcmRequestDto request) {
 		//레디스에 유저별 fcmToken저장
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-		valueOperations.set(String.valueOf(empId), request.getFcmToken());
+
+		if (request.getFcmToken() == null)
+			redisTemplate.delete(String.valueOf(empId));
+		else
+			valueOperations.set(String.valueOf(empId), request.getFcmToken());
 
 		log.info("{} : 토큰 저장 - {}", empId, request.getFcmToken());
 

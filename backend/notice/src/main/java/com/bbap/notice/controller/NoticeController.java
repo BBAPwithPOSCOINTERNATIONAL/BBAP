@@ -43,7 +43,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@GetMapping
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice(@RequestHeader int empId) {
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice(
+		@RequestHeader(value = "X-Employee-Id") int empId) {
 		return noticeService.listNotice(empId);
 	}
 
@@ -72,7 +73,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@DeleteMapping("{noticeId}")
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(@RequestHeader int empId,
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteNotice(
+		@RequestHeader(value = "X-Employee-Id") int empId,
 		@PathVariable int noticeId) {
 		return noticeService.deleteNotice(empId, noticeId);
 	}
@@ -87,7 +89,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@DeleteMapping
-	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(@RequestHeader int empId) {
+	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(
+		@RequestHeader(value = "X-Employee-Id") int empId) {
 		return noticeService.deleteAllNotice(empId);
 	}
 
@@ -101,7 +104,8 @@ public class NoticeController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@PostMapping("/fcm")
-	public ResponseEntity<ResponseDto> saveFcm(@RequestHeader int empId, @RequestBody SaveFcmRequestDto request) {
+	public ResponseEntity<ResponseDto> saveFcm(@RequestHeader(value = "X-Employee-Id") int empId,
+		@RequestBody SaveFcmRequestDto request) {
 		return noticeService.saveFcm(empId, request);
 	}
 }
