@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,9 @@ import com.bbap.payment.entity.PaymentHistoryEntity;
 import com.bbap.payment.exception.HistoryNotFoundException;
 import com.bbap.payment.exception.SubsidyNotMatchException;
 import com.bbap.payment.feign.HrServiceFeignClient;
-import com.bbap.payment.feign.NoticeServiceFeignClient;
 import com.bbap.payment.feign.RestaurantServiceFeignClient;
 import com.bbap.payment.repository.PaymentHistoryRepository;
+import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentServiceImpl implements PaymentService {
 	private final HrServiceFeignClient hrServiceFeignClient;
 	private final RestaurantServiceFeignClient restaurantServiceFeignClient;
-	private final NoticeServiceFeignClient noticeServiceFeignClient;
 
 	private final PaymentHistoryRepository paymentHistoryRepository;
+
+	private final KafkaTemplate<String, String> kafkaTemplate;
 
 	@Override
 	public ResponseEntity<ResponseDto> payRestaurant(PayRestaurantRequestDto request) {
@@ -49,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
 		//사용 가능한 지원금 계산
 		int availSubsidy = calSubsidy(empData);
 
-		//메뉴 정보를 받아오고 먹은 인원 증가 처리
+		//메뉴 정보를 받아옴
 		PayMenuResponseData menuData = restaurantServiceFeignClient.payMenu(request.getMenuId()).getBody().getData();
 
 		//결제 내역 처리
@@ -69,6 +71,9 @@ public class PaymentServiceImpl implements PaymentService {
 
 		log.info("{} : 식당 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
 			entity.getUseSubsidy());
+
+		//카프카를 통한 메뉴 먹은 인원 수 증가
+		kafkaSend("eat_topic", String.valueOf(request.getMenuId()));
 
 		return ResponseDto.success();
 	}
@@ -161,7 +166,8 @@ public class PaymentServiceImpl implements PaymentService {
 			.noticeUrl(entity.getHistoryId().toString())
 			.storeName(entity.getPayStore()).build();
 
-		noticeServiceFeignClient.sendNotice(noticeRequest);
+		String message = new Gson().toJson(noticeRequest);
+		kafkaSend("notice_topic", message);
 	}
 
 	//사용 가능 지원금 계산
@@ -173,5 +179,10 @@ public class PaymentServiceImpl implements PaymentService {
 		int usedSubsidy = paymentHistoryRepository.sumUseSubsidy(empData.getEmpId(), start, end).orElse(0);
 
 		return empData.getSubsidy().getSubsidy() - usedSubsidy;
+	}
+
+	public void kafkaSend(String topic, String message) {
+		kafkaTemplate.send(topic, message);
+		System.out.println("Message sent to topic: " + topic);
 	}
 }
