@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import Header from "../components/header";
-import Button from "../components/button";
+import Header from "../../components/header";
+import Button from "../../components/button";
 import * as faceapi from "face-api.js";
-import { payInfoByFace } from "../api/paymentApi";
+import { payInfoByFace } from "../../api/paymentApi";
 
 const PaymentFacePage: React.FC = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);

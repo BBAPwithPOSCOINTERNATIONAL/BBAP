@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
-import Header from "../components/header";
-import Button from "../components/button";
-import { payInfoByCard } from "../api/paymentApi";
+import Header from "../../components/header";
+import Button from "../../components/button";
+import { payInfoByCard } from "../../api/paymentApi";
 
 // 키보드입력 한영 전환
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
