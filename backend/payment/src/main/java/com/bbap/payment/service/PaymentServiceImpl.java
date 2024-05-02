@@ -76,7 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request) {
 		//HR에서 empId를 이용해 사원정보를 받아옴(테스트 코드)
-		CheckEmpResponseData empData = new CheckEmpResponseData();
+		CheckEmpResponseData empData = hrServiceFeignClient.checkId(request.getEmpId()).getBody().getData();
 
 		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
 		int availSubsidy = calSubsidy(empData);

@@ -12,4 +12,7 @@ import com.bbap.payment.dto.response.DataResponseDto;
 public interface HrServiceFeignClient {
 	@GetMapping("/employees/card/{empCard}")
 	ResponseEntity<DataResponseDto<CheckEmpResponseData>> checkCard(@PathVariable String empCard);
+
+	@GetMapping("/employees/id/{empId}")
+	ResponseEntity<DataResponseDto<CheckEmpResponseData>> checkId(@PathVariable int empId);
 }
