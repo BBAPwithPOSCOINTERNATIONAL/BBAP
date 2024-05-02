@@ -23,7 +23,7 @@ function BottomTabBar() {
       <div>
         <Outlet /> {/* 메인 콘텐츠 */}
       </div>
-      <footer className="bg-white text-center p-4 fixed inset-x-0 bottom-0 border-t border-gray-300">
+      <footer className="bg-white text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300">
         {" "}
         {/* 하단바 */}
         <nav>

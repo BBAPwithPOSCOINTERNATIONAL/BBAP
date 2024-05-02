@@ -18,7 +18,7 @@ function MyReceiptPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex flex-col items-center justify-center">
+      <div className="flex-grow flex flex-col items-center justify-center pb-24">
         {/* CalendarComponent를 페이지에 추가 */}
         <CalendarComponent />
         {/* <WeeklySummary /> */}

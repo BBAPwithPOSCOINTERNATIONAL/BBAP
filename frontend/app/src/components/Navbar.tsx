@@ -45,7 +45,7 @@ const NavBar: React.FC = () => {
         </div>
         <div
           className="text-3xl font-hyemin-bold text-white"
-          style={{ transform: "translateX(-20px)" }}
+          style={{ transform: `translateX(${isMainPage ? "12px" : "-20px"})` }} // 이 부분을 수정하여 MainPage 여부에 따라 위치 조정
         >
           BBAP
         </div>
