@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import poscoimg from "../../assets/posco.png";
+import poscoimg from "/assets/images/posco.png";
 import EmployeeSearch from "../../components/admin/filter";
 import Approve from "../../components/admin/approval";
 

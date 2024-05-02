@@ -1,7 +1,7 @@
 import { useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import question from "../../assets/button/question.png";
+import question from "/assets/images/button/question.png";
 import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
 import { useNavigate } from "react-router-dom";
 

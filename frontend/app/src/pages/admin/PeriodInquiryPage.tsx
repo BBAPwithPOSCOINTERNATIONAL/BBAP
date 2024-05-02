@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import poscoimg from "../../assets/posco.png";
+import poscoimg from "/assets/images/posco.png";
 import EmployeeSubsidy from "../../components/admin/employeesubsidy";
 
 const today = new Date();

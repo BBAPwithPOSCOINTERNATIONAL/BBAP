@@ -3,9 +3,9 @@ import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
 import { isSameMonth, isSameDay, addDays } from "date-fns";
 
-import group from "../../assets/group.png";
-import back from "../../assets/button/back.png";
-import next from "../../assets/button/next.png";
+import group from "/assets/images/group.png";
+import back from "/assets/images/button/back.png";
+import next from "/assets/images/button/next.png";
 import "./_style.scss";
 
 import { useNavigate } from "react-router-dom";

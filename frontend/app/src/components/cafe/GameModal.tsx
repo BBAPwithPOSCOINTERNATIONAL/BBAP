@@ -1,4 +1,4 @@
-import gameModal from "../../assets/gameModal.png";
+import gameModal from "/assets/images/gameModal.png";
 
 interface ConfirmModalProps {
   isOpen: boolean;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 // import { useNavigate, useLocation } from "react-router";
 import { useNavigate } from "react-router";
-import Header from "../components/header";
-import useModalStore from "../store/modalStore";
-import useCartStore from "../store/cartStore";
-import Button from "../components/button";
-import Coupon from "../components/coupon";
-import ConfirmModal from "../components/confirmModal";
-import { CartItem } from "../types";
-import { paymentReq } from "../api/paymentApi";
+import Header from "../../components/header";
+import useModalStore from "../../store/modalStore";
+import useCartStore from "../../store/cartStore";
+import Button from "../../components/button";
+import Coupon from "../../components/coupon";
+import ConfirmModal from "../../components/confirmModal";
+import { CartItem } from "../../types";
+import { paymentReq } from "../../api/paymentApi";
 
 interface Option {
 	optionName: string;
@@ -263,7 +263,7 @@ const PaymentFinalPage: React.FC = () => {
 				</div>
 			</div>
 
-			<div className="w-full absolute bottom-[150px] flex justify-center space-x-32">
+			<div className="w-full absolute bottom-[100px] flex justify-center space-x-32">
 				<Button
 					className="bg-bg-color text-white text-xl w-1/4 py-5"
 					text="취소"

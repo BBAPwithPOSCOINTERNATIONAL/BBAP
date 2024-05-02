@@ -1,8 +1,8 @@
 import { useState, ReactNode, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import IdPhoto from "../../assets/image1.png";
-// import guide from "../../assets/guideLine.png";
+import IdPhoto from "/assets/images/image1.png";
+import guide from "/assets/images/guideLine.png";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,31 +14,19 @@ function Modal({ isOpen, children }: ModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-lg">
-        <div className="text-center font-hyemin-bold text-2xl my-5">
+      <div className="bg-white p-5 rounded-lg relative">
+        <div className="text-center font-hyemin-bold text-2xl my-2">
           얼굴을 등록해주세요
         </div>
-        {/* <div className="text-center text-lg my-5">
+        <div className="text-center text-base font-hyemin-regular">
           가이드라인 안쪽으로 <br />
           얼굴을 위치시켜주세요
-        </div> */}
+        </div>
+
         {children}
-        {/* <div className="flex flex-col items-center">
-          <button
-            className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            onClick={onClose}
-          >
-            닫기
-          </button>
-        </div> */}
-        {/* <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-10">
-          <img
-            src={guide}
-            alt="guide"
-            className="w-40"
-            style={{ pointerEvents: "none" }}
-          ></img>
-        </div> */}
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-10">
+          <img src={guide} alt="Profile" className="w-40 h-40 mb-3 z-10" />
+        </div>
       </div>
     </div>
   );
@@ -149,13 +137,13 @@ function MyProfilePage() {
                   <div className="flex flex-row justify-center items-center mt-4">
                     {" "}
                     <button
-                      className="mr-5 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+                      className="z-30 mr-5 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
                       onClick={handleCaptureImage}
                     >
                       사진찍기
                     </button>
                     <button
-                      className="ml-5 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      className="z-30 ml-5 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                       onClick={handleCloseModal}
                     >
                       닫기

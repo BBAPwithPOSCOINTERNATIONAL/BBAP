@@ -2,7 +2,7 @@ import { useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import CalendarComponent from "../../components/calendar/CalenderComponent";
-import question from "../../assets/button/question.png";
+import question from "/assets/images/button/question.png";
 import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
 // import WeeklySummary from "../../components/receipt/Summary";
 // import ReceiptDetail from "../../components/receipt/ReceiptDetail";
@@ -18,7 +18,7 @@ function MyReceiptPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex flex-col items-center justify-center">
+      <div className="flex-grow flex flex-col items-center justify-center pb-24">
         {/* CalendarComponent를 페이지에 추가 */}
         <CalendarComponent />
         {/* <WeeklySummary /> */}

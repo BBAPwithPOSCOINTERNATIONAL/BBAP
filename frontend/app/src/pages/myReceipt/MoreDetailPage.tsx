@@ -1,8 +1,8 @@
 import { useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import question from "../../assets/button/question.png";
 import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
+import question from "/assets/images/button/question.png";
 
 function ReceiptDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태를 저장하는 변수를 추가합니다.
