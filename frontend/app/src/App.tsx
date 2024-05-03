@@ -5,7 +5,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 // Firebase 사용하려면 아래 주석해제 해야함
-import "./service/initFirebase.js";
+import "./service/initFirebase.ts";
 import "./service/foregroundMessage.js";
 
 // Page들
@@ -23,7 +23,7 @@ import MoreDetail from "./pages/myReceipt/MoreDetailPage";
 import RoulettePage from "./pages/cafe/togetherorder/RoulettePage";
 import AfterPaymentPage from "./pages/cafe/AfterPaymentPage";
 import WinnerPage from "./pages/cafe/togetherorder/WinnerPage";
-import NotificationPage from "./pages/NotificationPage.js";
+import NotificationPage from "./pages/NotificationPage";
 
 const router = createBrowserRouter([
   {

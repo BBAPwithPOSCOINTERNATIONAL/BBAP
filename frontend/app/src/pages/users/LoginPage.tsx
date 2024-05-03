@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import bbapimg from "/assets/images/bbap.png";
 import logoimg from "/assets/images/logo.png";
-import { requestPermission } from "../../service/initFirebase.js";
-import { login } from "../../api/hradminAPI.js";
+import { requestPermission } from "../../service/initFirebase";
+import { login } from "../../api/hradminAPI";
 // import { useUserStore } from "../../store/userStore";
 
 function LoginPage() {
@@ -40,10 +40,11 @@ function LoginPage() {
     setLoading(true);
 
     const token = await requestPermission();
-    setFcmToken(token);
+    setFcmToken(token ?? "");
     try {
       // console.log(adminId, password);
       const response = await login(employeeId, password, fcmToken);
+      console.log(response);
 
       navigate("/main");
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from "react";
 import logoimg from "/assets/images/logo.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { requestPermission } from "../../service/initFirebase.js";
+import { requestPermission } from "../../service/initFirebase.ts";
 import { login } from "../../api/hradminAPI.js";
 
 const Inputtag = styled.div`
@@ -40,7 +40,8 @@ function AdminLoginPage() {
     setLoading(true);
 
     const token = await requestPermission();
-    setFcmToken(token);
+    setFcmToken(token ?? "");
+
     try {
       // console.log(adminId, password);
       const response = await login(adminId, password, fcmToken);
