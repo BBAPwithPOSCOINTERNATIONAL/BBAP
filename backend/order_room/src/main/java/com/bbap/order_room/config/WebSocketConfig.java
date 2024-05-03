@@ -11,12 +11,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/pub");
-		config.setApplicationDestinationPrefixes("/sub");
+		config.enableSimpleBroker("/topic"); //메시지 받을때
+		config.setApplicationDestinationPrefixes("/app"); //메시지 보낼때
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/websocket").setAllowedOrigins("http://localhost:3000", "https://ssafybbap.com/").withSockJS();
+		registry.addEndpoint("/websocket").setAllowedOrigins("*");
 	}
+	// @Override
+	// public void registerStompEndpoints(StompEndpointRegistry registry) {
+	// 	registry.addEndpoint("/websocket").setAllowedOrigins("*").addInterceptors(
+	// 		new UserIdHandshakeInterceptor()
+	// 	);
+	// }
 }

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.bbap.order_room.dto.responseDto.ResponseDto;
 import com.bbap.order_room.exception.CustomException;
+import com.bbap.order_room.exception.RoomEntityNotFoundException;
+import com.bbap.order_room.exception.SessionEntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,11 +20,17 @@ public class GlobalExceptionHandler {
 	}
 
 
-	// //존재하지 않는 메뉴 아이디
-	// @ExceptionHandler(MenuEntityNotFoundException.class)
-	// public ResponseEntity<ResponseDto> menuNotFoundExceptionHandler(MenuEntityNotFoundException e) {
-	// 	return handleException(e);
-	// }
+	//존재하지 않는 방 아이디
+	@ExceptionHandler(RoomEntityNotFoundException.class)
+	public ResponseEntity<ResponseDto> roomNotFoundExceptionHandler(RoomEntityNotFoundException e) {
+		return handleException(e);
+	}
+
+	//존재하지 않는 세션 아이디
+	@ExceptionHandler(SessionEntityNotFoundException.class)
+	public ResponseEntity<ResponseDto> sessionNotFoundExceptionHandler(SessionEntityNotFoundException e) {
+		return handleException(e);
+	}
 
 
 	private ResponseEntity<ResponseDto> handleException(CustomException e) {

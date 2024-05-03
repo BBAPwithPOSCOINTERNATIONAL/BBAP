@@ -1,7 +1,5 @@
 package com.bbap.order_room.entity.redis;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -17,13 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @RedisHash("Room")
-public class Room {
+public class Session {
 	@Id
-	private String roomId;
-	private String roomStatus;
-	private Integer currentOrderer; //empId 사용 - 사용자는 활성화된 하나의 방만 가질 수 있음
-	private List<Integer> orderers; //empId 사용
-	private List<OrderItem> orderItems;
+	private String sessionId;
+	private Integer empId;
 }
-
-
