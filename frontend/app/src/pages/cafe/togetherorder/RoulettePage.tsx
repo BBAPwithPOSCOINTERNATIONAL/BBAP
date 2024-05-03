@@ -77,7 +77,7 @@ const RoulettePage = () => {
     if (canvas) {
       const randomIndex = Math.floor(Math.random() * teamNames.length);
       const arc = 360 / teamNames.length;
-      const rotateDeg = randomIndex * arc + 3600 + arc * 3 - arc / 4;
+      const rotateDeg = randomIndex * arc + 3600 + arc * 3 - arc / 1.5;
       canvas.style.transition = "transform 2s";
       canvas.style.transform = `rotate(-${rotateDeg}deg)`;
       setRouletteText("누가 누가 걸릴까");
@@ -89,7 +89,7 @@ const RoulettePage = () => {
         // 상태 업데이트 후 네비게이션 실행
         setTimeout(() => {
           navigate(`/winner/${selectedWinner}`);
-        }, 100);
+        }, 1500);
       }, 2000);
     }
   };

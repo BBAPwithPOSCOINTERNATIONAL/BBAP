@@ -32,7 +32,7 @@ export const getMonthlyPayments = async (
 ): Promise<PaymentResponse> => {
   try {
     const response = await apiClient.get<PaymentResponse>(
-      `/api/v1/payments/month/${yearMonth}`
+      `payments/month/${yearMonth}`
     );
     console.log("Monthly Payments:", response.data);
     return response.data;

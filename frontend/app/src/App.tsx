@@ -5,8 +5,8 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 // Firebase 사용하려면 아래 주석해제 해야함
-// import "./service/initFirebase.js";
-// import "./service/foregroundMessage.js";
+import "./service/initFirebase.js";
+import "./service/foregroundMessage.js";
 
 // Page들
 import LoginPage from "./pages/users/LoginPage";
@@ -95,21 +95,21 @@ const router = createBrowserRouter([
     element: <WinnerPage />,
   },
   {
-		path: "notification",
-		element: <NotificationPage />,
-	},
+    path: "notification",
+    element: <NotificationPage />,
+  },
 ]);
 
 function App() {
-	return (
-		<>
-			<div>
-				<QueryClientProvider client={queryClient}>
-					<RouterProvider router={router} />
-				</QueryClientProvider>
-			</div>
-		</>
-	);
+  return (
+    <>
+      <div>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </div>
+    </>
+  );
 }
 
 export default App;

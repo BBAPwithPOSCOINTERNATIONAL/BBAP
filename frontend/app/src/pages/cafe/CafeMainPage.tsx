@@ -12,7 +12,7 @@ import CafeSelector from "../../components/cafe/CafeSelector";
 import useMoveScroll from "../../hooks/useMoveScroll";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../store/cartStore";
-import useContentStore from "../../store/useContent";
+import useContentStore from "../../store/contentStore";
 import MyOrderPage from "./myorder/MyOrderPage";
 
 function CafeMainPage() {

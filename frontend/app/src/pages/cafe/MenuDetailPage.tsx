@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
-import useCafeStore from "../../store/useCafe";
+import useCafeStore from "../../store/cafeStore";
 import Button from "../../components/button";
 import useCartStore from "../../store/cartStore";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";

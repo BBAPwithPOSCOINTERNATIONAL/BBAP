@@ -1,4 +1,4 @@
-import useContentStore from "../../store/useContent";
+import useContentStore from "../../store/contentStore";
 import { useNavigate } from "react-router-dom";
 
 function AfterPaymentPage() {

@@ -24,14 +24,17 @@ interface LoginResponse {
  * @throws 400 "Bad request." 또는 404 "Not found." 오류를 반환할 수 있습니다.
  */
 export const login = async (
-  userId: string,
-  userPassword: string
+  empNo: string,
+  password: string,
+  fcmToken: string
 ): Promise<LoginResponse> => {
   try {
-    const response = await apiClient.post<LoginResponse>("hr/auth/login", {
-      userId,
-      userPassword,
+    const response = await apiClient.post<LoginResponse>("/hr/auth/login", {
+      empNo,
+      password,
+      fcmToken,
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

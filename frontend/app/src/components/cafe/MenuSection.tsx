@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
-import useCafe from "../../store/useCafe"; // 스토어 임포트
+import useCafe from "../../store/cafeStore"; // 스토어 임포트
 
 // Assuming the MenuItem interface is defined elsewhere and imported accordingly.
 // export interface MenuItem {

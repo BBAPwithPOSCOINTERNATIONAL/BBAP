@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useRef, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import logoimg from "/assets/images/logo.png";
-
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../api/apiClient";
+import { requestPermission } from "../../service/initFirebase.js";
+import { login } from "../../api/hradminAPI.js";
 
 const Inputtag = styled.div`
   margin: 15px;
@@ -14,65 +14,45 @@ function AdminLoginPage() {
   const [adminId, setAdminId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [fcmToken, setFcmToken] = useState("");
   const navigation = useNavigate();
 
-  const adminIdRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAdminId(() => e.target.value);
+  };
 
-  const onChangeId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.trim();
-    if (inputValue.length <= 7) {
-      setAdminId(inputValue);
+  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(() => e.target.value);
+  };
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (loading) return;
+    if (!adminId || adminId.length !== 7) {
+      alert("사원번호는 7자여야 합니다.");
+      return;
     }
-  }, []);
+    if (!password) {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    setLoading(true);
 
-  const onChangePassword = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPassword(e.target.value.trim());
-    },
-    []
-  );
-
-  // const handleLogin = (event: FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   console.log("Login Attempted with:", adminId, password);
-  //   navigation("/admininquiry");
-  // };
-
-  const onSubmit = useCallback(
-    async (event: FormEvent) => {
-      event.preventDefault();
-      if (loading) {
-        return;
-      }
-      if (!adminId || !password) {
-        alert("사원번호와 비밀번호를 모두 입력해주세요.");
-        return;
-      }
-      setLoading(true);
-      try {
-        const response = await apiClient.post(`/api/v1/hr/auth/login`, {
-          adminId,
-          password,
-        });
-        console.log(response.data);
-        alert("로그인 되었습니다.");
-        // 세션 또는 로컬 스토리지에 토큰 저장
-        localStorage.setItem("accessToken", response.data.data.accessToken);
-        navigation("/admininquiry"); // 로그인 성공 후 이동할 경로
-      } catch (error) {
-        if (error instanceof Error) {
-          alert("로그인 실패: " + error.message);
-        } else {
-          alert("로그인 실패: " + error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    },
-    [loading, adminId, password]
-  );
-
+    const token = await requestPermission();
+    setFcmToken(token);
+    try {
+      // console.log(adminId, password);
+      const response = await login(adminId, password, fcmToken);
+      console.log("로그인 성공:", response);
+      navigation("/admininquiry");
+    } catch (error) {
+      // console.log(adminId, password);
+      console.error("로그인 실패:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div
       style={{
@@ -118,7 +98,6 @@ function AdminLoginPage() {
             value={adminId}
             placeholder="사원번호"
             onChange={onChangeId}
-            ref={adminIdRef}
             // required
             style={{ marginTop: "20px", paddingLeft: "0" }}
           />
@@ -132,13 +111,13 @@ function AdminLoginPage() {
             placeholder="비밀번호"
             value={password}
             onChange={onChangePassword}
-            ref={passwordRef}
             // required
             style={{ paddingLeft: "0" }}
           />
         </Inputtag>
         <button
           type="submit"
+          disabled={loading}
           className=" font-hyemin-bold text-[25px] bg-[#80c481] text-white p-3 px-12 rounded-lg m-5"
         >
           로그인

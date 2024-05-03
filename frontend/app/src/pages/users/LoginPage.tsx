@@ -1,64 +1,57 @@
-import React, { useState, useCallback, useRef, FormEvent } from "react";
+import React, { useState, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import bbapimg from "/assets/images/bbap.png";
 import logoimg from "/assets/images/logo.png";
-// import apiClient from "../../api/apiClient";
+import { requestPermission } from "../../service/initFirebase.js";
+import { login } from "../../api/hradminAPI.js";
+// import { useUserStore } from "../../store/userStore";
 
 function LoginPage() {
   const navigate = useNavigate();
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [fcmToken, setFcmToken] = useState("");
 
   const employeeIdRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
-  const onChangeId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmployeeId(e.target.value.trim());
-  }, []);
+  const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmployeeId(() => e.target.value);
+  };
 
-  const onChangePassword = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPassword(e.target.value.trim());
-    },
-    []
-  );
+  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(() => e.target.value);
+  };
 
-  //  const onSubmit = useCallback(
-  //    async (event: FormEvent) => {
-  //      event.preventDefault();
-  //      if (loading) {
-  //        return;
-  //      }
-  //      if (!employeeId || !password) {
-  //        alert("사원번호와 비밀번호를 모두 입력해주세요.");
-  //        return;
-  //      }
-  //      setLoading(true);
-  //      try {
-  //        const response = await axios.post(`${Config.API_URL}/login`, {
-  //          employeeId,
-  //          password,
-  //        });
-  //        console.log(response.data);
-  //        alert("로그인 되었습니다.");
-  //        // 세션 또는 로컬 스토리지에 토큰 저장 예제
-  //        sessionStorage.setItem("accessToken", response.data.data.accessToken);
-  //        navigate("/main"); // 로그인 성공 후 이동할 경로
-  //      } catch (error) {
-  //        alert("로그인 실패: " + error.response.data.message);
-  //      } finally {
-  //        setLoading(false);
-  //      }
-  //    },
-  //    [loading, email, password, navigate]
-  //  );
-
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log("Login Attempted with:", employeeId, password);
-    navigate("/main");
+
+    if (loading) return;
+    if (!employeeId || employeeId.length !== 7) {
+      alert("사원번호는 7자여야 합니다.");
+      return;
+    }
+    if (!password) {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    setLoading(true);
+
+    const token = await requestPermission();
+    setFcmToken(token);
+    try {
+      // console.log(adminId, password);
+      const response = await login(employeeId, password, fcmToken);
+
+      navigate("/main");
+    } catch (error) {
+      // console.log(adminId, password);
+      console.error("로그인 실패:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,7 +68,7 @@ function LoginPage() {
           className="mx-auto mb-5 mt-0 w-5/6"
         />
         {/* <h1 className="text-center text-6xl font-hyemin-bold mb-1">BBAP</h1> */}
-        <form onSubmit={handleLogin} className="px-4 pt-6 pb-8 mb-4">
+        <form onSubmit={onSubmit} className="px-4 pt-6 pb-8 mb-4">
           <div className="mb-8 mt-12">
             <input
               type="text"

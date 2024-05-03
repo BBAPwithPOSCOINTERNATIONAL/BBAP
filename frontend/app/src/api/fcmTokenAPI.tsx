@@ -1,15 +1,15 @@
 import apiClient from "./apiClient";
 
 interface ApiResponse {
-	message: string;
+  message: string;
 }
 
 export const sendTokenToServer = async (
-	token: string
+  token: string
 ): Promise<ApiResponse> => {
-	const response = await apiClient.post("/api/v1/notices/fcm", {
-		fcmToken: token,
-	});
+  const response = await apiClient.post("notices/fcm", {
+    fcmToken: token,
+  });
 
-	return response.data;
+  return response.data;
 };
