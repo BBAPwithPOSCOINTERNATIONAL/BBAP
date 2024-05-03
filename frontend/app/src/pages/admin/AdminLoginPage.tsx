@@ -1,7 +1,8 @@
-import { useState, FormEvent } from "react";
+import React, { useState, useCallback, useRef, FormEvent } from "react";
 import logoimg from "/assets/images/logo.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../../api/apiClient";
 
 const Inputtag = styled.div`
   margin: 15px;
@@ -11,16 +12,65 @@ const Inputtag = styled.div`
 function AdminLoginPage() {
   const [adminId, setAdminId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("Login Attempted with:", adminId, password);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
   const navigation = useNavigate();
 
-  const goToAdminInquiryPage = () => {
-    navigation("/admininquiry");
-  };
+  const adminIdRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+
+  const onChangeId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.trim();
+    if (inputValue.length <= 7) {
+      setAdminId(inputValue);
+    }
+  }, []);
+
+  const onChangePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value.trim());
+    },
+    []
+  );
+
+  // const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   console.log("Login Attempted with:", adminId, password);
+  //   navigation("/admininquiry");
+  // };
+
+  const onSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+      if (loading) {
+        return;
+      }
+      if (!adminId || !password) {
+        alert("사원번호와 비밀번호를 모두 입력해주세요.");
+        return;
+      }
+      setLoading(true);
+      try {
+        const response = await apiClient.post(`/api/v1/hr/auth/login`, {
+          adminId,
+          password,
+        });
+        console.log(response.data);
+        alert("로그인 되었습니다.");
+        // 세션 또는 로컬 스토리지에 토큰 저장
+        localStorage.setItem("accessToken", response.data.data.accessToken);
+        navigation("/admininquiry"); // 로그인 성공 후 이동할 경로
+      } catch (error) {
+        if (error instanceof Error) {
+          alert("로그인 실패: " + error.message);
+        } else {
+          alert("로그인 실패: " + error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, adminId, password]
+  );
 
   return (
     <div
@@ -40,7 +90,7 @@ function AdminLoginPage() {
         <h1 className="text-[70px] font-hyemin-bold">지원금 관리</h1>
       </div>
       <form
-        onSubmit={handleLogin}
+        onSubmit={onSubmit}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -55,8 +105,9 @@ function AdminLoginPage() {
             aria-label="Id"
             value={adminId}
             placeholder="사원번호"
-            onChange={(e) => setAdminId(e.target.value)}
-            required
+            onChange={onChangeId}
+            ref={adminIdRef}
+            // required
             style={{ marginTop: "20px", paddingLeft: "0" }}
           />
         </Inputtag>
@@ -68,14 +119,14 @@ function AdminLoginPage() {
             id="password"
             placeholder="비밀번호"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            onChange={onChangePassword}
+            ref={passwordRef}
+            // required
             style={{ paddingLeft: "0" }}
           />
         </Inputtag>
         <button
           type="submit"
-          onClick={goToAdminInquiryPage}
           className=" font-hyemin-bold text-[25px] bg-[#80c481] text-white p-3 px-12 rounded-lg m-5"
         >
           로그인

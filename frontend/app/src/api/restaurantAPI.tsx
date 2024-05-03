@@ -56,7 +56,7 @@ export async function fetchRestaurantData(
   try {
     const effectiveRestaurantId = restaurantId === -1 ? 0 : restaurantId; // 근무지 정보로 ID 대체
     const response = await apiClient.get<ApiResponse>(
-      `/api/v1/restaurants/${effectiveRestaurantId}`
+      `restaurants/${effectiveRestaurantId}`
     );
     console.log(response);
     return response.data;
@@ -91,7 +91,7 @@ export const fetchMenus = async ({
   const dateString = menuDate.toISOString().split("T")[0]; // Date 객체를 YYYY-MM-DD 형식의 문자열로 변환
   try {
     const response = await apiClient.get<MenuApiResponse>(
-      `/api/v1/restaurants/menus/${restaurantId}/${dateString}/${mealClassification}`
+      `restaurants/menus/${restaurantId}/${dateString}/${mealClassification}`
     );
 
     return response.data;

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: "https://pobap.com",
+  baseURL: "https://pobap.com/api/v1/",
   headers: {
     "Content-Type": "application/json",
     withCredentials: true,

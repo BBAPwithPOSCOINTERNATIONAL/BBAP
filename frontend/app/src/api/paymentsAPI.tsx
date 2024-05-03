@@ -72,7 +72,7 @@ export const getDailyPayments = async (
 ): Promise<DailyPaymentResponse> => {
   try {
     const response = await apiClient.get<DailyPaymentResponse>(
-      `/api/v1/payments/day/${date}`
+      `payments/day/${date}`
     );
     console.log("Daily Payments:", response.data);
     return response.data;
@@ -112,7 +112,7 @@ export const getPaymentDetails = async (
 ): Promise<PaymentDetailsResponse> => {
   try {
     const response = await apiClient.get<PaymentDetailsResponse>(
-      `/api/v1/payments/${historyId}`
+      `payments/${historyId}`
     );
     console.log("Payment Details:", response.data);
     return response.data;

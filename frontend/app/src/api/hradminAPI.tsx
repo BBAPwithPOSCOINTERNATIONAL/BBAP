@@ -28,13 +28,10 @@ export const login = async (
   userPassword: string
 ): Promise<LoginResponse> => {
   try {
-    const response = await apiClient.post<LoginResponse>(
-      "/api/v1/hr/auth/login",
-      {
-        userId,
-        userPassword,
-      }
-    );
+    const response = await apiClient.post<LoginResponse>("hr/auth/login", {
+      userId,
+      userPassword,
+    });
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -53,9 +50,7 @@ export const login = async (
  */
 export const logout = async (): Promise<ApiResponse> => {
   try {
-    const response = await apiClient.post<ApiResponse>(
-      "/api/v1/hr/auth/logout"
-    );
+    const response = await apiClient.post<ApiResponse>("hr/auth/logout");
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -99,7 +94,7 @@ type EmpInfo = {
 
 export const getUserInfo = async (): Promise<EmpInfo> => {
   try {
-    const response = await apiClient.get<EmpInfo>("/apiv1/hr/auth/user-info");
+    const response = await apiClient.get<EmpInfo>("hr/auth/user-info");
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -139,12 +134,9 @@ export const fetchEmployees = async (filters: {
   departmentId?: number;
 }): Promise<EmployeeListResponse> => {
   try {
-    const response = await apiClient.get<EmployeeListResponse>(
-      "/api/v1/hr/employee/",
-      {
-        params: filters,
-      }
-    );
+    const response = await apiClient.get<EmployeeListResponse>("hr/employee/", {
+      params: filters,
+    });
     console.log("Employee List:", response.data);
     return response.data;
   } catch (error) {
@@ -188,7 +180,7 @@ export const fetchSubsidyDetails = async (
 ): Promise<SubsidyListResponse> => {
   try {
     const response = await apiClient.get<SubsidyListResponse>(
-      `/api/v1/hr/subsidy/${workplaceId}`
+      `hr/subsidy/${workplaceId}`
     );
     console.log("Subsidy Details:", response.data);
     return response.data;

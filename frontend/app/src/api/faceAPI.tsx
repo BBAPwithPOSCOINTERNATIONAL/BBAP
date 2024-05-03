@@ -15,7 +15,7 @@ interface UploadFaceResponse {
 export const FaceRegistrationStatus = async (): Promise<{
   message: string;
 }> => {
-  const response = await apiClient.get("/api/v1/faces");
+  const response = await apiClient.get("faces");
   return response.data;
 };
 
@@ -31,15 +31,11 @@ export const uploadFace = async (file: File): Promise<UploadFaceResponse> => {
   const formData = new FormData();
   formData.append("faceImage", file);
 
-  const response = await apiClient.post<UploadFaceResponse>(
-    "/api/v1/faces",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
+  const response = await apiClient.post<UploadFaceResponse>("faces", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
   return response.data;
 };

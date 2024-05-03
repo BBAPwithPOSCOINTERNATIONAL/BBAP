@@ -56,7 +56,7 @@ export const getCafeList = async (
 ): Promise<CafeListResponse> => {
   try {
     const response = await apiClient.get<CafeListResponse>(
-      `/api/v1/cafes/list/${cafeId}`
+      `cafes/list/${cafeId}`
     );
     console.log("Cafe List:", response.data);
     return response.data;
@@ -113,7 +113,7 @@ export const getCafeMenuList = async (
 ): Promise<CafeMenuResponse> => {
   try {
     const response = await apiClient.get<CafeMenuResponse>(
-      `/api/v1/cafes/menu-list/${cafeId}`
+      `cafes/menu-list/${cafeId}`
     );
     console.log("Cafe Menu List:", response.data);
     return response.data;

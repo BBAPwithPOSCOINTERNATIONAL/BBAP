@@ -24,7 +24,7 @@ interface PayInfoResponse {
 export const getPayInfo = async (cafeId: string): Promise<PayInfoResponse> => {
   try {
     const response = await apiClient.get<PayInfoResponse>(
-      `/api/v1/orders/payInfo/${cafeId}`
+      `/orders/payInfo/${cafeId}`
     );
     console.log("Payment:", response.data);
     return response.data;
@@ -77,7 +77,7 @@ export const createOrder = async (
 ): Promise<OrderPayResponse> => {
   try {
     const response = await apiClient.post<OrderPayResponse>(
-      "/api/v1/orders/pay",
+      "orders/pay",
       orderData
     );
     console.log("Order:", response.data);
@@ -124,7 +124,7 @@ export const getMyOrder = async (
 ): Promise<OrderListResponse> => {
   try {
     const response = await apiClient.get<OrderListResponse>(
-      `/api/v1/orders/list/${year}/${month}`
+      `orders/list/${year}/${month}`
     );
     console.log("Orders:", response.data);
     return response.data;
@@ -166,7 +166,7 @@ export const getMyorderDetail = async (
 ): Promise<OrderDetailResponse> => {
   try {
     const response = await apiClient.get<OrderDetailResponse>(
-      `/api/v1/orders/${orderId}`
+      `orders/${orderId}`
     );
     console.log("Details:", response.data);
     return response.data;

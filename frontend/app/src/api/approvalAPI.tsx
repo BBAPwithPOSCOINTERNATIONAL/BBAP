@@ -27,7 +27,7 @@ export const sendApproval = async (
       employeeIds: employeeIds,
     };
     const response = await apiClient.put<ApprovalResponse>(
-      "/api/v1/approval",
+      "approval",
       requestData
     );
     console.log("Approval:", response.data);
