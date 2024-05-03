@@ -14,6 +14,7 @@ import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.ChoiceRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.entity.redis.ChoiceOption;
+import com.bbap.order_room.entity.redis.EntireParticipant;
 import com.bbap.order_room.entity.redis.MenuOption;
 import com.bbap.order_room.entity.redis.OrderItem;
 import com.bbap.order_room.entity.redis.Room;
@@ -21,6 +22,7 @@ import com.bbap.order_room.entity.redis.Session;
 import com.bbap.order_room.exception.OrderItemNotFoundException;
 import com.bbap.order_room.exception.RoomEntityNotFoundException;
 import com.bbap.order_room.exception.SessionEntityNotFoundException;
+import com.bbap.order_room.repository.ParticipantRepository;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
 
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketServiceImpl implements WebSocketService{
 	private final SessionRepository sessionRepository;
 	private final RoomRepository roomRepository;
+	private final ParticipantRepository participantRepository;
 	private final SimpMessagingTemplate messagingTemplate;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
@@ -42,8 +45,11 @@ public class WebSocketServiceImpl implements WebSocketService{
 	}
 
 	@Override
-	public void addOrderItem(String roomId, String sessionId, AddOrderItemRequestDto requestDto) {
+	public void addOrderItem(String sessionId, AddOrderItemRequestDto requestDto) {
 		Integer empId = getEmpId(sessionId);
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
 		Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
 		if (room.getOrderItems() == null) {
 			room.setOrderItems(new ArrayList<>());
@@ -82,7 +88,11 @@ public class WebSocketServiceImpl implements WebSocketService{
 	}
 
 	@Override
-	public void deleteOrderItem(String roomId, String sessionId, String orderItemId) {
+	public void deleteOrderItem(String sessionId, String orderItemId) {
+		Integer empId = getEmpId(sessionId);
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		Optional<OrderItem> itemToRemove = room.getOrderItems().stream()
 			.filter(item -> item.getOrderItemId().equals(orderItemId))
@@ -95,10 +105,10 @@ public class WebSocketServiceImpl implements WebSocketService{
 				room.setRoomStatus("INITIAL");
 			}
 			// 해당 주문 항목을 담은 사용자의 ID 검사
-			Integer empId = itemToRemove.get().getOrderer();
+			Integer ordererId = itemToRemove.get().getOrderer();
 			// 사용자가 다른 주문 항목을 가지고 있지 않을 경우만 orderers에서 제거
-			if (isLastOrderFromUser(room, empId)) {
-				room.getOrderers().remove(empId);
+			if (isLastOrderFromUser(room, ordererId)) {
+				room.getOrderers().remove(ordererId);
 			}
 			roomRepository.save(room);
 			messagingTemplate.convertAndSend("/topic/room/" + roomId, room);

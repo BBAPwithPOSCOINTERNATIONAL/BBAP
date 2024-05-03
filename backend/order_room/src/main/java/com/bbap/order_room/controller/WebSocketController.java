@@ -29,16 +29,16 @@ public class WebSocketController {
 		webSocketService.connectRoom(empId, sessionId, roomId);
 	}
 
-	@MessageMapping("/add-order-item/{roomId}")
-	public void addOrderItem(@DestinationVariable String roomId, @Payload AddOrderItemRequestDto requestDto, SimpMessageHeaderAccessor headerAccessor) {
+	@MessageMapping("/add-order-item/")
+	public void addOrderItem(@Payload AddOrderItemRequestDto requestDto, SimpMessageHeaderAccessor headerAccessor) {
 		String sessionId = headerAccessor.getSessionId();
-		webSocketService.addOrderItem(roomId, sessionId, requestDto);
+		webSocketService.addOrderItem(sessionId, requestDto);
 	}
 
-	@MessageMapping("/delete-order-item/{roomId}/{orderItemId}")
-	public void deleteOrderItem(@DestinationVariable String roomId, @DestinationVariable String orderItemId, SimpMessageHeaderAccessor headerAccessor){
+	@MessageMapping("/delete-order-item/{orderItemId}")
+	public void deleteOrderItem(@DestinationVariable String orderItemId, SimpMessageHeaderAccessor headerAccessor){
 		String sessionId = headerAccessor.getSessionId();
-		webSocketService.deleteOrderItem(roomId, sessionId, orderItemId);
+		webSocketService.deleteOrderItem(sessionId, orderItemId);
 	}
 
 }
