@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
+const {VITE_API_URL: url} = import.meta.env;
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: "https://pobap.com/api/v1",
+  baseURL: url,
   headers: {
     "Content-Type": "application/json",
     withCredentials: true,
