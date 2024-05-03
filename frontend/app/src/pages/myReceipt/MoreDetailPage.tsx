@@ -15,28 +15,10 @@ function ReceiptDetail() {
     <div className="flex flex-col min-h-screen">
       <NavBar />
 
-      <div
-        className="font-hyemin-bold text-4xl"
-        style={{
-          display: "flex",
-          justifyContent: "center", // 가로 가운데 정렬
-          alignItems: "center", // 세로 가운데 정렬
-          padding: "1rem",
-          width: "100vw",
-          height: "20vh",
-          backgroundColor: "#EFF7FF",
-          boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
-          position: "fixed",
-          gap: "0.7rem",
-        }}
-      >
-        <p
-          style={{
-            marginTop: "4.3rem",
-          }}
-        >
-          식당이름 <br /> 구매시간
-        </p>
+      <div className="font-hyemin-bold text-3xl text-center"> 식당이름</div>
+      <div className="font-hyemin-bold text-xl text-center">
+        {" "}
+        구매한 시간이 여기 뜰거입니댜
       </div>
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img
@@ -52,3 +34,18 @@ function ReceiptDetail() {
 }
 
 export default ReceiptDetail;
+
+// 결제내역 (상세) Success response
+// {
+//   "message" : "Success.",
+//   "data" :
+//    {
+//       "totalPaymentAmount" : int,
+//       "useSubsidy" : int,
+//       "selfPayment" : int,
+//       "paymentDetail" : string,
+//       "payStore" : string,
+//       "historyMemo" : string,
+//       "paymentDate" : LocalDateTime
+//    }
+// }

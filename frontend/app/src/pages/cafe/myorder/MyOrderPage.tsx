@@ -162,7 +162,7 @@ const MyOrderPage = () => {
         <button onClick={handlePrevMonth}>
           <img src={back} alt="back" />
         </button>
-        <span className="text-4xl">
+        <span className="text-2xl">
           {date.year}년 {date.month}월
         </span>
         <button onClick={handleNextMonth}>

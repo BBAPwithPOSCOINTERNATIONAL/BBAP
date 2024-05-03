@@ -102,7 +102,12 @@ function CafeMainPage() {
 
       <div
         className="sticky top-[65px] z-20 bg-white"
-        style={{ height: `${tabsHeight}px` }}
+        style={{
+          height: `${tabsHeight}px`,
+          width: "100vw",
+          paddingLeft: "5vw",
+          paddingRight: "5vw",
+        }}
       >
         <CafeTabs content={content} setContent={setContent} tabs={tabs} />
       </div>
@@ -110,7 +115,7 @@ function CafeMainPage() {
         {content === "alone" && (
           <>
             <div
-              className="sticky top-[110px] z-10 bg-white"
+              className="sticky top-[100px] z-10 bg-white"
               style={{ paddingTop: `${couponAndButtonsHeight}px` }}
             >
               <CafeSelector />

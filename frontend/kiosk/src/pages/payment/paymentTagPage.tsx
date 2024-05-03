@@ -1,32 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
-import Button from "../components/button";
-import styled, { keyframes } from "styled-components";
-import { paymentRestaurantReq } from "../api/paymentApi";
+import Header from "../../components/header";
+import Button from "../../components/button";
+import { payInfoByCard } from "../../api/paymentApi";
 
 // 키보드입력 한영 전환
 const koreanKeys = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
 const englishKeys = "qwertyuiopasdfghjklzxcvbnm";
 
-const blinkAnimation = keyframes`
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-`;
-
-const BlinkingText = styled.p`
-	animation: ${blinkAnimation} 2s infinite; /* Apply the blinking animation */
-`;
-
-const RestaurantPage: React.FC = () => {
+const PaymentTagPage: React.FC = () => {
 	const navigate = useNavigate();
 	const [tagValue, setTagValue] = useState<string>("");
+	const [warningMsg, setWarningMsg] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -49,29 +34,19 @@ const RestaurantPage: React.FC = () => {
 
 			console.log("카드번호: ", result);
 			setTagValue("");
-			// TODO: 정보 담아서 서버로 POST 요청
 			try {
-				await paymentRestaurantReq(result);
+				const response = await payInfoByCard(result);
+				navigate("/payment-final", { state: response.data });
 			} catch (error) {
-				console.error("식당 결제 오류:", error);
+				setWarningMsg("등록되지 않은 카드입니다");
 			}
 		}
 	};
 
 	return (
 		<>
-			<div id="body" className="text-center">
-				<p className="text-3xl font-bold mt-16">구내식당</p>
-				<img
-					src="/assets/images/구내식당.png"
-					alt="순대국밥 사진"
-					className="w-3/4 mx-auto my-20"
-				/>
-				<p className="text-xl">순대국밥</p>
-				<p className="text-xl">7,000 원</p>
-				<BlinkingText className="text-lg text-red-500 my-10">
-					사원증을 태그하세요
-				</BlinkingText>
+			<Header text="결제하기" className="" />
+			<div id="body">
 				<input
 					ref={inputRef}
 					type="text"
@@ -84,13 +59,39 @@ const RestaurantPage: React.FC = () => {
 						activeEnter(e);
 					}}
 				/>
-
+				<div className="flex space-x-20 mt-16 justify-center">
+					<div
+						className={`border ${
+							warningMsg
+								? "border-8 border-red-500"
+								: "border-2 border-primary-color"
+						} bg-[#E2F1FF] rounded-2xl w-[600px] h-[750px] px-10`}
+						style={{
+							boxShadow: "15px 15px 5px lightgray",
+						}}
+					>
+						<img
+							src="assets/images/사원증태그동작.gif"
+							alt=""
+							className="h-2/3 my-6 mx-auto z-50"
+						/>
+						<p className="text-center text-xl text-primary-color font-bold">
+							사원증을 키오스크 <br />
+							하단에 태그하세요
+						</p>
+					</div>
+				</div>
+				{warningMsg && (
+					<p className="text-xl text-red-500 font-bold text-center my-10">
+						{warningMsg}
+					</p>
+				)}
 				<div className="w-full absolute bottom-[70px] text-center">
 					<Button
 						className="bg-bg-color text-white text-xl w-1/3 py-4"
-						text="처음으로"
+						text="이전으로"
 						onClick={() => {
-							navigate("/");
+							navigate("/payment");
 						}}
 					/>
 				</div>
@@ -99,4 +100,4 @@ const RestaurantPage: React.FC = () => {
 	);
 };
 
-export default RestaurantPage;
+export default PaymentTagPage;

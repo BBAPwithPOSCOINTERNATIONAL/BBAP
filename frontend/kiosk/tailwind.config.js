@@ -3,15 +3,15 @@ export default {
 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	theme: {
 		fontSize: {
-			"3xs": "20px",
-			"2xs": "28px",
-			xs: "36px",
-			sm: "44px",
-			base: "52px",
-			lg: "60px",
-			xl: "68px",
-			"2xl": "76px",
-			"3xl": "80px",
+			"3xs": "12px",
+			"2xs": "18px",
+			xs: "22px",
+			sm: "26px",
+			base: "32px",
+			lg: "38px",
+			xl: "44px",
+			"2xl": "50px",
+			"3xl": "56px",
 		},
 		extend: {
 			fontFamily: {

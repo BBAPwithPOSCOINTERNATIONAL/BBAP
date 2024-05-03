@@ -32,7 +32,7 @@ const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
         현재 주문량: {orderCount}개
       </p>
       <div className="mt-1 flex flex-col items-center">
-        <div className="bg-cafe-primary-color border p-3 rounded-lg mt-4 w-11/12 font-hyemin-bold">
+        <div className="bg-cafe-primary-color border p-3 rounded-lg w-11/12 font-hyemin-bold">
           <div>
             <div className="flex justify-between">
               <p>보유 스탬프</p>

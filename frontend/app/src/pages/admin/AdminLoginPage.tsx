@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, FormEvent } from "react";
 import logoimg from "/assets/images/logo.png";
+
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../api/apiClient";
@@ -85,8 +86,19 @@ function AdminLoginPage() {
         justifyContent: "center",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "row", gap: "30px" }}>
-        <img src={logoimg} alt="Login Logo" style={{ marginTop: "-20px" }} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "30px",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={logoimg}
+          alt="Login Logo"
+          className="mx-auto w-24 h-24 shadow-lg bg-indigo-50 rounded-full"
+        />
         <h1 className="text-[70px] font-hyemin-bold">지원금 관리</h1>
       </div>
       <form
@@ -100,7 +112,7 @@ function AdminLoginPage() {
       >
         <Inputtag>
           <input
-            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-300 shadow-sm"
+            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-4 focus:ring-blue-300 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-300 shadow-sm"
             type="text"
             aria-label="Id"
             value={adminId}
@@ -113,7 +125,7 @@ function AdminLoginPage() {
         </Inputtag>
         <Inputtag>
           <input
-            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-200 shadow-sm"
+            className=" font-hyemin-bold text-[24px] p-0 text-center focus:ring-4 focus:ring-blue-300 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-2 ring-slate-200 shadow-sm"
             type="password"
             aria-label="PW"
             id="password"

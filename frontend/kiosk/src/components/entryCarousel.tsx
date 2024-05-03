@@ -34,7 +34,7 @@ const EntryCarousel: React.FC = () => {
 							<img
 								src={slide}
 								alt={`Slide ${index + 1}`}
-								className="w-full h-[1200px]"
+								className="w-full h-[780px]"
 							/>
 						</div>
 					))}
