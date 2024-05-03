@@ -9,7 +9,7 @@ import com.bbap.approval.dto.request.ListApprovalRequestDto;
 import com.bbap.approval.dto.response.DataResponseDto;
 import com.bbap.approval.dto.response.ListEmployeeResponseData;
 
-@FeignClient(name = "hr", url = "http://localhost:8080/api/v1/hr")
+@FeignClient(name = "hr", url = "${feign_hr}")
 public interface HrServiceFeignClient {
 	@GetMapping("/employees")
 	ResponseEntity<DataResponseDto<ListEmployeeResponseData>> searchEmployees(
