@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Transactional
 public class AuthServiceImpl implements AuthService {
-private final NoticeServiceFeignClient noticeServiceFeignClient;
+    private final NoticeServiceFeignClient noticeServiceFeignClient;
 
     private final EmployeeRepository employeeRepository;
     private final JwtProvider jwtProvider;
@@ -90,6 +90,7 @@ private final NoticeServiceFeignClient noticeServiceFeignClient;
 
     @Override
     public ResponseEntity<DataResponseDto<LoginResponseData>> login(LoginRequestDto requestBody) {
+        log.info("사용자 {} :: 로그인 시도. 비밀번호 {}", requestBody.getEmpNo(), requestBody.getPassword());
 
         EmployeeEntity employee = employeeRepository.findByEmpNo(requestBody.getEmpNo())
                 .orElseThrow(EmployeeNotFoundException::new);
@@ -113,8 +114,8 @@ private final NoticeServiceFeignClient noticeServiceFeignClient;
 
         try {
             SaveFcmRequestDto saveFcmRequest = new SaveFcmRequestDto(requestBody.getFcmToken());
-            noticeServiceFeignClient.saveFcm(employee.getEmpId(),saveFcmRequest);
-        }catch (Exception e){
+            noticeServiceFeignClient.saveFcm(employee.getEmpId(), saveFcmRequest);
+        } catch (Exception e) {
             log.info("fcm 토큰 저장 실패");
         }
 
@@ -123,13 +124,13 @@ private final NoticeServiceFeignClient noticeServiceFeignClient;
 
 
     @Override
-    public ResponseEntity<ResponseDto> logout(int empId,LogoutRequestDto requestBody) {
+    public ResponseEntity<ResponseDto> logout(int empId, LogoutRequestDto requestBody) {
         redisTemplate.opsForValue().set(requestBody.getAccessToken(), "blacklisted", jwtProvider.getExpiryTime(requestBody.getAccessToken()), TimeUnit.SECONDS);
         redisTemplate.opsForValue().set(requestBody.getRefreshToken(), "blacklisted", jwtProvider.getExpiryTime(requestBody.getRefreshToken()), TimeUnit.SECONDS);
 
         try {
-            noticeServiceFeignClient.saveFcm(empId,new SaveFcmRequestDto());
-        }catch (Exception e){
+            noticeServiceFeignClient.saveFcm(empId, new SaveFcmRequestDto());
+        } catch (Exception e) {
             log.info("fcm 토큰 삭제 실패");
         }
 
