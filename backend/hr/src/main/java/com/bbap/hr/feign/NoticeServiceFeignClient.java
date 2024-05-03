@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import com.bbap.hr.dto.request.SaveFcmRequestDto;
 import com.bbap.hr.dto.response.ResponseDto;
 
-@FeignClient(name = "notice", url = "http://localhost:8083/api/v1/notices")
+@FeignClient(name = "notice", url = "${feign_notice}")
 public interface NoticeServiceFeignClient {
 	@GetMapping("/fcm")
 	ResponseEntity<ResponseDto> saveFcm(@RequestHeader(value = "X-Employee-Id") int empId,SaveFcmRequestDto request);
