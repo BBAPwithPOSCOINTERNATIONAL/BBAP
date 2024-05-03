@@ -31,9 +31,14 @@ public class WebSocketController {
 
 	@MessageMapping("/add-order-item/{roomId}")
 	public void addOrderItem(@DestinationVariable String roomId, @Payload AddOrderItemRequestDto requestDto, SimpMessageHeaderAccessor headerAccessor) {
-		System.out.println("addOrder");
 		String sessionId = headerAccessor.getSessionId();
 		webSocketService.addOrderItem(roomId, sessionId, requestDto);
+	}
+
+	@MessageMapping("/delete-order-item/{roomId}/{orderItemId}")
+	public void deleteOrderItem(@DestinationVariable String roomId, @DestinationVariable String orderItemId, SimpMessageHeaderAccessor headerAccessor){
+		String sessionId = headerAccessor.getSessionId();
+		webSocketService.deleteOrderItem(roomId, sessionId, orderItemId);
 	}
 
 }

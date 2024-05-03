@@ -1,5 +1,6 @@
 package com.bbap.order_room.entity.redis;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -22,7 +23,7 @@ public class Room {
 	private String roomId;
 	private String roomStatus;
 	private Integer currentOrderer; //empId 사용 - 사용자는 활성화된 하나의 방만 가질 수 있음
-	private List<Integer> orderers; //empId 사용
+	private HashSet<Integer> orderers; //empId 사용
 	private List<OrderItem> orderItems;
 }
 

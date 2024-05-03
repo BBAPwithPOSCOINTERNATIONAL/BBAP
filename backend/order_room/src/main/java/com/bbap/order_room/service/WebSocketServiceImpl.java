@@ -1,7 +1,9 @@
 package com.bbap.order_room.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,6 +18,8 @@ import com.bbap.order_room.entity.redis.MenuOption;
 import com.bbap.order_room.entity.redis.OrderItem;
 import com.bbap.order_room.entity.redis.Room;
 import com.bbap.order_room.entity.redis.Session;
+import com.bbap.order_room.exception.OrderItemNotFoundException;
+import com.bbap.order_room.exception.RoomEntityNotFoundException;
 import com.bbap.order_room.exception.SessionEntityNotFoundException;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
@@ -39,14 +43,13 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 	@Override
 	public void addOrderItem(String roomId, String sessionId, AddOrderItemRequestDto requestDto) {
-		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
-		Integer empId = session.getEmpId();
+		Integer empId = getEmpId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
 		if (room.getOrderItems() == null) {
 			room.setOrderItems(new ArrayList<>());
 		}
 		if (room.getOrderers() == null) {
-			room.setOrderers(new ArrayList<>());
+			room.setOrderers(new HashSet<>());
 		}
 		System.out.println(room.toString());
 		List<OptionRequestDto> optionList = requestDto.getOptions();
@@ -68,15 +71,49 @@ public class WebSocketServiceImpl implements WebSocketService{
 			requestDto.getMenuId(),
 			requestDto.getCnt(),
 			menuOptions,
-			session.getEmpId()
+			empId
 		);
 		room.getOrderItems().add(orderItem); //아이템 추가
-		if (!room.getOrderers().contains(session.getEmpId())) {
-			room.getOrderers().add(session.getEmpId());
-		}
+		room.getOrderers().add(empId);
 		room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
 		roomRepository.save(room);
 		//구독자에게 알리기
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+	}
+
+	@Override
+	public void deleteOrderItem(String roomId, String sessionId, String orderItemId) {
+		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+		Optional<OrderItem> itemToRemove = room.getOrderItems().stream()
+			.filter(item -> item.getOrderItemId().equals(orderItemId))
+			.findFirst();
+
+		if (itemToRemove.isPresent()) {
+			room.getOrderItems().remove(itemToRemove.get());
+			// 주문 목록이 비어있으면 상태를 초기화
+			if (room.getOrderItems().isEmpty()) {
+				room.setRoomStatus("INITIAL");
+			}
+			// 해당 주문 항목을 담은 사용자의 ID 검사
+			Integer empId = itemToRemove.get().getOrderer();
+			// 사용자가 다른 주문 항목을 가지고 있지 않을 경우만 orderers에서 제거
+			if (isLastOrderFromUser(room, empId)) {
+				room.getOrderers().remove(empId);
+			}
+			roomRepository.save(room);
+			messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+		} else {
+			throw new OrderItemNotFoundException();
+		}
+	}
+
+	private Integer getEmpId(String sessionId){
+		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
+		return session.getEmpId();
+	}
+
+	private boolean isLastOrderFromUser(Room room, Integer empId) {
+		return room.getOrderItems().stream()
+			.noneMatch(item -> item.getOrderer().equals(empId));
 	}
 }
