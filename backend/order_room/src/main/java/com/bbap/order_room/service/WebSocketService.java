@@ -6,4 +6,5 @@ public interface WebSocketService {
 	void connectRoom(Integer empId, String sessionId, String roomId);
 	void addOrderItem(String sessionId, AddOrderItemRequestDto requestDto);
 	void deleteOrderItem(String sessionId, String orderItemId);
+	void startGame(String sessionId);
 }

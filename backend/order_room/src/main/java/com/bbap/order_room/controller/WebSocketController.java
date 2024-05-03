@@ -41,4 +41,9 @@ public class WebSocketController {
 		webSocketService.deleteOrderItem(sessionId, orderItemId);
 	}
 
+	@MessageMapping("/start-game")
+	public void startGame(SimpMessageHeaderAccessor headerAccessor){
+		String sessionId = headerAccessor.getSessionId();
+		webSocketService.startGame(sessionId);
+	}
 }

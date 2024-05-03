@@ -124,6 +124,23 @@ public class WebSocketServiceImpl implements WebSocketService{
 		}
 	}
 
+	@Override
+	public void startGame(String sessionId) {
+		Integer empId = getEmpId(sessionId);
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
+		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+		// 방 상태 확인
+		if (!room.getRoomStatus().equals("ORDER_FILLED")) {
+			throw new IllegalStateException("'ORDER_FILLED' 상태여야 게임 시작이 가능합니다.");
+		}
+		if (room.getCurrentOrderer() != empId) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
+		room.setRoomStatus("GAME_START");
+		roomRepository.save(room);
+		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+	}
+
 	private Integer getEmpId(String sessionId){
 		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
 		return session.getEmpId();
