@@ -29,7 +29,7 @@ public class WebSocketController {
 		webSocketService.connectRoom(empId, sessionId, roomId);
 	}
 
-	@MessageMapping("/add-order-item/")
+	@MessageMapping("/add-order-item")
 	public void addOrderItem(@Payload AddOrderItemRequestDto requestDto, SimpMessageHeaderAccessor headerAccessor) {
 		String sessionId = headerAccessor.getSessionId();
 		webSocketService.addOrderItem(sessionId, requestDto);

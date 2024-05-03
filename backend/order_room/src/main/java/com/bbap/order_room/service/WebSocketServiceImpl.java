@@ -57,7 +57,10 @@ public class WebSocketServiceImpl implements WebSocketService{
 		if (room.getOrderers() == null) {
 			room.setOrderers(new HashSet<>());
 		}
-		System.out.println(room.toString());
+		// 방 상태 확인
+		if (!room.getRoomStatus().equals("INITIAL") && !room.getRoomStatus().equals("ORDER_FILLED")) {
+			throw new IllegalStateException("'INITIAL' or 'ORDER_FILLED' 상태여야 주문이 가능합니다.");
+		}
 		List<OptionRequestDto> optionList = requestDto.getOptions();
 		List<MenuOption> menuOptions = new ArrayList<>();
 		for (OptionRequestDto option : optionList) {
@@ -94,6 +97,10 @@ public class WebSocketServiceImpl implements WebSocketService{
 			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
 		String roomId = participant.getRoomId();
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+		// 방 상태 확인
+		if (!room.getRoomStatus().equals("ORDER_FILLED")) {
+			throw new IllegalStateException("'ORDER_FILLED' 상태여야 주문 삭제가 가능합니다.");
+		}
 		Optional<OrderItem> itemToRemove = room.getOrderItems().stream()
 			.filter(item -> item.getOrderItemId().equals(orderItemId))
 			.findFirst();
