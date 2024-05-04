@@ -20,7 +20,7 @@ const MainPage: React.FC = () => {
     인기: "menuListPopular",
     커피: "menuListCoffee",
     음료: "menuListBeverage",
-    디저트: "menuListDessert",
+    디저트: "menuListDesert",
   };
   const [activeTapItem, setActiveTapItem] = useState<string>(tapItems[0]);
   const [activeMenu, setActiveMenu] = useState<Menu[]>();

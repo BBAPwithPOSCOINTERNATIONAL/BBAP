@@ -7,7 +7,7 @@ interface ApiResponse {
   data: {
     menuListCoffee: Menu[];
     menuListBeverage: Menu[];
-    menuListDessert: Menu[];
+    menuListDesert: Menu[];
     menuListPopular: Menu[];
   };
 }
