@@ -2,9 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentTime from "../components/currentTime";
 import EntryCarousel from "../components/entryCarousel";
+import PWAInstallPrompt from '../components/install'
 
 const EntryPage: React.FC = () => {
   const navigate = useNavigate();
+
 
   const handleClick = () => {
     navigate("/main");
@@ -13,11 +15,13 @@ const EntryPage: React.FC = () => {
   return (
     <div className="w-full h-screen bg-primary-color">
       <div id="header" className="flex justify-between px-8 py-6 bg-white">
-        <img
+        {/* <img
           src="/assets/images/포스코인터내셔널_로고.png"
           alt=""
           className="w-[230px]"
-        />
+        /> */}
+        <PWAInstallPrompt />
+
         <CurrentTime />
       </div>
       <div className="mt-8">

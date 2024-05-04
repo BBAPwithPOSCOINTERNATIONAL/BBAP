@@ -28,8 +28,8 @@ interface Menu {
 
 const OrderItem: React.FC<{ data: CartItem }> = ({ data }) => {
 	const options = data.options.reduce((acc: string[], option) => {
-		option.choices.forEach((choice) => {
-			acc.push(choice.choice_name);
+		option.choice.forEach((choice) => {
+			acc.push(choice.choiceName);
 		});
 		return acc;
 	}, []);
@@ -144,14 +144,14 @@ const PaymentFinalPage: React.FC = () => {
 				options: [] as Option[],
 			};
 			const options: Option[] = item.options.map((option) => {
-				const choiceOptions = option.choices.map((choice) => {
+				const choiceOptions = option.choice.map((choice) => {
 					return {
-						choiceName: choice.choice_name,
+						choiceName: choice.choiceName,
 						price: choice.price,
 					};
 				});
 				return {
-					optionName: option.option_name,
+					optionName: option.optionName,
 					type: option.type,
 					required: option.required,
 					choiceOptions: choiceOptions,

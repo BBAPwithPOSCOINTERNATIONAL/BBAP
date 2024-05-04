@@ -20,15 +20,15 @@ const useCartStore = create<CartState>((set) => ({
 			// 이름과 옵션 내용이 같은 menu가 cart에 존재하는지 확인 => 있으면 cartList 추가가 아니라 count만 늘리는 방식으로 add
 			const existingItemIndex = state.cartList.findIndex((item) => {
 				const existingOptions = item.options.reduce((acc: string[], option) => {
-					option.choices.forEach((choice) => {
-						acc.push(choice.choice_name);
+					option.choice.forEach((choice) => {
+						acc.push(choice.choiceName);
 					});
 					return acc;
 				}, []);
 				const inputOptions = menuInfo.options.reduce(
 					(acc: string[], option) => {
-						option.choices.forEach((choice) => {
-							acc.push(choice.choice_name);
+						option.choice.forEach((choice) => {
+							acc.push(choice.choiceName);
 						});
 						return acc;
 					},
