@@ -7,6 +7,7 @@ import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌�
 // import WeeklySummary from "../../components/receipt/Summary";
 // import ReceiptDetail from "../../components/receipt/ReceiptDetail";
 
+
 function MyReceiptPage() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태를 저장하는 변수를 추가합니다.
 
@@ -21,7 +22,6 @@ function MyReceiptPage() {
       <div className="flex-grow flex flex-col items-center justify-center pb-24">
         {/* CalendarComponent를 페이지에 추가 */}
         <CalendarComponent />
-        {/* <WeeklySummary /> */}
       </div>
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img

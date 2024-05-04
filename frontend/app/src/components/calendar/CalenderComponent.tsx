@@ -1,24 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { isSameMonth, isSameDay, addDays } from "date-fns";
+import { isSameMonth, isSameDay, addDays, isAfter } from "date-fns";
+import {
+  getMonthlyPayments,
+  getDailyPayments,
+  PaymentData,
+} from "../../api/paymentsAPI";
 
 import group from "/assets/images/group.png";
 import back from "/assets/images/button/back.png";
 import next from "/assets/images/button/next.png";
 import "./_style.scss";
 
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 interface RenderHeaderProps {
   currentMonth: Date;
   prevMonth: () => void;
   nextMonth: () => void;
+  data: PaymentData;
 }
 
 const RenderHeader: React.FC<RenderHeaderProps> = ({
   currentMonth,
   prevMonth,
   nextMonth,
+  data,
 }: RenderHeaderProps) => {
   return (
     <div
@@ -65,15 +72,19 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
         <div style={{ paddingLeft: "0.5rem", fontSize: "18px" }}>
           <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
             <div style={{ width: "26vw" }}>총 결제금액</div>
-            <div>300,000 원</div>
+            <div>{data.totalPaymentAmountSum.toLocaleString()} 원</div>
           </div>
           <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
             <div style={{ width: "26vw" }}>총 지원금</div>
-            <div style={{ color: "green" }}>26,000 원</div>
+            <div style={{ color: "green" }}>
+              {data.useSubsidySum.toLocaleString()} 원
+            </div>
           </div>
           <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
             <div style={{ width: "26vw" }}>총 본인부담금</div>
-            <div style={{ color: "blue" }}>14,000 원</div>
+            <div style={{ color: "blue" }}>
+              {data.selfPaymentSum.toLocaleString()} 원
+            </div>
           </div>
         </div>
       </div>
@@ -124,10 +135,13 @@ const isToday = (date: Date): boolean => {
 const RenderCells = ({
   currentMonth,
   selectedDate,
+  data,
+  navigation,
 }: {
   currentMonth: Date;
   selectedDate: Date;
-  onDateClick: (date: Date) => void;
+  data: PaymentData;
+  navigation: NavigateFunction;
 }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -137,7 +151,28 @@ const RenderCells = ({
   const totalWeeks = differenceInWeeks(endDate, startDate); // 총 주 수 계산
   const rowHeight = totalWeeks === 5 ? "10vh" : "12vh"; // 주 수에 따라 높이 지정
 
-  const navigate = useNavigate();
+  const paymentsMap = new Map();
+  data.dayPaymentList.forEach((payment) => {
+    paymentsMap.set(payment.day, payment);
+  });
+
+  const onDateClick = async (date: Date) => {
+    const dateString = format(date, "yyyy-MM-dd");
+    try {
+      const dailyPayments = await getDailyPayments(dateString);
+      console.log("Daily Payments for " + dateString + ":", dailyPayments);
+      navigation("/receiptDetail", {
+        state: { date: dateString, payments: dailyPayments },
+      });
+    } catch (error) {
+      console.error(
+        "Failed to fetch daily payments for",
+        dateString,
+        ":",
+        error
+      );
+    }
+  };
 
   const rows = [];
   let days = [];
@@ -146,7 +181,9 @@ const RenderCells = ({
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
+      const currentDay = day;
       formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
+      const dayData = paymentsMap.get(day.getDate());
       days.push(
         <div
           key={day.toISOString()}
@@ -166,7 +203,7 @@ const RenderCells = ({
             width: "100%",
             flex: 1,
           }}
-          onClick={() => navigate("/receiptDetail")}
+          onClick={() => onDateClick(currentDay)}
         >
           <span
             className={`
@@ -208,8 +245,16 @@ const RenderCells = ({
               alignItems: "center",
             }}
           >
-            <div style={{ color: "green" }}>5,000</div>
-            <div style={{ color: "blue" }}>2,000</div>
+            {dayData && (
+              <div style={{ marginTop: "5px" }}>
+                <div style={{ color: "green" }}>
+                  {dayData.useSubsidy.toLocaleString()}원
+                </div>
+                <div style={{ color: "blue" }}>
+                  {dayData.selfPayment.toLocaleString()}원
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -248,20 +293,42 @@ const RenderCells = ({
 
 export const CalendarComponent = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate] = useState(new Date());
   const navigate = useNavigate();
+  const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
+
+  // 현재 달의 결제 데이터를 가져오는 useEffect
+  useEffect(() => {
+    const fetchPayments = async () => {
+      const formattedMonth = format(currentMonth, "yyyy-MM");
+      try {
+        const response = await getMonthlyPayments(formattedMonth);
+        setPaymentData(response.data);
+        console.log("Payment data for month:", formattedMonth, response.data);
+      } catch (error) {
+        console.error(
+          "Failed to fetch payment data for",
+          formattedMonth,
+          ":",
+          error
+        );
+      }
+    };
+
+    fetchPayments();
+  }, [currentMonth]);
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
   const nextMonth = () => {
+    const maxDate = new Date(2024, 5); // 2024년 6월 (월 인덱스는 0부터 시작하므로 5는 6월을 의미)
+    if (isAfter(addMonths(currentMonth, 1), maxDate)) {
+      return;
+    }
     setCurrentMonth(addMonths(currentMonth, 1));
   };
-  const onDateClick = (day: Date) => {
-    console.log("클릭");
-    navigate("/receiptDetail");
-    setSelectedDate(day);
-  };
+
   return (
     <div
       style={{
@@ -272,11 +339,14 @@ export const CalendarComponent = () => {
         alignItems: "start",
       }}
     >
-      <RenderHeader
-        currentMonth={currentMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-      />
+      {paymentData && (
+        <RenderHeader
+          currentMonth={currentMonth}
+          prevMonth={prevMonth}
+          nextMonth={nextMonth}
+          data={paymentData}
+        />
+      )}
       <img
         src={group}
         alt="지원금 및 본인부담금"
@@ -286,11 +356,14 @@ export const CalendarComponent = () => {
         }}
       />
       <RenderDays />
-      <RenderCells
-        currentMonth={currentMonth}
-        selectedDate={selectedDate}
-        onDateClick={onDateClick}
-      />
+      {paymentData && (
+        <RenderCells
+          currentMonth={currentMonth}
+          selectedDate={selectedDate}
+          data={paymentData}
+          navigation={navigate}
+        />
+      )}
     </div>
   );
 };
