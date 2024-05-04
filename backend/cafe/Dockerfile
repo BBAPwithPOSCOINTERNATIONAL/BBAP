@@ -8,5 +8,5 @@ RUN gradle bootJar --no-daemon
 FROM openjdk:17-jdk-alpine
 ENV SPRING_PROFILES_ACTIVE=local
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
-EXPOSE 8080
+EXPOSE 8082
 ENTRYPOINT ["java","-Dspring.profiles.active=local","-jar","/app/app.jar"]
