@@ -1,10 +1,10 @@
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useUserStore } from "../../store/userStore";
 
 function MainPage() {
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const userInfo = useUserStore((state) => state);
 
   useEffect(() => {
