@@ -23,7 +23,9 @@ function BottomTabBar() {
       <div>
         <Outlet /> {/* 메인 콘텐츠 */}
       </div>
-      <footer className="bg-white text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300">
+      <footer className="bg-slate-50 text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300" style={{
+            boxShadow:"-3px -2px 3px rgba(0, 0, 0, 0.1)",
+          }}>
         {" "}
         {/* 하단바 */}
         <nav>
@@ -31,21 +33,21 @@ function BottomTabBar() {
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link
                 to="/cafemain"
-                className="flex flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center text-sm"
               >
-                <img src={Coffee} alt="cafe" className="w-12" />{" "}
+                <img src={Coffee} alt="cafe" className="w-8" />{" "}
                 <span>카페가기</span>
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link
                 to="/restaurantmain"
-                className="flex flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center text-sm"
               >
                 <img
                   src={getImage("/restaurantmain", res, resClick)}
                   alt="restaurant"
-                  className="w-12"
+                  className="w-8"
                 />
                 식당가기
               </Link>
@@ -53,12 +55,12 @@ function BottomTabBar() {
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link
                 to="/receipt"
-                className="flex flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center text-sm"
               >
                 <img
                   src={getImage("/receipt", receipts, receiptsClick)}
                   alt="receipts"
-                  className="w-12"
+                  className="w-8"
                 />
                 내영수증
               </Link>
@@ -66,12 +68,12 @@ function BottomTabBar() {
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">
               <Link
                 to="/profile"
-                className="flex flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center text-sm"
               >
                 <img
                   src={getImage("/profile", myprofile, myprofileClick)}
                   alt="myprofile"
-                  className="w-12"
+                  className="w-8"
                 />
                 내프로필
               </Link>
