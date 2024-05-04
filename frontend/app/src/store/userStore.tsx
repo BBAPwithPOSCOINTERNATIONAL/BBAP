@@ -24,6 +24,7 @@ type UserState = {
   position?: Position;
   workplace?: Workplace;
   updateUserData: (userData: Partial<UserState>) => void;
+  reset: () => void;
 };
 
 export const useUserStore = create(
@@ -45,7 +46,26 @@ export const useUserStore = create(
         workplaceName: "",
       },
       updateUserData: (userData) => set((state) => ({ ...state, ...userData })),
+      reset: () =>
+        set(() => ({
+          empId: 0,
+          empNo: "",
+          empName: "",
+          department: {
+            departmentId: 0,
+            departmentName: "",
+          },
+          position: {
+            positionId: 0,
+            positionName: "",
+          },
+          workplace: {
+            workplaceId: 0,
+            workplaceName: "",
+          },
+        })),
     }),
+
     {
       name: "user-store",
       getStorage: () => localStorage,
