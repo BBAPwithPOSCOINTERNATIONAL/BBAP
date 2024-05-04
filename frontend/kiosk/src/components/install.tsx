@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { RiMobileDownloadLine } from "react-icons/ri";
 
 const PWAInstallPrompt = () => {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
