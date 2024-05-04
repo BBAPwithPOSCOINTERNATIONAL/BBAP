@@ -118,22 +118,22 @@ const GamePage: React.FC = () => {
 	return (
 		<div>
 			<Header text="내기하기" className="" />
-			<div className="text-base font-bold text-center my-5">
+			<div className="text-lg font-bold text-center my-7">
 				{selectedPoint ? (
-					<p className="text-orange-500 text-2xl">
+					<p className="text-orange-700 text-[60px] bg-blue-100">
 						오늘 카페는 {selectedPoint.id}번이 쏜다!!!
 					</p>
 				) : (
 					<p>
-						게임 참여자는 모두 화면을 한번씩 터치하세요.
+						순서대로 화면을 한 번씩 터치하세요.
 						<br /> 모두 터치했으면, 시작 버튼을 누르세요!
 					</p>
 				)}
 			</div>
-			<div className="flex justify-center space-x-10 font-bold text-lg text-white">
+			<div className="flex justify-center space-x-24 font-bold text-lg text-white">
 				<div
 					onClick={handleReset}
-					className="w-1/5 rounded-full bg-amber-300 py-8 text-center"
+					className="w-1/5  rounded-[20px] bg-amber-300 py-8 text-center"
 				>
 					다시
 				</div>
@@ -141,7 +141,7 @@ const GamePage: React.FC = () => {
 					onClick={() => {
 						!gameStarted && handleStartGame();
 					}}
-					className={`w-1/5 rounded-full py-8 text-center ${
+					className={`w-1/5  rounded-[20px]  py-8 text-center ${
 						touchPoints.length == 0 || gameStarted
 							? "bg-inactive-color"
 							: "bg-red-400"
