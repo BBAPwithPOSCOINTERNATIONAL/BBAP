@@ -15,7 +15,7 @@ interface DayPayment {
   selfPayment: number;
 }
 
-interface PaymentData {
+export interface PaymentData {
   totalPaymentAmountSum: number;
   useSubsidySum: number;
   selfPaymentSum: number;
