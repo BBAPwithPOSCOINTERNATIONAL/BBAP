@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import { create, StateCreator } from "zustand";
+import { persist } from "zustand/middleware";
 
 type Department = {
   departmentId: number;
@@ -25,21 +26,29 @@ type UserState = {
   updateUserData: (userData: Partial<UserState>) => void;
 };
 
-export const useUserStore = create<UserState>((set) => ({
-  empId: 0,
-  empNo: "",
-  empName: "",
-  department: {
-    departmentId: 0,
-    departmentName: "",
-  },
-  position: {
-    positionId: 0,
-    positionName: "",
-  },
-  workplace: {
-    workplaceId: 0,
-    workplaceName: "",
-  },
-  updateUserData: (userData) => set((state) => ({ ...state, ...userData })),
-}));
+export const useUserStore = create(
+  persist<UserState>(
+    (set) => ({
+      empId: 0,
+      empNo: "",
+      empName: "",
+      department: {
+        departmentId: 0,
+        departmentName: "",
+      },
+      position: {
+        positionId: 0,
+        positionName: "",
+      },
+      workplace: {
+        workplaceId: 0,
+        workplaceName: "",
+      },
+      updateUserData: (userData) => set((state) => ({ ...state, ...userData })),
+    }),
+    {
+      name: "user-store",
+      getStorage: () => localStorage,
+    }
+  )
+);
