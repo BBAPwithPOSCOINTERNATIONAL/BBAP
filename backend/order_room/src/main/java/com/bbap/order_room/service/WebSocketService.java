@@ -7,4 +7,5 @@ public interface WebSocketService {
 	void addOrderItem(String sessionId, AddOrderItemRequestDto requestDto);
 	void deleteOrderItem(String sessionId, String orderItemId);
 	void startGame(String sessionId);
+	void runWheel(String sessionId);
 }

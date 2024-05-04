@@ -1,6 +1,7 @@
 package com.bbap.order_room.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class RoomServiceImpl implements RoomService{
 	public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId) {
 		String newRoomId = generateRoomId();
 		Room newRoom = new Room(newRoomId, "INITIAL", empId,
-			new HashSet<>(), new ArrayList<>());
+			new HashMap<>(), new ArrayList<>());
 		roomRepository.save(newRoom);
 		EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId);
 		participantRepository.save(newParticipant);
@@ -65,7 +66,6 @@ public class RoomServiceImpl implements RoomService{
 	}
 
 	private String generateRoomId() {
-		// 실제 구현에서는 더 복잡한 로직을 사용하여 유니크한 ID 생성
 		return UUID.randomUUID().toString();
 	}
 }

@@ -46,4 +46,10 @@ public class WebSocketController {
 		String sessionId = headerAccessor.getSessionId();
 		webSocketService.startGame(sessionId);
 	}
+
+	@MessageMapping("/run-wheel")
+	public void runWheel(SimpMessageHeaderAccessor headerAccessor){
+		String sessionId = headerAccessor.getSessionId();
+		webSocketService.runWheel(sessionId);
+	}
 }

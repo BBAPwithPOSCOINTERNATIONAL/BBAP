@@ -1,11 +1,11 @@
 package com.bbap.order_room.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,7 @@ import com.bbap.order_room.entity.redis.Session;
 import com.bbap.order_room.exception.OrderItemNotFoundException;
 import com.bbap.order_room.exception.RoomEntityNotFoundException;
 import com.bbap.order_room.exception.SessionEntityNotFoundException;
+import com.bbap.order_room.feign.HrServiceFeignClient;
 import com.bbap.order_room.repository.ParticipantRepository;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
@@ -38,6 +39,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final RoomRepository roomRepository;
 	private final ParticipantRepository participantRepository;
 	private final SimpMessagingTemplate messagingTemplate;
+	private final HrServiceFeignClient hrServiceFeignClient;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
 		Session session = new Session(sessionId, empId);
@@ -55,7 +57,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 			room.setOrderItems(new ArrayList<>());
 		}
 		if (room.getOrderers() == null) {
-			room.setOrderers(new HashSet<>());
+			room.setOrderers(new HashMap<>());
 		}
 		// 방 상태 확인
 		if (!room.getRoomStatus().equals("INITIAL") && !room.getRoomStatus().equals("ORDER_FILLED")) {
@@ -83,7 +85,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 			empId
 		);
 		room.getOrderItems().add(orderItem); //아이템 추가
-		room.getOrderers().add(empId);
+		String name = hrServiceFeignClient.checkId(empId).getBody().getData().getEmpName();
+		room.getOrderers().put(empId, name);
 		room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
 		roomRepository.save(room);
 		//구독자에게 알리기
@@ -141,6 +144,26 @@ public class WebSocketServiceImpl implements WebSocketService{
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
 	}
 
+	@Override
+	public void runWheel(String sessionId) {
+		Integer empId = getEmpId(sessionId);
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
+		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+		// 방 상태 확인
+		if (!room.getRoomStatus().equals("GAME_START")) {
+			throw new IllegalStateException("'GAME_START' 상태여야 게임 시작이 가능합니다.");
+		}
+		if (room.getCurrentOrderer() != empId) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
+		room.setRoomStatus("GAME_END");
+		// 원판 결과 생성 (랜덤 또는 사전 정의된 결과를 사용)
+		Integer result = generateWheelResult(room.getOrderers());
+		room.setCurrentOrderer(result); //주문자 변경
+		roomRepository.save(room);
+		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+	}
+
 	private Integer getEmpId(String sessionId){
 		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
 		return session.getEmpId();
@@ -149,5 +172,15 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private boolean isLastOrderFromUser(Room room, Integer empId) {
 		return room.getOrderItems().stream()
 			.noneMatch(item -> item.getOrderer().equals(empId));
+	}
+
+	private Integer generateWheelResult(HashMap<Integer, String> orderers) {
+		// HashSet을 List로 변환
+		List<Integer> list = new ArrayList<>(orderers.keySet());
+		// 랜덤 객체 생성
+		Random random = new Random();
+		// 리스트에서 랜덤 인덱스로 요소 선택
+		int randomIndex = random.nextInt(list.size()); // 리스트 크기 내에서 랜덤 인덱스 생성
+		return list.get(randomIndex);
 	}
 }
