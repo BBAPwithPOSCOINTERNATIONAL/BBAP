@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import CurrentTime from "../components/currentTime";
 import EntryCarousel from "../components/entryCarousel";

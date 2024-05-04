@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Menu } from "../types";
 import useModalStore from "../store/modalStore";
 
@@ -9,10 +9,10 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
   const { openMenuModal } = useModalStore();
   const tempOption = menuItemData.options.find(
-    (option) => option.option_name === "온도"
+    (option) => option.optionName === "온도"
   );
-  const tempChoices =
-    tempOption && tempOption.choices.map((choice) => choice.choice_name);
+  const tempChoices = tempOption && tempOption.choice.map((c) => c.choiceName);
+  
 
   return (
     <div
@@ -38,7 +38,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
                 </p>
               );
             }
-          })}
+          })} 
         </div>
       )}
       <img

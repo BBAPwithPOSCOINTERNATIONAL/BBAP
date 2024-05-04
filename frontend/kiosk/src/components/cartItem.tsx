@@ -13,8 +13,8 @@ interface CartItemProps {
 const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 	const { setCartCount, removeFromCart } = useCartStore();
 	const options = props.options.reduce((acc: string[], option) => {
-		option.choices.forEach((choice) => {
-			acc.push(choice.choice_name);
+		option.choice.forEach((choice) => {
+			acc.push(choice.choiceName);
 		});
 		return acc;
 	}, []);

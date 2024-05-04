@@ -35,7 +35,7 @@ const MainPage: React.FC = () => {
     const loadData = async () => {
       try {
         const data = await fetchMenuData();
-        console.log(fetchMenuData())
+        console.log(data)
         setMenuData(data.data);
         setIsLoading(false);
       } catch (error) {
@@ -102,6 +102,7 @@ const MainPage: React.FC = () => {
             id="menu-body"
             className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[80vh] flex flex-col divide-y-2 divide-primary-color"
           >
+            {/* 메뉴 아이템들 나오는 화면 */}
             <div className="flex-grow overflow-y-auto my-1 p-4">
               <div className="grid grid-cols-3">
                 {activeMenu &&
