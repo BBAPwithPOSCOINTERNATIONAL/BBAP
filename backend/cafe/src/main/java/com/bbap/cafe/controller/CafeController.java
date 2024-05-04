@@ -66,8 +66,8 @@ public class CafeController {
 	}
 
 	@Operation(
-		summary = "키오스크용 분류별 메뉴리스트",
-		description = "카페의 메뉴리스트를 분류별로 들고온다."
+		summary = "키오스크 메뉴리스트",
+		description = "카페의 메뉴리스트 들고온다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
