@@ -35,6 +35,7 @@ const MainPage: React.FC = () => {
     const loadData = async () => {
       try {
         const data = await fetchMenuData();
+        console.log(fetchMenuData())
         setMenuData(data.data);
         setIsLoading(false);
       } catch (error) {
