@@ -35,7 +35,7 @@ export async function requestPermission(): Promise<string | null> {
     if (permission === "granted") {
       const token: string | null = await getToken(messaging, { vapidKey });
       if (token) {
-        console.log(token);
+        // console.log(token);
         // sendTokenToServer(token); // 토큰을 서버로 전송하는 로직 활성화
         return token;
       } else {

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import bbapimg from "/assets/images/bbap.png";
 import logoimg from "/assets/images/logo.png";
 import { requestPermission } from "../../service/initFirebase";
-import { login } from "../../api/hradminAPI";
-// import { useUserStore } from "../../store/userStore";
+import { login, getUserInfo } from "../../api/hradminAPI";
+import { useUserStore } from "../../store/userStore";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ function LoginPage() {
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [fcmToken, setFcmToken] = useState("");
+  const updateUserData = useUserStore((state) => state.updateUserData);
 
   const employeeIdRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -39,16 +40,21 @@ function LoginPage() {
     }
     setLoading(true);
 
-    const token = await requestPermission();
-    setFcmToken(token ?? "");
     try {
-      // console.log(adminId, password);
-      const response = await login(employeeId, password, fcmToken);
-      console.log(response);
+      const token = await requestPermission();
+      setFcmToken(token ?? "");
 
-      navigate("/main");
+      const response = await login(employeeId, password, fcmToken);
+
+      if (response.data.accessToken && response.data.refreshToken) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        const userInfo = await getUserInfo();
+        // console.log("userinfo", userInfo.data);
+        updateUserData(userInfo.data);
+        navigate("/main");
+      }
     } catch (error) {
-      // console.log(adminId, password);
       console.error("로그인 실패:", error);
     } finally {
       setLoading(false);

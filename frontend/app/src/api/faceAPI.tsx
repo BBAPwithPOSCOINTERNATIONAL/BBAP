@@ -1,4 +1,5 @@
 import apiClient from "./apiClient";
+import axios from "axios";
 
 interface UploadFaceResponse {
   message: string;
@@ -12,11 +13,19 @@ interface UploadFaceResponse {
  * @throws 404 "등록되지 않은 이용자입니다."  오류를 반환할 수 있습니다.
  */
 
-export const FaceRegistrationStatus = async (): Promise<{
-  message: string;
-}> => {
-  const response = await apiClient.get("faces");
-  return response.data;
+export const FaceRegistrationStatus = async () => {
+  try {
+    const response = await apiClient.get("/api/v1/faces");
+    console.log(response);
+    return { success: true, message: response.data.message };
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 404) {
+        return { success: false, message: error.response.data.message };
+      }
+    }
+    throw error;
+  }
 };
 
 /**

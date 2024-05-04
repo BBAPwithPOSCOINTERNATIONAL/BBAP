@@ -3,6 +3,7 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import IdPhoto from "/assets/images/image1.png";
 import guide from "/assets/images/guideLine.png";
+import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
 
 interface ModalProps {
   isOpen: boolean;
@@ -44,6 +45,19 @@ function MyProfilePage() {
   const [captured, setCaptured] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await FaceRegistrationStatus();
+  //       // console.log("API Response:", response);
+  //     } catch (error) {
+  //       console.error("API Error:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const handleCameraAccess = async () => {
     try {
