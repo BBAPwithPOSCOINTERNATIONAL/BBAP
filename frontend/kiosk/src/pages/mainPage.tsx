@@ -86,10 +86,10 @@ const MainPage: React.FC = () => {
           >
             {tapItems.map((item, index) => (
               <div
-                className={`transition-all rounded-t-3xl ${
+                className={`transition-all rounded-t-2xl ${
                   activeTapItem === item
                     ? "w-[160px] bg-primary-color"
-                    : "w-[130px] bg-bg-color"
+                    : "w-[140px] bg-bg-color"
                 } py-2`}
                 key={index}
                 onClick={() => handleTapItemClick(item)}
@@ -100,7 +100,7 @@ const MainPage: React.FC = () => {
           </div>
           <div
             id="menu-body"
-            className="border border-2 border-primary-color rounded-b-3xl rounded-r-3xl h-[80vh] flex flex-col divide-y-2 divide-primary-color"
+            className="border border-2 border-primary-color rounded-b-2xl rounded-r-2xl h-[80vh] flex flex-col divide-y-2 divide-primary-color"
           >
             {/* 메뉴 아이템들 나오는 화면 */}
             <div className="flex-grow overflow-y-auto my-1 p-4">
@@ -113,14 +113,14 @@ const MainPage: React.FC = () => {
             </div>
             <div className="min-h-[340px] max-h-[340px] flex divide-x-2 divide-primary-color">
               <div className="flex-grow px-2 py-2">
-                <div className="text-base font-bold bg-white">주문 목록</div>
-                <div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
+                <div className="text-base font-bold bg-white pl-2">주문 목록</div>
+                <div className="flex flex-col overflow-y-auto h-3/4 space-y-2 pl-2">
                   {cartList.map((item, index) => (
                     <CartItemDiv props={item} key={index} index={index} />
                   ))}
                 </div>
               </div>
-              <div className="w-[250px]">
+              <div className="w-[270px]">
                 <div className="mx-3 my-3">
                   <p className="flex justify-between text-xs">
                     <span>총 주문개수</span>
@@ -133,7 +133,7 @@ const MainPage: React.FC = () => {
                     </span>
                   </p>
                 </div>
-                <div className="px-10 py-5 flex flex-col space-y-3">
+                <div className="px-3 py-5 flex flex-col space-y-3">
                   <Button
                     onClick={() => {
                       if (cartList.length > 0) {

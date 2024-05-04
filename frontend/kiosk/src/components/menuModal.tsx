@@ -175,14 +175,21 @@ const MenuModal: React.FC = () => {
 															text={choice.choiceName}
 															className={`border border-4 w-32 py-5 font-bold text-sm text-black ${
 																choice.choiceName === "HOT"
-																	? "border-red-500"
+																	? "border-red-300"
 																	: choice.choiceName === "ICE"
-																	? "border-blue-500"
+																	? "border-blue-300"
 																	: ""
 															} ${
-																selectedTemp === choice.choiceName &&
-																"bg-gray-200 border-8"
-															}
+
+																selectedTemp === "ICE" &&
+																choice.choiceName === "ICE"
+																  ? "bg-blue-200 border-4"
+																  : selectedTemp === "HOT" &&
+																	choice.choiceName === "HOT"
+																  ? "bg-red-200 border-4"
+																  : ""
+															  }}
+															
                       `}
 														/>
 													))}
@@ -201,13 +208,13 @@ const MenuModal: React.FC = () => {
 																<div>
 																	{choice.choiceName}{" "}
 																	<p className="text-xs">
-																		+ {choice.price.toLocaleString()}
+																		+ {choice.price.toLocaleString()} 원
 																	</p>
 																</div>
 															}
-															className={`border border-4 border-black w-40 py-2 font-bold text-black text-sm ${
+															className={`border border-4 border-gray-400 w-40 py-2 font-bold text-black text-sm ${
 																selectedSize === choice.choiceName &&
-																"bg-gray-200 border-8"
+																"bg-gray-200 border-4"
 															}
                       `}
 														/>
@@ -249,7 +256,7 @@ const MenuModal: React.FC = () => {
 						</div>
 						<div
 							id="footer"
-							className={`absolute bottom-0 bg-stone-100 rounded-b-2xl py-3 w-full ${
+							className={`absolute bottom-0  bg-[#E3E9F6] rounded-b-2xl py-3 w-full ${
 								warningText ? "h-[290px]" : "h-[250px]"
 							}`}
 						>

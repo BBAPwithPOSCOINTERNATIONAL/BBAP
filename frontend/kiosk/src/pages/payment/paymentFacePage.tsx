@@ -105,7 +105,7 @@ const PaymentFacePage: React.FC = () => {
 		<>
 			<Header text="결제하기" className="" />
 			<div id="body" className="my-6">
-				<div className="text-center text-lg my-8">
+				<div className="text-center text-2xl my-12">
 					가이드라인 안쪽으로 <br />
 					얼굴을 위치시켜주세요
 				</div>

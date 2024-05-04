@@ -11,7 +11,7 @@ const PaymentPage: React.FC = () => {
 		<>
 			<Header text="결제하기" className="" />
 			<div id="body">
-				<div className="flex justify-center space-x-20 text-xl font-bold mt-16 mb-28">
+				<div className="flex justify-center space-x-20 text-3xl font-bold mt-16 mb-28">
 					<span>총 결제금액</span>
 					<span className="text-active-color">
 						{totalPrice.toLocaleString()} 원

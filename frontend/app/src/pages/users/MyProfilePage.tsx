@@ -6,6 +6,7 @@ import guide from "/assets/images/guideLine.png";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/userStore";
+import Pobap from "/assets/images/hello.png";
 
 interface ModalProps {
   isOpen: boolean;
@@ -146,9 +147,16 @@ function MyProfilePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow p-2 pt-6">
+      <div className="flex flex-row justify-center items-end mt-6 ">
+        <img src={Pobap} className="w-16 mr-3"/>
+        <h1 className="text-2xl font-bold text-center mr-4">안녕하세요, {userInfo.empName} 님 </h1>
+         <button onClick={handleLogout} className="bg-blue-50 mb-1 text-sm p-1 px-3 rounded-md text-slate-400">
+              로그아웃
+         </button>
+      </div>
+      <div className="flex-grow p-2 pt-8">
         <div
-          className="bg-white shadow-lg rounded-lg p-5"
+          className=" shadow-lg rounded-lg p-5"
           style={{
             boxShadow:
               "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
@@ -156,13 +164,12 @@ function MyProfilePage() {
         >
           <div className="flex flex-col items-center">
             <img
-              className="w-52 h-64 mb-2 rounded-md"
+              className="w-64 h-84 mb-2 mt-4"
               src={profile.imageUrl}
               alt="Profile"
             />
-            <h1 className="text-4xl font-bold mt-2">{userInfo.empName} 님</h1>
             <button
-              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-4 px-10 rounded-md text-2xl"
+              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-24 rounded-md text-2xl"
               onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? "✅" : ""}
@@ -192,24 +199,19 @@ function MyProfilePage() {
                 </>
               )}
             </Modal>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 w-64 text-center ">
-              <p className="text-gray-600 font-hyemin-bold text-xl">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 py-3 px-28 text-center ">
+              <p className="text-gray-600 font-hyemin-bold text-lg">
                 근무지 : {userInfo.workplace?.workplaceName}
               </p>
             </div>
-            <div className="bg-blue-100 rounded-lg p-4 mt-2 w-64 text-center">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-4 py-3 px-24 text-center">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 사번 : {userInfo.empNo}
               </p>
             </div>
-            <button
-              className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-              onClick={handleLogout}
-            >
-              로그아웃
-            </button>
           </div>
         </div>
+           
       </div>
 
       <BottomTabBar />

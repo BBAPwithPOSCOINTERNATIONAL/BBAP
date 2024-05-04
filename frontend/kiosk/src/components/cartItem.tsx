@@ -19,14 +19,14 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 		return acc;
 	}, []);
 	return (
-		<div className="flex justify-between items-center">
-			<div className="max-w-[220px]">
+		<div className="flex justify-between items-center  ">
+			<div className="max-w-[250px]">
 				<p className="text-xs font-bold my-0 break-keep">{props.name}</p>
 				<p className="text-2xs break-keep">{options.join(", ")}</p>
 			</div>
-			<div className="flex items-center justify-center text-xs font-bold space-x-2">
+			<div className="flex text-xs font-bold ">
 				{/* 수량 변경 */}
-				<div className="flex space-x-1">
+				<div className="flex w-[90px] " style={{paddingLeft: '16px'}}>
 					<div
 						className="flex items-center"
 						onClick={() => {
@@ -37,12 +37,14 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 					>
 						<RemoveCircleOutlineIcon
 							sx={{
-								fontSize: 35,
+								fontSize: 25,
 								color: `${props.cnt === 1 ? "lightGray" : "black"}`,
 							}}
 						/>
 					</div>
-					<p>{props.cnt}</p>
+					<div style={{width:'30px', alignSelf: 'center'}}>
+						<p style={{width:'30px', textAlign: 'center'}}> {props.cnt}</p>
+					</div>
 					<div
 						className="flex items-center"
 						onClick={() => {
@@ -53,14 +55,14 @@ const CartItemDiv: React.FC<CartItemProps> = ({ props, index }) => {
 					>
 						<AddCircleOutlineIcon
 							sx={{
-								fontSize: 35,
+								fontSize: 25,
 								color: `${props.cnt === 30 ? "lightGray" : "black"}`,
 							}}
 						/>
 					</div>
 				</div>
 
-				<div className={`${props.cnt < 15 ? "text-xs" : "text-2xs"}`}>
+				<div className={`${props.cnt < 15 ? "text-xs" : "text-xs"}`} style={{width: '120px', textAlign: 'end', marginRight : '10px'}}>
 					{(props.price * props.cnt).toLocaleString()} 원
 				</div>
 				{/* 삭제 버튼 */}
