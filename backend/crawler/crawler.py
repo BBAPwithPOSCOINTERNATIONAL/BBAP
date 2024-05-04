@@ -5,6 +5,10 @@ from selenium.webdriver.support.ui import Select
 from db_connector import DBConnector
 from typing import Dict, List
 import time
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Crawler:
@@ -62,19 +66,22 @@ class Crawler:
                 close_button = menu_detail.find_element(By.CLASS_NAME, 'close-modal')
                 close_button.click()
                 time.sleep(3)
-
-                self.db.insert_restaurant_menu(uid, menu_date, section, food_name, img_src, food_list,
-                                               price, eat_count)
+                logger.info(f'{area} 지역 {uid}번 식당 : {food_name}({price}) DB 추가.')
+                # self.db.insert_restaurant_menu(uid, menu_date, section, food_name, img_src, food_list,
+                #                                price, eat_count)
 
     def run(self, dates):
         # 근무지 별 순회
         for area in self.area_map.keys():
+            logger.info(f'{self.area_map[area]} 지역 크롤링 시작')
             sikdang_dict = self.__get_sikdang_dict(area)
             # 식당별 조회
             for uid in sikdang_dict.keys():
+
                 section_list = self.__get_section_list(area, uid)
                 # 식구분 조회
                 for section in section_list:
+                    logger.info(f'{section}의 메뉴 조회')
                     section_id = self.section_to_id.get(section)
                     for date_data in dates:
                         self.__crawl_restaurant_data(area, uid, section_id, date_data)

@@ -1,7 +1,10 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class DBConnector:
     def __init__(self):
@@ -14,7 +17,8 @@ class DBConnector:
         database = os.getenv('DB_DATABASE')
 
         self.cnx = mysql.connector.connect(user=user, password=password, host=host, port=port, database=database)
-        self.cursor = self.cnx.cursor()
+        self.cursor = self.cnx.cursor(dictionary=
+                                      True)
 
     def insert_restaurant_menu(
             self, restaurant_id, menu_date, section_id, food_name, img_src, food_detail, price, eat_count
@@ -35,8 +39,8 @@ class DBConnector:
             VALUES ('{restaurant_id}', '{menu_date}', '{section_id}', '{food_name}', 
             '{img_src}', '{food_detail}', '{price}', '{eat_count}');
             """
-
             self.cursor.execute(insert_query)
+            logger.info(f'{food_name} : 정상적으로 Insert 됨')
         else:
             existing_img_src = result['menu_image']
             if existing_img_src != img_src:
@@ -48,6 +52,9 @@ class DBConnector:
                 """
 
                 self.cursor.execute(update_query)
+                logger.info(f'{food_name} : 기존재 데이터 - 이미지 소스 변경됨')
+            else:
+                logger.info(f'{food_name} : 기존재 데이터 - 처리하지 않음')
 
         self.cnx.commit()
 
