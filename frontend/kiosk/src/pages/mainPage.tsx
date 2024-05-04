@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
 import CurrentTime from "../components/currentTime";
-// import cafeMenuData from "../mock/cafe-menu.json";
 import { Menu } from "../types";
 import MenuItem from "../components/menuItem";
 import Button from "../components/button";
@@ -26,45 +24,31 @@ const MainPage: React.FC = () => {
   };
   const [activeTapItem, setActiveTapItem] = useState<string>(tapItems[0]);
   const [activeMenu, setActiveMenu] = useState<Menu[]>();
-  const [initialMenuData, setInitialMenuData] = useState<MenuData>();
+  const [menuData, setMenuData] = useState<MenuData>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const { isMenuModalOpen } = useModalStore();
   const { cartList, totalPrice, totalCount, resetCart } = useCartStore();
   const navigate = useNavigate();
 
-  // const {
-  //   data: response,
-  //   isLoading,
-  //   isError,
-  // } = useQuery({ queryKey: ["menuData"], queryFn: fetchMenuData });
-
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const data = await Promise.all(
-          Object.keys(tapMapping).map((key) => fetchMenuData(tapMapping[key]))
-        );
-        const menuData: MenuData = {
-          menuListCoffee: data[0].data.menuListCoffee,
-          menuListBeverage: data[1].data.menuListBeverage,
-          menuListDessert: data[2].data.menuListDessert,
-          menuListPopular: data[3].data.menuListPopular,
-        };
-        setInitialMenuData(menuData); // menuData 변수 변경
+        const data = await fetchMenuData();
+        setMenuData(data.data);
+        setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching menu data:", error);
-        // alert(
-        //   "메뉴 데이터를 가져오는 데 실패했습니다. 잠시 후 다시 시도해 주세요."
-        // );
+        setError("Failed to load menu data.");
+        setIsLoading(false);
       }
     };
-    fetchData();
+    loadData();
   }, []);
 
   useEffect(() => {
-    setActiveMenu(
-      initialMenuData ? initialMenuData[tapMapping[activeTapItem]] : undefined
-    ); // menuData 변수 변경
-  }, [initialMenuData, activeTapItem]);
+    setActiveMenu(menuData ? menuData[tapMapping[activeTapItem]] : undefined);
+  }, [menuData, activeTapItem]);
+
   const handleTapItemClick = (tap: string) => {
     setActiveTapItem(tap);
   };
@@ -73,6 +57,14 @@ const MainPage: React.FC = () => {
     navigate("/");
     resetCart();
   };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <>
@@ -93,10 +85,10 @@ const MainPage: React.FC = () => {
           >
             {tapItems.map((item, index) => (
               <div
-                className={`font-hyemin-bold transition-all rounded-t-2xl ${
+                className={`transition-all rounded-t-3xl ${
                   activeTapItem === item
                     ? "w-[160px] bg-primary-color"
-                    : "w-[140px] bg-bg-color"
+                    : "w-[130px] bg-bg-color"
                 } py-2`}
                 key={index}
                 onClick={() => handleTapItemClick(item)}
@@ -121,7 +113,6 @@ const MainPage: React.FC = () => {
               <div className="flex-grow px-2 py-2">
                 <div className="text-base font-bold bg-white">주문 목록</div>
                 <div className="flex flex-col overflow-y-auto h-3/4 space-y-2">
-                  {/* store에 저장된 주문내역 렌더링 */}
                   {cartList.map((item, index) => (
                     <CartItemDiv props={item} key={index} index={index} />
                   ))}
@@ -140,7 +131,7 @@ const MainPage: React.FC = () => {
                     </span>
                   </p>
                 </div>
-                <div className="px-2 py-5 flex flex-col space-y-3">
+                <div className="px-10 py-5 flex flex-col space-y-3">
                   <Button
                     onClick={() => {
                       if (cartList.length > 0) {

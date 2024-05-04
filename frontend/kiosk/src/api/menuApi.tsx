@@ -13,12 +13,11 @@ interface ApiResponse {
 }
 
 export async function fetchMenuData(
-  menuCategory: string
 ): Promise<ApiResponse> {
   try {
     const CAFE_ID = "66276af2412ced9137ecabe9"; // 카페ID 고정
     const { data } = await apiClient.get<ApiResponse>(
-      `/api/v1/cafes/kiosk/menus/${CAFE_ID}/${menuCategory}`
+      `/api/v1/cafes/kiosk/menus/${CAFE_ID}`
     );
     return data;
   } catch (error) {
