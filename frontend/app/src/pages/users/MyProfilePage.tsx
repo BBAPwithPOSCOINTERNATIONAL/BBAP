@@ -3,7 +3,9 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import IdPhoto from "/assets/images/image1.png";
 import guide from "/assets/images/guideLine.png";
-// import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
+import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../store/userStore";
 
 interface ModalProps {
   isOpen: boolean;
@@ -35,9 +37,6 @@ function Modal({ isOpen, children }: ModalProps) {
 
 function MyProfilePage() {
   const profile = {
-    name: "김싸피",
-    employeeId: "1234567",
-    location: "서울",
     imageUrl: IdPhoto,
   };
 
@@ -45,19 +44,29 @@ function MyProfilePage() {
   const [captured, setCaptured] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const userInfo = useUserStore((state) => state);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await FaceRegistrationStatus();
-  //       // console.log("API Response:", response);
-  //     } catch (error) {
-  //       console.error("API Error:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await FaceRegistrationStatus();
+        if (response.success) {
+          setCaptured(true);
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  //   fetchData();
-  // }, []);
+  const handleLogout = async () => {
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
+    useUserStore.getState().reset();
+    navigate("/");
+  };
 
   const handleCameraAccess = async () => {
     try {
@@ -88,6 +97,7 @@ function MyProfilePage() {
 
     if (!videoElement || !videoElement.srcObject) {
       console.error("Video element or source not found");
+      alert("비디오 요소 또는 소스를 찾을 수 없습니다.");
       return;
     }
 
@@ -98,20 +108,30 @@ function MyProfilePage() {
 
     if (ctx) {
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      const image = canvas.toDataURL("image/png");
-      console.log("Captured Image URL:", image);
-
-      // 종료 처리 추가
-      const stream = videoElement.srcObject as MediaStream;
-      const tracks = stream.getTracks();
-      tracks.forEach((track) => track.stop()); // 스트림의 모든 트랙을 종료
-      videoElement.srcObject = null; // 비디오 요소에서 스트림 제거
-
-      setShowVideo(false); // 비디오 표시 상태 업데이트
-      setCaptured(true);
-      setModalOpen(false);
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          const file = new File([blob], "faceImage.png", { type: "image/png" });
+          try {
+            const uploadResponse = await uploadFace(file);
+            console.log("Upload status:", uploadResponse);
+            if (uploadResponse.success) {
+              setCaptured(true); // 이미지 업로드 성공 시 상태 업데이트
+            } else {
+              console.error("Upload failed:", uploadResponse.message);
+              alert(uploadResponse.message); // 실패 메시지를 alert로 표시
+            }
+          } catch (error) {
+            console.error("Upload failed:", error);
+            alert("얼굴 인식이 실패했습니다. 다시 찍어주세요.");
+          }
+        } else {
+          console.error("Failed to convert canvas to blob");
+          alert("이미지 처리에 실패했습니다. 다시 시도해 주세요.");
+        }
+      }, "image/png");
     } else {
       console.error("Failed to get drawing context from canvas");
+      alert("캔버스 처리에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -126,19 +146,26 @@ function MyProfilePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow p-5">
-        <div className="bg-white shadow-lg rounded-lg p-5">
+      <div className="flex-grow p-2 pt-6">
+        <div
+          className="bg-white shadow-lg rounded-lg p-5"
+          style={{
+            boxShadow:
+              "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
           <div className="flex flex-col items-center">
             <img
-              className="w-24 h-24 mb-4"
+              className="w-52 h-64 mb-2 rounded-md"
               src={profile.imageUrl}
               alt="Profile"
             />
+            <h1 className="text-4xl font-bold mt-2">{userInfo.empName} 님</h1>
             <button
-              className="mt-4 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-4 px-10 rounded-md text-2xl"
               onClick={handleCameraAccess}
             >
-              얼굴 인식 등록 {captured ? " ✅" : ""}
+              얼굴 인식 등록 {captured ? "✅" : ""}
             </button>
             <Modal isOpen={modalOpen}>
               {showVideo && (
@@ -149,15 +176,14 @@ function MyProfilePage() {
                     autoPlay
                   ></video>
                   <div className="flex flex-row justify-center items-center mt-4">
-                    {" "}
                     <button
-                      className="z-30 mr-5 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-4 rounded"
+                      className="z-30 mr-5 bg-primary-color text-white font-bold py-2 px-4 rounded-md"
                       onClick={handleCaptureImage}
                     >
                       사진찍기
                     </button>
                     <button
-                      className="z-30 ml-5 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      className="z-30 ml-5 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
                       onClick={handleCloseModal}
                     >
                       닫기
@@ -166,20 +192,26 @@ function MyProfilePage() {
                 </>
               )}
             </Modal>
-            <h1 className="text-2xl font-bold mt-2">{profile.name} 님</h1>
-            <div className="bg-blue-200 rounded-lg p-2 mt-2 w-64 text-center">
-              <p className="text-gray-600 font-hyemin-bold">
-                근무지 : {profile.location}
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 w-64 text-center ">
+              <p className="text-gray-600 font-hyemin-bold text-xl">
+                근무지 : {userInfo.workplace?.workplaceName}
               </p>
             </div>
-            <div className="bg-blue-200 rounded-lg p-2 mt-2 w-64 text-center">
-              <p className="text-gray-600 font-hyemin-bold">
-                사번 : {profile.employeeId}
+            <div className="bg-blue-100 rounded-lg p-4 mt-2 w-64 text-center">
+              <p className="text-gray-600 font-hyemin-bold text-lg">
+                사번 : {userInfo.empNo}
               </p>
             </div>
+            <button
+              className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
+              onClick={handleLogout}
+            >
+              로그아웃
+            </button>
           </div>
         </div>
       </div>
+
       <BottomTabBar />
     </div>
   );
