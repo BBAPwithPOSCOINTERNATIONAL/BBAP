@@ -26,7 +26,7 @@ function MyReceiptPage() {
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img
         src={question}
-        className="fixed bottom-28 right-0 mb-4 mr-2 cursor-pointer"
+        className="fixed bottom-[65px] right-0 mb-4 mr-2 cursor-pointer"
         onClick={handleQuestionClick}
       />
       {/* 모달을 렌더링합니다. isOpen 상태에 따라 모달이 열리거나 닫힙니다. */}

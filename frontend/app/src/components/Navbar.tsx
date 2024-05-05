@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiBell, FiHome, FiArrowLeft } from "react-icons/fi";
+import { FiBell, FiArrowLeft } from "react-icons/fi";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import bbapimg from '/assets/images/bbap.png'

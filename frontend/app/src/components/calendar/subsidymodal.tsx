@@ -34,19 +34,19 @@ const Modal = ({ onClose }: { onClose: () => void }) => {
       className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50"
       onClick={onClose}
     >
-      <div className="p-7 rounded-lg" style={{ backgroundColor: "#E2F1FF" }}>
-        <h2 className="text-2xl font-hyemin-bold mb-4 text-center">
+      <div className="p-7 rounded-lg bg-slate-100" >
+        <h2 className="text-xl font-hyemin-bold mb-4 text-center">
           나의 지원금
         </h2>
-        <table className="w-full font-hyemin-bold text-center">
+        <table className="w-full font-hyemin-bold text-center text-sm">
           <thead>
-            <tr>
-              <th className="border border-gray-500 px-4 py-2">식사구분</th>
-              <th className="border border-gray-500 px-2 py-2">시간</th>
-              <th className="border border-gray-500 px-4 py-2">지원금</th>
+            <tr className="bg-blue-200">
+              <th className="border border-gray-500 px-3 py-2">구분</th>
+              <th className="border border-gray-500 px-0 py-2">적용시간</th>
+              <th className="border border-gray-500 px-1 py-2">지원금액</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{ backgroundColor: "#E2F1FF" }}>
             {subsidyData.length > 0 ? (
               subsidyData.map((subsidy, index) => (
                 <tr key={index}>
