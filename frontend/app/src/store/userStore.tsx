@@ -20,6 +20,7 @@ type UserState = {
   empId?: number;
   empNo?: string;
   empName?: string;
+  empImage?: string;
   department?: Department;
   position?: Position;
   workplace?: Workplace;
@@ -33,6 +34,7 @@ export const useUserStore = create(
       empId: 0,
       empNo: "",
       empName: "",
+      empImage: "",
       department: {
         departmentId: 0,
         departmentName: "",
@@ -51,6 +53,7 @@ export const useUserStore = create(
           empId: 0,
           empNo: "",
           empName: "",
+          empImage: "",
           department: {
             departmentId: 0,
             departmentName: "",

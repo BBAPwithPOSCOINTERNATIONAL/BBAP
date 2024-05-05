@@ -5,6 +5,7 @@ import styled from "styled-components";
 import poscoimg from "/assets/images/posco.png";
 import EmployeeSearch from "../../components/admin/filter";
 import Approve from "../../components/admin/approval";
+import { useUserStore } from "../../store/userStore";
 
 const today = new Date();
 const year = today.getFullYear().toString().slice(-2);
@@ -51,6 +52,8 @@ const AdminPage = () => {
   const query = new URLSearchParams(location.search);
   const tabParam = query.get("tab");
 
+  const empNo = useUserStore((state) => state.empNo);
+
   const [activeTab, setActiveTab] = useState<"조회" | "결재">(
     tabParam === "결재" ? "결재" : "조회"
   );
@@ -92,7 +95,7 @@ const AdminPage = () => {
         </div>
         <div>
           <div className=" font-hyemin-bold text-[18px] text-white">
-            관리자 사번:{1053713}
+            관리자 사번:{empNo}
           </div>
           <button
             className=" font-hyemin-bold text-[18px] bg-[#EFF7FF] text-black w-36 p-4 rounded-md m-5"
