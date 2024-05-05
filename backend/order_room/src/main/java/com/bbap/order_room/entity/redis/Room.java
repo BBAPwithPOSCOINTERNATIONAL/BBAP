@@ -26,6 +26,7 @@ public class Room {
 	private Integer currentOrderer; //empId 사용 - 사용자는 활성화된 하나의 방만 가질 수 있음
 	private HashMap<Integer, String> orderers; //empId 사용
 	private List<OrderItem> orderItems;
+	private Long orderNumber;
 }
 
 

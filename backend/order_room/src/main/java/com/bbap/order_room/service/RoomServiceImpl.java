@@ -58,7 +58,7 @@ public class RoomServiceImpl implements RoomService{
 	public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId) {
 		String newRoomId = generateRoomId();
 		Room newRoom = new Room(newRoomId, "INITIAL", empId,
-			new HashMap<>(), new ArrayList<>());
+			new HashMap<>(), new ArrayList<>(), null);
 		roomRepository.save(newRoom);
 		EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId);
 		participantRepository.save(newParticipant);

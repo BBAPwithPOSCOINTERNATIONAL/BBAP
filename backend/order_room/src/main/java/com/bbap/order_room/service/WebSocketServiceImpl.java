@@ -6,13 +6,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.xml.sax.EntityResolver;
 
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.ChoiceRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
+import com.bbap.order_room.dto.requestDto.OrderRequestDto;
+import com.bbap.order_room.dto.responseDto.DataResponseDto;
+import com.bbap.order_room.dto.responseDto.OrderResponseDto;
 import com.bbap.order_room.entity.redis.ChoiceOption;
 import com.bbap.order_room.entity.redis.EntireParticipant;
 import com.bbap.order_room.entity.redis.MenuOption;
@@ -23,10 +28,12 @@ import com.bbap.order_room.exception.OrderItemNotFoundException;
 import com.bbap.order_room.exception.RoomEntityNotFoundException;
 import com.bbap.order_room.exception.SessionEntityNotFoundException;
 import com.bbap.order_room.feign.HrServiceFeignClient;
+import com.bbap.order_room.feign.OrderServiceFeignClient;
 import com.bbap.order_room.repository.ParticipantRepository;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +47,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final ParticipantRepository participantRepository;
 	private final SimpMessagingTemplate messagingTemplate;
 	private final HrServiceFeignClient hrServiceFeignClient;
+	private final OrderServiceFeignClient orderServiceFeignClient;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
 		Session session = new Session(sessionId, empId);
@@ -116,9 +124,10 @@ public class WebSocketServiceImpl implements WebSocketService{
 			}
 			// 해당 주문 항목을 담은 사용자의 ID 검사
 			Integer ordererId = itemToRemove.get().getOrderer();
-			// 사용자가 다른 주문 항목을 가지고 있지 않을 경우만 orderers에서 제거
+			// 사용자가 다른 주문 항목을 가지고 있지 않을 경우만 `orderers` 및 `participantRepository`에서 제거
 			if (isLastOrderFromUser(room, ordererId)) {
 				room.getOrderers().remove(ordererId);
+				participantRepository.deleteById(ordererId); // `EntireParticipant`에서 제거
 			}
 			roomRepository.save(room);
 			messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
@@ -161,6 +170,38 @@ public class WebSocketServiceImpl implements WebSocketService{
 		Integer result = generateWheelResult(room.getOrderers());
 		room.setCurrentOrderer(result); //주문자 변경
 		roomRepository.save(room);
+		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+	}
+
+	@Override
+	public void order(String sessionId, OrderRequestDto orderRequestDto) {
+		Integer empId = getEmpId(sessionId);
+		//order 서비스로 주문 보내기
+		ResponseEntity<DataResponseDto<OrderResponseDto>> orderResponse;
+		try {
+			orderResponse = orderServiceFeignClient.order(empId, orderRequestDto);
+		} catch (FeignException e) {
+			log.error("Order request failed: " + e.getMessage());
+			// 필요한 로직을 추가할 수 있습니다.
+			throw new RuntimeException("Order service request failed", e);
+		}
+		Long orderNumber = orderResponse.getBody().getData().getOrderNum();
+		//알림 보내기 -> kafka
+		//방 상태 주문 종료로 바꾸기
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
+		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+		room.setRoomStatus("ORDERED");
+		room.setOrderNumber(orderNumber);
+		roomRepository.save(room);
+
+		// Room 객체의 orderers HashMap을 사용하여 EntireParticipant에서 제거
+		for (Integer ordererId : room.getOrderers().keySet()) {
+			participantRepository.deleteById(ordererId);
+		}
+
+		// 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
 	}
 

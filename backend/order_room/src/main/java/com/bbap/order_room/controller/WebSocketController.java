@@ -11,6 +11,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
+import com.bbap.order_room.dto.requestDto.OrderRequestDto;
 import com.bbap.order_room.service.WebSocketService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,11 @@ public class WebSocketController {
 	public void runWheel(SimpMessageHeaderAccessor headerAccessor){
 		String sessionId = headerAccessor.getSessionId();
 		webSocketService.runWheel(sessionId);
+	}
+
+	@MessageMapping("/order")
+	public void order(@Payload OrderRequestDto orderRequestDto, SimpMessageHeaderAccessor headerAccessor){
+		String sessionId = headerAccessor.getSessionId();
+		webSocketService.order(sessionId, orderRequestDto);
 	}
 }
