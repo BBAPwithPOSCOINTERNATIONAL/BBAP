@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { FiBell, FiHome, FiArrowLeft } from "react-icons/fi";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
+import bbapimg from '/assets/images/bbap.png'
+import bbaphomeimg from '/assets/images/bbaphome.png'
+
 const NavBar: React.FC = () => {
 	const location = useLocation();
 
@@ -35,10 +38,11 @@ const NavBar: React.FC = () => {
           {!isMainPage && (
             <>
               <button onClick={goBack}>
-                <FiArrowLeft className="text-2xl cursor-pointer text-white" />
+                <FiArrowLeft className="text-3xl cursor-pointer text-white" />
               </button>
               <Link to="/main">
-                <FiHome className="text-2xl cursor-pointer text-white" />
+				{/* <a href="https://www.flaticon.com/kr/free-icons/" title="밥솥 아이콘">밥솥 아이콘 제작자: Freepik - Flaticon</a> */}
+				<img src={bbaphomeimg}  className="text-2xl cursor-pointer h-8"/>
               </Link>
             </>
           )}
@@ -47,7 +51,7 @@ const NavBar: React.FC = () => {
           className="text-3xl font-hyemin-bold text-white"
           style={{ transform: `translateX(${isMainPage ? "12px" : "-20px"})` }} // 이 부분을 수정하여 MainPage 여부에 따라 위치 조정
         >
-          BBAP
+		<img src={bbapimg} className="h-8"/>
         </div>
 
 				<div className="text-right">
