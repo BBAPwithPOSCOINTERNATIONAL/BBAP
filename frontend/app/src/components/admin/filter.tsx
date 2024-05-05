@@ -1,172 +1,165 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./approval.css";
 import Pagination from "./pagination";
+import { fetchEmployees, Employee } from "../../api/hradminAPI";
 
-interface Employee {
-  employeeId: number;
-  name: string;
-  workplace: string;
-  position: string;
-  department: string;
-}
-
-const employees: Employee[] = [
-  {
-    employeeId: 101,
-    name: "홍길동",
-    workplace: "서울역 그랜드센트럴",
-    position: "부장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 102,
-    name: "김철수",
-    workplace: "서울역 그랜드센트럴",
-    position: "차장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 103,
-    name: "이영희",
-    workplace: "송도본사",
-    position: "과장",
-    department: "실장",
-  },
-  {
-    employeeId: 104,
-    name: "박영진",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "사장",
-  },
-  {
-    employeeId: 105,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 106,
-    name: "홍길동",
-    workplace: "서울역 그랜드센트럴",
-    position: "부장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 107,
-    name: "김철수",
-    workplace: "서울역 그랜드센트럴",
-    position: "차장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 108,
-    name: "이영희",
-    workplace: "송도본사",
-    position: "과장",
-    department: "실장",
-  },
-  {
-    employeeId: 109,
-    name: "박영진",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "사장",
-  },
-  {
-    employeeId: 110,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 111,
-    name: "홍길동",
-    workplace: "서울역 그랜드센트럴",
-    position: "부장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 112,
-    name: "김철수",
-    workplace: "서울역 그랜드센트럴",
-    position: "차장",
-    department: "섹션리더",
-  },
-  {
-    employeeId: 113,
-    name: "이영희",
-    workplace: "송도본사",
-    position: "과장",
-    department: "실장",
-  },
-  {
-    employeeId: 114,
-    name: "박영진",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "사장",
-  },
-  {
-    employeeId: 115,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 116,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 117,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 118,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 119,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 120,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 121,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-  {
-    employeeId: 122,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "본부장",
-  },
-];
+// const employees: Employee[] = [
+//   {
+//     employeeId: 101,
+//     name: "홍길동",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "부장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 102,
+//     name: "김철수",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "차장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 103,
+//     name: "이영희",
+//     workplace: "송도본사",
+//     position: "과장",
+//     department: "실장",
+//   },
+//   {
+//     employeeId: 104,
+//     name: "박영진",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "사장",
+//   },
+//   {
+//     employeeId: 105,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 106,
+//     name: "홍길동",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "부장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 107,
+//     name: "김철수",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "차장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 108,
+//     name: "이영희",
+//     workplace: "송도본사",
+//     position: "과장",
+//     department: "실장",
+//   },
+//   {
+//     employeeId: 109,
+//     name: "박영진",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "사장",
+//   },
+//   {
+//     employeeId: 110,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 111,
+//     name: "홍길동",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "부장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 112,
+//     name: "김철수",
+//     workplace: "서울역 그랜드센트럴",
+//     position: "차장",
+//     department: "섹션리더",
+//   },
+//   {
+//     employeeId: 113,
+//     name: "이영희",
+//     workplace: "송도본사",
+//     position: "과장",
+//     department: "실장",
+//   },
+//   {
+//     employeeId: 114,
+//     name: "박영진",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "사장",
+//   },
+//   {
+//     employeeId: 115,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 116,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 117,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 118,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 119,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 120,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 121,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+//   {
+//     employeeId: 122,
+//     name: "조혜원",
+//     workplace: "포스코센터",
+//     position: "과장",
+//     department: "본부장",
+//   },
+// ];
 
 function EmployeeSearch(): JSX.Element {
   const navigate = useNavigate();
@@ -175,7 +168,33 @@ function EmployeeSearch(): JSX.Element {
   const [rank, setRank] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const filters = {
+          name: searchTerm || undefined,
+          workplaceId: location ? parseInt(location) : undefined,
+          positionId: rank ? parseInt(rank) : undefined,
+          departmentId: department ? parseInt(department) : undefined,
+        };
+
+        const activeFilters = Object.fromEntries(
+          Object.entries(filters).filter(([_, v]) => v !== undefined)
+        );
+
+        const response = await fetchEmployees(activeFilters);
+        setEmployees(response.data.employeeList);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+
+    fetchData();
+  }, [searchTerm, location, rank, department, currentPage]);
+
+  console.log(employees);
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value);
     setCurrentPage(1);
@@ -202,25 +221,23 @@ function EmployeeSearch(): JSX.Element {
     setCurrentPage(1);
   };
 
-  const goToEmployeeDetails = (employeeId: number) => {
-    navigate(`/employee/${employeeId}`);
+  const goToEmployeeDetails = (
+    employeeId: number,
+    employeeName: string,
+    empNo: string
+  ) => {
+    navigate(`/employee/${employeeId}`, {
+      state: { empName: employeeName, empNo: empNo },
+    });
   };
 
   // 페이지당 열의 개수
   const rowsPerPage = 10;
-  const filteredEmployees = employees.filter((employee) => {
-    return (
-      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      employee.workplace.includes(location) &&
-      employee.position.includes(rank) &&
-      employee.department.includes(department)
-    );
-  });
-  const totalFilteredEmployees = filteredEmployees.length;
+  const totalFilteredEmployees = employees.length;
   const totalPages = Math.ceil(totalFilteredEmployees / rowsPerPage);
   const indexOfLastEmployee = currentPage * rowsPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
-  const currentEmployees = filteredEmployees.slice(
+  const currentEmployees = employees.slice(
     indexOfFirstEmployee,
     indexOfLastEmployee
   );
@@ -299,7 +316,7 @@ function EmployeeSearch(): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.length === 0 ? (
+          {currentEmployees.length === 0 ? (
             <tr>
               <td
                 colSpan={5}
@@ -311,19 +328,27 @@ function EmployeeSearch(): JSX.Element {
           ) : (
             currentEmployees.map((employee) => (
               <tr
-                key={employee.employeeId}
-                onClick={() => goToEmployeeDetails(employee.employeeId)}
+                key={employee.empId}
+                onClick={() =>
+                  goToEmployeeDetails(
+                    employee.empId,
+                    employee.empName,
+                    employee.empNo
+                  )
+                }
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
               >
+                <td className="py-2 px-4 text-[17px] ">{employee.empNo}</td>
+                <td className="py-2 px-4 text-[17px] ">{employee.empName}</td>
                 <td className="py-2 px-4 text-[17px] ">
-                  {employee.employeeId}
+                  {employee.workplaceName}
                 </td>
-                <td className="py-2 px-4 text-[17px] ">{employee.name}</td>
-                <td className="py-2 px-4 text-[17px] ">{employee.workplace}</td>
                 <td className="py-2 px-4 text-[17px] ">
-                  {employee.department}
+                  {employee.departmentName}
                 </td>
-                <td className="py-2 px-4 text-[17px] ">{employee.position}</td>
+                <td className="py-2 px-4 text-[17px] ">
+                  {employee.positionName}
+                </td>
               </tr>
             ))
           )}

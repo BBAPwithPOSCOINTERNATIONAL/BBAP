@@ -1,372 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./approval.css";
 import Pagination from "./pagination";
-
-interface Employee {
-  employeeId: number;
-  name: string;
-  workplace: string;
-  position: string;
-  department: string;
-  transactions: Transaction[];
-}
-
-interface Transaction {
-  date: string; // "YYYY-MM-DD" format
-  totalPayment: number;
-  subsidy: number;
-  personalPayment: number;
-}
-
-const employees: Employee[] = [
-  {
-    employeeId: 1,
-    name: "홍길동",
-    workplace: "서울역 그랜드센트럴",
-    position: "부장",
-    department: "발전사업",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 2,
-    name: "김철수",
-    workplace: "서울역 그랜드센트럴",
-    position: "차장",
-    department: "자원개발",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-
-  {
-    employeeId: 3,
-    name: "이영희",
-    workplace: "송도본사",
-    position: "과장",
-    department: "에너지정책",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 4,
-    name: "박영진",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "경영지원",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 5,
-    name: "조혜원",
-    workplace: "포스코센터",
-    position: "과장",
-    department: "기획/재무",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 6,
-    name: "신사원",
-    workplace: "송도본사",
-    position: "사원",
-    department: "영업",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 7,
-    name: "이영재",
-    workplace: "포스코센터",
-    position: "대리",
-    department: "자원개발",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 8,
-    name: "김영희",
-    workplace: "서울역 그랜드센트럴",
-    position: "과장",
-    department: "LNG사업",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 9,
-    name: "박철수",
-    workplace: "청라 인천발전소",
-    position: "차장",
-    department: "발전사업",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 10,
-    name: "김영수",
-    workplace: "광양 LNG터미널",
-    position: "리더",
-    department: "사업개발",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 11,
-    name: "이미희",
-    workplace: "송도본사",
-    position: "부장",
-    department: "터미널사업",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 12,
-    name: "최종철",
-    workplace: "포스코센터",
-    position: "리더",
-    department: "기획/재무",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 13,
-    name: "정지훈",
-    workplace: "서울역 그랜드센트럴",
-    position: "차장",
-    department: "에너지정책",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 14,
-    name: "김유진",
-    workplace: "청라 인천발전소",
-    position: "사원",
-    department: "경영지원",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-  {
-    employeeId: 15,
-    name: "박예진",
-    workplace: "광양 LNG터미널",
-    position: "대리",
-    department: "경영지원",
-    transactions: [
-      {
-        date: "2024-04-07",
-        totalPayment: 200000,
-        subsidy: 150000,
-        personalPayment: 50000,
-      },
-      {
-        date: "2024-04-15",
-        totalPayment: 300000,
-        subsidy: 225000,
-        personalPayment: 75000,
-      },
-    ],
-  },
-];
+import { fetchEmployees, Employee } from "../../api/approvalAPI";
 
 function Approve(): JSX.Element {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [rank, setRank] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
+  const [employees, setEmployees] = useState<Employee[]>([]);
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const employeesPerPage = 10;
-  const filteredEmployees = employees.filter((employee) => {
-    return (
-      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      employee.workplace.includes(location) &&
-      employee.position.includes(rank) &&
-      employee.department.includes(department)
-    );
-  });
-  const totalFilteredPages = Math.ceil(
-    filteredEmployees.length / employeesPerPage
-  );
 
-  // 현재 페이지의 직원들을 나타내기 위한 인덱스 범위를 계산합니다.
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const filters = {
+          name: searchTerm || undefined,
+          workplaceId: location ? parseInt(location) : undefined,
+          positionId: rank ? parseInt(rank) : undefined,
+          departmentId: department ? parseInt(department) : undefined,
+        };
+
+        const activeFilters = Object.fromEntries(
+          Object.entries(filters).filter(([_, v]) => v !== undefined)
+        );
+
+        const response = await fetchEmployees(activeFilters);
+        setEmployees(response.data.employeeList);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+
+    fetchData();
+  }, [searchTerm, location, rank, department, currentPage]);
+
+  const employeesPerPage = 10;
+  const totalFilteredEmployees = employees.length;
+  const totalPages = Math.ceil(totalFilteredEmployees / employeesPerPage);
   const indexOfLastEmployee = currentPage * employeesPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
-  // const currentEmployees = filteredEmployees.slice(
-  //   indexOfFirstEmployee,
-  //   indexOfLastEmployee
-  // );
+  const currentEmployees = employees.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -424,7 +105,7 @@ function Approve(): JSX.Element {
     handleCheckboxChange(employeeId);
   };
   const handleAllCheckboxChange = () => {
-    const allEmployeeIds = employees.map((employee) => employee.employeeId);
+    const allEmployeeIds = employees.map((employee) => employee.empId);
     if (selectedEmployees.length === allEmployeeIds.length) {
       setSelectedEmployees([]);
     } else {
@@ -543,36 +224,48 @@ function Approve(): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees
+          {currentEmployees
             .slice(indexOfFirstEmployee, indexOfLastEmployee)
             .map((employee) => (
               <tr
-                key={employee.employeeId}
+                key={employee.empId}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
-                onClick={() => handleRowClick(employee.employeeId)}
+                onClick={() => handleRowClick(employee.empId)}
               >
                 <td className="py-2 px-4 text-[17px]">
                   <input
                     type="checkbox"
                     className="checkbox"
-                    checked={selectedEmployees.includes(employee.employeeId)}
-                    onChange={() => handleCheckboxChange(employee.employeeId)}
+                    checked={selectedEmployees.includes(employee.empId)}
+                    onChange={() => handleCheckboxChange(employee.empId)}
                   />
                 </td>
-                <td className="py-2 px-4 text-[17px]">{employee.employeeId}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.name}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.workplace}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.department}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
-                <td className="py-2 px-4 text-[17px]">{employee.position}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.empId}</td>
+                <td className="py-2 px-4 text-[17px]">{employee.empName}</td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.workplaceName}
+                </td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.departmentName}
+                </td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.positionName}
+                </td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.totalPayment}
+                </td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.totalSubsidy}
+                </td>
+                <td className="py-2 px-4 text-[17px]">
+                  {employee.totalSelfPayment}
+                </td>
               </tr>
             ))}
         </tbody>
       </table>
       <Pagination
-        totalPages={totalFilteredPages}
+        totalPages={totalPages}
         onPageChange={setCurrentPage}
         currentPage={currentPage}
       />

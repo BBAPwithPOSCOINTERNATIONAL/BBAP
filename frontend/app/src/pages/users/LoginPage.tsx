@@ -1,4 +1,4 @@
-import React, { useState, useRef, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import bbapimg from "/assets/images/bbap.png";
@@ -15,9 +15,6 @@ function LoginPage() {
   const [password, setPassword] = useState<string>("");
   const [fcmToken, setFcmToken] = useState("");
   const updateUserData = useUserStore((state) => state.updateUserData);
-
-  const employeeIdRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
 
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmployeeId(() => e.target.value);
@@ -84,7 +81,6 @@ function LoginPage() {
               id="employeeId"
               value={employeeId}
               onChange={onChangeId}
-              ref={employeeIdRef}
               required
               placeholder="사원번호"
               className="font-hyemin-bold shadow appearance-none leading-10 border rounded w-full py-4 px-5 text-gray-700 text-center leading-tight focus:outline-none appearance-none ring-2 focus:ring-blue-300 focus:outline-none 
@@ -97,7 +93,6 @@ function LoginPage() {
               id="password"
               value={password}
               onChange={onChangePassword}
-              ref={passwordRef}
               required
               placeholder="비밀번호"
               className="font-hyemin-bold shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 mb-3 text-center leading-tight ring-2 focus:ring-blue-300 focus:outline-none 

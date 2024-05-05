@@ -119,13 +119,13 @@ export const getUserInfo = async (): Promise<EmpInfo> => {
  * @throws 오류를 반환할 수 있습니다.
  */
 
-interface Employee {
+export interface Employee {
   empId: number;
   empNo: string;
   empName: string;
-  department: Department;
-  position: Position;
-  workplace: Workplace;
+  departmentName: string;
+  positionName: string;
+  workplaceName: string;
 }
 interface EmployeeListResponse {
   message: string;
@@ -142,7 +142,7 @@ export const fetchEmployees = async (filters: {
 }): Promise<EmployeeListResponse> => {
   try {
     const response = await apiClient.get<EmployeeListResponse>(
-      "/hr/employee/",
+      "approvals/search",
       {
         params: filters,
       }
@@ -156,12 +156,54 @@ export const fetchEmployees = async (filters: {
 };
 
 /**
- * 특정 사원 조회 ( 아직 개발 안됨 )
+ * 특정 사원 조회
  * @remarks
- * GET 요청을 '/api/v1/employee/{emp_id}' 엔드포인트에 보냅니다. 성공 시 message와 유저 정보를 반환합니다.
+ * GET 요청을 '/api/v1/approvals/search/{empId}' 엔드포인트에 보냅니다. 성공 시 message와 유저 정보를 반환합니다.
  * @returns {Promise<UserInfo>} message와 유저 정보를 반환합니다.
  * @throws 오류를 반환할 수 있습니다.
  */
+
+export interface PaymentDetail {
+  totalPaymentAmount: number;
+  useSubsidy: number;
+  selfPayment: number;
+  paymentDate: string;
+}
+
+interface PaymentListResponse {
+  message: string;
+  data: {
+    paymentList: PaymentDetail[];
+  };
+}
+
+export const fetchPaymentDetails = async (
+  empId: number,
+  filters: {
+    startDate: Date;
+    endDate: Date;
+  }
+): Promise<PaymentListResponse> => {
+  try {
+    const formattedStartDate = filters.startDate.toISOString().slice(0, 10);
+    const formattedEndDate = filters.endDate.toISOString().slice(0, 10);
+
+    const response = await apiClient.get<PaymentListResponse>(
+      `approvals/search/${empId}`,
+      {
+        params: {
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        },
+      }
+    );
+    console.log("Employee List:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+    throw error;
+  }
+};
 
 /**
  * 근무지별 지원금 조회

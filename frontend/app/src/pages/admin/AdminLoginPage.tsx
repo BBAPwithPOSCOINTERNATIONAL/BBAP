@@ -3,7 +3,8 @@ import logoimg from "/assets/images/logo.png";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { requestPermission } from "../../service/initFirebase.ts";
-import { login } from "../../api/hradminAPI.js";
+import { login, getUserInfo } from "../../api/hradminAPI.js";
+import { useUserStore } from "../../store/userStore";
 
 const Inputtag = styled.div`
   margin: 15px;
@@ -16,6 +17,7 @@ function AdminLoginPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [fcmToken, setFcmToken] = useState("");
   const navigation = useNavigate();
+  const updateUserData = useUserStore((state) => state.updateUserData);
 
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAdminId(() => e.target.value);
@@ -39,16 +41,20 @@ function AdminLoginPage() {
     }
     setLoading(true);
 
-    const token = await requestPermission();
-    setFcmToken(token ?? "");
-
     try {
-      // console.log(adminId, password);
+      const token = await requestPermission();
+      setFcmToken(token ?? "");
+
       const response = await login(adminId, password, fcmToken);
-      console.log("로그인 성공:", response);
-      navigation("/admininquiry");
+      if (response.data.accessToken && response.data.refreshToken) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        const userInfo = await getUserInfo();
+        // console.log("userinfo", userInfo.data);
+        updateUserData(userInfo.data);
+        navigation("/admininquiry");
+      }
     } catch (error) {
-      // console.log(adminId, password);
       console.error("로그인 실패:", error);
     } finally {
       setLoading(false);
@@ -99,7 +105,7 @@ function AdminLoginPage() {
             value={adminId}
             placeholder="사원번호"
             onChange={onChangeId}
-            // required
+            required
             style={{ marginTop: "20px", paddingLeft: "0" }}
           />
         </Inputtag>
@@ -112,7 +118,7 @@ function AdminLoginPage() {
             placeholder="비밀번호"
             value={password}
             onChange={onChangePassword}
-            // required
+            required
             style={{ paddingLeft: "0" }}
           />
         </Inputtag>
