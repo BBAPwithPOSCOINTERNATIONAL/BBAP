@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import bbapimg from "/assets/images/bbap.png";
+// import bbapimg from "/assets/images/bbap.png";
+import logoimg from "/assets/images/logo.png";
 
 const PWAInstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -37,15 +38,14 @@ const PWAInstallPrompt = () => {
   };
 
   return (
-    <div>
+    <div className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full">
       {deferredPrompt && (
         <button onClick={handleInstallClick}>
           {" "}
           <img
-            src={bbapimg}
+            src={logoimg}
             alt="Login Logo"
-            className="mx-auto mb-5 mt-0 w-5/6"
-          />
+             />
         </button>
       )}
     </div>

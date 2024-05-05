@@ -1,8 +1,8 @@
 import React, { useState, useRef, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
-// import bbapimg from "/assets/images/bbap.png";
-import logoimg from "/assets/images/logo.png";
+import bbapimg from "/assets/images/bbap.png";
+// import logoimg from "/assets/images/logo.png";
 import PWAInstallPrompt from "../../components/install";
 import { requestPermission } from "../../service/initFirebase";
 import { login, getUserInfo } from "../../api/hradminAPI";
@@ -65,17 +65,17 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">
       <div className="w-full max-w-xs">
-        <img
+        {/* <img
           src={logoimg}
           alt="Login Logo"
           className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full"
-        />
-        {/* <img
+        /> */}
+          <PWAInstallPrompt />
+        <img
           src={bbapimg}
           alt="Login Logo"
           className="mx-auto mb-5 mt-0 w-5/6"
-        /> */}
-        <PWAInstallPrompt />
+        />
         {/* <h1 className="text-center text-6xl font-hyemin-bold mb-1">BBAP</h1> */}
         <form onSubmit={onSubmit} className="px-4 pt-6 pb-8 mb-4">
           <div className="mb-8 mt-12">
