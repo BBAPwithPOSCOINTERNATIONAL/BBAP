@@ -1,16 +1,17 @@
-package com.bbap.order_room.dto.data;
-
-import java.util.List;
+package com.bbap.order_room.entity.redis;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomParticipationDto {
-	private String roomId;
+@ToString
+public class ChoiceOption {
+	private String choiceName;
+	private int price;
 }

@@ -1,6 +1,4 @@
-package com.bbap.order_room.dto.data;
-
-import java.util.List;
+package com.bbap.order_room.dto.responseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomParticipationDto {
-	private String roomId;
+public class OrderResponseDto {
+	private Long orderNum;
 }

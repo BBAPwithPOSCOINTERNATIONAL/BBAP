@@ -1,4 +1,4 @@
-package com.bbap.order_room.dto.data;
+package com.bbap.order_room.dto.requestDto;
 
 import java.util.List;
 
@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomParticipationDto {
-	private String roomId;
+public class AddOrderItemRequestDto {
+	private String menuId;
+	private int cnt;
+	private List<OptionRequestDto> options;
 }
