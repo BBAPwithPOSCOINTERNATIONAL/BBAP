@@ -171,7 +171,7 @@ export const fetchEmployees = async (filters: {
  * @throws 오류를 반환할 수 있습니다.
  */
 
-interface Subsidy {
+export interface Subsidy {
   mealClassification: number;
   startTime: string;
   endTime: string;
