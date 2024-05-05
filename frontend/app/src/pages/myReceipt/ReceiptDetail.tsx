@@ -53,7 +53,7 @@ function ReceiptDetail() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex flex-col items-center justify-start my-32">
+      <div className="flex-grow flex flex-col items-center justify-start my-20">
         {/* 카드 형식으로 각각의 카드를 렌더링 */}
         {payments.data.paymentList.map((payment, index) => (
           <div
@@ -81,14 +81,13 @@ function ReceiptDetail() {
       </div>
 
       <div
-        className="font-hyemin-bold text-4xl"
+        className="font-hyemin-bold text-2xl"
         style={{
           display: "flex",
           justifyContent: "center", // 가로 가운데 정렬
           alignItems: "center", // 세로 가운데 정렬
-          padding: "1rem",
           width: "100vw",
-          height: "20vh",
+          height: "13vh",
           backgroundColor: "#EFF7FF",
           boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
           position: "fixed",
@@ -97,7 +96,7 @@ function ReceiptDetail() {
       >
         <div
           style={{
-            marginTop: "4.3rem",
+            marginTop: "3.3rem",
           }}
         >
           <p>{formattedDate} 사용내역</p>
@@ -106,7 +105,9 @@ function ReceiptDetail() {
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img
         src={question}
-        className="fixed bottom-28 right-0 mb-4 mr-2 cursor-pointer"
+        
+        alt="지원금 모달"
+        className="fixed bottom-[65px] right-0 mb-4 mr-2 cursor-pointer"
         onClick={handleQuestionClick}
       />
       {/* 모달을 렌더링합니다. isOpen 상태에 따라 모달이 열리거나 닫힙니다. */}

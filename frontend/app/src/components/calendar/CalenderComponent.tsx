@@ -222,7 +222,7 @@ const RenderCells = ({
               height: "90%",
               width: "100%",
               justifyContent: "center",
-
+              fontWeight: 'bold',
               // borderColor: 'gray',
               borderLeft: "1px solid rgb(105, 103, 126)",
               borderRight: "1px solid rgb(105, 103, 126)",

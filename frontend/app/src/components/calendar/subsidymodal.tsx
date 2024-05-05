@@ -31,7 +31,7 @@ const Modal = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30"
       onClick={onClose}
     >
       <div className="p-7 rounded-lg bg-slate-100" >
