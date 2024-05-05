@@ -47,21 +47,6 @@ public class NoticeController {
 		return noticeService.listNotice(empId);
 	}
 
-	// @Operation(
-	// 	summary = "알림 전송",
-	// 	description = "이용자에게 알림을 전송한다."
-	// )
-	// @ApiResponses(value = {
-	// 	@ApiResponse(responseCode = "200", description = "알림 전송 성공."),
-	// 	@ApiResponse(responseCode = "401", description = "토큰 인증 실패."),
-	// 	@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패."),
-	// 	@ApiResponse(responseCode = "503", description = "파이어베이스 오류")
-	// })
-	// @PostMapping
-	// public ResponseEntity<ResponseDto> sendNotice(@RequestBody SendNoticeRequestDto request) {
-	// 	return noticeService.sendNotice(request);
-	// }
-
 	@Operation(
 		summary = "알림 삭제",
 		description = "알림을 클릭했을 때 삭제한다."

@@ -82,43 +82,45 @@ public class NoticeServiceImpl implements NoticeService {
 		NoticeTemplateEntity template = noticeTemplateRepository.findById(request.getNoticeTemplateId())
 			.orElseThrow(TemplateNotFoundException::new);
 
-		//알림 목록에 저장
-		NoticeEntity noticeEntity = NoticeEntity.builder()
-			.noticeTemplateEntity(template)
-			.empId(request.getEmpId())
-			.noticeUrl(request.getNoticeUrl())
-			.storeName(request.getStoreName())
-			.noticeDate(LocalDateTime.now())
-			.build();
-
-		noticeRepository.save(noticeEntity);
-
-		//fcm 토큰을 이용해 푸쉬 알림 요청
-		// //Notification (push알림)
-		// Notification notification = Notification.builder()
-		// 	.setTitle(template.getNoticeClassification())
-		// 	.setBody(request.getStoreName() + template.getNoticeText())
-		// 	.build();
-
-		//redis 에서 해당 유저의 fcm 토큰을 찾아내고 발송
-		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-		String fcmToken = valueOperations.get(String.valueOf(request.getEmpId()));
-
-		//일반 알림
-		if (fcmToken != null) {
-			Message message = Message.builder()
-				.putData("title", template.getNoticeClassification())
-				.putData("body", request.getStoreName() + template.getNoticeText())
-				.putData("url", request.getNoticeUrl())
-				.setToken(fcmToken)
+		for (Integer empId : request.getEmpIds()) {
+			//알림 목록에 저장
+			NoticeEntity noticeEntity = NoticeEntity.builder()
+				.noticeTemplateEntity(template)
+				.empId(empId)
+				.noticeUrl(request.getNoticeUrl())
+				.storeName(request.getStoreName())
+				.noticeDate(LocalDateTime.now())
 				.build();
 
-			FirebaseMessaging.getInstance().send(message);
+			noticeRepository.save(noticeEntity);
 
-		} else {
-			log.info("푸시 알림 전송 실패");
+			//fcm 토큰을 이용해 푸쉬 알림 요청
+			// //Notification (push알림)
+			// Notification notification = Notification.builder()
+			// 	.setTitle(template.getNoticeClassification())
+			// 	.setBody(request.getStoreName() + template.getNoticeText())
+			// 	.build();
+
+			//redis 에서 해당 유저의 fcm 토큰을 찾아내고 발송
+			ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+			String fcmToken = valueOperations.get(String.valueOf(empId));
+
+			//일반 알림
+			if (fcmToken != null) {
+				Message message = Message.builder()
+					.putData("title", template.getNoticeClassification())
+					.putData("body", request.getStoreName() + template.getNoticeText())
+					.putData("url", request.getNoticeUrl())
+					.setToken(fcmToken)
+					.build();
+
+				FirebaseMessaging.getInstance().send(message);
+
+			} else {
+				log.info("푸시 알림 전송 실패");
+			}
+
+			log.info("알림 전송 성공");
 		}
-
-		log.info("알림 전송 성공");
 	}
 }
