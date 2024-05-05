@@ -70,6 +70,7 @@ public class HrServiceImpl implements HrService {
                         .empId(entity.getEmpId())
                         .empNo(entity.getEmpNo())
                         .empName(entity.getEmpName())
+                        .empImage(entity.getEmpImage())
                         .department(
                                 entity.getDepartment() == null ? null : DepartmentDto.builder()
                                         .departmentId(entity.getDepartment().getDepartmentId())

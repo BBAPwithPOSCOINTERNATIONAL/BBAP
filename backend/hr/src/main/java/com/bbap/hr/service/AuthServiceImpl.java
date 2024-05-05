@@ -78,6 +78,7 @@ public class AuthServiceImpl implements AuthService {
                 .empId(employee.getEmpId())
                 .empNo(employee.getEmpNo())
                 .empName(employee.getEmpName())
+                .empImage(employee.getEmpImage())
                 .department(departmentData)
                 .position(positionData)
                 .workplace(workplaceData)
