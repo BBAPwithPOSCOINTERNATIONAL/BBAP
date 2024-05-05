@@ -59,4 +59,10 @@ public class WebSocketController {
 		String sessionId = headerAccessor.getSessionId();
 		webSocketService.order(sessionId, orderRequestDto);
 	}
+
+	@MessageMapping("/leave-room")
+	public void leaveRoom(SimpMessageHeaderAccessor headerAccessor){
+		String sessionId = headerAccessor.getSessionId();
+		webSocketService.leaveRoom(sessionId);
+	}
 }

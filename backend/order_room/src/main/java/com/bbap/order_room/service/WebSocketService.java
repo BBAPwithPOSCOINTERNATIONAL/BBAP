@@ -10,4 +10,5 @@ public interface WebSocketService {
 	void startGame(String sessionId);
 	void runWheel(String sessionId);
 	void order(String sessionId, OrderRequestDto orderRequestDto);
+	void leaveRoom(String sessionId);
 }

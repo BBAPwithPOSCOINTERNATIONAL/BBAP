@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -204,6 +205,50 @@ public class WebSocketServiceImpl implements WebSocketService{
 		// 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
 	}
+
+	@Override
+	public void leaveRoom(String sessionId) {
+		Integer empId = getEmpId(sessionId);
+		// 방과 관련된 `EntireParticipant` 객체를 찾음
+		EntireParticipant participant = participantRepository.findById(empId)
+			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+		String roomId = participant.getRoomId();
+
+		// 해당 방 객체를 찾음
+		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
+
+		// 현재 주문자 여부 확인
+		if (room.getCurrentOrderer().equals(empId)) {
+			// 현재 주문자인 경우: 방 상태를 "ROOM_BOOM"으로 설정
+			room.setRoomStatus("ROOM_BOOM");
+			roomRepository.save(room);
+
+			// 방의 모든 참여자 제거
+			List<EntireParticipant> participantsToDelete = participantRepository.findAllByRoomId(roomId);
+			participantRepository.deleteAll(participantsToDelete);
+		} else {
+			// 현재 주문자가 아닌 경우: 해당 사용자가 시킨 주문 항목 제거
+			List<OrderItem> itemsToRemove = room.getOrderItems().stream()
+				.filter(item -> item.getOrderer().equals(empId))
+				.toList();
+			room.getOrderItems().removeAll(itemsToRemove);
+
+			// 사용자가 더 이상 주문한 항목이 없다면 `orderers` 목록에서 제거
+			if (room.getOrderItems().stream().noneMatch(item -> item.getOrderer().equals(empId))) {
+				room.getOrderers().remove(empId);
+			}
+
+			// `EntireParticipant`에서 해당 사용자를 제거
+			participantRepository.deleteById(empId);
+
+			// 방 상태 업데이트 후 저장
+			roomRepository.save(room);
+		}
+
+		// 방 상태 변경을 구독 중인 모든 사용자에게 알림
+		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+	}
+
 
 	private Integer getEmpId(String sessionId){
 		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
