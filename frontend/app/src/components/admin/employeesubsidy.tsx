@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import "./approval.css";
 import DetailPagination from "./datailpagination";
 import { fetchPaymentDetails, PaymentDetail } from "../../api/hradminAPI";
 
 function EmployeeSubsidy(): JSX.Element {
   const { employeeId } = useParams<{ employeeId?: string }>();
+  const location = useLocation();
+  const empName = location.state?.empName || "Default Name";
+  const empNo = location.state?.empNo || "Default empNo";
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [transactions, setTransactions] = useState<PaymentDetail[]>([]);
@@ -73,7 +76,9 @@ function EmployeeSubsidy(): JSX.Element {
         className="font-hyemin-bold mt-4 mr-4 text-[20px] w-full"
         style={{ display: "flex", justifyContent: "space-between" }}
       >
-        <p>사원 : 사원명 ({employeeId})</p>
+        <p>
+          {empName}({empNo})
+        </p>
         <p
           className="font-hyemin-bold text-[15px] mr-2"
           style={{ marginBottom: "-20px", paddingTop: "20px" }}

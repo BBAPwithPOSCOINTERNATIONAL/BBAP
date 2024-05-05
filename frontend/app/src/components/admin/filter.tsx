@@ -221,8 +221,14 @@ function EmployeeSearch(): JSX.Element {
     setCurrentPage(1);
   };
 
-  const goToEmployeeDetails = (employeeId: number) => {
-    navigate(`/employee/${employeeId}`);
+  const goToEmployeeDetails = (
+    employeeId: number,
+    employeeName: string,
+    empNo: string
+  ) => {
+    navigate(`/employee/${employeeId}`, {
+      state: { empName: employeeName, empNo: empNo },
+    });
   };
 
   // 페이지당 열의 개수
@@ -323,7 +329,13 @@ function EmployeeSearch(): JSX.Element {
             currentEmployees.map((employee) => (
               <tr
                 key={employee.empId}
-                onClick={() => goToEmployeeDetails(employee.empId)}
+                onClick={() =>
+                  goToEmployeeDetails(
+                    employee.empId,
+                    employee.empName,
+                    employee.empNo
+                  )
+                }
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
               >
                 <td className="py-2 px-4 text-[17px] ">{employee.empNo}</td>

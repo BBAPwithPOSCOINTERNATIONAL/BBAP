@@ -180,15 +180,21 @@ interface PaymentListResponse {
 export const fetchPaymentDetails = async (
   empId: number,
   filters: {
-    startDate?: Date;
-    endDate?: Date;
+    startDate: Date;
+    endDate: Date;
   }
 ): Promise<PaymentListResponse> => {
   try {
+    const formattedStartDate = filters.startDate.toISOString().slice(0, 10);
+    const formattedEndDate = filters.endDate.toISOString().slice(0, 10);
+
     const response = await apiClient.get<PaymentListResponse>(
       `approvals/search/${empId}`,
       {
-        params: filters,
+        params: {
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        },
       }
     );
     console.log("Employee List:", response.data);

@@ -44,14 +44,12 @@ const RightSide = styled.div`
   width: 100vw;
   height: 100vh;
 `;
-// const Inputtag = styled.input``;
 
 const AdminPage = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const tabParam = query.get("tab");
-
   const empNo = useUserStore((state) => state.empNo);
 
   const [activeTab, setActiveTab] = useState<"조회" | "결재">(
@@ -62,9 +60,11 @@ const AdminPage = () => {
     setActiveTab(tab);
   };
 
-  const handleLogout = () => {
-    // 로그아웃 처리
-    history("/admin"); // 로그인 페이지로 이동
+  const handleLogout = async () => {
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
+    useUserStore.getState().reset();
+    navigate("/admin");
   };
 
   return (
@@ -118,13 +118,6 @@ const AdminPage = () => {
             <div className=" font-hyemin-bold text-[40px] mb-3">조회</div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold ">
-              {/* <Inputtag
-                className=" font-hyemin-bold mt-2 text-[17px] w-40 focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none w-full text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md  pl-3 ring-2 ring-slate-300 shadow-sm"
-                placeholder="사원명"
-              ></Inputtag>
-              <button className=" font-hyemin-bold  text-[18px] bg-[#80c481] text-black w-20 rounded-md ml-3 p-1">
-                검색
-              </button> */}
               <EmployeeSearch />
             </div>
           </div>
