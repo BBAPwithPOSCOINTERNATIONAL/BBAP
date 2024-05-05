@@ -1,27 +1,16 @@
 import { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import BottomTabBar from "../components/BottomTabBar";
-import { fetchRestaurantData, Restaurant, Menu, fetchMenus, FetchMenuParams } from "../api/restaurantAPI";
+import {
+  fetchRestaurantData,
+  Restaurant,
+  Menu,
+  fetchMenus,
+  FetchMenuParams,
+} from "../api/restaurantAPI";
 // import { useQuery } from "@tanstack/react-query";
 
 function RestaurantMainPage() {
-  // const { data, isError, isLoading, error } = useQuery(
-  //   ["restaurant", restaurantId],
-  //   () => RestaurantData(restaurantId),
-  //   {
-  //     // 조건부 쿼리 실행
-  //     enabled: restaurantId !== -1,
-  //   }
-  // );
-
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError)
-  //   return (
-  //     <div>
-  //       Error: {error instanceof Error ? error.message : "Unknown error"}
-  //     </div>
-  //   );
-
   const [restaurant, setRestaurant] = useState<number>(0);
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -47,25 +36,28 @@ function RestaurantMainPage() {
     try {
       const result = await fetchRestaurantData(restaurantId);
 
-      const currentRestaurantId = result.data.restaurantId
+      const currentRestaurantId = result.data.restaurantId;
 
-      setRestaurant(result.data.restaurantList.find(item => item.restaurantId === currentRestaurantId)!.restaurantId)
-      setRestaurantList(result.data.restaurantList)
-      setMenus(result.data.menuList)
-      setMealType(result.data.mealClassification)
-
+      setRestaurant(
+        result.data.restaurantList.find(
+          (item) => item.restaurantId === currentRestaurantId
+        )!.restaurantId
+      );
+      setRestaurantList(result.data.restaurantList);
+      setMenus(result.data.menuList);
+      setMealType(result.data.mealClassification);
     } catch (error) {
-      console.error('식당 리스트 요청 실패', error);
+      console.error("식당 리스트 요청 실패", error);
     }
   };
 
   useEffect(() => {
     //로컬 스토리지에 저장되어 있는 기존의 선택 옵션을 불러옴
-    const localId = localStorage.getItem('restaurantId');
+    const localId = localStorage.getItem("restaurantId");
 
     //없다면 -1로 리스트 요청
-    rendering(localId == null ? -1 : parseInt(localId))
-  }, [])
+    rendering(localId == null ? -1 : parseInt(localId));
+  }, []);
 
   useEffect(() => {
     renderMenus();
@@ -75,7 +67,6 @@ function RestaurantMainPage() {
     setWeekDates(generateWeekDates(selectedDate));
     updateNavigationControls();
   }, [selectedDate]);
-
 
   const updateNavigationControls = () => {
     const today = new Date();
@@ -129,18 +120,13 @@ function RestaurantMainPage() {
     setSelectedDate(newDate);
   };
 
-  const mealTypes: (number)[] = [
-    1,
-    2,
-    3,
-    4,
-  ];
+  const mealTypes: number[] = [1, 2, 3, 4];
 
   const mealTypeDisplayNames: Record<number, string> = {
     1: "아침",
     2: "점심",
     3: "저녁",
-    4: "도시락"
+    4: "도시락",
   };
 
   const renderMenus = async () => {
@@ -153,16 +139,16 @@ function RestaurantMainPage() {
     const params: FetchMenuParams = {
       restaurantId: restaurant!,
       menuDate: dateObj,
-      mealClassification: mealType!
-    }
+      mealClassification: mealType!,
+    };
 
     try {
       const result = await fetchMenus(params);
       console.log(result.data);
 
-      setMenus(result.data.menuList)
+      setMenus(result.data.menuList);
     } catch (error) {
-      console.error('Error fetching voices:', error);
+      console.error("Error fetching voices:", error);
     }
   };
 
@@ -173,14 +159,16 @@ function RestaurantMainPage() {
         <select
           value={restaurant}
           onChange={(e) => {
-            setRestaurant(parseInt(e.target.value))
-            rendering(parseInt(e.target.value))
+            setRestaurant(parseInt(e.target.value));
+            rendering(parseInt(e.target.value));
             //식당 선택 시 로컬스토리지에 저장
-            localStorage.setItem('restaurantId', e.target.value);
+            localStorage.setItem("restaurantId", e.target.value);
           }}
         >
           {restaurantList?.map((r) => (
-            <option key={r.restaurantId} value={r.restaurantId}>{r.restaurantName}</option>
+            <option key={r.restaurantId} value={r.restaurantId}>
+              {r.restaurantName}
+            </option>
           ))}
         </select>
 
@@ -188,10 +176,11 @@ function RestaurantMainPage() {
           <button
             onClick={goToPreviousWeek}
             disabled={!canGoBack}
-            className={`m-1 text-xs font-bold py-2 px-2 rounded ${canGoBack
-              ? "bg-gray-300 hover:bg-gray-400"
-              : "bg-gray-200 text-white"
-              }`}
+            className={`m-1 text-xs font-bold py-2 px-2 rounded ${
+              canGoBack
+                ? "bg-gray-300 hover:bg-gray-400"
+                : "bg-gray-200 text-white"
+            }`}
           >
             ◀
           </button>
@@ -202,18 +191,20 @@ function RestaurantMainPage() {
                 <button
                   key={index}
                   onClick={() => {
-                    console.log(date)
+                    console.log(date);
                     setSelectedDay(date);
                   }}
-                  className={`w-1/11 text-xs font-bold py-2 px-1 rounded text-center ${isActive
-                    ? "border-2 border-blue-500"
-                    : "border border-transparent"
-                    } hover:border-black ${date.split("\n")[0].includes("토")
+                  className={`w-1/11 text-xs font-bold py-2 px-1 rounded text-center ${
+                    isActive
+                      ? "border-2 border-blue-500"
+                      : "border border-transparent"
+                  } hover:border-black ${
+                    date.split("\n")[0].includes("토")
                       ? "text-blue-500"
                       : date.split("\n")[0].includes("일")
-                        ? "text-red-500"
-                        : ""
-                    }`}
+                      ? "text-red-500"
+                      : ""
+                  }`}
                 >
                   <span className="block">{date.split("\n")[0]}</span>
                   <span className="block">{date.split("\n")[1]}</span>
@@ -224,10 +215,11 @@ function RestaurantMainPage() {
           <button
             onClick={goToNextWeek}
             disabled={!canGoForward}
-            className={`m-1 text-xs font-bold py-2 px-2 rounded ${canGoForward
-              ? "bg-gray-300 hover:bg-gray-400"
-              : "bg-gray-200 text-white"
-              }`}
+            className={`m-1 text-xs font-bold py-2 px-2 rounded ${
+              canGoForward
+                ? "bg-gray-300 hover:bg-gray-400"
+                : "bg-gray-200 text-white"
+            }`}
           >
             ▶
           </button>
@@ -247,8 +239,9 @@ function RestaurantMainPage() {
               alignItems: "center",
               justifyContent: "center",
             }}
-            className={`m-2 font-hyemin-bold py-2 px-2 rounded-full w-16 h-8 ${mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
-              }`}
+            className={`m-2 font-hyemin-bold py-2 px-2 rounded-full w-16 h-8 ${
+              mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
+            }`}
           >
             {mealTypeDisplayNames[type]}
           </button>
@@ -284,9 +277,7 @@ function RestaurantMainPage() {
             </div>
             <hr className="h-1 bg-[#346186]" />
             <div className="bg-cafe-primary-color rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
-              <p className="mt-1 text-lg text-center">
-                {menu.menuPrice} 원
-              </p>
+              <p className="mt-1 text-lg text-center">{menu.menuPrice} 원</p>
             </div>
           </div>
         ))}
