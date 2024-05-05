@@ -26,7 +26,7 @@ const Modal = ({ onClose }: { onClose: () => void }) => {
   };
 
   const formatTime = (time: string) => {
-    return time.substr(0, 8); // Cuts the time to hh:mm:ss format
+    return time.substr(0, 8);
   };
 
   return (
