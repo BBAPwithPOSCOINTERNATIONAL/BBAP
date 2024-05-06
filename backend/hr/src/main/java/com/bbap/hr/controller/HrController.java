@@ -6,6 +6,7 @@ import com.bbap.hr.dto.response.DataResponseDto;
 import com.bbap.hr.dto.response.EmployeePayData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
+import com.bbap.hr.dto.response.ListWorkplaceData;
 import com.bbap.hr.service.HrService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,11 @@ public class HrController {
     public ResponseEntity<DataResponseDto<EmployeePayData>> getEmployeeDataByEmpId(@PathVariable int empId) {
 
         return hrService.getEmployeeDataByEmpId(empId);
+    }
+
+    @GetMapping("/workplaces")
+    public ResponseEntity<DataResponseDto<ListWorkplaceData>> getListworkplace() {
+
+        return hrService.getListworkplace();
     }
 }

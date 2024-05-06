@@ -6,6 +6,7 @@ import com.bbap.hr.dto.response.DataResponseDto;
 import com.bbap.hr.dto.response.EmployeePayData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
+import com.bbap.hr.dto.response.ListWorkplaceData;
 import com.bbap.hr.entity.EmployeeEntity;
 import com.bbap.hr.entity.SubsidyEntity;
 import com.bbap.hr.entity.WorkplaceEntity;
@@ -14,6 +15,8 @@ import com.bbap.hr.exception.EmployeeWorkplaceNotFoundException;
 import com.bbap.hr.exception.SubsidyNotFoundException;
 import com.bbap.hr.repository.EmployeeRepository;
 import com.bbap.hr.repository.SubsidyRepository;
+import com.bbap.hr.repository.WorkplaceRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ public class HrServiceImpl implements HrService {
 
     private final EmployeeRepository employeeRepository;
     private final SubsidyRepository subsidyRepository;
+    private final WorkplaceRepository workplaceRepository;
 
     @Override
     public ResponseEntity<DataResponseDto<ListSubsidyData>> getSubsidyByWorkplace(Integer workplaceId) {
@@ -175,6 +179,13 @@ public class HrServiceImpl implements HrService {
 
         log.info("EMP ID 직원 정보 응답: 직원 ID - {}, 이름 - {}, 현재 시간 - {}, 지원금 - {}",
             data.getEmpId(), data.getEmpName(), time, data.getSubsidy().getSubsidy());
+        return DataResponseDto.of(data);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<ListWorkplaceData>> getListworkplace() {
+        ListWorkplaceData data = new ListWorkplaceData(workplaceRepository.findAll());
+
         return DataResponseDto.of(data);
     }
 }
