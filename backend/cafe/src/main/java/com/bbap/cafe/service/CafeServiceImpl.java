@@ -2,10 +2,28 @@ package com.bbap.cafe.service;
 
 import static com.bbap.cafe.util.MakeKeyUtil.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.bson.Document;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.LimitOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +42,14 @@ import com.bbap.cafe.dto.responseDto.EmployeeDto;
 import com.bbap.cafe.entity.Cafe;
 import com.bbap.cafe.entity.Menu;
 import com.bbap.cafe.entity.Option;
+import com.bbap.cafe.entity.Order;
+import com.bbap.cafe.entity.OrderMenu;
 import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
 import com.bbap.cafe.feign.HrServiceFeignClient;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
+import com.bbap.cafe.repository.OrderRepository;
 import com.bbap.cafe.repository.StampRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +64,9 @@ public class CafeServiceImpl implements CafeService {
 	private final MenuRepository menuRepository;
 	private final StampRepository stampRepository;
 	private final HrServiceFeignClient hrServiceFeignClient;
+	private final OrderRepository orderRepository;
+	private final MongoTemplate mongoTemplate;
+
 	@Override
 	public ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(Integer empId, String cafeId) {
 		if (cafeId.equals("-1")) {
@@ -93,7 +117,6 @@ public class CafeServiceImpl implements CafeService {
 		List<MenuDto> coffeeMenus = new ArrayList<>();
 		List<MenuDto> beverageMenus = new ArrayList<>();
 		List<MenuDto> dessertMenus = new ArrayList<>();
-		List<MenuDto> popularMenus = new ArrayList<>();
 
 		for (Menu menu : menus) {
 			MenuDto menuDto = createMenuDto(menu);
@@ -108,11 +131,9 @@ public class CafeServiceImpl implements CafeService {
 				case "dessert":
 					dessertMenus.add(menuDto);
 					break;
-				case "popular":
-					popularMenus.add(menuDto);
-					break;
 			}
 		}
+		List<MenuDto> popularMenus = getPopularDto(cafeId);
 
 		// 모든 카테고리별 메뉴 리스트를 포함하는 DTO 생성
 		MenuListDto menuListDto = new MenuListDto(cafeId, coffeeMenus, beverageMenus, dessertMenus, popularMenus);
@@ -211,5 +232,64 @@ public class CafeServiceImpl implements CafeService {
 			optionDtoList
 		);
 	}
+
+	private List<MenuDto> getPopularDto(String cafeId) {
+		// 7일 전의 날짜를 현재 시점 기준으로 계산
+		LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+		Date startDate = Date.from(sevenDaysAgo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+		// 카페 ID와 7일 이내의 주문 데이터를 필터링하는 Match 단계
+		MatchOperation matchOperation = Aggregation.match(Criteria.where("cafe_id").is(cafeId).and("order_time").gte(startDate));
+
+		// 메뉴 배열을 펼쳐서 각 메뉴를 분석하기 위한 Unwind 단계
+		UnwindOperation unwindOperation = Aggregation.unwind("menus");
+
+		// 각 메뉴 이름으로 그룹화하고 주문 수를 합산하는 Group 단계
+		GroupOperation groupOperation = Aggregation.group("menus.name")
+			.sum("menus.cnt").as("totalOrders");
+
+		// 합산된 주문 수로 정렬하고 상위 10개를 가져오는 Sort와 Limit 단계
+		SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "totalOrders"));
+		LimitOperation limitOperation = Aggregation.limit(10);
+
+		// Aggregation 파이프라인을 구성
+		Aggregation aggregation = Aggregation.newAggregation(
+			matchOperation,
+			unwindOperation,
+			groupOperation,
+			sortOperation,
+			limitOperation
+		);
+
+		// Aggregation 결과를 가져옴
+		AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "orders", Document.class);
+
+		// 각 메뉴 이름으로 메뉴 정보를 가져와 MenuDto로 변환
+		List<MenuDto> popularMenuDtos = new ArrayList<>();
+		for (Document doc : results) {
+			String menuName = doc.getString("_id");
+			int totalOrders = doc.getInteger("totalOrders");
+
+			// 메뉴 이름으로 메뉴 정보를 가져옴
+			Optional<Menu> optionalMenu = menuRepository.findByCafeIdAndName(cafeId, menuName);
+			optionalMenu.ifPresent(menu -> {
+				// 해당 메뉴를 MenuDto로 변환
+				MenuDto menuDto = createMenuDto(menu);
+				popularMenuDtos.add(menuDto);
+			});
+		}
+
+		return popularMenuDtos;
+	}
+
+
+
+
+
+
+
+
+
+
 
 }
