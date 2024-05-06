@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
                     .build();
         } else {
             // 이곳에 필요한 로직이나 적절한 대체 응답을 포함시켜 주세요!
-            log.warn("해당하는 유저가 없는 요청");
+//            log.warn("해당하는 유저가 없는 요청");
             return ResponseEntity.ok().build();
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
