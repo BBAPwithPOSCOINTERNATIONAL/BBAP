@@ -172,7 +172,7 @@ function RestaurantMainPage() {
         >
           {restaurantList?.map((r) => (
             <option key={r.restaurantId} value={r.restaurantId}>
-              {r.restaurantName}
+              {r.restaurantName}({r.workplaceName})
             </option>
           ))}
         </select>
