@@ -22,7 +22,7 @@ export interface CafeMenuItem {
   options: Option[];
 }
 
-interface OptionChoice {
+export interface OptionChoice {
   choiceName: string;
   price: number;
 }

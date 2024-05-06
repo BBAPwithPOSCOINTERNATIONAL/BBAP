@@ -6,17 +6,7 @@ import useCartStore from "../../store/cartStore";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router-dom";
-
-export interface Choice {
-  choice_name: string;
-  price: number;
-}
-export interface Option {
-  option_name: string;
-  type: string;
-  required: boolean;
-  choices: Choice[];
-}
+import { Option, OptionChoice } from "../../api/cafeAPI";
 
 function MenuDetailPage() {
   const selectedItem = useCafeStore((state) => state.selectedItem);
@@ -35,8 +25,8 @@ function MenuDetailPage() {
 
   const optionOrder = ["온도", "사이즈", "에스프레소 샷", "추가옵션"];
   const initialSelectedOptions: Option[] = [];
-  selectedItem?.options.forEach((option) => {
-    initialSelectedOptions.push({ ...option, choices: [] });
+  selectedItem?.options.forEach((option: Option) => {
+    initialSelectedOptions.push({ ...option, choice: [] });
   });
 
   const [selectedOptions, setSelectedOptions] = useState<Option[]>(
@@ -45,41 +35,41 @@ function MenuDetailPage() {
   const [selectedTemp, setSelectedTemp] = useState<string>();
   const [selectedSize, setSelectedSize] = useState<string>();
 
-  const handleOptionChange = (optionName: string, choice: Choice) => {
+  const handleOptionChange = (optionName: string, choice: OptionChoice) => {
     if (optionName === "온도") {
-      setSelectedTemp(choice.choice_name);
+      setSelectedTemp(choice.choiceName);
     }
     if (optionName === "사이즈") {
-      setSelectedSize(choice.choice_name);
+      setSelectedSize(choice.choiceName);
     }
 
     setSelectedOptions((prevState) => {
       const updatedOptions = prevState.map((option) => {
-        if (option.option_name === optionName) {
+        if (option.optionName === optionName) {
           if (option.type === "single") {
             return {
               ...option,
-              choices: [choice],
+              choice: [choice],
             };
           } else {
-            const selectedChoiceIndex = option.choices.findIndex(
+            const selectedChoiceIndex = option.choice.findIndex(
               (selectedChoice) =>
-                selectedChoice.choice_name === choice.choice_name
+                selectedChoice.choiceName === choice.choiceName
             );
             if (selectedChoiceIndex !== -1) {
-              // choice가 choices 배열 안에 있는 경우 => 삭제
+              // choice가 choice 배열 안에 있는 경우 => 삭제
               return {
                 ...option,
-                choices: option.choices.filter(
+                choice: option.choice.filter(
                   (selectedChoice) =>
-                    selectedChoice.choice_name !== choice.choice_name
+                    selectedChoice.choiceName !== choice.choiceName
                 ),
               };
             } else {
-              // choice가 choices 배열 안에 없는 경우 => 추가
+              // choice가 choice 배열 안에 없는 경우 => 추가
               return {
                 ...option,
-                choices: [...option.choices, choice],
+                choice: [...option.choice, choice],
               };
             }
           }
@@ -94,19 +84,19 @@ function MenuDetailPage() {
   // 옵션 선택 변경될때마다, 수량 변경될 때마다 가격 다시 계산
   useEffect(() => {
     let price = selectedItem?.price || 0;
-    selectedOptions.map((option) => {
-      option.choices.map((choice) => {
+    selectedOptions.forEach((option) => {
+      option.choice.forEach((choice) => {
         price += choice.price;
       });
     });
     setTotalPrice(price * count);
-  }, [selectedOptions, count]);
+  }, [selectedOptions, count, selectedItem]);
 
   const checkOptions = () => {
     let flag = true;
     selectedOptions.map((option) => {
-      // required가 true인 경우 => choices의 길이가 0보다 커야한다
-      if (option.required && option.choices.length === 0) {
+      // required가 true인 경우 => choice의 길이가 0보다 커야한다
+      if (option.required && option.choice.length === 0) {
         setWarningText("필수 옵션을 선택해주세요");
         flag = false;
       }
@@ -165,13 +155,13 @@ function MenuDetailPage() {
               <div className="mx-10 text-start">
                 {optionOrder.map((optionName) => {
                   const option = selectedItem.options.find(
-                    (opt) => opt.option_name === optionName
+                    (opt: Option) => opt.optionName === optionName
                   );
                   if (!option) return null; // Skip if the option is not present
                   return (
-                    <div key={option.option_name} className="my-4">
+                    <div key={option.optionName} className="my-4">
                       <p className="text-xl font-hyemin-bold">
-                        {option.option_name}{" "}
+                        {option.optionName}{" "}
                         {option.required && (
                           <span className="my-auto text-red-500 text-xs">
                             *필수선택
@@ -179,84 +169,88 @@ function MenuDetailPage() {
                         )}
                       </p>
                       {/* 온도 옵션 렌더링 */}
-                      {option.option_name === "온도" && (
+                      {option.optionName === "온도" && (
                         <div className="flex my-4">
-                          {option.choices.map((choice, index) => (
-                            <Button
-                              key={index}
-                              onClick={() =>
-                                handleOptionChange(option.option_name, choice)
-                              }
-                              text={choice.choice_name}
-                              className={`border border-2 m-2 w-24 py-2 font-hyemin-bold text-black ${
-                                choice.choice_name === "HOT"
-                                  ? "border-red-300"
-                                  : choice.choice_name === "ICE"
-                                  ? "border-blue-300"
-                                  : ""
-                              } ${
-                                selectedTemp === "ICE" &&
-                                choice.choice_name === "ICE"
-                                  ? "bg-blue-200 border-2"
-                                  : selectedTemp === "HOT" &&
-                                    choice.choice_name === "HOT"
-                                  ? "bg-red-200 border-2"
-                                  : ""
-                              }`}
-                            />
-                          ))}
+                          {option.choice.map(
+                            (choice: OptionChoice, index: number) => (
+                              <Button
+                                key={index}
+                                onClick={() =>
+                                  handleOptionChange(option.optionName, choice)
+                                }
+                                text={choice.choiceName}
+                                className={`border border-2 m-2 w-24 py-2 font-hyemin-bold text-black ${
+                                  choice.choiceName === "HOT"
+                                    ? "border-red-300"
+                                    : choice.choiceName === "ICE"
+                                    ? "border-blue-300"
+                                    : ""
+                                } ${
+                                  selectedTemp === "ICE" &&
+                                  choice.choiceName === "ICE"
+                                    ? "bg-blue-200 border-2"
+                                    : selectedTemp === "HOT" &&
+                                      choice.choiceName === "HOT"
+                                    ? "bg-red-200 border-2"
+                                    : ""
+                                }`}
+                              />
+                            )
+                          )}
                         </div>
                       )}
                       {/* 사이즈 옵션 렌더링 */}
-                      {option.option_name === "사이즈" && (
+                      {option.optionName === "사이즈" && (
                         <div className="flex my-4">
-                          {option.choices.map((choice, index) => (
-                            <Button
-                              key={index}
-                              onClick={() =>
-                                handleOptionChange(option.option_name, choice)
-                              }
-                              text={
-                                <div>
-                                  {choice.choice_name}{" "}
-                                  <p className="text-xs">
-                                    + {choice.price.toLocaleString()} 원
-                                  </p>
-                                </div>
-                              }
-                              className={`border border-2 border-gray-400 m-1 w-28 py-2 font-hyemin-bold text-black ${
-                                selectedSize === choice.choice_name &&
-                                "bg-gray-200 border-2"
-                              }
+                          {option.choice.map(
+                            (choice: OptionChoice, index: number) => (
+                              <Button
+                                key={index}
+                                onClick={() =>
+                                  handleOptionChange(option.optionName, choice)
+                                }
+                                text={
+                                  <div>
+                                    {choice.choiceName}{" "}
+                                    <p className="text-xs">
+                                      + {choice.price.toLocaleString()} 원
+                                    </p>
+                                  </div>
+                                }
+                                className={`border border-2 border-gray-400 m-1 w-28 py-2 font-hyemin-bold text-black ${
+                                  selectedSize === choice.choiceName &&
+                                  "bg-gray-200 border-2"
+                                }
                       `}
-                            />
-                          ))}
+                              />
+                            )
+                          )}
                         </div>
                       )}
-                      {option.option_name !== "온도" &&
-                        option.option_name !== "사이즈" &&
-                        option.choices.map((choice) => (
+                      {option.optionName !== "온도" &&
+                        option.optionName !== "사이즈" &&
+                        option.choice.map((choice: OptionChoice) => (
                           <div
-                            key={choice.choice_name}
+                            key={choice.choiceName}
                             className="flex my-4 text-m font-hyemin-regular"
                           >
                             <input
-                              id={choice.choice_name}
+                              id={choice.choiceName}
                               type={
                                 option.type === "single" ? "radio" : "checkbox"
                               }
-                              name={option.option_name}
+                              name={option.optionName}
                               className="w-10 "
-                              value={choice.choice_name}
+                              value={choice.choiceName}
                               onChange={() =>
-                                handleOptionChange(option.option_name, choice)
+                                handleOptionChange(option.optionName, choice)
                               }
                             />
                             <label
-                              htmlFor={choice.choice_name}
+                              htmlFor={choice.choiceName}
                               className="flex-grow flex justify-between"
                             >
-                              <p>{choice.choice_name}</p>
+                              <p>{choice.choiceName}</p>
                               <p>+ {choice.price.toLocaleString()} 원</p>
                             </label>
                           </div>
