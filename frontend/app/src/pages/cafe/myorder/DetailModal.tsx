@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Order } from "./MyOrderPage";
+import { OrderDetailResponse } from "../../../api/orderAPI";
 
 import closeimg from "/assets/images/button/close.png";
 
@@ -7,7 +7,7 @@ const DetailModal = ({
   order,
   onClose,
 }: {
-  order: Order | null;
+  order: OrderDetailResponse | null;
   onClose: () => void;
 }) => {
   useEffect(() => {
@@ -32,7 +32,7 @@ const DetailModal = ({
 
   if (!order) return null;
 
-  const formatDate = (isoString: string) => {
+  const formatDate = (isoString: Date) => {
     const date = new Date(isoString);
     return (
       date
@@ -48,7 +48,7 @@ const DetailModal = ({
     // .slice(0, -3); // 초 단위 제거
   };
 
-  const formatTime = (isoString: string) => {
+  const formatTime = (isoString: Date) => {
     const date = new Date(isoString);
     return date
       .toLocaleString("ko-KR", {
@@ -66,10 +66,10 @@ const DetailModal = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-slate-200 p-8 rounded-lg h-2/5 w-4/5 flex-col space-">
-        <h2 className="text-3xl text-center">{order.cafeName}</h2>
+        <h2 className="text-3xl text-center">{order.data.cafeName}</h2>
         <p className="text-[12px] text-center mb-1">
-          주문일 : {formatDate(order.pickUpTime)} / 주문시간 :{" "}
-          {formatTime(order.pickUpTime)}
+          주문일 : {formatDate(order.data.orderTime)} / 주문시간 :
+          {formatTime(order.data.orderTime)}
         </p>
         <hr className="h-1 bg-[#bbc6dd] mb-5 w-4/5 m-auto rounded-lg" />
         <div
@@ -83,8 +83,13 @@ const DetailModal = ({
             borderRadius: "7px",
           }}
         >
-          <p className="text-md">{order.firstMenuName}</p>
-          <p className="text-sm">{order.payAmount.toLocaleString()}원</p>
+          {order.data.menuList.map((item) => (
+            <>
+              <span>{item.menuName}</span>
+              <span>{item.menuPrice.toLocaleString()} 원</span>
+            </>
+          ))}
+          {/* <p className="text-sm">{order.data.payAmount.toLocaleString()}원</p> */}
         </div>
 
         <button

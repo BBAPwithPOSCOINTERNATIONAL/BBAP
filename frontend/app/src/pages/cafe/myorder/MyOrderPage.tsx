@@ -3,77 +3,66 @@ import { useEffect, useState } from "react";
 import DetailModal from "./DetailModal";
 import back from "/assets/images/button/back.png";
 import next from "/assets/images/button/next.png";
+import {
+  getMyOrder,
+  getMyorderDetail,
+  Order,
+  OrderDetailResponse,
+} from "../../../api/orderAPI";
 
-export type Order = {
-  orderId: string;
-  pickUpTime: string; // DATETIME 타입을 문자열로 처리
-  cafeName: string;
-  firstMenuName: string;
-  menuCnt: number;
-  payAmount: number;
-  workPlaceName: string;
-};
-
-export type OrdersData = {
-  message: string;
-  data: {
-    orderList: Order[];
-  };
-};
-
-const dummyData: { [key: string]: Order[] } = {
-  "2024-04": [
-    {
-      orderId: "order001",
-      pickUpTime: "2024-04-10T15:00:00",
-      cafeName: "Cafe Latte",
-      firstMenuName: "Latte",
-      menuCnt: 4,
-      payAmount: 8000,
-      workPlaceName: "Cafe Latte Branch 1",
-    },
-    {
-      orderId: "order002",
-      pickUpTime: "2024-04-10T15:30:00",
-      cafeName: "Espresso House",
-      firstMenuName: "Espresso",
-      menuCnt: 1,
-      payAmount: 4000,
-      workPlaceName: "Espresso House Central",
-    },
-    {
-      orderId: "order003",
-      pickUpTime: "2024-04-30T15:30:00",
-      cafeName: "Smoothie Station",
-      firstMenuName: "Berry Smoothie",
-      menuCnt: 3,
-      payAmount: 15000,
-      workPlaceName: "Smoothie Station Downtown",
-    },
-  ],
-  "2024-05": [
-    {
-      orderId: "order003",
-      pickUpTime: "2024-05-10T16:00:00",
-      cafeName: "Smoothie Station",
-      firstMenuName: "Berry Smoothie",
-      menuCnt: 3,
-      payAmount: 15000,
-      workPlaceName: "Smoothie Station Downtown",
-    },
-  ],
-  "2024-03": [
-    {
-      orderId: "order004",
-      pickUpTime: "2024-03-10T17:00:00",
-      cafeName: "Tea House",
-      firstMenuName: "Green Tea",
-      menuCnt: 2,
-      payAmount: 5000,
-      workPlaceName: "Tea House Suburb",
-    },
-  ],
-};
+// const dummyData: { [key: string]: Order[] } = {
+//   "2024-04": [
+//     {
+//       orderId: "order001",
+//       pickUpTime: "2024-04-10T15:00:00",
+//       cafeName: "Cafe Latte",
+//       firstMenuName: "Latte",
+//       menuCnt: 4,
+//       payAmount: 8000,
+//       workPlaceName: "Cafe Latte Branch 1",
+//     },
+//     {
+//       orderId: "order002",
+//       pickUpTime: "2024-04-10T15:30:00",
+//       cafeName: "Espresso House",
+//       firstMenuName: "Espresso",
+//       menuCnt: 1,
+//       payAmount: 4000,
+//       workPlaceName: "Espresso House Central",
+//     },
+//     {
+//       orderId: "order003",
+//       pickUpTime: "2024-04-30T15:30:00",
+//       cafeName: "Smoothie Station",
+//       firstMenuName: "Berry Smoothie",
+//       menuCnt: 3,
+//       payAmount: 15000,
+//       workPlaceName: "Smoothie Station Downtown",
+//     },
+//   ],
+//   "2024-05": [
+//     {
+//       orderId: "order003",
+//       pickUpTime: "2024-05-10T16:00:00",
+//       cafeName: "Smoothie Station",
+//       firstMenuName: "Berry Smoothie",
+//       menuCnt: 3,
+//       payAmount: 15000,
+//       workPlaceName: "Smoothie Station Downtown",
+//     },
+//   ],
+//   "2024-03": [
+//     {
+//       orderId: "order004",
+//       pickUpTime: "2024-03-10T17:00:00",
+//       cafeName: "Tea House",
+//       firstMenuName: "Green Tea",
+//       menuCnt: 2,
+//       payAmount: 5000,
+//       workPlaceName: "Tea House Suburb",
+//     },
+//   ],
+// };
 
 const MyOrderPage = () => {
   const [date, setDate] = useState<{ year: number; month: number }>({
@@ -82,43 +71,53 @@ const MyOrderPage = () => {
   });
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrderDetail, setSelectedOrderDetail] =
+    useState<OrderDetailResponse | null>(null);
   const [showModal, setShowModal] = useState(false);
+  console.log(selectedOrder);
+  const fetchOrders = async () => {
+    try {
+      const data = await getMyOrder(date.year, date.month);
+      console.log(data.data.orderList);
 
+      // 데이터를 받은 후에 정렬 로직을 수행
+      const sortedOrders = data.data.orderList.sort((a, b) => {
+        const currentTime = new Date();
+        const pickUpTimeA = new Date(a.pickUpTime);
+        const pickUpTimeB = new Date(b.pickUpTime);
+        const isReceivedA = pickUpTimeA <= currentTime;
+        const isReceivedB = pickUpTimeB <= currentTime;
+
+        if (!isReceivedA && isReceivedB) {
+          return -1;
+        } else if (isReceivedA && !isReceivedB) {
+          return 1;
+        } else {
+          return pickUpTimeA.getTime() - pickUpTimeB.getTime();
+        }
+      });
+
+      // 정렬된 데이터를 상태로 설정
+      setOrders(sortedOrders);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+      setOrders([]);
+    }
+  };
   useEffect(() => {
-    const monthString = `${date.year}-${date.month
-      .toString()
-      .padStart(2, "0")}`;
-    const ordersForMonth = dummyData[monthString] || [];
-
-    // 수령완료 아닌것들만 정렬
-    const sortedOrders = ordersForMonth.sort((a, b) => {
-      const currentTime = new Date();
-      const pickUpTimeA = new Date(a.pickUpTime);
-      const pickUpTimeB = new Date(b.pickUpTime);
-      const isReceivedA = pickUpTimeA <= currentTime;
-      const isReceivedB = pickUpTimeB <= currentTime;
-
-      if (!isReceivedA && isReceivedB) {
-        return -1;
-      } else if (isReceivedA && !isReceivedB) {
-        return 1;
-      } else {
-        return pickUpTimeA.getTime() - pickUpTimeB.getTime();
-      }
-    });
-
-    setOrders(sortedOrders);
+    fetchOrders();
   }, [date]);
 
-  // useEffect(() => {
-  //   getMyOrder(date.year, date.month).then((data) => {
-  //     setOrders(data.data.orderList);
-  //   });
-  // }, [date]);
-
-  const handleCardClick = (order: Order) => {
-    setSelectedOrder(order);
-    setShowModal(true);
+  const handleCardClick = async (order: Order) => {
+    try {
+      const response = await getMyorderDetail(order.orderId);
+      console.log("11", response.data);
+      setSelectedOrderDetail(response);
+      setSelectedOrder(order);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Failed to fetch order details:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -217,7 +216,7 @@ const MyOrderPage = () => {
           </div>
         )}
         {showModal && (
-          <DetailModal order={selectedOrder} onClose={handleCloseModal} />
+          <DetailModal order={selectedOrderDetail} onClose={handleCloseModal} />
         )}
       </div>
     </div>

@@ -1,23 +1,49 @@
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import CafeTabs from "../../components/cafe/CafeTabs";
-// import menu from "../../assets/cafe-menu.json";
-// import MenuSection from "../../components/cafe/MenuSection";
 import together from "/assets/images/together.png";
-// import Button from "../../components/button";
 
-// import MenuButtons from "../../components/cafe/MenuButtons";
 import CafeSelector from "../../components/cafe/CafeSelector";
-// import useMoveScroll from "../../hooks/useMoveScroll";
 import { useNavigate } from "react-router-dom";
-// import useCartStore from "../../store/cartStore";
 import useContentStore from "../../store/contentStore";
 import MyOrderPage from "./myorder/MyOrderPage";
+import {
+  checkOrderRoomParticipation,
+  createOrderRoom,
+} from "../../api/togetherAPI";
 
 function CafeMainPage() {
   const navigate = useNavigate();
   const { content, setContent } = useContentStore();
-  // const [content, setContent] = useState("alone");
+
+  const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log(orderRoomInfo);
+    if (content === "together") {
+      const fetchOrderRoomInfo = async () => {
+        try {
+          const response = await checkOrderRoomParticipation();
+          console.log(response.data.roomId);
+          setOrderRoomInfo(response.data.roomId);
+        } catch (error) {
+          console.error("Failed to fetch order room info:", error);
+        }
+      };
+
+      fetchOrderRoomInfo();
+    }
+  }, [content]);
+
+  const handleCreateRoom = async () => {
+    try {
+      const result = await createOrderRoom();
+      console.log("Room created:", result);
+      navigate("/together");
+    } catch (error) {
+      console.error("Failed to create room:", error);
+    }
+  };
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
@@ -25,16 +51,11 @@ function CafeMainPage() {
     { key: "history", label: "나의주문" },
   ];
 
-  // const navBarHeight = 50; // NavBar의 높이 추정값
   const tabsHeight = 50; // CafeTabs의 높이 추정값
-  // const couponAndButtonsHeight = 10; // CafeCoupon과 버튼 그룹의 높이 추정값
 
   return (
     <div>
-      <div
-        className="sticky top-0 z-30 bg-white"
-        style={{ height: '50px' }}
-      >
+      <div className="sticky top-0 z-30 bg-white" style={{ height: "50px" }}>
         <NavBar />
       </div>
 
@@ -54,7 +75,7 @@ function CafeMainPage() {
           <>
             <div
               className="sticky top-[105px] z-10 bg-white"
-              style={{ paddingTop: '5px' }}
+              style={{ paddingTop: "5px" }}
             >
               <CafeSelector />
             </div>
@@ -83,7 +104,7 @@ function CafeMainPage() {
 
               <button
                 className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
-                onClick={() => navigate("/together")}
+                onClick={handleCreateRoom}
               >
                 방 만들러 가기
               </button>
