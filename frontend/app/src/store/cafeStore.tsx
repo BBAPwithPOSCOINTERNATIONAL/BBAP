@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { MenuItem } from "../components/cafe/MenuSection";
+import { CafeMenuItem } from "../api/cafeAPI";
 
 interface CafeStore {
-  menuData: MenuItem[] | null;
-  setMenuData: (data: MenuItem[]) => void;
-  selectedItem: MenuItem | null;
-  setSelectedItem: (item: MenuItem | null) => void;
+  menuData: CafeMenuItem[] | null;
+  setMenuData: (data: CafeMenuItem[]) => void;
+  selectedItem: CafeMenuItem | null;
+  setSelectedItem: (item: CafeMenuItem | null) => void;
 }
 
 const useCafe = create<CafeStore>((set) => ({

@@ -6,7 +6,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router-dom";
 import Coupon from "../../components/cafe/Coupon";
 import Modal from "../../components/cafe/Modal";
-import { Option, OptionChoice } from "../../api/cafeAPI";
+import { OptionChoice } from "../../api/cafeAPI";
 
 function CartPage() {
   const navigate = useNavigate();
