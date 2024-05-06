@@ -8,6 +8,10 @@ import {
   fetchMenus,
   FetchMenuParams,
 } from "../api/restaurantAPI";
+import back from "/assets/images/button/back.png";
+import unactiveback from "/assets/images/button/unactiveback.png";
+import next from "/assets/images/button/next.png";
+import unactivenext from "/assets/images/button/unactivenext.png";
 // import { useQuery } from "@tanstack/react-query";
 
 function RestaurantMainPage() {
@@ -157,6 +161,7 @@ function RestaurantMainPage() {
       <NavBar />
       <div className="flex flex-col items-center justify-center">
         <select
+          className="font-hyemin-bold bg-blue-100 w-2/3 h-8 text-center rounded-md mt-2"
           value={restaurant}
           onChange={(e) => {
             setRestaurant(parseInt(e.target.value));
@@ -172,19 +177,18 @@ function RestaurantMainPage() {
           ))}
         </select>
 
-        <div className="flex justify-center my-2">
-          <button
-            onClick={goToPreviousWeek}
-            disabled={!canGoBack}
-            className={`m-1 text-xs font-bold py-2 px-2 rounded ${
-              canGoBack
-                ? "bg-gray-300 hover:bg-gray-400"
-                : "bg-gray-200 text-white"
-            }`}
-          >
-            ◀
+        <hr className=" w-full mt-2" />
+        <div className="flex w-full justify-between px-4">
+          {/* 이전 주로 가는 버튼 */}
+          <button onClick={goToPreviousWeek} disabled={!canGoBack}>
+            {canGoBack ? (
+              <img src={back} alt="Back Button" />
+            ) : (
+              <img src={unactiveback} alt="Inactive Back Button" />
+            )}
           </button>
-          <div className="flex justify-center my-2">
+          {/* 월화수목금토일 */}
+          <div className="flex justify-center my-2 w-full px-2">
             {weekDates.map((date, index) => {
               const isActive = date === selectedDay;
               return (
@@ -194,7 +198,7 @@ function RestaurantMainPage() {
                     console.log(date);
                     setSelectedDay(date);
                   }}
-                  className={`w-1/11 text-xs font-bold py-2 px-1 rounded text-center ${
+                  className={`w-1/6 text-[11px] font-bold  px-1 rounded text-center ${
                     isActive
                       ? "border-2 border-blue-500"
                       : "border border-transparent"
@@ -212,20 +216,18 @@ function RestaurantMainPage() {
               );
             })}
           </div>
-          <button
-            onClick={goToNextWeek}
-            disabled={!canGoForward}
-            className={`m-1 text-xs font-bold py-2 px-2 rounded ${
-              canGoForward
-                ? "bg-gray-300 hover:bg-gray-400"
-                : "bg-gray-200 text-white"
-            }`}
-          >
-            ▶
+          {/* 다음주로가는 버튼 */}
+          <button onClick={goToNextWeek} disabled={!canGoForward}>
+            {canGoForward ? (
+              <img src={next} alt="Back Button" />
+            ) : (
+              <img src={unactivenext} alt="Inactive Back Button" />
+            )}
           </button>
         </div>
-        <hr className="h-2  mx-auto w-11/12" />
+        <hr className="w-full" />
       </div>
+      {/* 아침/점심/저녁/도시락 */}
       <div className="mx-1 flex flex-wrap justify-start">
         {mealTypes.map((type) => (
           <button
@@ -239,7 +241,7 @@ function RestaurantMainPage() {
               alignItems: "center",
               justifyContent: "center",
             }}
-            className={`m-2 font-hyemin-bold py-2 px-2 rounded-full w-16 h-8 ${
+            className={`m-1 font-hyemin-bold py-2 px-1 rounded-full w-16 h-8 ${
               mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
             }`}
           >
@@ -247,21 +249,21 @@ function RestaurantMainPage() {
           </button>
         ))}
       </div>
-      <hr className="h-2  mx-auto w-11/12" />
-
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <hr className="h-2 w-full" />
+      {/* 메뉴카드들 */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-[8px] px-2">
         {menus.map((menu, index) => (
           <div
             key={index}
-            className="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70 h-full" // Ensure the card takes full height of its container
+            className="flex flex-col bg-white border shadow-sm rounded-md dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70 h-full" // Ensure the card takes full height of its container
           >
-            <div className="bg-cafe-primary-color border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
+            <div className="bg-cafe-primary-color border-b rounded-t-md py-1 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
               <h1 className="text-lg font-hyemin-bold dark:text-white text-center">
                 {menu.menuName}
               </h1>
             </div>
-            <hr className="h-1 bg-[#346186]" />
-            <div className="flex-grow p-4 md:p-5">
+            <hr className="h-1" />
+            <div className="flex-grow p-1 md:p-1">
               {menu.menuImage && (
                 <img
                   src={menu.menuImage}
@@ -270,13 +272,13 @@ function RestaurantMainPage() {
                   style={{ maxHeight: "200px" }}
                 />
               )}
-              <hr className="h-1 bg-[#346186]" />
-              <p className="mt-2 text-center text-gray-500 dark:text-neutral-400">
+              <hr className="h-1" />
+              <p className="mt-2 text-center text-sm text-gray-500 dark:text-neutral-400">
                 {menu.menuDetail}
               </p>
             </div>
-            <hr className="h-1 bg-[#346186]" />
-            <div className="bg-cafe-primary-color rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
+            <hr className="h-1" />
+            <div className="bg-cafe-primary-color rounded-b-md py-1 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
               <p className="mt-1 text-lg text-center">{menu.menuPrice} 원</p>
             </div>
           </div>
