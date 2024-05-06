@@ -15,16 +15,10 @@ public class AuthController {
 
     private final AuthService authService;
 
-
     @GetMapping("/verify")
-    public ResponseEntity<?> verifyToken(@RequestHeader(value="Authorization") String token) {
-        boolean isValid = authService.isValid(token);
-
-
-        if (isValid) {
-            return ResponseEntity.ok().header("X-Employee-Id", authService.getUserIdFromToken(token)).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<?> verifyToken() {
+        return authService.getUserId();
     }
+
+
 }

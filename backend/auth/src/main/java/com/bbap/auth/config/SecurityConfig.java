@@ -1,10 +1,15 @@
 package com.bbap.auth.config;
 
 
+import com.bbap.auth.filter.JwtAuthenticationFilter;
+import com.bbap.auth.filter.JwtExceptionFilter;
+import com.bbap.auth.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -23,6 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtProvider jwtProvider;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -44,15 +51,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/**").permitAll()
                 );
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+
+
 
         return http.build();
     }
 
     @Bean
     protected CorsConfigurationSource configurationSource() {
-
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.addAllowedOriginPattern("http://localhost:*");
+        corsConfiguration.addAllowedOriginPattern("https://ssafybbap.com");
+        corsConfiguration.addAllowedOriginPattern("https://kisok.ssafybbap.com");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true);
