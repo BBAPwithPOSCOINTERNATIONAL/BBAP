@@ -30,7 +30,8 @@ const PWAInstallPrompt = () => {
             console.log("사용자가 설치를 취소했습니다.");
           }
   
-          setDeferredPrompt(null);
+// 설치해도 이미지 보여야하쟈나
+        // setDeferredPrompt(null);
         });
       }
     };
