@@ -20,11 +20,13 @@ import com.bbap.cafe.dto.response.OptionDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
+import com.bbap.cafe.dto.responseDto.EmployeeDto;
 import com.bbap.cafe.entity.Cafe;
 import com.bbap.cafe.entity.Menu;
 import com.bbap.cafe.entity.Option;
 import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
+import com.bbap.cafe.feign.HrServiceFeignClient;
 import com.bbap.cafe.repository.CafeRepository;
 import com.bbap.cafe.repository.MenuRepository;
 import com.bbap.cafe.repository.StampRepository;
@@ -40,11 +42,14 @@ public class CafeServiceImpl implements CafeService {
 	private final CafeRepository cafeRepository;
 	private final MenuRepository menuRepository;
 	private final StampRepository stampRepository;
+	private final HrServiceFeignClient hrServiceFeignClient;
 	@Override
-	public ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(String cafeId) {
+	public ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(Integer empId, String cafeId) {
 		if (cafeId.equals("-1")) {
 			//근무지 찾아와서 우선순위의 카페 넣기
-			cafeId = "66276af2412ced9137ecabe9";
+			ResponseEntity<DataResponseDto<EmployeeDto>> employeeDto = hrServiceFeignClient.getUserInfo(empId);
+			Integer workPlaceId = employeeDto.getBody().getData().getWorkplace().getWorkplaceId();
+			cafeId = cafeRepository.findFirstByWorkPlaceIdOrderByIdAsc(workPlaceId).getId();
 		}
 		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
 		List<Menu> menus = menuRepository.findByCafeId(cafeId);
@@ -66,13 +71,11 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(String cafeId) {
+	public ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(Integer empId, String cafeId) {
 		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
 		List<Menu> menus = menuRepository.findByCafeId(cafeId);
-
 		//보여줄 카페의 메뉴들과 상세 정보 가져오기
 		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
-
 		return DataResponseDto.of(selectedCafe);
 	}
 

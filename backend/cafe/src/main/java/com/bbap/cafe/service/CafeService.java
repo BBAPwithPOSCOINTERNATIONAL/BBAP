@@ -11,9 +11,8 @@ import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 
 public interface CafeService {
-	ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(String cafeId);
-	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(String cafeId);
-	// ResponseEntity<DataResponseDto<MenuDto>> menuDetail(String menuId);
+	ResponseEntity<DataResponseDto<CafeListDto>> listAllCafe(Integer empId, String cafeId);
+	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(Integer empId,String cafeId);
 	ResponseEntity<DataResponseDto<StampDto>> stampCnt(String cafeId);
 	ResponseEntity<DataResponseDto<MenuListDto>> menuList(String cafeId);
 	ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId);

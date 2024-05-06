@@ -35,9 +35,9 @@ public class CafeController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/list/{cafeId}")
-	ResponseEntity<DataResponseDto<CafeListDto>> listCafe(@PathVariable String cafeId) {
-
-		return cafeService.listAllCafe(cafeId);
+	ResponseEntity<DataResponseDto<CafeListDto>> listCafe(@RequestHeader(value = "X-Employee-Id") int empId,
+		@PathVariable String cafeId) {
+		return cafeService.listAllCafe(empId, cafeId);
 	}
 
 	@Operation(
@@ -48,9 +48,9 @@ public class CafeController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/menu-list/{cafeId}")
-	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(@PathVariable String cafeId) {
+	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable String cafeId) {
 
-		return cafeService.cafeDetail(cafeId);
+		return cafeService.cafeDetail(empId, cafeId);
 	}
 
 	@Operation(
