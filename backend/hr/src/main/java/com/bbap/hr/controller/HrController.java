@@ -45,7 +45,7 @@ public class HrController {
     }
 
     @GetMapping("/workplaces")
-    public ResponseEntity<DataResponseDto<ListWorkplaceData>> getListworkplace() {
+    public ResponseEntity<DataResponseDto<ListWorkplaceData>> ListWorkplace() {
 
         return hrService.getListworkplace();
     }
