@@ -72,17 +72,17 @@ export const logout = async (): Promise<ApiResponse> => {
  * @throws  오류를 반환할 수 있습니다.
  */
 
-type Department = {
+export type Department = {
   departmentId: number;
   departmentName: string;
 };
 
-type Position = {
+export type Position = {
   positionId: number;
   positionName: string;
 };
 
-type Workplace = {
+export type Workplace = {
   workplaceId: number;
   workplaceName: string;
 };
@@ -241,3 +241,32 @@ export const fetchSubsidyDetails = async (
     throw error;
   }
 };
+
+
+/**
+ * "카테고리 목록 조회"
+ * @remarks
+ * GET 요청을 '/api/v1/category' 엔드포인트에 보냅니다. 성공시 메시지를 반환합니다.
+ * @returns {Promise<CategoryResponse>} "Success." 메시지를 반환합니다.
+ */
+
+interface CategoryResponse {
+  message: string;
+  data: {
+    workplaceList: Workplace[];
+    departmentList: Department[];
+    positionList: Position[];
+  };
+}
+
+export const fetchCategoryData = async (): Promise<CategoryResponse> => {
+  try {
+    const response = await apiClient.get<CategoryResponse>("/hr/category");
+    console.log("Category Data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching category data:", error);
+    throw error;
+  }
+};
+
