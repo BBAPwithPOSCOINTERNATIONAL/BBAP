@@ -15,7 +15,7 @@ import com.bbap.order.dto.response.StampResponseDto;
 import com.bbap.order.dto.responseDto.CheckFaceResponseData;
 import com.bbap.order.dto.responseDto.DataResponseDto;
 
-@FeignClient(name = "cafe-api", url = "http://localhost:8082/api/v1/cafes")
+@FeignClient(name = "cafe-api", url = "${feign-cafe}")
 public interface CafeServiceFeignClient {
 
 	@GetMapping(value = "/stamp/{cafeId}")
