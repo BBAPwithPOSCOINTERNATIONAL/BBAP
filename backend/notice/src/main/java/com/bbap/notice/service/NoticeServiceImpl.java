@@ -20,11 +20,11 @@ import com.bbap.notice.exception.TemplateNotFoundException;
 import com.bbap.notice.repository.NoticeRepository;
 import com.bbap.notice.repository.NoticeTemplateRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Transactional
@@ -74,7 +74,6 @@ public class NoticeServiceImpl implements NoticeService {
 		return ResponseDto.success();
 	}
 
-	@SneakyThrows
 	@KafkaListener(topics = "notice_topic", groupId = "notice-service-group")
 	public void sendNotice(String kafkaMessage) {
 		SendNoticeRequestDto request = new Gson().fromJson(kafkaMessage, SendNoticeRequestDto.class);
@@ -106,17 +105,18 @@ public class NoticeServiceImpl implements NoticeService {
 			String fcmToken = valueOperations.get(String.valueOf(empId));
 
 			//일반 알림
-			if (fcmToken != null) {
-				Message message = Message.builder()
-					.putData("title", template.getNoticeClassification())
-					.putData("body", request.getStoreName() + template.getNoticeText())
-					.putData("url", request.getNoticeUrl())
-					.setToken(fcmToken)
-					.build();
+			Message message = Message.builder()
+				.putData("title", template.getNoticeClassification())
+				.putData("body", request.getStoreName() + template.getNoticeText())
+				.putData("url", request.getNoticeUrl())
+				.setToken(fcmToken)
+				.build();
 
+			try {
 				FirebaseMessaging.getInstance().send(message);
 
-			} else {
+			} catch (FirebaseMessagingException e) {
+
 				log.info("푸시 알림 전송 실패");
 			}
 
