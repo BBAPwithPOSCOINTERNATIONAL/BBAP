@@ -15,6 +15,15 @@ public class RestaurantDto {
 	private int restaurantId;
 	private int workplaceId;
 	private String restaurantName;
+	private String workplaceName;
 	private Time startTime;
 	private Time endTime;
+
+	public RestaurantDto(int restaurantId, int workplaceId, String restaurantName, Time startTime, Time endTime) {
+		this.restaurantId = restaurantId;
+		this.workplaceId = workplaceId;
+		this.restaurantName = restaurantName;
+		this.startTime = startTime;
+		this.endTime = endTime;
+	}
 }

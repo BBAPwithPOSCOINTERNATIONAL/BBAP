@@ -2,17 +2,22 @@ package com.bbap.restaurant.service;
 
 import java.sql.Date;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.restaurant.dto.RestaurantDto;
 import com.bbap.restaurant.dto.response.DataResponseDto;
 import com.bbap.restaurant.dto.response.EmployeeDto;
 import com.bbap.restaurant.dto.response.ListMenuResponseData;
 import com.bbap.restaurant.dto.response.ListRestaurantResponseData;
+import com.bbap.restaurant.dto.response.ListWorkplaceData;
 import com.bbap.restaurant.dto.response.PayMenuResponseData;
+import com.bbap.restaurant.dto.response.WorkplaceDto;
 import com.bbap.restaurant.exception.MenuNotFoundException;
 import com.bbap.restaurant.feign.HrServiceFeignClient;
 import com.bbap.restaurant.repository.RestaurantMenuRepository;
@@ -42,8 +47,24 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Date todayDate = new Date(System.currentTimeMillis());
 		int mealClassification = classifyMealTime();
 
+		//근무지명 리스트 받아오기
+		ListWorkplaceData workplaceData = hrServiceFeignClient.ListWorkPlace().getBody().getData();
+		List<RestaurantDto> restaurantList =restaurantRepository.findAllDto();
+
+		restaurantList.forEach(restaurant -> {
+			int workplaceId = restaurant.getWorkplaceId();
+
+			// 근무지 데이터에서 해당 ID를 가진 근무지 찾기
+			Optional<WorkplaceDto> matchingWorkplace = workplaceData.getWorkplaceList().stream()
+				.filter(workplace -> workplace.getWorkplaceId() == workplaceId)
+				.findFirst();
+
+			// 근무지 데이터가 존재하는 경우 근무지 이름 매핑
+			matchingWorkplace.ifPresent(workplace -> restaurant.setWorkplaceName(workplace.getWorkplaceName()));
+		});
+
 		ListRestaurantResponseData data = ListRestaurantResponseData.builder()
-			.restaurantList(restaurantRepository.findAllDto())
+			.restaurantList(restaurantList)
 			.restaurantId(restaurantId)
 			.todayDate(todayDate)
 			.mealClassification(mealClassification)
