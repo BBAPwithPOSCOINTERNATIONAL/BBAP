@@ -84,7 +84,7 @@ function CartPage() {
   };
 
   return (
-    <div>
+    <div className="mb-20">
       <div className="flex items-center justify-between m-1">
         <button onClick={handleOpenModal} className="text-4xl ml-2">
           <img src={deletebutton} />
@@ -258,7 +258,7 @@ function CartPage() {
         <Button
           onClick={() => navigate("/after")}
           text="결제하기"
-          className="w-full text-3xl bg-primary-color text-white h-16 fixed bottom-2"
+          className="w-full text-3xl bg-primary-color text-white h-16 fixed bottom-0 left-0"
         />
       </div>
       <Modal isOpen={showModal} onClose={handleCloseModal}>
