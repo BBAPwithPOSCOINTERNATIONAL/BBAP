@@ -25,15 +25,15 @@ function CafeMainPage() {
     { key: "history", label: "나의주문" },
   ];
 
-  const navBarHeight = 50; // NavBar의 높이 추정값
+  // const navBarHeight = 50; // NavBar의 높이 추정값
   const tabsHeight = 50; // CafeTabs의 높이 추정값
-  const couponAndButtonsHeight = 10; // CafeCoupon과 버튼 그룹의 높이 추정값
+  // const couponAndButtonsHeight = 10; // CafeCoupon과 버튼 그룹의 높이 추정값
 
   return (
     <div>
       <div
         className="sticky top-0 z-30 bg-white"
-        style={{ height: `${navBarHeight}px` }}
+        style={{ height: '50px' }}
       >
         <NavBar />
       </div>
@@ -54,7 +54,7 @@ function CafeMainPage() {
           <>
             <div
               className="sticky top-[105px] z-10 bg-white"
-              style={{ paddingTop: `${couponAndButtonsHeight}px` }}
+              style={{ paddingTop: '5px' }}
             >
               <CafeSelector />
             </div>
@@ -62,7 +62,6 @@ function CafeMainPage() {
         )}
         {content === "together" && (
           <>
-            <CafeSelector />
             <div className="mt-2 flex flex-col items-center">
               <div className="bg-light-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center">
                 <h2 className="m-8 text-4xl">우리같이 주문 할래 ?</h2>

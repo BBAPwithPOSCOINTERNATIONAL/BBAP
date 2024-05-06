@@ -19,7 +19,7 @@ const Tabs: React.FC<TabsProps> = ({ content, setContent, tabs }) => {
         <a
           key={tab.key}
           href="#"
-          className={`font-hyemin-bold py-1 px-4 pt-3 w-full text-center border-b-2 ${
+          className={`font-hyemin-bold py-1 px-4 pt-3 w-full text-center border-b-2 shadow-bottom ${
             content === tab.key && "border-blue-700"
           }`}
           onClick={() => setContent(tab.key)}

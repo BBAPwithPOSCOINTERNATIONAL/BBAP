@@ -20,7 +20,7 @@ const MenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
 
     return (
       <div ref={ref}>
-        <div className="mt-2">
+        <div >
           <h2 className="sticky top-[325px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
             {title} 메뉴
           </h2>
