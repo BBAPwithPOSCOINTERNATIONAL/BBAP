@@ -4,6 +4,7 @@ package com.bbap.hr.controller;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
 import com.bbap.hr.dto.response.EmployeePayData;
+import com.bbap.hr.dto.response.ListCategoryData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.dto.response.ListWorkplaceData;
@@ -48,5 +49,11 @@ public class HrController {
     public ResponseEntity<DataResponseDto<ListWorkplaceData>> ListWorkplace() {
 
         return hrService.getListworkplace();
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<DataResponseDto<ListCategoryData>> ListCategory() {
+
+        return hrService.ListCategory();
     }
 }

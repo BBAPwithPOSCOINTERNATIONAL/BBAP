@@ -4,6 +4,7 @@ import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
 import com.bbap.hr.dto.response.DataResponseDto;
 import com.bbap.hr.dto.response.EmployeePayData;
+import com.bbap.hr.dto.response.ListCategoryData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.dto.response.ListWorkplaceData;
@@ -13,7 +14,9 @@ import com.bbap.hr.entity.WorkplaceEntity;
 import com.bbap.hr.exception.EmployeeNotFoundException;
 import com.bbap.hr.exception.EmployeeWorkplaceNotFoundException;
 import com.bbap.hr.exception.SubsidyNotFoundException;
+import com.bbap.hr.repository.DepartmentRepository;
 import com.bbap.hr.repository.EmployeeRepository;
+import com.bbap.hr.repository.PositionRepository;
 import com.bbap.hr.repository.SubsidyRepository;
 import com.bbap.hr.repository.WorkplaceRepository;
 
@@ -39,6 +42,8 @@ public class HrServiceImpl implements HrService {
     private final EmployeeRepository employeeRepository;
     private final SubsidyRepository subsidyRepository;
     private final WorkplaceRepository workplaceRepository;
+    private final DepartmentRepository departmentRepository;
+    private final PositionRepository positionRepository;
 
     @Override
     public ResponseEntity<DataResponseDto<ListSubsidyData>> getSubsidyByWorkplace(Integer workplaceId) {
@@ -185,6 +190,17 @@ public class HrServiceImpl implements HrService {
     @Override
     public ResponseEntity<DataResponseDto<ListWorkplaceData>> getListworkplace() {
         ListWorkplaceData data = new ListWorkplaceData(workplaceRepository.findAll());
+
+        return DataResponseDto.of(data);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<ListCategoryData>> ListCategory() {
+       ListCategoryData data =  ListCategoryData.builder()
+           .workplaceList(workplaceRepository.findAll())
+           .departmentList(departmentRepository.findAll())
+           .positionList(positionRepository.findAll())
+           .build();
 
         return DataResponseDto.of(data);
     }
