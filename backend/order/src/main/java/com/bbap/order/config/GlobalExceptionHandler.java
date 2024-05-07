@@ -13,6 +13,8 @@ import com.bbap.order.exception.CustomException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
 import com.bbap.order.exception.OrderEntityNotFoundException;
 
+import feign.FeignException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	//유효성 검사
@@ -20,6 +22,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResponseDto> validationExceptionHandler(MethodArgumentNotValidException e) {
 		ResponseDto responseBody = new ResponseDto("유효성 실패");
 		return ResponseEntity.status(e.getStatusCode()).body(responseBody);
+	}
+
+	//feign
+	@ExceptionHandler(FeignException.class)
+	public ResponseEntity<String> FeignExceptionHandler(FeignException e) {
+		return ResponseEntity.status(e.status()).body(e.contentUTF8());
 	}
 
 	//존재하지 않는 메뉴 아이디

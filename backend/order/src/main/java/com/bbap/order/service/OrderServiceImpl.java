@@ -37,6 +37,7 @@ import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.response.StampResponseDto;
 import com.bbap.order.dto.responseDto.CheckFaceResponseData;
 import com.bbap.order.dto.responseDto.DataResponseDto;
+import com.bbap.order.dto.responseDto.ResponseDto;
 import com.bbap.order.entity.Cafe;
 import com.bbap.order.entity.Choice;
 import com.bbap.order.entity.Menu;
@@ -49,10 +50,10 @@ import com.bbap.order.exception.MenuEntityNotFoundException;
 import com.bbap.order.exception.OrderEntityNotFoundException;
 import com.bbap.order.feign.CafeServiceFeignClient;
 import com.bbap.order.feign.FaceServiceFeignClient;
+import com.bbap.order.feign.PaymentServiceFeignClient;
 import com.bbap.order.repository.CafeRepository;
 import com.bbap.order.repository.MenuRepository;
 import com.bbap.order.repository.OrderRepository;
-import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +65,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderServiceImpl implements OrderService {
 	private final FaceServiceFeignClient faceServiceFeignClient;
 	private final CafeServiceFeignClient cafeServiceFeignClient;
+	private final PaymentServiceFeignClient paymentServiceFeignClient;
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
 	private final CafeRepository cafeRepository;
@@ -94,10 +96,12 @@ public class OrderServiceImpl implements OrderService {
 			.useSubsidy(dto.getUsedSubsidy())
 			.paymentDetail(paymentDeatil)
 			.payStore(cafe.getName()).build();
-		String message = new Gson().toJson(paymentRequestDto);
 
-		//결제 서비스 보내기
-		kafkaSend("pay_topic", message);
+		ResponseEntity<ResponseDto> response = paymentServiceFeignClient.pay(paymentRequestDto);
+		// String message = new Gson().toJson(paymentRequestDto);
+		//
+		// //결제 서비스 보내기
+		// kafkaSend("pay_topic", message);
 
 		//레디스에서 방 번호 가져오기
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
@@ -296,8 +300,8 @@ public class OrderServiceImpl implements OrderService {
 
 		// 총 가격과 첫 번째 메뉴 이름을 추적하기 위한 변수들 초기화
 		AtomicInteger totalFinalPrice = new AtomicInteger(0);
-		final String[] primaryMenuName = {null}; // 배열을 사용하여 변경 가능
-		final int[] otherMenuCount = {0}; // 배열을 사용하여 변경 가능
+		final String[] primaryMenuName = {null}; // 첫 번째 메뉴 이름을 저장하기 위한 배열
+		final AtomicInteger totalMenuCount = new AtomicInteger(0);
 
 		// 주문된 메뉴 목록을 순회하면서 각 메뉴의 최종 가격을 계산
 		List<OrderMenu> orderMenus = menuRequestDtos.stream().map(menuDto -> {
@@ -334,17 +338,20 @@ public class OrderServiceImpl implements OrderService {
 			// 첫 번째 메뉴의 이름 설정
 			if (primaryMenuName[0] == null) {
 				primaryMenuName[0] = menu.getName();
-			} else {
-				// 첫 번째 메뉴 이외의 메뉴의 개수 증가
-				otherMenuCount[0] += menuDto.getCnt();
 			}
+
+			// 전체 메뉴 수를 추가
+			totalMenuCount.addAndGet(menuDto.getCnt());
 
 			// 최종적으로 주문한 메뉴를 반환
 			return new OrderMenu(menu.getName(), menuDto.getCnt(), finalPrice, options);
 		}).collect(Collectors.toList());
 
+		// 첫 번째 메뉴를 제외한 다른 메뉴의 수 계산
+		int otherMenuCount = totalMenuCount.get() - 1;
+
 		// 결제 세부 정보 생성 (첫 번째 메뉴 이름 + 다른 메뉴의 수)
-		String paymentDetail = primaryMenuName[0] + (otherMenuCount[0] == 0 ? "" : " 외 " + otherMenuCount[0] + "개");
+		String paymentDetail = primaryMenuName[0] + (otherMenuCount == 0 ? "" : " 외 " + otherMenuCount + "개");
 
 		// 주문한 메뉴 목록, 총 가격, 결제 상세 정보를 함께 반환
 		return new OrderSummary(orderMenus, totalFinalPrice.get(), paymentDetail);
@@ -356,9 +363,9 @@ public class OrderServiceImpl implements OrderService {
 		return redisTemplate.opsForValue().increment(key);
 	}
 
-	public void kafkaSend(String topic, String message) {
-		kafkaTemplate.send(topic, message);
-		System.out.println("Message sent to topic: " + topic);
-	}
+	// public void kafkaSend(String topic, String message) {
+	// 	kafkaTemplate.send(topic, message);
+	// 	System.out.println("Message sent to topic: " + topic);
+	// }
 
 }
