@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import NavBar from "../../../components/Navbar";
-import CafeSelector from "../../../components/cafe/CafeSelector";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
@@ -68,8 +67,14 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [modalOpen, setModalOpen] = useState(false);
 
+  const [modalOpen, setModalOpen] = useState(false);
+  // const [couponCnt, setCouponCnt] = useState(0);
+  // const [menuListCoffee, setMenuListCoffee] = useState<CafeMenuItem[]>([]);
+  // const [menuListBeverage, setMenuListBeverage] = useState<CafeMenuItem[]>([]);
+  // const [menuListDessert, setMenuListDessert] = useState<CafeMenuItem[]>([]);
+  const location = useLocation();
+  const cafeName = location.state?.cafeName;
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -117,8 +122,8 @@ function TogetherOrderPage() {
   return (
     <>
       <NavBar />
-      <div className="flex items-center">
-        <CafeSelector />
+      <div className="flex justify-center items-center">
+        <div className="mx-5">카페명 : {cafeName}</div>
         <button
           onClick={() => navigate(-1)}
           className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"

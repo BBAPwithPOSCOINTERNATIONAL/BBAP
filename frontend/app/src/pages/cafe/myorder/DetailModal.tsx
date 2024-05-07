@@ -83,11 +83,11 @@ const DetailModal = ({
             borderRadius: "7px",
           }}
         >
-          {order.data.menuList.map((item) => (
-            <>
+          {order.data.menuList.map((item, idx) => (
+            <div key={idx}>
               <span>{item.menuName}</span>
               <span>{item.menuPrice.toLocaleString()} 원</span>
-            </>
+            </div>
           ))}
           {/* <p className="text-sm">{order.data.payAmount.toLocaleString()}원</p> */}
         </div>

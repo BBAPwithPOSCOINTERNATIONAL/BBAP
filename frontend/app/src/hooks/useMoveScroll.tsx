@@ -8,7 +8,7 @@ function useMoveScroll(offset: number = 0) {
     if (element.current) {
       const elementPosition =
         element.current.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - offset;
+      const offsetPosition = elementPosition - offset + 50;
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
   };
