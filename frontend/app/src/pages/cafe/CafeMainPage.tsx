@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import CafeTabs from "../../components/cafe/CafeTabs";
 
-import { useNavigate } from "react-router-dom";
 import useContentStore from "../../store/contentStore";
 import MyOrderPage from "./myorder/MyOrderPage";
 import { checkOrderRoomParticipation } from "../../api/togetherAPI";
