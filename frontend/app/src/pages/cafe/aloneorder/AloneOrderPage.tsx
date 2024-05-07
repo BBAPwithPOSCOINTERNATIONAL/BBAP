@@ -13,6 +13,7 @@ const AloneOrderPage: React.FC = () => {
   const navigate = useNavigate();
   const [cafeList, setCafeList] = useState<Cafe[]>([]);
   const [selectedCafeId, setSelectedCafeId] = useState<string>("");
+  const [selectedCafeName, setSelectedCafeName] = useState<string>("");
   const [couponCnt, setCouponCnt] = useState(0);
   const [selectedMenu, setSelectedMenu] = useState("coffee");
   const [menuListCoffee, setMenuListCoffee] = useState<CafeMenuItem[]>([]);
@@ -30,7 +31,7 @@ const AloneOrderPage: React.FC = () => {
     else if (menu === "beverage") scrollToBeverage();
     else if (menu === "dessert") scrollToDessert();
   };
-
+  console.log(selectedCafeName);
   // 처음 마운트 될 때 한 번만 카페 목록을 불러옵니다.
   useEffect(() => {
     async function loadCafes() {
@@ -43,10 +44,14 @@ const AloneOrderPage: React.FC = () => {
         const validCafe = response.data.cafeList.find(
           (cafe) => cafe.id === storedCafeId
         );
-        setSelectedCafeId(
-          validCafe ? validCafe.id : response.data.cafeList[0]?.id || ""
-        );
-        setCouponCnt(response.data.selectedCafe.stampCnt);
+        const defaultCafe = validCafe || response.data.cafeList[0];
+        if (defaultCafe) {
+          setSelectedCafeId(defaultCafe.id || "");
+          setSelectedCafeName(defaultCafe.name || "");
+          // 초기 페이지 로드 시, 기본 카페 이름을 localStorage에 저장
+          localStorage.setItem("cafeId", defaultCafe.id);
+          localStorage.setItem("cafeName", defaultCafe.name);
+        }
       } catch (error) {
         console.error("Error fetching cafe list:", error);
       }
@@ -121,8 +126,13 @@ const AloneOrderPage: React.FC = () => {
     useMoveScroll(totalOffset + 270);
 
   const handleCafeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCafeId(e.target.value);
-    localStorage.setItem("cafeId", e.target.value);
+    const selectedCafe = cafeList.find((cafe) => cafe.id === e.target.value);
+    if (selectedCafe) {
+      setSelectedCafeId(selectedCafe.id);
+      setSelectedCafeName(selectedCafe.name);
+      localStorage.setItem("cafeId", selectedCafe.id);
+      localStorage.setItem("cafeName", selectedCafe.name);
+    }
   };
 
   return (

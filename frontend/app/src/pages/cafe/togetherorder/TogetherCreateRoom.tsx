@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import together from "/assets/images/together.png";
 import CafeSelector from "../../../components/cafe/CafeSelector";
 import { Cafe, getCafeList } from "../../../api/cafeAPI";
-import { createOrderRoom } from "../../../api/togetherAPI";
+import {
+  checkOrderRoomParticipation,
+  createOrderRoom,
+} from "../../../api/togetherAPI";
 import { useNavigate } from "react-router-dom";
 
 const TogetherCreateRoom = () => {
@@ -10,6 +13,30 @@ const TogetherCreateRoom = () => {
   const [selectedCafeId, setSelectedCafeId] = useState<string>("");
   const [selectedCafeName, setSelectedCafeName] = useState<string>("");
   const navigate = useNavigate();
+
+  const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrderRoomInfo = async () => {
+      try {
+        const response = await checkOrderRoomParticipation();
+        console.log(response.data.roomId);
+        setOrderRoomInfo(response.data.roomId);
+        // 방 ID가 존재하면 바로 해당 방으로 이동
+        if (response.data.roomId) {
+          const cafeName =
+            localStorage.getItem("cafeName") || "Default Cafe Name";
+          navigate("/together", {
+            state: { cafeName: cafeName, roomId: response.data.roomId },
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch order room info:", error);
+      }
+    };
+
+    fetchOrderRoomInfo();
+  }, [navigate, selectedCafeName]);
 
   useEffect(() => {
     async function loadCafes() {
@@ -40,13 +67,16 @@ const TogetherCreateRoom = () => {
     setSelectedCafeId(selectedCafe?.id || "");
     setSelectedCafeName(selectedCafe?.name || "");
     localStorage.setItem("cafeId", e.target.value);
+    localStorage.setItem("cafeName", e.target.value);
   };
 
   const handleCreateRoom = async () => {
     try {
       const result = await createOrderRoom();
       console.log("Room created:", result);
-      navigate("/together", { state: { cafeName: selectedCafeName } });
+      navigate("/together", {
+        state: { cafeName: selectedCafeName, roomId: orderRoomInfo },
+      });
     } catch (error) {
       console.error("Failed to create room:", error);
     }

@@ -1,9 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import NavBar from "../../../components/Navbar";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
+import SockJS from "sockjs-client";
+import { Client, Stomp } from "@stomp/stompjs";
+import { useUserStore } from "../../../store/userStore";
 
 interface Product {
   owner: boolean;
@@ -67,14 +70,57 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+  const stompClient = useRef<Client | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const { empId } = useUserStore();
   // const [couponCnt, setCouponCnt] = useState(0);
   // const [menuListCoffee, setMenuListCoffee] = useState<CafeMenuItem[]>([]);
   // const [menuListBeverage, setMenuListBeverage] = useState<CafeMenuItem[]>([]);
   // const [menuListDessert, setMenuListDessert] = useState<CafeMenuItem[]>([]);
   const location = useLocation();
   const cafeName = location.state?.cafeName;
+  const roomId = location.state?.roomId;
+  const url = "https://pobap.com/websocket";
+
+  useEffect(() => {
+    if (!location.state?.roomId || !empId) {
+      console.error("Room ID or Employee ID is missing");
+      return;
+    }
+
+    const roomId = location.state.roomId;
+
+    const client = Stomp.over(() => new SockJS(url));
+    client.connect(
+      {},
+      () => {
+        console.log("Connected to WebSocket server");
+        client.subscribe(`/topic/room/${roomId}`, (message) => {
+          console.log("Received message:", JSON.parse(message.body));
+        });
+
+        // 메시지를 /app/connect/{roomId}/{empId}로 보내는 로직
+        client.publish({
+          destination: `/app/connect/${roomId}/${empId}`,
+          body: JSON.stringify({ message: "Connecting to room" }),
+        });
+      },
+      (error: any) => {
+        console.error("Connection error:", error);
+      }
+    );
+
+    stompClient.current = client;
+    return () => {
+      if (client.active) {
+        client.disconnect(() => {
+          console.log("Disconnected");
+        });
+      }
+    };
+  }, [location.state, empId]);
+
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -136,7 +182,7 @@ function TogetherOrderPage() {
           ref={inputRef}
           type="text"
           className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
-          placeholder="링크들어올자리"
+          placeholder={roomId}
         ></input>
         <button
           onClick={handleCopy}
@@ -154,7 +200,7 @@ function TogetherOrderPage() {
         <div className="flex justify-between items-center">
           <div className="text-xl ml-4">총 주문 인원: {products.length}</div>
           <button onClick={handleOpenModal}>
-            <img src={game} className="mr-4"></img>
+            <img src={game} className="mr-4 w-20"></img>
           </button>
         </div>
         <div className="flex justify-center items-center mt-3">
