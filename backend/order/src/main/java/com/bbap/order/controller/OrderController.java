@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.order.dto.request.PayInfoAuthRequestDto;
@@ -57,6 +58,18 @@ public class OrderController {
 	@PostMapping("/pay/kiosk")
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(@RequestBody PayKioskRequestDto requestDto) {
 		return orderService.orderKiosk(requestDto);
+	}
+
+	@Operation(
+		summary = "주문 하기 - 내부 ",
+		description = "주문방에서 주문하기"
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Success."),
+	})
+	@PostMapping("/pay/{empId}")
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(@RequestBody PayRequestDto requestDto, @PathVariable Integer empId) {
+		return orderService.orderIn(requestDto, empId);
 	}
 
 	@Operation(
@@ -127,6 +140,6 @@ public class OrderController {
 	})
 	@GetMapping(value="/{orderId}")
 	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(@PathVariable String orderId) {
-		return orderService.orderDetail(orderId);
+		return orderService. orderDetail(orderId);
 	}
 }

@@ -16,6 +16,7 @@ import com.bbap.order.dto.responseDto.DataResponseDto;
 public interface OrderService {
 	ResponseEntity<DataResponseDto<PayResponseDto>> order(PayRequestDto dto);
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto);
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(PayRequestDto dto, Integer empId);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto);
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto);

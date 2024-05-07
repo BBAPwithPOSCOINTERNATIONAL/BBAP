@@ -97,6 +97,24 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(PayRequestDto dto, Integer empId) {
+		// Validate pick-up time
+		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
+			throw new BadOrderRequestException();
+		}
+		List<OrderMenu> orderMenus = getOrderMenus(dto);
+		//사원 아이디
+		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(),dto.getUsedSubsidy(),orderMenus);
+		orderRepository.insert(order); // 주문 db에 넣기
+		//결제 서비스 보내기
+
+		//레디스에서 방 번호 가져오기
+		Long orderNum = incrementOrderNumber(dto.getCafeId());
+		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
+		return DataResponseDto.of(payResponseDto);
+	}
+
+	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto) {
 		FaceRequestDto requestDto = new FaceRequestDto(dto.getFaceImage());
 		ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
