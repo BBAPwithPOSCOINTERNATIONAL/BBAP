@@ -65,7 +65,7 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOriginPattern("http://localhost:*");
         corsConfiguration.addAllowedOriginPattern("https://ssafybbap.com");
-        corsConfiguration.addAllowedOriginPattern("https://kisok.ssafybbap.com");
+        corsConfiguration.addAllowedOriginPattern("https://kiosk.ssafybbap.com");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true);

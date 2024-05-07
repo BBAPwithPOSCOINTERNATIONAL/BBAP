@@ -35,6 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String forwardedMethod = request.getHeader("x-forwarded-method");
+            Enumeration<String> headers = request.getHeaderNames();
+            while (headers.hasMoreElements()) {
+                String headerName = headers.nextElement();
+                System.out.println(headerName + " : " + request.getHeader(headerName));
+            }
 
             if ("OPTIONS".equalsIgnoreCase(forwardedMethod)) {
                 filterChain.doFilter(request, response);
