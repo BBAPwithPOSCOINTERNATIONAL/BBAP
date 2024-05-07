@@ -72,8 +72,8 @@ const DetailModal = ({
           <p className="text-[12px] text-center my-1">
             주문일 : {formatDate(order.data.orderTime)} / 주문시간 :
             {formatTime(order.data.orderTime)}
-            <hr className="h-1 bg-[#bbc6dd] mb-5 w-11/12 m-auto rounded-lg" />
           </p>
+            <hr className="h-1 bg-[#bbc6dd] mb-5 w-11/12 m-auto rounded-lg" />
         </div>
         {/* 중간 */}
         <div className="grow">
