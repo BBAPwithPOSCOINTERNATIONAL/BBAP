@@ -2,7 +2,7 @@ import axios from "axios";
 import apiClient from "./apiClient";
 
 // API 응답 타입 정의
-interface Restaurant {
+export interface Restaurant {
   restaurantId: number;
   restaurantName: string;
   workPlaceName: string;
@@ -13,21 +13,15 @@ interface Restaurant {
 interface MenuApiResponse {
   message: string;
   data: {
-    menueList: Array<{
-      menuName: string;
-      menuImage: string; // URL
-      menuDetail: string;
-      price: number;
-      eatCount: number;
-    }>;
+    menuList: Array<Menu>;
   };
 }
 
-interface Menu {
+export interface Menu {
   menuName: string;
   menuImage: string; // URL
   menuDetail: string;
-  price: number;
+  menuPrice: number;
   eatCount: number;
 }
 
@@ -54,9 +48,9 @@ export async function fetchRestaurantData(
   restaurantId: number
 ): Promise<ApiResponse> {
   try {
-    const effectiveRestaurantId = restaurantId === -1 ? 0 : restaurantId; // 근무지 정보로 ID 대체
+    // const effectiveRestaurantId = restaurantId === -1 ? 0 : restaurantId; // 근무지 정보로 ID 대체
     const response = await apiClient.get<ApiResponse>(
-      `restaurants/${effectiveRestaurantId}`
+      `restaurants/${restaurantId}`
     );
     console.log(response);
     return response.data;
@@ -70,7 +64,7 @@ export async function fetchRestaurantData(
 }
 
 // URL 파라미터 타입 정의
-interface FetchMenuParams {
+export interface FetchMenuParams {
   restaurantId: number;
   menuDate: Date;
   mealClassification: number;

@@ -3,6 +3,7 @@ export interface MenuItem {
   subMenus: string[];
   price: number;
   imageUrl?: string;
+  eatCount?:number;
 }
 
 export interface DailyMenu {

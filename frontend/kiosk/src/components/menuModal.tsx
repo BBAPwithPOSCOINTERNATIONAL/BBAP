@@ -18,7 +18,7 @@ const MenuModal: React.FC = () => {
 	const optionOrder = ["온도", "사이즈", "에스프레소 샷", "추가옵션"];
 	const initialSelectedOptions: Option[] = [];
 	selectedMenu?.options.forEach((option) => {
-		initialSelectedOptions.push({ ...option, choices: [] });
+		initialSelectedOptions.push({ ...option, choice: [] });
 	});
 
 	const [selectedOptions, setSelectedOptions] = useState<Option[]>(
@@ -29,39 +29,39 @@ const MenuModal: React.FC = () => {
 
 	const handleOptionChange = (optionName: string, choice: Choice) => {
 		if (optionName === "온도") {
-			setSelectedTemp(choice.choice_name);
+			setSelectedTemp(choice.choiceName);
 		}
 		if (optionName === "사이즈") {
-			setSelectedSize(choice.choice_name);
+			setSelectedSize(choice.choiceName);
 		}
 
 		setSelectedOptions((prevState) => {
 			const updatedOptions = prevState.map((option) => {
-				if (option.option_name === optionName) {
+				if (option.optionName === optionName) {
 					if (option.type === "single") {
 						return {
 							...option,
-							choices: [choice],
+							choice: [choice],
 						};
 					} else {
-						const selectedChoiceIndex = option.choices.findIndex(
+						const selectedChoiceIndex = option.choice.findIndex(
 							(selectedChoice) =>
-								selectedChoice.choice_name === choice.choice_name
+								selectedChoice.choiceName === choice.choiceName
 						);
 						if (selectedChoiceIndex !== -1) {
-							// choice가 choices 배열 안에 있는 경우 => 삭제
+							// choice가 choice 배열 안에 있는 경우 => 삭제
 							return {
 								...option,
-								choices: option.choices.filter(
+								choice: option.choice.filter(
 									(selectedChoice) =>
-										selectedChoice.choice_name !== choice.choice_name
+										selectedChoice.choiceName !== choice.choiceName
 								),
 							};
 						} else {
-							// choice가 choices 배열 안에 없는 경우 => 추가
+							// choice가 choice 배열 안에 없는 경우 => 추가
 							return {
 								...option,
-								choices: [...option.choices, choice],
+								choice: [...option.choice, choice],
 							};
 						}
 					}
@@ -77,7 +77,7 @@ const MenuModal: React.FC = () => {
 	useEffect(() => {
 		let price = selectedMenu?.price || 0;
 		selectedOptions.map((option) => {
-			option.choices.map((choice) => {
+			option.choice.map((choice) => {
 				price += choice.price;
 			});
 		});
@@ -87,8 +87,8 @@ const MenuModal: React.FC = () => {
 	const checkOptions = () => {
 		let flag = true;
 		selectedOptions.map((option) => {
-			// required가 true인 경우 => choices의 길이가 0보다 커야한다
-			if (option.required && option.choices.length === 0) {
+			// required가 true인 경우 => choice의 길이가 0보다 커야한다
+			if (option.required && option.choice.length === 0) {
 				setWarningText("필수 옵션을 선택해주세요");
 				flag = false;
 			}
@@ -150,13 +150,13 @@ const MenuModal: React.FC = () => {
 							<div className="mx-10 text-start">
 								{optionOrder.map((optionName) => {
 									const option = selectedMenu.options.find(
-										(opt) => opt.option_name === optionName
+										(opt) => opt.optionName === optionName
 									);
 									if (!option) return null; // Skip if the option is not present
 									return (
-										<div key={option.option_name} className="my-10">
+										<div key={option.optionName} className="my-10">
 											<p className="text-base font-bold">
-												{option.option_name}{" "}
+												{option.optionName}{" "}
 												{option.required && (
 													<span className="my-auto text-red-500 text-xs">
 														*필수선택
@@ -164,80 +164,87 @@ const MenuModal: React.FC = () => {
 												)}
 											</p>
 											{/* 온도 옵션 렌더링 */}
-											{option.option_name === "온도" && (
+											{option.optionName === "온도" && (
 												<div className="ml-10 my-5 space-x-6">
-													{option.choices.map((choice, index) => (
+													{option.choice.map((choice, index) => (
 														<Button
 															key={index}
 															onClick={() =>
-																handleOptionChange(option.option_name, choice)
+																handleOptionChange(option.optionName, choice)
 															}
-															text={choice.choice_name}
+															text={choice.choiceName}
 															className={`border border-4 w-32 py-5 font-bold text-sm text-black ${
-																choice.choice_name === "HOT"
-																	? "border-red-500"
-																	: choice.choice_name === "ICE"
-																	? "border-blue-500"
+																choice.choiceName === "HOT"
+																	? "border-red-300"
+																	: choice.choiceName === "ICE"
+																	? "border-blue-300"
 																	: ""
 															} ${
-																selectedTemp === choice.choice_name &&
-																"bg-gray-200 border-8"
-															}
+
+																selectedTemp === "ICE" &&
+																choice.choiceName === "ICE"
+																  ? "bg-blue-200 border-4"
+																  : selectedTemp === "HOT" &&
+																	choice.choiceName === "HOT"
+																  ? "bg-red-200 border-4"
+																  : ""
+															  }}
+															
                       `}
 														/>
 													))}
 												</div>
 											)}
 											{/* 사이즈 옵션 렌더링 */}
-											{option.option_name === "사이즈" && (
+											{option.optionName === "사이즈" && (
 												<div className="ml-10 my-5 space-x-6">
-													{option.choices.map((choice, index) => (
+													{option.choice.map((choice, index) => (
 														<Button
 															key={index}
 															onClick={() =>
-																handleOptionChange(option.option_name, choice)
+																handleOptionChange(option.optionName, choice)
 															}
 															text={
 																<div>
-																	{choice.choice_name}{" "}
+																	{choice.choiceName}{" "}
 																	<p className="text-xs">
-																		+ {choice.price.toLocaleString()}
+																		+ {choice.price.toLocaleString()} 원
 																	</p>
 																</div>
 															}
-															className={`border border-4 border-black w-40 py-2 font-bold text-black text-sm ${
-																selectedSize === choice.choice_name &&
-																"bg-gray-200 border-8"
+															className={`border border-4 border-gray-400 w-40 py-2 font-bold text-black text-sm ${
+																selectedSize === choice.choiceName &&
+																"bg-gray-200 border-4"
 															}
                       `}
 														/>
 													))}
 												</div>
 											)}
-											{option.option_name !== "온도" &&
-												option.option_name !== "사이즈" &&
-												option.choices.map((choice) => (
+											{option.optionName !== "온도" &&
+												option.optionName !== "사이즈" &&
+												option.choice.map((choice) => (
 													<div
-														key={choice.choice_name}
+														key={choice.choiceName}
 														className="flex space-x-4 ml-10 my-5 text-sm items-center"
 													>
 														<input
-															id={choice.choice_name}
+															id={choice.choiceName}
 															type={
 																option.type === "single" ? "radio" : "checkbox"
 															}
-															name={option.option_name}
+															name={option.optionName}
 															className="w-8 h-8"
-															value={choice.choice_name}
+															value={choice.choiceName}
 															onChange={() =>
-																handleOptionChange(option.option_name, choice)
+																handleOptionChange(option.optionName, choice)
 															}
 														/>
 														<label
-															htmlFor={choice.choice_name}
+															htmlFor={choice.choiceName}
 															className="flex-grow flex justify-between"
 														>
-															<p>{choice.choice_name}</p>
+															<p>{choice.choiceName}</p>
 															<p>+ {choice.price.toLocaleString()} 원</p>
 														</label>
 													</div>
@@ -249,7 +256,7 @@ const MenuModal: React.FC = () => {
 						</div>
 						<div
 							id="footer"
-							className={`absolute bottom-0 bg-stone-100 rounded-b-2xl py-3 w-full ${
+							className={`absolute bottom-0  bg-[#E3E9F6] rounded-b-2xl py-3 w-full ${
 								warningText ? "h-[290px]" : "h-[250px]"
 							}`}
 						>

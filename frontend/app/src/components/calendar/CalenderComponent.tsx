@@ -1,24 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { isSameMonth, isSameDay, addDays } from "date-fns";
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth } from "date-fns";
+import { addDays, isAfter } from "date-fns";
+import {
+  getMonthlyPayments,
+  getDailyPayments,
+  PaymentData,
+} from "../../api/paymentsAPI";
 
 import group from "/assets/images/group.png";
 import back from "/assets/images/button/back.png";
 import next from "/assets/images/button/next.png";
 import "./_style.scss";
 
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 interface RenderHeaderProps {
   currentMonth: Date;
   prevMonth: () => void;
   nextMonth: () => void;
+  data: PaymentData;
 }
 
 const RenderHeader: React.FC<RenderHeaderProps> = ({
   currentMonth,
   prevMonth,
   nextMonth,
+  data,
 }: RenderHeaderProps) => {
   return (
     <div
@@ -28,7 +35,7 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
         justifyContent: "flex-start",
         padding: "1rem",
         width: "100vw",
-        height: "20vh",
+        height: "17vh",
         backgroundColor: "#EFF7FF",
         boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
         position: "fixed",
@@ -42,7 +49,7 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
             // flexDirection: "row",
             gap: "0.7rem",
             marginBottom: "0.3rem",
-            fontSize: "25px",
+            fontSize: "22px",
             alignItems: "center",
           }}
         >
@@ -63,17 +70,21 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
           <img src={next} onClick={nextMonth} style={{ height: "1.3rem" }} />
         </div>
         <div style={{ paddingLeft: "0.5rem", fontSize: "18px" }}>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
-            <div style={{ width: "26vw" }}>총 결제금액</div>
-            <div>300,000 원</div>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
+            <div style={{ width: "30vw" }}>총 결제금액</div>
+            <div>{data.totalPaymentAmountSum.toLocaleString()} 원</div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
-            <div style={{ width: "26vw" }}>총 지원금</div>
-            <div style={{ color: "green" }}>26,000 원</div>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
+            <div style={{ width: "30vw" }}>총 지원금</div>
+            <div style={{ color: "green" }}>
+              {data.useSubsidySum.toLocaleString()} 원
+            </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
-            <div style={{ width: "26vw" }}>총 본인부담금</div>
-            <div style={{ color: "blue" }}>14,000 원</div>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
+            <div style={{ width: "30vw" }}>총 본인부담금</div>
+            <div style={{ color: "blue" }}>
+              {data.selfPaymentSum.toLocaleString()} 원
+            </div>
           </div>
         </div>
       </div>
@@ -100,11 +111,11 @@ const RenderDays = () => {
       style={{
         display: "flex",
         justifyContent: "space-between",
-        width: "90vw",
+        width: "88vw",
         marginTop: "0.5rem",
-        marginLeft: "5vw",
-        marginRight: "5vw",
-        fontSize: "18px",
+        marginLeft: "6vw",
+        marginRight: "6vw",
+        fontSize: "15px",
       }}
     >
       {days.map((day, index) => (
@@ -116,18 +127,16 @@ const RenderDays = () => {
   );
 };
 
-const isToday = (date: Date): boolean => {
-  const today = new Date();
-  return isSameDay(date, today);
-};
 
 const RenderCells = ({
   currentMonth,
-  selectedDate,
+  data,
+  navigation,
 }: {
   currentMonth: Date;
   selectedDate: Date;
-  onDateClick: (date: Date) => void;
+  data: PaymentData;
+  navigation: NavigateFunction;
 }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -137,79 +146,103 @@ const RenderCells = ({
   const totalWeeks = differenceInWeeks(endDate, startDate); // 총 주 수 계산
   const rowHeight = totalWeeks === 5 ? "10vh" : "12vh"; // 주 수에 따라 높이 지정
 
-  const navigate = useNavigate();
+  const paymentsMap = new Map();
+  data.dayPaymentList.forEach((payment) => {
+    paymentsMap.set(payment.day, payment);
+  });
+
+  const onDateClick = async (date: Date) => {
+    const dateString = format(date, "yyyy-MM-dd");
+    try {
+      const dailyPayments = await getDailyPayments(dateString);
+      console.log("Daily Payments for " + dateString + ":", dailyPayments);
+      navigation("/receiptDetail", {
+        state: { date: dateString, payments: dailyPayments },
+      });
+    } catch (error) {
+      console.error(
+        "Failed to fetch daily payments for",
+        dateString,
+        ":",
+        error
+      );
+    }
+  };
 
   const rows = [];
   let days = [];
   let day = startDate;
-  let formattedDate = "";
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
-      formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
+      const currentDay = day;
+      const formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
+      const dayData = paymentsMap.get(day.getDate());
+      const isCurrentMonth = isSameMonth(currentDay, currentMonth);
+      const opacityClass = isCurrentMonth ? "" : "opacity-50 bg-indigo-50"; // 현재 달이 아닌 날짜에 대한 불투명 클래스
+
       days.push(
         <div
           key={day.toISOString()}
-          className={`col cell ${
-            !isSameMonth(day, monthStart)
-              ? "disabled"
-              : isSameDay(day, selectedDate)
-              ? "selected"
-              : format(currentMonth, "M") !== format(day, "M")
-              ? "not-valid"
-              : "valid"
-          } ${isToday(day) ? "today" : ""}`}
           style={{
-            height: "100%",
+            height: "98%",
             display: "flex",
             flexDirection: "column",
-            width: "100%",
+            width: "85vw",
             flex: 1,
           }}
-          onClick={() => navigate("/receiptDetail")}
+          onClick={() => onDateClick(currentDay)}
         >
           <span
             className={`
-            ${
-              format(currentMonth, "M") !== format(day, "M")
-                ? "text not-valid"
-                : ""
-            }
-            border border-black // 선 스타일링
-            bg-blue-100 // 배경색 
+            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} 
           `}
             // 일자별 숫자나오는칸 스타일링
             style={{
-              borderLeft: "2px solid rgb(105, 103, 126)",
-              borderRight: "2px solid rgb(105, 103, 126)",
-              borderTop: "2px solid rgb(105, 103, 126)",
+             borderColor: 'gray',
+              borderLeft: "1px solid rgb(105, 103, 126)",
+              borderRight: "1px solid rgb(105, 103, 126)",
+              borderTop: "1px solid rgb(105, 103, 126)",
               height: "1.3rem",
-              fontSize: "15px",
+              fontSize: "10px",
               justifyContent: "center",
-              paddingLeft: "1rem",
-            }}
+              alignContent:'center',
+              textAlign: "center",
+              fontWeight: "bold",}}
           >
             {formattedDate}
           </span>
           {/* 일자별 지원금과 본인부담금 나오는 칸 스타일링 */}
           <div
-            className="
-             hover:bg-blue-200"
+            className={`bg-slate-50 border-transparent rounded-b-lg hover:bg-blue-200 shadow-right ${opacityClass}`}
+             
             style={{
               display: "flex",
               flexDirection: "column",
               height: "90%",
               width: "100%",
               justifyContent: "center",
-              marginRight: "0.5rem",
-              marginBottom: "0.5rem",
-              border: "2px solid rgb(105, 103, 126)",
+              fontWeight: 'bold',
+              // borderColor: 'gray',
+              borderLeft: "1px solid rgb(105, 103, 126)",
+              borderRight: "1px solid rgb(105, 103, 126)",
+              borderBottom: "1px solid rgb(105, 103, 126)",
               overflow: "auto",
               alignItems: "center",
+              textAlign: 'center',
+              fontSize: "10px",
             }}
           >
-            <div style={{ color: "green" }}>5,000</div>
-            <div style={{ color: "blue" }}>2,000</div>
+            {dayData && (
+              <div>
+                <div style={{ color: "green" }}>
+                  {dayData.useSubsidy.toLocaleString()}원
+                </div>
+                <div style={{ color: "blue" }}>
+                  {dayData.selfPayment.toLocaleString()}원
+                </div>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -223,8 +256,10 @@ const RenderCells = ({
           height: rowHeight,
           display: "flex",
           flexDirection: "row",
+          gap: '0.11rem',
           marginLeft: "1vw",
           marginRight: "1vw",
+          marginBottom: '0.2rem',
         }}
       >
         {days}
@@ -235,7 +270,7 @@ const RenderCells = ({
   return (
     <div
       style={{
-        height: "100%",
+        height: "95%",
         display: "flex",
         flexDirection: "column",
         width: "100%",
@@ -248,49 +283,77 @@ const RenderCells = ({
 
 export const CalendarComponent = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate] = useState(new Date());
   const navigate = useNavigate();
+  const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
+
+  // 현재 달의 결제 데이터를 가져오는 useEffect
+  useEffect(() => {
+    const fetchPayments = async () => {
+      const formattedMonth = format(currentMonth, "yyyy-MM");
+      try {
+        const response = await getMonthlyPayments(formattedMonth);
+        setPaymentData(response.data);
+        console.log("Payment data for month:", formattedMonth, response.data);
+      } catch (error) {
+        console.error(
+          "Failed to fetch payment data for",
+          formattedMonth,
+          ":",
+          error
+        );
+      }
+    };
+
+    fetchPayments();
+  }, [currentMonth]);
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
   const nextMonth = () => {
+    const maxDate = new Date(2024, 5); // 2024년 6월 (월 인덱스는 0부터 시작하므로 5는 6월을 의미)
+    if (isAfter(addMonths(currentMonth, 1), maxDate)) {
+      return;
+    }
     setCurrentMonth(addMonths(currentMonth, 1));
   };
-  const onDateClick = (day: Date) => {
-    console.log("클릭");
-    navigate("/receiptDetail");
-    setSelectedDate(day);
-  };
+
   return (
     <div
       style={{
-        height: "100%",
+        height: "85%",
         width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "start",
       }}
     >
-      <RenderHeader
-        currentMonth={currentMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-      />
+      {paymentData && (
+        <RenderHeader
+          currentMonth={currentMonth}
+          prevMonth={prevMonth}
+          nextMonth={nextMonth}
+          data={paymentData}
+        />
+      )}
       <img
         src={group}
         alt="지원금 및 본인부담금"
         style={{
-          paddingTop: "22vh",
+          paddingTop: "19vh",
           marginLeft: "1rem",
-        }}
+          width: '40vw'}}
       />
       <RenderDays />
-      <RenderCells
-        currentMonth={currentMonth}
-        selectedDate={selectedDate}
-        onDateClick={onDateClick}
-      />
+      {paymentData && (
+        <RenderCells
+          currentMonth={currentMonth}
+          selectedDate={selectedDate}
+          data={paymentData}
+          navigation={navigate}
+        />
+      )}
     </div>
   );
 };

@@ -9,16 +9,14 @@ const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
   orderCount,
   couponCount,
 }) => {
-  // 게이지 바 색상 설정을 위한 함수
+  // 계산된 쿠폰 수와 스탬프 수
+  const coupons = Math.floor(couponCount / 10);
+  const stamps = couponCount % 10;
+
   const getGaugeColor = (index: number): string => {
-    if (index <= couponCount) {
-      return "bg-primary-color";
-    } else {
-      return "bg-sky-200";
-    }
+    return index <= stamps ? "bg-primary-color" : "bg-sky-200";
   };
 
-  // 게이지 바 생성을 위한 배열
   const gaugeBars = Array.from({ length: 10 }, (_, index) => (
     <div
       key={index}
@@ -36,7 +34,7 @@ const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
           <div>
             <div className="flex justify-between">
               <p>보유 스탬프</p>
-              <p>보유 쿠폰: {couponCount}장</p>
+              <p>보유 쿠폰: {coupons}장</p>
             </div>
             <div className="mt-2 text-xs">
               10개를 모으면 쿠폰으로 사용할 수 있어요

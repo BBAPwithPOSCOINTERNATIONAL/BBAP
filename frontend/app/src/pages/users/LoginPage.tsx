@@ -1,11 +1,12 @@
-import React, { useState, useRef, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import bbapimg from "/assets/images/bbap.png";
-import logoimg from "/assets/images/logo.png";
-import { requestPermission } from "../../service/initFirebase.js";
-import { login } from "../../api/hradminAPI.js";
-// import { useUserStore } from "../../store/userStore";
+// import logoimg from "/assets/images/logo.png";
+import PWAInstallPrompt from "../../components/install";
+import { requestPermission } from "../../service/initFirebase";
+import { login, getUserInfo } from "../../api/hradminAPI";
+import { useUserStore } from "../../store/userStore";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -13,9 +14,7 @@ function LoginPage() {
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [fcmToken, setFcmToken] = useState("");
-
-  const employeeIdRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const updateUserData = useUserStore((state) => state.updateUserData);
 
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmployeeId(() => e.target.value);
@@ -39,15 +38,21 @@ function LoginPage() {
     }
     setLoading(true);
 
-    const token = await requestPermission();
-    setFcmToken(token);
     try {
-      // console.log(adminId, password);
+      const token = await requestPermission();
+      setFcmToken(token ?? "");
+
       const response = await login(employeeId, password, fcmToken);
 
-      navigate("/main");
+      if (response.data.accessToken && response.data.refreshToken) {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        const userInfo = await getUserInfo();
+        // console.log("userinfo", userInfo.data);
+        updateUserData(userInfo.data);
+        navigate("/main");
+      }
     } catch (error) {
-      // console.log(adminId, password);
       console.error("로그인 실패:", error);
     } finally {
       setLoading(false);
@@ -57,11 +62,12 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">
       <div className="w-full max-w-xs">
-        <img
+        {/* <img
           src={logoimg}
           alt="Login Logo"
           className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full"
-        />
+        /> */}
+          <PWAInstallPrompt />
         <img
           src={bbapimg}
           alt="Login Logo"
@@ -75,7 +81,6 @@ function LoginPage() {
               id="employeeId"
               value={employeeId}
               onChange={onChangeId}
-              ref={employeeIdRef}
               required
               placeholder="사원번호"
               className="font-hyemin-bold shadow appearance-none leading-10 border rounded w-full py-4 px-5 text-gray-700 text-center leading-tight focus:outline-none appearance-none ring-2 focus:ring-blue-300 focus:outline-none 
@@ -88,7 +93,6 @@ function LoginPage() {
               id="password"
               value={password}
               onChange={onChangePassword}
-              ref={passwordRef}
               required
               placeholder="비밀번호"
               className="font-hyemin-bold shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 mb-3 text-center leading-tight ring-2 focus:ring-blue-300 focus:outline-none 

@@ -7,7 +7,7 @@ interface ApiResponse {
   data: {
     menuListCoffee: Menu[];
     menuListBeverage: Menu[];
-    menuListDessert: Menu[];
+    menuListDesert: Menu[];
     menuListPopular: Menu[];
   };
 }
@@ -16,7 +16,7 @@ export async function fetchMenuData(): Promise<ApiResponse> {
   try {
     const CAFE_ID = "66276af2412ced9137ecabe9"; // 카페ID 고정
     const { data } = await apiClient.get<ApiResponse>(
-      `cafes/kiosk/menus/${CAFE_ID}`
+      `/api/v1/cafes/kiosk/menus/${CAFE_ID}`
     );
     return data;
   } catch (error) {

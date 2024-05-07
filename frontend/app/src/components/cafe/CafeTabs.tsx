@@ -14,7 +14,7 @@ interface Tab {
 
 const Tabs: React.FC<TabsProps> = ({ content, setContent, tabs }) => {
   return (
-    <div className="flex justify-center space-x-4 mt-4">
+    <div className="flex justify-center space-x-4">
       {tabs.map((tab) => (
         <a
           key={tab.key}

@@ -9,15 +9,15 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
   const { openMenuModal } = useModalStore();
   const tempOption = menuItemData.options.find(
-    (option) => option.option_name === "온도"
+    (option) => option.optionName === "온도"
   );
-  const tempChoices =
-    tempOption && tempOption.choices.map((choice) => choice.choice_name);
+  const tempChoices = tempOption && tempOption.choice.map((c) => c.choiceName);
+  
 
   return (
     <div
       id="menu-item"
-      className="relative rounded-3xl shadow-xl h-[250px] m-4 p-4 flex flex-col bg-stone-100"
+      className="relative rounded-2xl shadow-xl h-[250px] m-4 p-4 flex flex-col bg-[#F5F5F5]"
       onClick={() => {
         openMenuModal(menuItemData);
       }}
@@ -38,7 +38,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
                 </p>
               );
             }
-          })}
+          })} 
         </div>
       )}
       <img
@@ -46,9 +46,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ menuItemData }) => {
         alt={menuItemData.name}
         className="w-1/2 absolute top-14 left-14"
       />
-      <div id="menu-info" className="absolute w-full pr-10 bottom-1">
-        <p className="text-xs break-keep">{menuItemData.name}</p>
-        <p className="text-xs text-end font-bold">
+      <div id="menu-info" className="absolute w-full pr-4 bottom-1">
+        <p className="text-xs break-keep font-bold">{menuItemData.name}</p>
+        <p className="text-xs text-end font-bold pr-4">
           {menuItemData.price.toLocaleString()} 원
         </p>
       </div>

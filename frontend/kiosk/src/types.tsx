@@ -1,12 +1,12 @@
 export interface Choice {
-	choice_name: string;
+	choiceName: string;
 	price: number;
 }
 export interface Option {
-	option_name: string;
+	optionName: string;
 	type: string;
 	required: boolean;
-	choices: Choice[];
+	choice: Choice[];
 }
 export interface Menu {
 	id: string;

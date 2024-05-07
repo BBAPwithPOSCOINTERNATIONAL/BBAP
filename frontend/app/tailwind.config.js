@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -49,6 +50,7 @@ export default {
       boxShadow: {
         1.5: "0px 1.5px 0px rgba(0, 0, 0, 0.1)",
         3: "0px 3px 0px rgba(0, 0, 0, 0.3)",
+        right: '4px 0 6px -1px rgba(226, 241, 255, 0.1), 4px 0 4px -1px rgba(226, 241, 255, 0.1)'
       },
       lineHeight: {
         none: "1",

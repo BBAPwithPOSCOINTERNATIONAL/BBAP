@@ -1,33 +1,22 @@
 import { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import BottomTabBar from "../components/BottomTabBar";
-import { menuDatas, DailyMenu, MenuItem } from "../components/menuDatas";
-// import { RestaurantData } from "../api/restaurantAPI";
+import {
+  fetchRestaurantData,
+  Restaurant,
+  Menu,
+  fetchMenus,
+  FetchMenuParams,
+} from "../api/restaurantAPI";
 // import { useQuery } from "@tanstack/react-query";
 
 function RestaurantMainPage() {
-  // const { data, isError, isLoading, error } = useQuery(
-  //   ["restaurant", restaurantId],
-  //   () => RestaurantData(restaurantId),
-  //   {
-  //     // 조건부 쿼리 실행
-  //     enabled: restaurantId !== -1,
-  //   }
-  // );
-
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError)
-  //   return (
-  //     <div>
-  //       Error: {error instanceof Error ? error.message : "Unknown error"}
-  //     </div>
-  //   );
-
-  const [restaurant, setRestaurant] = useState<string>("A");
+  const [restaurant, setRestaurant] = useState<number>(0);
+  const [restaurantList, setRestaurantList] = useState<Restaurant[]>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [weekDates, setWeekDates] = useState<string[]>([]);
-  const [mealType, setMealType] = useState<keyof DailyMenu>("Breakfast");
-  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [mealType, setMealType] = useState<number>(0);
+  const [menus, setMenus] = useState<Menu[]>([]);
   const [canGoBack, setCanGoBack] = useState<boolean>(true);
   const [canGoForward, setCanGoForward] = useState<boolean>(true);
 
@@ -40,16 +29,44 @@ function RestaurantMainPage() {
     .toLocaleDateString("ko-KR", options)
     .replace(/\.$/, "");
   const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
-  const dayOfWeekString = `${daysOfWeek[today.getDay()]} \n ${dateString}`;
+  const dayOfWeekString = `${daysOfWeek[today.getDay() - 1]} \n ${dateString}`;
   const [selectedDay, setSelectedDay] = useState<string>(dayOfWeekString);
 
-  useEffect(() => {
-    setSelectedDay(dayOfWeekString);
+  const rendering = async (restaurantId: number) => {
+    try {
+      const result = await fetchRestaurantData(restaurantId);
 
+      const currentRestaurantId = result.data.restaurantId;
+
+      setRestaurant(
+        result.data.restaurantList.find(
+          (item) => item.restaurantId === currentRestaurantId
+        )!.restaurantId
+      );
+      setRestaurantList(result.data.restaurantList);
+      setMenus(result.data.menuList);
+      setMealType(result.data.mealClassification);
+    } catch (error) {
+      console.error("식당 리스트 요청 실패", error);
+    }
+  };
+
+  useEffect(() => {
+    //로컬 스토리지에 저장되어 있는 기존의 선택 옵션을 불러옴
+    const localId = localStorage.getItem("restaurantId");
+
+    //없다면 -1로 리스트 요청
+    rendering(localId == null ? -1 : parseInt(localId));
+  }, []);
+
+  useEffect(() => {
+    renderMenus();
+  }, [selectedDay, restaurant, mealType]);
+
+  useEffect(() => {
     setWeekDates(generateWeekDates(selectedDate));
     updateNavigationControls();
-    fetchMenus(dayOfWeekString);
-  }, [selectedDate, restaurant, mealType]);
+  }, [selectedDate]);
 
   const updateNavigationControls = () => {
     const today = new Date();
@@ -103,37 +120,36 @@ function RestaurantMainPage() {
     setSelectedDate(newDate);
   };
 
-  const mealTypes: (keyof DailyMenu)[] = [
-    "Breakfast",
-    "Lunch",
-    "Dinner",
-    "Lunchbox",
-  ];
+  const mealTypes: number[] = [1, 2, 3, 4];
 
-  const mealTypeDisplayNames: Record<keyof DailyMenu, string> = {
-    Breakfast: "아침",
-    Lunch: "점심",
-    Dinner: "저녁",
-    Lunchbox: "도시락",
+  const mealTypeDisplayNames: Record<number, string> = {
+    1: "아침",
+    2: "점심",
+    3: "저녁",
+    4: "도시락",
   };
 
-  const fetchMenus = (dayString: string) => {
-    const [, date] = dayString.split("\n");
+  const renderMenus = async () => {
+    const [, date] = selectedDay.split("\n");
     const [month, day] = date.split(".");
     const year = selectedDate.getFullYear();
     const dateObj = new Date(year, parseInt(month) - 1, parseInt(day));
-    const dayIndex = dateObj.getDay();
-    const dayOfWeekEnglish = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][dayIndex];
-    const selectedMenus = menuDatas[restaurant][dayOfWeekEnglish][mealType];
-    setMenus(selectedMenus);
+    dateObj.setUTCHours(dateObj.getUTCHours() + 9); // 한국 시간대로 변환
+
+    const params: FetchMenuParams = {
+      restaurantId: restaurant!,
+      menuDate: dateObj,
+      mealClassification: mealType!,
+    };
+
+    try {
+      const result = await fetchMenus(params);
+      console.log(result.data);
+
+      setMenus(result.data.menuList);
+    } catch (error) {
+      console.error("Error fetching voices:", error);
+    }
   };
 
   return (
@@ -142,10 +158,17 @@ function RestaurantMainPage() {
       <div className="flex flex-col items-center justify-center">
         <select
           value={restaurant}
-          onChange={(e) => setRestaurant(e.target.value)}
+          onChange={(e) => {
+            setRestaurant(parseInt(e.target.value));
+            rendering(parseInt(e.target.value));
+            //식당 선택 시 로컬스토리지에 저장
+            localStorage.setItem("restaurantId", e.target.value);
+          }}
         >
-          {["A", "B", "C"].map((r) => (
-            <option key={r} value={r}>{`Restaurant ${r}`}</option>
+          {restaurantList?.map((r) => (
+            <option key={r.restaurantId} value={r.restaurantId}>
+              {r.restaurantName}
+            </option>
           ))}
         </select>
 
@@ -168,8 +191,8 @@ function RestaurantMainPage() {
                 <button
                   key={index}
                   onClick={() => {
+                    console.log(date);
                     setSelectedDay(date);
-                    fetchMenus(date);
                   }}
                   className={`w-1/11 text-xs font-bold py-2 px-1 rounded text-center ${
                     isActive
@@ -209,7 +232,6 @@ function RestaurantMainPage() {
             key={type}
             onClick={() => {
               setMealType(type);
-              fetchMenus(selectedDay);
             }}
             style={{
               display: "flex",
@@ -235,14 +257,14 @@ function RestaurantMainPage() {
           >
             <div className="bg-cafe-primary-color border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
               <h1 className="text-lg font-hyemin-bold dark:text-white text-center">
-                {menu.mainMenu}
+                {menu.menuName}
               </h1>
             </div>
             <hr className="h-1 bg-[#346186]" />
             <div className="flex-grow p-4 md:p-5">
-              {menu.imageUrl && (
+              {menu.menuImage && (
                 <img
-                  src={menu.imageUrl}
+                  src={menu.menuImage}
                   alt="Menu"
                   className="w-full h-auto mt-1 border"
                   style={{ maxHeight: "200px" }}
@@ -250,14 +272,12 @@ function RestaurantMainPage() {
               )}
               <hr className="h-1 bg-[#346186]" />
               <p className="mt-2 text-center text-gray-500 dark:text-neutral-400">
-                {menu.subMenus.join(" / ")}
+                {menu.menuDetail}
               </p>
             </div>
             <hr className="h-1 bg-[#346186]" />
             <div className="bg-cafe-primary-color rounded-b-xl py-3 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
-              <p className="mt-1 text-lg text-center">
-                {menu.price.toFixed(2)} 원
-              </p>
+              <p className="mt-1 text-lg text-center">{menu.menuPrice} 원</p>
             </div>
           </div>
         ))}

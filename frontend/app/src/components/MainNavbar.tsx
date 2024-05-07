@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiBell, FiHome, FiArrowLeft } from "react-icons/fi";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import bbapimg from '/assets/images/bbap.png'
 
 const NavBar: React.FC = () => {
   const location = useLocation();
@@ -47,7 +48,7 @@ const NavBar: React.FC = () => {
           className="text-3xl font-hyemin-bold text-white"
           style={{ transform: "translateX(-20px)" }}
         >
-          BBAP
+          <img src={bbapimg} />
         </div>
 
         <div className="text-right">
