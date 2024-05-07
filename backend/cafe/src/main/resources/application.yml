@@ -17,6 +17,3 @@ logging:
       hibernate:
         SQL: DEBUG
         type: TRACE
-
-server:
-  port: 8083
