@@ -36,9 +36,9 @@ function Modal({ isOpen, children }: ModalProps) {
 }
 
 function MyProfilePage() {
-  const profile = {
-    imageUrl: IdPhoto,
-  };
+  // const profile = {
+  //   imageUrl: IdPhoto,
+  // };
 
   const [showVideo, setShowVideo] = useState(false);
   const [captured, setCaptured] = useState(false);
