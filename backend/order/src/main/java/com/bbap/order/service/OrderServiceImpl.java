@@ -64,14 +64,12 @@ public class OrderServiceImpl implements OrderService {
 
 	private final RedisTemplate<String, String> redisTemplate;
 	@Override
-	public ResponseEntity<DataResponseDto<PayResponseDto>> order(PayRequestDto dto) {
+	public ResponseEntity<DataResponseDto<PayResponseDto>> order(Integer empId, PayRequestDto dto) {
 		// Validate pick-up time
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
 		List<OrderMenu> orderMenus = getOrderMenus(dto);
-		//사원 아이디
-		int empId = 1;
 		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(),dto.getUsedSubsidy(),orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
@@ -97,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(PayRequestDto dto, Integer empId) {
+	public ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(Integer empId, PayRequestDto dto) {
 		// Validate pick-up time
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
@@ -173,9 +171,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(String cafeId) {
-		//사원 pk랑 이름 가져오기
-		int empId = 1;
+	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(Integer empId, String cafeId) {
+        //이름 가져오기
 		String empName = "다희";
 
 		//스탬프 수 가져오기
@@ -191,12 +188,10 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer month, Integer year) {
+	public ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer empId, Integer month, Integer year) {
 		// 해당 월의 첫 날과 마지막 날을 계산
 		LocalDateTime startOfMonth = YearMonth.of(year, month).atDay(1).atStartOfDay();
 		LocalDateTime endOfMonth = YearMonth.of(year, month).atEndOfMonth().atTime(23, 59, 59);
-		//사원 ID 토큰에서 까기
-		Integer empId = 1;
 
 		List<Order> orderList = orderRepository.findByEmployeeAndPickUpTimeBetween(startOfMonth, endOfMonth, empId);
 		List<OrderDto> orderDtos = new ArrayList<>();
@@ -223,7 +218,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(String orderId) {
+	public ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(Integer empId, String orderId) {
 		Order order = orderRepository.findById(orderId).orElseThrow(OrderEntityNotFoundException:: new);
 		List<OrderMenu> menus = order.getMenus();
 		List<OrderDetailMenuDto> orderDetailMenuDtos = new ArrayList<>();

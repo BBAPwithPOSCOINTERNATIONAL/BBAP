@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +45,8 @@ public class OrderController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@PostMapping("/pay")
-	ResponseEntity<DataResponseDto<PayResponseDto>> orderApp(@RequestBody PayRequestDto requestDto) {
-		return orderService.order(requestDto);
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderApp(@RequestHeader(value = "X-Employee-Id") int empId, @RequestBody PayRequestDto requestDto) {
+		return orderService.order(empId, requestDto);
 	}
 
 	@Operation(
@@ -69,9 +68,9 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@PostMapping("/pay/{empId}")
-	ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(@RequestBody PayRequestDto requestDto, @PathVariable Integer empId) {
-		return orderService.orderIn(requestDto, empId);
+	@PostMapping("/pay")
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(@RequestHeader(value = "X-Employee-Id") int empId, @RequestBody PayRequestDto requestDto) {
+		return orderService.orderIn(empId, requestDto);
 	}
 
 	@Operation(
@@ -118,8 +117,8 @@ public class OrderController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping(value="/payInfo/{cafeId}")
-	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@PathVariable String cafeId) {
-		return orderService.getPayInfo(cafeId);
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable String cafeId) {
+		return orderService.getPayInfo(empId, cafeId);
 	}
 	@Operation(
 		summary = "주문 내역 리스트",
@@ -129,8 +128,8 @@ public class OrderController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping(value="/list/{year}/{month}")
-	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(@PathVariable Integer month, @PathVariable Integer year) {
-		return orderService.orderList(month, year);
+	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable Integer month, @PathVariable Integer year) {
+		return orderService.orderList(empId, month, year);
 	}
 
 	@Operation(
@@ -141,7 +140,7 @@ public class OrderController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping(value="/{orderId}")
-	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(@PathVariable String orderId) {
-		return orderService. orderDetail(orderId);
+	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable String orderId) {
+		return orderService. orderDetail(empId, orderId);
 	}
 }
