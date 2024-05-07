@@ -37,35 +37,45 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RoomServiceImpl implements RoomService{
-	private final RoomRepository roomRepository;
-	private final ParticipantRepository participantRepository;
-	private final SessionRepository sessionRepository;
-	private SimpMessagingTemplate messagingTemplate;
-	@Override
-	public ResponseEntity<DataResponseDto<RoomParticipationDto>> checkHasRoom(Integer empId) {
-		Optional<EntireParticipant> participant = participantRepository.findById(empId);
-		RoomParticipationDto roomParticipationDto = new RoomParticipationDto();
-		if (participant.isPresent()) {
-			roomParticipationDto.setRoomId(participant.get().getRoomId());
-		}else {
-			roomParticipationDto.setRoomId(null);
-		}
-		return DataResponseDto.of(roomParticipationDto);
-	}
+public class RoomServiceImpl implements RoomService {
+    private final RoomRepository roomRepository;
+    private final ParticipantRepository participantRepository;
+    private final SessionRepository sessionRepository;
+    private SimpMessagingTemplate messagingTemplate;
 
-	@Override
-	public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId) {
-		String newRoomId = generateRoomId();
-		Room newRoom = new Room(newRoomId, "INITIAL", empId,
-			new HashMap<>(), new ArrayList<>(), null);
-		roomRepository.save(newRoom);
-		EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId);
-		participantRepository.save(newParticipant);
-		return DataResponseDto.of(new RoomParticipationDto(newRoomId));
-	}
+    @Override
+    public ResponseEntity<DataResponseDto<RoomParticipationDto>> checkHasRoom(Integer empId) {
+        log.info("사원 ID {}에 대해 방을 검사하는 중...", empId);
 
-	private String generateRoomId() {
-		return UUID.randomUUID().toString();
-	}
+        Optional<EntireParticipant> participant = participantRepository.findById(empId);
+        RoomParticipationDto roomParticipationDto = new RoomParticipationDto();
+        if (participant.isPresent()) {
+            roomParticipationDto.setRoomId(participant.get().getRoomId());
+            log.info("사원 ID {}는 방 ID {}에 참여하고 있습니다.", empId, roomParticipationDto.getRoomId());
+
+        } else {
+            roomParticipationDto.setRoomId(null);
+            log.warn("사원 ID {}는 어떤 방에도 참여하고 있지 않습니다.", empId);
+        }
+        return DataResponseDto.of(roomParticipationDto);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId) {
+        log.info("사원 ID {}에 대해 새로운 방을 생성하는 중...", empId);
+
+        String newRoomId = generateRoomId();
+        Room newRoom = new Room(newRoomId, "INITIAL", empId,
+                new HashMap<>(), new ArrayList<>(), null);
+        roomRepository.save(newRoom);
+        EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId);
+        participantRepository.save(newParticipant);
+
+        log.info("사원 ID {}에 대한 새로운 방 ID {}가 생성되었습니다.", empId, newRoomId);
+        return DataResponseDto.of(new RoomParticipationDto(newRoomId));
+    }
+
+    private String generateRoomId() {
+        return UUID.randomUUID().toString();
+    }
 }

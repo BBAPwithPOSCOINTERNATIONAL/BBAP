@@ -53,15 +53,24 @@ public class WebSocketServiceImpl implements WebSocketService{
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
 		Session session = new Session(sessionId, empId);
 		sessionRepository.save(session);
+		log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
 	}
 
 	@Override
 	public void addOrderItem(String sessionId, AddOrderItemRequestDto requestDto) {
+		log.info("세션 ID {} 과 주문 상세 정보를 이용해 주문 아이템을 추가하려고 합니다: {}", sessionId, requestDto);
 		Integer empId = getEmpId(sessionId);
 		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+				.orElseThrow(() -> {
+					log.error("사용자가 어떤 방에도 참여하고 있지 않습니다. 사원 ID: {}", empId);
+					return new IllegalArgumentException("User is not in any room");
+				});
 		String roomId = participant.getRoomId();
-		Room room = roomRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("Room not found"));
+		Room room = roomRepository.findById(roomId).orElseThrow(() -> {
+			log.error("잘못된 방 ID{} 가 주어졌습니다.", roomId);
+			return new IllegalArgumentException("Room not found");
+		});
+
 		if (room.getOrderItems() == null) {
 			room.setOrderItems(new ArrayList<>());
 		}
@@ -72,6 +81,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 		if (!room.getRoomStatus().equals("INITIAL") && !room.getRoomStatus().equals("ORDER_FILLED")) {
 			throw new IllegalStateException("'INITIAL' or 'ORDER_FILLED' 상태여야 주문이 가능합니다.");
 		}
+
 		List<OptionRequestDto> optionList = requestDto.getOptions();
 		List<MenuOption> menuOptions = new ArrayList<>();
 		for (OptionRequestDto option : optionList) {
@@ -94,19 +104,30 @@ public class WebSocketServiceImpl implements WebSocketService{
 			empId
 		);
 		room.getOrderItems().add(orderItem); //아이템 추가
+		log.info("주문 아이템이 성공적으로 추가되었습니다. 아이템: {}", orderItem);
+
 		String name = hrServiceFeignClient.checkId(empId).getBody().getData().getEmpName();
 		room.getOrderers().put(empId, name);
+		log.info("사원 ID {}와 이름 {}을 주문자 목록에 추가했습니다.", empId, name);
+
 		room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
 		roomRepository.save(room);
 		//구독자에게 알리기
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+		log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
 	}
 
 	@Override
 	public void deleteOrderItem(String sessionId, String orderItemId) {
+		log.info("세션 ID {}과 주문 아이템 ID {}을 이용해 주문 아이템을 삭제하려고 합니다.", sessionId, orderItemId);
+
+
 		Integer empId = getEmpId(sessionId);
 		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
+				.orElseThrow(() -> {
+					log.error("사용자가 어떤 방에도 참여하고 있지 않습니다. 사원 ID: {}", empId);
+					return new IllegalArgumentException("User is not in any room");
+				});
 		String roomId = participant.getRoomId();
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		// 방 상태 확인
@@ -119,6 +140,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 		if (itemToRemove.isPresent()) {
 			room.getOrderItems().remove(itemToRemove.get());
+			log.info("주문 아이템 ID {} 삭제되었습니다.", orderItemId);
+
 			// 주문 목록이 비어있으면 상태를 초기화
 			if (room.getOrderItems().isEmpty()) {
 				room.setRoomStatus("INITIAL");
@@ -132,13 +155,18 @@ public class WebSocketServiceImpl implements WebSocketService{
 			}
 			roomRepository.save(room);
 			messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+			log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+
 		} else {
+			log.error("주문 아이템 ID {}를 찾을 수 없습니다.", orderItemId);
 			throw new OrderItemNotFoundException();
 		}
 	}
 
 	@Override
 	public void startGame(String sessionId) {
+		log.info("세션 ID {}을 이용해 게임 시작을 시도합니다.", sessionId);
+
 		Integer empId = getEmpId(sessionId);
 		EntireParticipant participant = participantRepository.findById(empId)
 			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
@@ -150,12 +178,17 @@ public class WebSocketServiceImpl implements WebSocketService{
 		}
 		if (room.getCurrentOrderer() != empId) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
 		room.setRoomStatus("GAME_START");
+		log.info("방 {}의 상태가 'GAME_START'로 변경되었습니다.", roomId);
+
 		roomRepository.save(room);
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+		log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+
 	}
 
 	@Override
 	public void runWheel(String sessionId) {
+		log.info("세션 ID {}을 이용해 원판을 돌리려고 합니다.", sessionId);
 		Integer empId = getEmpId(sessionId);
 		EntireParticipant participant = participantRepository.findById(empId)
 			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
@@ -167,11 +200,17 @@ public class WebSocketServiceImpl implements WebSocketService{
 		}
 		if (room.getCurrentOrderer() != empId) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
 		room.setRoomStatus("GAME_END");
+		log.info("방 {}의 상태가 'GAME_END'로 변경되었습니다.", roomId);
+
 		// 원판 결과 생성 (랜덤 또는 사전 정의된 결과를 사용)
 		Integer result = generateWheelResult(room.getOrderers());
 		room.setCurrentOrderer(result); //주문자 변경
+		log.info("원판 결과에 따라 새로운 주문자 ID {}가 결정되었습니다.", result);
+
 		roomRepository.save(room);
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+		log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+
 	}
 
 	@Override
@@ -208,6 +247,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 	@Override
 	public void leaveRoom(String sessionId) {
+		log.info("세션 ID {}을 이용해서 방을 나가려고 합니다.", sessionId);
+
 		Integer empId = getEmpId(sessionId);
 		// 방과 관련된 `EntireParticipant` 객체를 찾음
 		EntireParticipant participant = participantRepository.findById(empId)
@@ -225,6 +266,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 			// 방의 모든 참여자 제거
 			List<EntireParticipant> participantsToDelete = participantRepository.findAllByRoomId(roomId);
+			log.info("사원 ID {}이(가) 방 {}의 방장이므로 전체 참여자를 제거했습니다.", empId, roomId);
+
 			participantRepository.deleteAll(participantsToDelete);
 		} else {
 			// 현재 주문자가 아닌 경우: 해당 사용자가 시킨 주문 항목 제거
@@ -232,6 +275,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 				.filter(item -> item.getOrderer().equals(empId))
 				.toList();
 			room.getOrderItems().removeAll(itemsToRemove);
+			log.info("사원 ID {}가 방 {}에서 나갔으므로 참여자 목록에서 제거했습니다.", empId, roomId);
 
 			// 사용자가 더 이상 주문한 항목이 없다면 `orderers` 목록에서 제거
 			if (room.getOrderItems().stream().noneMatch(item -> item.getOrderer().equals(empId))) {
@@ -247,6 +291,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 		// 방 상태 변경을 구독 중인 모든 사용자에게 알림
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+		log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
 	}
 
 
