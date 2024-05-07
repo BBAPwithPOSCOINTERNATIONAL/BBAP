@@ -6,7 +6,6 @@ import java.time.YearMonth;
 import org.springframework.http.ResponseEntity;
 
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
-import com.bbap.payment.dto.request.ProcessPayRequestDto;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -22,5 +21,5 @@ public interface PaymentService {
 
 	ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId);
 
-	void processPay(ProcessPayRequestDto request);
+	void processPay(String kafkaMessage);
 }

@@ -128,7 +128,9 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	@KafkaListener(topics = "pay_topic", groupId = "pay-service-group")
-	public void processPay(ProcessPayRequestDto request) {
+	public void processPay(String kafkaMessage) {
+		ProcessPayRequestDto request = new Gson().fromJson(kafkaMessage, ProcessPayRequestDto.class);
+
 		CheckEmpResponseData empData = hrServiceFeignClient.checkId(request.getEmpId()).getBody().getData();
 
 		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
