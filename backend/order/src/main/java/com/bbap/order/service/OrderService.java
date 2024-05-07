@@ -15,12 +15,18 @@ import com.bbap.order.dto.responseDto.DataResponseDto;
 
 public interface OrderService {
 	ResponseEntity<DataResponseDto<PayResponseDto>> order(Integer empId, PayRequestDto dto);
+
 	ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto);
-	ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(Integer empId, PayRequestDto dto);
+
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto);
+
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto);
+
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto);
+
 	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(Integer empId, String cafeId);
+
 	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(Integer empId, Integer month, Integer year);
+
 	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(Integer empId, String orderId);
 }

@@ -133,33 +133,46 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto) {
+		int empId = dto.getEmpId();
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId());
+		//스탬프 조회와 개수 확인
+		if (dto.getCntCouponToUse() != 0)
+			validateStampAvailability(stamp, dto.getCntCouponToUse());
+
+		// 주문 메뉴들 order로 정리, 총 가격
 		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
 		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
+		int totalPaymentAccount = orderSummary.getTotalFinalPrice();
+		String paymentDeatil = orderSummary.getPaymentDetail();
+
+		int discountAccount = dto.getCntCouponToUse() * 3000;
+
+		// 할인 금액이 총 결제 가격보다 크지 않은지 확인
+		if (dto.getCntCouponToUse() != 0)
+			validateDiscount(totalPaymentAccount, dto.getUsedSubsidy(), discountAccount);
+
+		//카페 이름 가져오기
+		Cafe cafe = cafeRepository.findById(dto.getCafeId()).orElseThrow(CafeEntityNotFoundException::new);
 
 		//사원 아이디
 		Order order = new Order(dto.getCafeId(), dto.getEmpId(), LocalDateTime.now(),
 			LocalDateTime.now().plusMinutes(5), dto.getUsedSubsidy(), orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
-		//결제 서비스 보내기
-		//레디스에서 방 번호 가져오기
-		Long orderNum = incrementOrderNumber(dto.getCafeId());
-		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
-		return DataResponseDto.of(payResponseDto);
-	}
 
-	@Override
-	public ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(Integer empId, PayRequestDto dto) {
-		// Validate pick-up time
-		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
-			throw new BadOrderRequestException();
-		}
-		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
-		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
-		//사원 아이디
-		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(), dto.getUsedSubsidy(),
-			orderMenus);
-		orderRepository.insert(order); // 주문 db에 넣기
+		PaymentRequestDto paymentRequestDto = PaymentRequestDto.builder()
+			.empId(empId)
+			.totalPaymentAccount(totalPaymentAccount - discountAccount)
+			.useSubsidy(dto.getUsedSubsidy())
+			.paymentDetail(paymentDeatil)
+			.payStore(cafe.getName()).build();
+
 		//결제 서비스 보내기
+		ResponseEntity<ResponseDto> response = paymentServiceFeignClient.pay(paymentRequestDto);
+
+		// 스탬프 업데이트
+		if (dto.getCntCouponToUse() != 0)
+			updateStamp(stamp, dto.getCntCouponToUse());
+		addStampAfterOrder(empId, dto.getCafeId());
 
 		//레디스에서 방 번호 가져오기
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
