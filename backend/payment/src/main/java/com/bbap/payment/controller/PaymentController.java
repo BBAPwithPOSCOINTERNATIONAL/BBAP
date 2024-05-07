@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
+import com.bbap.payment.dto.request.ProcessPayRequestDto;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -46,6 +47,18 @@ public class PaymentController {
 	@PostMapping("/restaurant")
 	public ResponseEntity<ResponseDto> payRestaurant(@RequestBody PayRestaurantRequestDto request) {
 		return paymentService.payRestaurant(request);
+	}
+
+	@Operation(
+		summary = "결제 처리",
+		description = "이용자에게 확인 받은 결제 정보를 이용해 결제처리를 한다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "결제 성공."),
+	})
+	@PostMapping
+	public ResponseEntity<ResponseDto> processPay(@RequestBody ProcessPayRequestDto request) {
+		return paymentService.processPay(request);
 	}
 
 	@Operation(

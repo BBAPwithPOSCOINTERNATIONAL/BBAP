@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +81,38 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
+	public ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request) {
+		//HR에서 empId를 이용해 사원정보를 받아옴(테스트 코드)
+		CheckEmpResponseData empData = hrServiceFeignClient.checkId(request.getEmpId()).getBody().getData();
+
+		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
+		int availSubsidy = calSubsidy(empData);
+
+		if (availSubsidy < request.getUseSubsidy())
+			throw new SubsidyNotMatchException();
+
+		//결제 내역 처리
+		PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
+			.empId(request.getEmpId())
+			.payStore(request.getPayStore())
+			.totalPaymentAmount(request.getTotalPaymentAccount())
+			.useSubsidy(request.getUseSubsidy())
+			.paymentDetail(request.getPaymentDetail())
+			.paymentDate(LocalDateTime.now())
+			.build();
+
+		paymentHistoryRepository.save(entity);
+
+		//알림 전송
+		sendPayNotice(entity);
+
+		log.info("{} : 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
+			entity.getUseSubsidy());
+
+		return ResponseDto.success();
+	}
+
+	@Override
 	public ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(int empId,
 		YearMonth yearMonth) {
 		//날짜 범위 구하기
@@ -124,38 +155,6 @@ public class PaymentServiceImpl implements PaymentService {
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId) {
 		return DataResponseDto.of(paymentHistoryRepository.findByHistoryId(historyId).orElseThrow(
 			HistoryNotFoundException::new));
-	}
-
-	@Override
-	@KafkaListener(topics = "pay_topic", groupId = "pay-service-group")
-	public void processPay(String kafkaMessage) {
-		ProcessPayRequestDto request = new Gson().fromJson(kafkaMessage, ProcessPayRequestDto.class);
-
-		CheckEmpResponseData empData = hrServiceFeignClient.checkId(request.getEmpId()).getBody().getData();
-
-		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
-		int availSubsidy = calSubsidy(empData);
-
-		if (availSubsidy < request.getUseSubsidy())
-			throw new SubsidyNotMatchException();
-
-		//결제 내역 처리
-		PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
-			.empId(request.getEmpId())
-			.payStore(request.getPayStore())
-			.totalPaymentAmount(request.getTotalPaymentAccount())
-			.useSubsidy(request.getUseSubsidy())
-			.paymentDetail(request.getPaymentDetail())
-			.paymentDate(LocalDateTime.now())
-			.build();
-
-		paymentHistoryRepository.save(entity);
-
-		//알림 전송
-		sendPayNotice(entity);
-
-		log.info("{} : 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
-			entity.getUseSubsidy());
 	}
 
 	//결제 알림 전송
