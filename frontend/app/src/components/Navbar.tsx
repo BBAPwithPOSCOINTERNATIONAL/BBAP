@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiBell, FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 import bbapimg from "/assets/images/bbap.png";
@@ -53,7 +53,7 @@ const NavBar: React.FC = () => {
         </div>
         <div
           className="text-3xl font-hyemin-bold text-white"
-          style={{ transform: `translateX(${isMainPage ? "12px" : "-20px"})` }} // 이 부분을 수정하여 MainPage 여부에 따라 위치 조정
+          style={{ transform: `translateX(${isMainPage ? "12px" : "-28px"})` }} // 이 부분을 수정하여 MainPage 여부에 따라 위치 조정
         >
           <img src={bbapimg} className="h-8" />
         </div>

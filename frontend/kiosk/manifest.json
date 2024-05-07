@@ -10,7 +10,7 @@
     { "src": "/icon/196.png", "sizes": "196x196", "type": "image/png" },
     { "src": "/icon/512.png", "sizes": "512x512", "type": "image/png" }
   ],
-  "start_url": "https://kiosk.ssafybbap.com/",
+  "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#000000",
