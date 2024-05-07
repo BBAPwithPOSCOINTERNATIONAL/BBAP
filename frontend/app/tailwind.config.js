@@ -50,7 +50,8 @@ export default {
       boxShadow: {
         1.5: "0px 1.5px 0px rgba(0, 0, 0, 0.1)",
         3: "0px 3px 0px rgba(0, 0, 0, 0.3)",
-        right: '4px 0 6px -1px rgba(226, 241, 255, 0.1), 4px 0 4px -1px rgba(226, 241, 255, 0.1)'
+        right: '4px 0 6px -1px rgba(226, 241, 255, 0.1), 4px 0 4px -1px rgba(226, 241, 255, 0.1)',
+        bottom: '0px 2px 0px rgba(226, 241, 255, 0.8)'
       },
       lineHeight: {
         none: "1",

@@ -36,7 +36,7 @@ const Coupon: React.FC<CouponProps> = ({
 	const totalPrice = 3000 * count;
 
 	return (
-		<div className="flex flex-col ml-4 space-y-1">
+		<div className="flex flex-col ml-4 space-y-1 pt-4">
 			<div className="text-left">
 				<span className="text-2xl font-hyemin-bold">쿠폰사용</span>
 				<span className="text-xs ml-2">

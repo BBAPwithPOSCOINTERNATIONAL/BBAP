@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import bbapimg from "/assets/images/bbap.png";
 import logoimg from "/assets/images/logo.png";
 
 const PWAInstallPrompt = () => {
@@ -31,7 +30,6 @@ const PWAInstallPrompt = () => {
         } else {
           console.log("사용자가 설치를 취소했습니다.");
         }
-
         setDeferredPrompt(null);
       });
     }
@@ -39,15 +37,13 @@ const PWAInstallPrompt = () => {
 
   return (
     <div className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full">
-      {deferredPrompt && (
-        <button onClick={handleInstallClick}>
-          {" "}
-          <img
-            src={logoimg}
-            alt="Login Logo"
-             />
-        </button>
-      )}
+      <button onClick={handleInstallClick}>
+        {" "}
+        <img
+          src={logoimg}
+          alt="Login Logo"
+        />
+      </button>
     </div>
   );
 };

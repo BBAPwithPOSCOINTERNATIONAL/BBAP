@@ -5,7 +5,7 @@ import apiClient from "./apiClient";
 export interface Restaurant {
   restaurantId: number;
   restaurantName: string;
-  workPlaceName: string;
+  workplaceName: string;
   startTime: string;
   endTime: string;
 }

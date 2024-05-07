@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Coupon from "../../components/cafe/Coupon";
 import Modal from "../../components/cafe/Modal";
 import { OptionChoice } from "../../api/cafeAPI";
+import deletebutton from "/assets/images/button/delete.png";
 
 function CartPage() {
   const navigate = useNavigate();
@@ -83,10 +84,10 @@ function CartPage() {
   };
 
   return (
-    <div>
+    <div className="mb-20">
       <div className="flex items-center justify-between m-1">
         <button onClick={handleOpenModal} className="text-4xl ml-2">
-          x
+          <img src={deletebutton} />
         </button>
         <h1 className="text-center text-3xl font-hyemin-bold flex-1">
           카페이름 나올 예정
@@ -143,14 +144,14 @@ function CartPage() {
               </div>
               <Button
                 onClick={() => handleRemove(index)}
-                text="X"
+                text=" "
                 className="mr-2"
               />
             </li>
           );
         })}
       </ul>
-      {cartList.length === 0 && <p>장바구니가 비어 있습니다.</p>}
+      {cartList.length === 0 && <p className="text-center">장바구니가 비어 있습니다.</p>}
       <div className="flex justify-center">
         <Button
           onClick={handleAddMoreItems}
@@ -251,13 +252,13 @@ function CartPage() {
         </div>
 
         <hr className="bg-[#D2DBF0] h-0.5" />
-        <div className="text-sm text-center">
+        <div className="text-sm text-center ">
           결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
         </div>
         <Button
           onClick={() => navigate("/after")}
           text="결제하기"
-          className="w-full text-3xl bg-primary-color text-white h-16"
+          className="w-full text-3xl bg-primary-color text-white h-16 fixed bottom-0 left-0"
         />
       </div>
       <Modal isOpen={showModal} onClose={handleCloseModal}>

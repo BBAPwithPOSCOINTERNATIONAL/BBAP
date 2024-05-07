@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./approval.css";
 import Pagination from "./pagination";
-import { fetchEmployees, Employee } from "../../api/hradminAPI";
+import { fetchEmployees, Employee, fetchCategoryData, Workplace, Department, Position } from "../../api/hradminAPI";
 
 // const employees: Employee[] = [
 //   {
@@ -169,6 +169,9 @@ function EmployeeSearch(): JSX.Element {
   const [department, setDepartment] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [workplaceList, setWorkplaceList] = useState<Workplace[]>([]);
+  const [departmentList, setDepartmentList] = useState<Department[]>([]);
+  const [positionList, setPositionList] = useState<Position[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -192,7 +195,23 @@ function EmployeeSearch(): JSX.Element {
     };
 
     fetchData();
-  }, [searchTerm, location, rank, department, currentPage]);
+  }, [searchTerm, location, rank, department]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await fetchCategoryData();
+        setWorkplaceList(response.data.workplaceList);
+        setDepartmentList(response.data.departmentList);
+        setPositionList(response.data.positionList);
+
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+
+    fetchCategory();
+  }, []);
 
   console.log(employees);
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -257,40 +276,35 @@ function EmployeeSearch(): JSX.Element {
         onChange={handleLocationChange}
       >
         <option value="">근무지</option>
-        <option value="송도본사">송도본사</option>
-        <option value="포스코센터">포스코센터 </option>
-        <option value="서울역 그랜드센트럴">서울역 그랜드센트럴</option>
-        <option value="청라 인천발전소">청라 인천발전소 </option>
-        <option value="광양 LNG터미널">광양 LNG터미널 </option>
+        {workplaceList.map((workplace) => (
+          <option key={workplace.workplaceId} value={workplace.workplaceId}>
+            {workplace.workplaceName}
+          </option>
+        ))}
       </select>
       <select
         className="font-hyemin-bold mt-2 mr-4 text-[17px] w-1/5 focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md pl-3 ring-2 ring-slate-300 shadow-sm"
-        value={rank}
-        onChange={handleRankChange}
-      >
-        <option value="">부서</option>
-        <option value="영업">영업</option>
-        <option value="자원개발">자원개발</option>
-        <option value="LNG사업">LNG사업</option>
-        <option value="발전사업">발전사업</option>
-        <option value="사업개발">사업개발</option>
-        <option value="터미널사업">터미널사업</option>
-        <option value="기획/재무">기획/재무</option>
-        <option value="에너지정책">에너지정책</option>
-        <option value="경영지원">경영지원</option>
-      </select>
-      <select
-        className="font-hyemin-bold mt-2 mr-2 text-[17px] w-1/5 focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md pl-3 ring-2 ring-slate-300 shadow-sm"
         value={department}
         onChange={handleDepartmentChange}
       >
+        <option value="">부서</option>
+        {departmentList.map((department) => (
+          <option key={department.departmentId} value={department.departmentId}>
+            {department.departmentName}
+          </option>
+        ))}
+      </select>
+      <select
+        className="font-hyemin-bold mt-2 mr-2 text-[17px] w-1/5 focus:ring-2 focus:ring-yellow-500 focus:outline-none appearance-none text-lg leading-10 text-slate-900 placeholder-slate-400 rounded-md pl-3 ring-2 ring-slate-300 shadow-sm"
+        value={rank}
+        onChange={handleRankChange}
+      >
         <option value="">직급</option>
-        <option value="사원">사원</option>
-        <option value="대리">대리</option>
-        <option value="과장">과장</option>
-        <option value="차장">차장</option>
-        <option value="리더">리더</option>
-        <option value="부장">부장</option>
+        {positionList.map((position) => (
+          <option key={position.positionId} value={position.positionId}>
+            {position.positionName}
+          </option>
+        ))}
       </select>
       <table
         style={{ width: "115%" }}

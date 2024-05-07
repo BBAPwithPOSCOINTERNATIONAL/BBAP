@@ -154,23 +154,23 @@ const CafeSelector: React.FC = () => {
       <MenuSection ref={beverageRef} items={menuListBeverage} title="음료" />
       <MenuSection ref={dessertRef} items={menuListDessert} title="디저트" />
       {totalCount > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-stone-100">
+        <div className="fixed bottom-0 left-0 right-0 bg-blue-100">
           {/* 총 주문 금액 표시 */}
-          <h2 className="text-center text-xs font-bold py-2">
-            총 주문 금액: {totalPrice.toLocaleString()}원
+          <h2 className="text-center text-md font-bold py-2">
+            총 주문 금액 : {totalPrice.toLocaleString()} 원
           </h2>
           {/* 장바구니 페이지로 이동하는 버튼 */}
           <Button
             onClick={() => navigate("/cart")}
             text={
               <>
-                장바구니 보기
+                장바구니 주문하기
                 <span className="bg-white text-red-500 font-bold rounded-full ml-2 px-2.5 py-1 text-xs">
                   {totalCount}
                 </span>
               </>
             }
-            className="bg-primary-color w-full py-2 text-white font-bold mb-2"
+            className="bg-primary-color w-full py-2 text-white text-xl font-bold "
           />
         </div>
       )}

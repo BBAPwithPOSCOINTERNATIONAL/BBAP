@@ -101,7 +101,7 @@ export const createOrder = async (
  * @returns {Promise<OrderListResponse>} "Success" 메시지와 orderList 를 반환합니다.
  * @throws    오류를 반환할 수 있습니다.
  */
-interface Order {
+export interface Order {
   orderId: string;
   pickUpTime: Date;
   cafeName: string;
@@ -142,14 +142,14 @@ export const getMyOrder = async (
  * @throws   오류를 반환할 수 있습니다.
  */
 
-interface Menu {
+export interface Menu {
   menuName: string;
   menuPrice: number;
   menuCnt: number;
   optionText: string;
 }
 
-interface OrderDetailResponse {
+export interface OrderDetailResponse {
   message: string;
   data: {
     cafeName: string;

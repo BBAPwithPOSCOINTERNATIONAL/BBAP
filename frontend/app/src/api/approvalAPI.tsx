@@ -84,11 +84,54 @@ export const fetchEmployees = async (filters: {
   }
 };
 
+// /**
+//  * "결제 목록 조회(담당자가 특정 사원 조회)"
+//  * @remarks
+//  * GET 요청을 '/api/v1/approvals/search' 엔드포인트에 보냅니다. 성공시 메시지와 헤더를 반환합니다.
+//  * @param { number[]} employeeIds 결재승인할 id 들
+//  * @returns {Promise<ApprovalResponse>} "Success." 메시지와 함께 accessToken, refreshToken을 반환합니다.
+//  * @throws 400 "Bad request." 오류를 반환할 수 있습니다.
+//  */
+
+
 /**
- * "결제 목록 조회(담당자가 특정 사원 조회)"
+ * "카테고리 목록 조회"
  * @remarks
- * GET 요청을 '/api/v1/approvals/search' 엔드포인트에 보냅니다. 성공시 메시지와 헤더를 반환합니다.
- * @param { number[]} employeeIds 결재승인할 id 들
- * @returns {Promise<ApprovalResponse>} "Success." 메시지와 함께 accessToken, refreshToken을 반환합니다.
- * @throws 400 "Bad request." 오류를 반환할 수 있습니다.
+ * GET 요청을 '/api/v1/category' 엔드포인트에 보냅니다. 성공시 메시지를 반환합니다.
+ * @returns {Promise<CategoryResponse>} "Success." 메시지를 반환합니다.
  */
+
+export interface Workplace {
+  workplaceId: number;
+  workplaceName: string;
+}
+
+export interface Department {
+  departmentId: number;
+  departmentName: string;
+}
+
+export interface Position {
+  positionId: number;
+  positionName: string;
+}
+
+interface CategoryResponse {
+  message: string;
+  data: {
+    workplaceList: Workplace[];
+    departmentList: Department[];
+    positionList: Position[];
+  };
+}
+
+export const fetchCategoryData = async (): Promise<CategoryResponse> => {
+  try {
+    const response = await apiClient.get<CategoryResponse>("/hr/category");
+    console.log("Category Data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching category data:", error);
+    throw error;
+  }
+};
