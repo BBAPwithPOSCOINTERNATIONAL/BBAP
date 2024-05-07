@@ -1,10 +1,6 @@
 package com.bbap.order_room.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -176,7 +172,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 		if (!room.getRoomStatus().equals("ORDER_FILLED")) {
 			throw new IllegalStateException("'ORDER_FILLED' 상태여야 게임 시작이 가능합니다.");
 		}
-		if (room.getCurrentOrderer() != empId) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
+		if (!Objects.equals(room.getCurrentOrderer(), empId)) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
 		room.setRoomStatus("GAME_START");
 		log.info("방 {}의 상태가 'GAME_START'로 변경되었습니다.", roomId);
 
