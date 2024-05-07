@@ -1,7 +1,6 @@
 import { useState, ReactNode, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import IdPhoto from "/assets/images/image1.png";
 import guide from "/assets/images/guideLine.png";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
 import { useNavigate } from "react-router-dom";
