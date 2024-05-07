@@ -78,27 +78,39 @@ public class WebSocketServiceImpl implements WebSocketService{
 			throw new IllegalStateException("'INITIAL' or 'ORDER_FILLED' 상태여야 주문이 가능합니다.");
 		}
 
+//		List<OptionRequestDto> optionList = requestDto.getOptions();
+//		List<MenuOption> menuOptions = new ArrayList<>();
+//		for (OptionRequestDto option : optionList) {
+//			List<ChoiceRequestDto> choiceRequestDtos = option.getChoiceOptions();
+//			List<ChoiceOption> choiceOptions = new ArrayList<>();
+//			for (ChoiceRequestDto choice : choiceRequestDtos) {
+//				choiceOptions.add(new ChoiceOption(choice.getChoiceName(), choice.getPrice()));
+//			}
+//			MenuOption menuOption = new MenuOption(
+//				option.getOptionName(),
+//				option.getType(),
+//				option.isRequired(),
+//				choiceOptions
+//			);
+//			menuOptions.add(menuOption);
+//		}
+
 		List<OptionRequestDto> optionList = requestDto.getOptions();
-		List<MenuOption> menuOptions = new ArrayList<>();
-		for (OptionRequestDto option : optionList) {
-			List<ChoiceRequestDto> choiceRequestDtos = option.getChoiceOptions();
-			List<ChoiceOption> choiceOptions = new ArrayList<>();
-			for (ChoiceRequestDto choice : choiceRequestDtos) {
-				choiceOptions.add(new ChoiceOption(choice.getChoiceName(), choice.getPrice()));
-			}
-			MenuOption menuOption = new MenuOption(
-				option.getOptionName(),
-				option.getType(),
-				option.isRequired(),
-				choiceOptions
-			);
-		}
+		List<MenuOption> menuOptions = optionList.stream().map(option -> {
+			List<ChoiceOption> choiceOptions = option.getChoiceOptions().stream().map(
+					choice -> new ChoiceOption(choice.getChoiceName(), choice.getPrice())
+			).collect(Collectors.toList());
+			return new MenuOption(option.getOptionName(), option.getType(), option.isRequired(), choiceOptions);
+		}).collect(Collectors.toList());
+
+
 		OrderItem orderItem = new OrderItem(
 			requestDto.getMenuId(),
 			requestDto.getCnt(),
 			menuOptions,
 			empId
 		);
+
 		room.getOrderItems().add(orderItem); //아이템 추가
 		log.info("주문 아이템이 성공적으로 추가되었습니다. 아이템: {}", orderItem);
 
