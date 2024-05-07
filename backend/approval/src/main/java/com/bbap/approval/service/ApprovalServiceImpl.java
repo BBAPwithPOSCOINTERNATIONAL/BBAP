@@ -141,6 +141,6 @@ public class ApprovalServiceImpl implements ApprovalService {
 		if (result != request.getEmployeeIds().size())
 			throw new ApproveNotFoundException();
 
-		return null;
+		return ResponseDto.success();
 	}
 }
