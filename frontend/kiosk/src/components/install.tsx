@@ -38,7 +38,8 @@ const PWAInstallPrompt = () => {
   
     return (
         <div>
-            <button onClick={handleInstallClick}><img
+            <button onClick={handleInstallClick}>
+              <img
             src="/assets/images/포스코인터내셔널_로고.png"
             alt=""
             className="w-[230px]"
