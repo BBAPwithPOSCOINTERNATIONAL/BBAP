@@ -19,5 +19,3 @@ logging:
         type: TRACE
 
 
-#server:
-#  port: 8081

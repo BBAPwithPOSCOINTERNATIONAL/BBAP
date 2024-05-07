@@ -13,10 +13,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbap.order.dto.BaseOrderDto;
+import com.bbap.order.dto.OrderSummary;
 import com.bbap.order.dto.request.FaceRequestDto;
 import com.bbap.order.dto.request.MenuRequestDto;
 import com.bbap.order.dto.request.PayInfoAuthRequestDto;
@@ -24,6 +26,7 @@ import com.bbap.order.dto.request.PayInfoCardRequestDto;
 import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
+import com.bbap.order.dto.request.PaymentRequestDto;
 import com.bbap.order.dto.response.CafeInfoForOrderListDto;
 import com.bbap.order.dto.response.OrderDetailMenuDto;
 import com.bbap.order.dto.response.OrderDetailResponseDto;
@@ -34,21 +37,23 @@ import com.bbap.order.dto.response.PayResponseDto;
 import com.bbap.order.dto.response.StampResponseDto;
 import com.bbap.order.dto.responseDto.CheckFaceResponseData;
 import com.bbap.order.dto.responseDto.DataResponseDto;
+import com.bbap.order.entity.Cafe;
 import com.bbap.order.entity.Choice;
 import com.bbap.order.entity.Menu;
 import com.bbap.order.entity.Option;
 import com.bbap.order.entity.Order;
 import com.bbap.order.entity.OrderMenu;
 import com.bbap.order.exception.BadOrderRequestException;
+import com.bbap.order.exception.CafeEntityNotFoundException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
 import com.bbap.order.exception.OrderEntityNotFoundException;
 import com.bbap.order.feign.CafeServiceFeignClient;
 import com.bbap.order.feign.FaceServiceFeignClient;
+import com.bbap.order.repository.CafeRepository;
 import com.bbap.order.repository.MenuRepository;
 import com.bbap.order.repository.OrderRepository;
+import com.google.gson.Gson;
 
-import feign.FeignException;
-import feign.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,18 +66,38 @@ public class OrderServiceImpl implements OrderService {
 	private final CafeServiceFeignClient cafeServiceFeignClient;
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
-
+	private final CafeRepository cafeRepository;
+	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
+
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> order(Integer empId, PayRequestDto dto) {
 		// Validate pick-up time
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
-		List<OrderMenu> orderMenus = getOrderMenus(dto);
-		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(),dto.getUsedSubsidy(),orderMenus);
+		// 주문 메뉴들 order로 정리, 총 가격
+		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
+		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
+		int totalPaymentAccount = orderSummary.getTotalFinalPrice();
+		String paymentDeatil = orderSummary.getPaymentDetail();
+
+		//카페 이름 가져오기
+		Cafe cafe = cafeRepository.findById(dto.getCafeId()).orElseThrow(CafeEntityNotFoundException::new);
+
+		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(), dto.getUsedSubsidy(),
+			orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
+		PaymentRequestDto paymentRequestDto = PaymentRequestDto.builder()
+			.empId(empId)
+			.totalPaymentAccount(totalPaymentAccount)
+			.useSubsidy(dto.getUsedSubsidy())
+			.paymentDetail(paymentDeatil)
+			.payStore(cafe.getName()).build();
+		String message = new Gson().toJson(paymentRequestDto);
+
 		//결제 서비스 보내기
+		kafkaSend("pay_topic", message);
 
 		//레디스에서 방 번호 가져오기
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
@@ -82,10 +107,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto) {
-		List<OrderMenu> orderMenus = getOrderMenus(dto);
+		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
+		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
+
 		//사원 아이디
 		Order order = new Order(dto.getCafeId(), dto.getEmpId(), LocalDateTime.now(),
-			LocalDateTime.now().plusMinutes(5),dto.getUsedSubsidy(), orderMenus);
+			LocalDateTime.now().plusMinutes(5), dto.getUsedSubsidy(), orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
 		//레디스에서 방 번호 가져오기
@@ -100,9 +127,11 @@ public class OrderServiceImpl implements OrderService {
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
-		List<OrderMenu> orderMenus = getOrderMenus(dto);
+		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
+		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
 		//사원 아이디
-		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(),dto.getUsedSubsidy(),orderMenus);
+		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(), dto.getUsedSubsidy(),
+			orderMenus);
 		orderRepository.insert(order); // 주문 db에 넣기
 		//결제 서비스 보내기
 
@@ -172,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(Integer empId, String cafeId) {
-        //이름 가져오기
+		//이름 가져오기
 		String empName = "다희";
 
 		//스탬프 수 가져오기
@@ -196,7 +225,8 @@ public class OrderServiceImpl implements OrderService {
 		List<Order> orderList = orderRepository.findByEmployeeAndPickUpTimeBetween(startOfMonth, endOfMonth, empId);
 		List<OrderDto> orderDtos = new ArrayList<>();
 		for (Order order : orderList) {
-			ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeResponse = cafeServiceFeignClient.getCafeInfo(order.getCafeId());
+			ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeResponse = cafeServiceFeignClient.getCafeInfo(
+				order.getCafeId());
 			// 주문의 모든 메뉴의 가격 합산
 			int totalOrderPrice = order.getMenus().stream()
 				.mapToInt(OrderMenu::getPrice)
@@ -219,11 +249,11 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(Integer empId, String orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderEntityNotFoundException:: new);
+		Order order = orderRepository.findById(orderId).orElseThrow(OrderEntityNotFoundException::new);
 		List<OrderMenu> menus = order.getMenus();
 		List<OrderDetailMenuDto> orderDetailMenuDtos = new ArrayList<>();
 		int totalOrderPrice = 0;  // 전체 주문 가격을 저장할 변수
-		for(OrderMenu orderMenu: menus) {
+		for (OrderMenu orderMenu : menus) {
 			// 각 메뉴의 옵션들에서 선택된 choice 이름을 문자열로 결합
 			String optionText = orderMenu.getOptions().stream()
 				.flatMap(option -> option.getChoices().stream())
@@ -239,7 +269,8 @@ public class OrderServiceImpl implements OrderService {
 			totalOrderPrice += orderMenu.getPrice();  // 메뉴 가격을 총합에 더함
 			orderDetailMenuDtos.add(orderDetailMenuDto);
 		}
-		ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeInfo = cafeServiceFeignClient.getCafeInfo(order.getCafeId());
+		ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeInfo = cafeServiceFeignClient.getCafeInfo(
+			order.getCafeId());
 		OrderDetailResponseDto response = new OrderDetailResponseDto(
 			cafeInfo.getBody().getData().getCafeName(),
 			totalOrderPrice,
@@ -253,43 +284,81 @@ public class OrderServiceImpl implements OrderService {
 		return DataResponseDto.of(response);
 	}
 
-	private <T extends BaseOrderDto> List<OrderMenu> getOrderMenus(T dto) {
+	// 메뉴 이름과 갯수를 포함한 결제 세부사항 생성
+	private <T extends BaseOrderDto> OrderSummary getOrderMenusAndTotalPriceWithPaymentDetail(T dto) {
+		// 주문 요청 목록에서 메뉴 ID를 추출하고 이를 이용해 일괄로 메뉴를 조회
 		List<MenuRequestDto> menuRequestDtos = dto.getMenuList();
-
-		// Extract menu IDs and fetch menus in bulk
 		List<String> menuIds = menuRequestDtos.stream().map(MenuRequestDto::getMenuId).collect(Collectors.toList());
 		List<Menu> menus = menuRepository.findAllById(menuIds);
+
+		// 각 메뉴 ID를 키로 하는 Map 생성 (효율적인 접근을 위해)
 		Map<String, Menu> menuMap = menus.stream().collect(Collectors.toMap(Menu::getId, Function.identity()));
 
-		return menuRequestDtos.stream().map(menuDto -> {
+		// 총 가격과 첫 번째 메뉴 이름을 추적하기 위한 변수들 초기화
+		AtomicInteger totalFinalPrice = new AtomicInteger(0);
+		final String[] primaryMenuName = {null}; // 배열을 사용하여 변경 가능
+		final int[] otherMenuCount = {0}; // 배열을 사용하여 변경 가능
+
+		// 주문된 메뉴 목록을 순회하면서 각 메뉴의 최종 가격을 계산
+		List<OrderMenu> orderMenus = menuRequestDtos.stream().map(menuDto -> {
+			// 메뉴 ID를 이용해 해당 메뉴를 가져옴
 			Menu menu = menuMap.get(menuDto.getMenuId());
 			if (menu == null) {
-				throw new MenuEntityNotFoundException();
+				throw new MenuEntityNotFoundException(); // 메뉴가 없을 경우 예외 처리
 			}
 
+			// 기본 가격에 더해 옵션 가격을 추가할 변수를 설정
 			AtomicInteger price = new AtomicInteger(menu.getPrice());
+
+			// 각 옵션에 대해 순회하며 총 가격 계산
 			List<Option> options = menuDto.getOptions().stream().map(optionDto -> {
+				// 옵션에 대한 선택지를 생성
 				List<Choice> choices = optionDto.getChoiceOptions().stream().map(choiceDto ->
 					new Choice(choiceDto.getChoiceName(), choiceDto.getPrice())
 				).collect(Collectors.toList());
 
+				// 단일 선택(single) 옵션인데 여러 개의 선택지가 있을 경우 예외 처리
 				if (optionDto.getType().equals("single") && choices.size() > 1) {
 					throw new BadOrderRequestException();
 				}
 
+				// 각 선택지의 가격을 총 가격에 추가
 				price.addAndGet(choices.stream().mapToInt(Choice::getPrice).sum());
 				return new Option(optionDto.getOptionName(), optionDto.getType(), optionDto.isRequired(), choices);
 			}).collect(Collectors.toList());
 
+			// 주문 수량을 반영한 최종 가격 계산 및 총 가격에 추가
 			int finalPrice = price.get() * menuDto.getCnt();
+			totalFinalPrice.addAndGet(finalPrice);
+
+			// 첫 번째 메뉴의 이름 설정
+			if (primaryMenuName[0] == null) {
+				primaryMenuName[0] = menu.getName();
+			} else {
+				// 첫 번째 메뉴 이외의 메뉴의 개수 증가
+				otherMenuCount[0] += menuDto.getCnt();
+			}
+
+			// 최종적으로 주문한 메뉴를 반환
 			return new OrderMenu(menu.getName(), menuDto.getCnt(), finalPrice, options);
 		}).collect(Collectors.toList());
+
+		// 결제 세부 정보 생성 (첫 번째 메뉴 이름 + 다른 메뉴의 수)
+		String paymentDetail = primaryMenuName[0] + (otherMenuCount[0] == 0 ? "" : " 외 " + otherMenuCount[0] + "개");
+
+		// 주문한 메뉴 목록, 총 가격, 결제 상세 정보를 함께 반환
+		return new OrderSummary(orderMenus, totalFinalPrice.get(), paymentDetail);
 	}
 
 	private Long incrementOrderNumber(String cafeId) {
 		String key = "orderNum:" + cafeId + ":" + LocalDate.now().toString();
 		redisTemplate.expire(key, Duration.ofDays(1));
 		return redisTemplate.opsForValue().increment(key);
+	}
+
+	public void kafkaSend(String topic, String message) {
+		kafkaTemplate.send(topic, message);
+		System.out.println("Message sent to topic: " + topic);
 	}
 
 }
