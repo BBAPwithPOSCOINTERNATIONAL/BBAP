@@ -36,7 +36,7 @@ const MenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
                 <li
                   key={index}
                   onClick={() => handleItemClick(item)}
-                  className="flex items-center my-1 border border-gray-300 p-2.5 rounded-lg font-hyemin-bold"
+                  className="flex items-center border border-gray-300 p-2.5 rounded-lg font-hyemin-bold"
                 >
                   <img
                     src={item.imageUrl}

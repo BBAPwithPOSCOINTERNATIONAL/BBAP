@@ -157,7 +157,7 @@ const AloneOrderPage: React.FC = () => {
             text={
               <>
                 장바구니 주문하기
-                <span className="bg-white text-red-500 font-bold rounded-full ml-2 px-2.5 py-1 text-xs">
+                <span className="bg-white  h-16 text-red-500 font-bold rounded-full ml-2 px-2.5 py-1 text-xs">
                   {totalCount}
                 </span>
               </>

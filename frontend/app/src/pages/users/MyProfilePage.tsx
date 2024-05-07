@@ -165,7 +165,7 @@ function MyProfilePage() {
               className="w-64 h-84 mb-2 mt-4"
               src={userInfo.empImage}
               alt="Profile"
-              style={{ maxHeight: "300px" }}
+              style={{ maxHeight: "310px" }}
             />
             <button
               className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-24 rounded-md text-2xl"
