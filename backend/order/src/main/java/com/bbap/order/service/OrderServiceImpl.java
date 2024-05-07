@@ -44,6 +44,8 @@ import com.bbap.order.entity.Menu;
 import com.bbap.order.entity.Option;
 import com.bbap.order.entity.Order;
 import com.bbap.order.entity.OrderMenu;
+import com.bbap.order.entity.Stamp;
+import com.bbap.order.exception.BadCouponRequestException;
 import com.bbap.order.exception.BadOrderRequestException;
 import com.bbap.order.exception.CafeEntityNotFoundException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
@@ -54,6 +56,7 @@ import com.bbap.order.feign.PaymentServiceFeignClient;
 import com.bbap.order.repository.CafeRepository;
 import com.bbap.order.repository.MenuRepository;
 import com.bbap.order.repository.OrderRepository;
+import com.bbap.order.repository.StampRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
 	private final CafeRepository cafeRepository;
+	private final StampRepository stampRepository;
 	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
@@ -78,11 +82,23 @@ public class OrderServiceImpl implements OrderService {
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
+
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId());
+		//스탬프 조회와 개수 확인
+		if (dto.getCntCouponToUse() != 0)
+			validateStampAvailability(stamp, dto.getCntCouponToUse());
+
 		// 주문 메뉴들 order로 정리, 총 가격
 		OrderSummary orderSummary = getOrderMenusAndTotalPriceWithPaymentDetail(dto);
 		List<OrderMenu> orderMenus = orderSummary.getOrderMenus();
 		int totalPaymentAccount = orderSummary.getTotalFinalPrice();
 		String paymentDeatil = orderSummary.getPaymentDetail();
+
+		int discountAccount = dto.getCntCouponToUse() * 3000;
+
+		// 할인 금액이 총 결제 가격보다 크지 않은지 확인
+		if (dto.getCntCouponToUse() != 0)
+			validateDiscount(totalPaymentAccount, dto.getUsedSubsidy(), discountAccount);
 
 		//카페 이름 가져오기
 		Cafe cafe = cafeRepository.findById(dto.getCafeId()).orElseThrow(CafeEntityNotFoundException::new);
@@ -92,20 +108,26 @@ public class OrderServiceImpl implements OrderService {
 		orderRepository.insert(order); // 주문 db에 넣기
 		PaymentRequestDto paymentRequestDto = PaymentRequestDto.builder()
 			.empId(empId)
-			.totalPaymentAccount(totalPaymentAccount)
+			.totalPaymentAccount(totalPaymentAccount - discountAccount)
 			.useSubsidy(dto.getUsedSubsidy())
 			.paymentDetail(paymentDeatil)
 			.payStore(cafe.getName()).build();
 
+		//결제 서비스 보내기
 		ResponseEntity<ResponseDto> response = paymentServiceFeignClient.pay(paymentRequestDto);
 		// String message = new Gson().toJson(paymentRequestDto);
-		//
 		// //결제 서비스 보내기
 		// kafkaSend("pay_topic", message);
+
+		// 스탬프 업데이트
+		if (dto.getCntCouponToUse() != 0)
+			updateStamp(stamp, dto.getCntCouponToUse());
+		addStampAfterOrder(empId, dto.getCafeId());
 
 		//레디스에서 방 번호 가져오기
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
 		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
+
 		return DataResponseDto.of(payResponseDto);
 	}
 
@@ -367,5 +389,37 @@ public class OrderServiceImpl implements OrderService {
 	// 	kafkaTemplate.send(topic, message);
 	// 	System.out.println("Message sent to topic: " + topic);
 	// }
+
+	private void validateStampAvailability(Stamp stamp, int cntCouponToUse) {
+		if (stamp == null || stamp.getStampCnt() < cntCouponToUse * 10) {
+			throw new BadCouponRequestException();
+		}
+	}
+
+	private void validateDiscount(int totalPaymentAccount, int usedSubsidy, int discountAccount) {
+		if ((totalPaymentAccount - usedSubsidy) < discountAccount) {
+			throw new BadCouponRequestException();
+		}
+	}
+
+	private void updateStamp(Stamp stamp, int cntCouponToUse) {
+		stamp.setStampCnt(stamp.getStampCnt() - cntCouponToUse * 10);
+		stampRepository.save(stamp);
+	}
+
+	private void addStampAfterOrder(Integer empId, String cafeId) {
+		// 사원 ID와 카페 ID를 이용해 스탬프 정보를 가져옴
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, cafeId);
+
+		// 스탬프가 없으면 새로 생성하여 초기화
+		if (stamp == null) {
+			stamp = new Stamp(cafeId, empId, 1); // 스탬프를 0으로 시작
+		} else {
+			stamp.setStampCnt(stamp.getStampCnt() + 1);
+		}
+
+		// 최종적으로 스탬프 정보 저장
+		stampRepository.save(stamp);
+	}
 
 }

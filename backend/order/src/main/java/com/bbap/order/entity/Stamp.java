@@ -24,4 +24,9 @@ public class Stamp {
 	@Field("stamp_cnt")
 	private int stampCnt;
 
+	public Stamp(String cafeId, Integer empId, int stampCnt) {
+		this.cafeId = cafeId;
+		this.empId = empId;
+		this.stampCnt = stampCnt;
+	}
 }
