@@ -104,15 +104,17 @@ public class NoticeServiceImpl implements NoticeService {
 			ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 			String fcmToken = valueOperations.get(String.valueOf(empId));
 
-			//일반 알림
-			Message message = Message.builder()
-				.putData("title", template.getNoticeClassification())
-				.putData("body", request.getStoreName() + template.getNoticeText())
-				.putData("url", request.getNoticeUrl())
-				.setToken(fcmToken)
-				.build();
+			log.info("fcmToken = {}", fcmToken);
 
 			try {
+				//일반 알림
+				Message message = Message.builder()
+					.putData("title", template.getNoticeClassification())
+					.putData("body", request.getStoreName() + template.getNoticeText())
+					.putData("url", request.getNoticeUrl())
+					.setToken(fcmToken)
+					.build();
+
 				FirebaseMessaging.getInstance().send(message);
 
 			} catch (FirebaseMessagingException e) {
