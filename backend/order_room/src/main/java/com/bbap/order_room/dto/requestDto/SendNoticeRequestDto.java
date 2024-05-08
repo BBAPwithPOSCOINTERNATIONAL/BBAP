@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class SendNoticeRequestDto {
-	private int empId;
+	private Integer[] empIds;
 	private int noticeTemplateId;
 	private String noticeUrl;
 	private String storeName;

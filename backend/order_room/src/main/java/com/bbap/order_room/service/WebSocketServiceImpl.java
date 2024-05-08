@@ -216,10 +216,10 @@ public class WebSocketServiceImpl implements WebSocketService{
 		Integer result = generateWheelResult(room.getOrderers());
 		room.setCurrentOrderer(result); //주문자 변경
 		log.info("원판 결과에 따라 새로운 주문자 ID {}가 결정되었습니다.", result);
-
+		Integer[] empIds = new Integer[]{result};
 		//알림 보내기 -> kafka
 		SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-			result, 3, "www.naver.com",null
+			empIds, 3, "www.naver.com",null
 		);
 		String message = new Gson().toJson(sendNoticeRequestDto);
 		kafkaTemplate.send("notice_topic", message);
@@ -244,13 +244,6 @@ public class WebSocketServiceImpl implements WebSocketService{
 			throw new RuntimeException("Order service request failed", e);
 		}
 		Long orderNumber = orderResponse.getBody().getData().getOrderNum();
-		//알림 보내기 -> kafka
-		SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-			empId, 2, "www.naver.com",null
-		);
-		String message = new Gson().toJson(sendNoticeRequestDto);
-		kafkaTemplate.send("notice_topic", message);
-		log.info("같이 주문 방 알림 전송");
 
 		//방 상태 주문 종료로 바꾸기
 		String roomId = getRoomId(sessionId);
@@ -258,6 +251,16 @@ public class WebSocketServiceImpl implements WebSocketService{
 		room.setRoomStatus("ORDERED");
 		room.setOrderNumber(orderNumber);
 		roomRepository.save(room);
+
+		//알림 보내기 -> kafka
+		Map<Integer, String> orderers = room.getOrderers();
+		Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
+			SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
+				empIds, 2, "www.naver.com",null
+		);
+		String message = new Gson().toJson(sendNoticeRequestDto);
+		kafkaTemplate.send("notice_topic", message);
+		log.info("같이 주문 방 알림 전송");
 
 		// Room 객체의 orderers HashMap을 사용하여 EntireParticipant에서 제거
 		for (Integer ordererId : room.getOrderers().keySet()) {
