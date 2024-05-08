@@ -44,6 +44,7 @@ function AdminLoginPage() {
     try {
       const token = (await requestPermission()) || "";
       setFcmToken(token ?? "");
+      console.log(fcmToken);
 
       const response = await login(adminId, password, token);
       if (response.data.accessToken && response.data.refreshToken) {
