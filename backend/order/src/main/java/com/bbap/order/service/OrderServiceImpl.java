@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bbap.order.dto.BaseOrderDto;
 import com.bbap.order.dto.OrderSummary;
+import com.bbap.order.dto.WorkplaceDto;
 import com.bbap.order.dto.request.FaceRequestDto;
+import com.bbap.order.dto.request.LoginRequestDto;
 import com.bbap.order.dto.request.MenuRequestDto;
 import com.bbap.order.dto.request.PayInfoAuthRequestDto;
 import com.bbap.order.dto.request.PayInfoCardRequestDto;
@@ -26,16 +28,19 @@ import com.bbap.order.dto.request.PayInfoFaceRequestDto;
 import com.bbap.order.dto.request.PayKioskRequestDto;
 import com.bbap.order.dto.request.PayRequestDto;
 import com.bbap.order.dto.request.PaymentRequestDto;
-import com.bbap.order.dto.response.CafeInfoForOrderListDto;
+import com.bbap.order.dto.response.CheckEmpResponseData;
+import com.bbap.order.dto.response.EmployeeSummaryData;
+import com.bbap.order.dto.response.ListWorkplaceData;
 import com.bbap.order.dto.response.OrderDetailMenuDto;
 import com.bbap.order.dto.response.OrderDetailResponseDto;
 import com.bbap.order.dto.response.OrderDto;
 import com.bbap.order.dto.response.OrderListResponseDto;
+import com.bbap.order.dto.response.OrderResultDto;
 import com.bbap.order.dto.response.PayInfoResponseDto;
 import com.bbap.order.dto.response.PayResponseDto;
-import com.bbap.order.dto.response.StampResponseDto;
 import com.bbap.order.dto.responseDto.CheckFaceResponseData;
 import com.bbap.order.dto.responseDto.DataResponseDto;
+import com.bbap.order.dto.responseDto.EmployeeDto;
 import com.bbap.order.dto.responseDto.ResponseDto;
 import com.bbap.order.entity.Cafe;
 import com.bbap.order.entity.Choice;
@@ -49,10 +54,11 @@ import com.bbap.order.exception.BadOrderRequestException;
 import com.bbap.order.exception.CafeEntityNotFoundException;
 import com.bbap.order.exception.MenuEntityNotFoundException;
 import com.bbap.order.exception.OrderEntityNotFoundException;
-import com.bbap.order.feign.CafeServiceFeignClient;
 import com.bbap.order.feign.FaceServiceFeignClient;
+import com.bbap.order.feign.HrServiceFeignClient;
 import com.bbap.order.feign.PaymentServiceFeignClient;
 import com.bbap.order.repository.CafeRepository;
+import com.bbap.order.repository.CustomOrderRepository;
 import com.bbap.order.repository.MenuRepository;
 import com.bbap.order.repository.OrderRepository;
 import com.bbap.order.repository.StampRepository;
@@ -65,9 +71,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+	private final HrServiceFeignClient hrServiceFeignClient;
 	private final FaceServiceFeignClient faceServiceFeignClient;
-	private final CafeServiceFeignClient cafeServiceFeignClient;
 	private final PaymentServiceFeignClient paymentServiceFeignClient;
+	private final CustomOrderRepository customOrderRepository;
 	private final OrderRepository orderRepository;
 	private final MenuRepository menuRepository;
 	private final CafeRepository cafeRepository;
@@ -174,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
 			.payStore(cafe.getName()).build();
 
 		//결제 서비스 보내기
-		ResponseEntity<ResponseDto> response = paymentServiceFeignClient.pay(paymentRequestDto);
+		paymentServiceFeignClient.pay(paymentRequestDto);
 
 		// 스탬프 업데이트
 		if (dto.getCntCouponToUse() != 0)
@@ -192,37 +199,43 @@ public class OrderServiceImpl implements OrderService {
 		FaceRequestDto requestDto = new FaceRequestDto(dto.getFaceImage());
 		ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
 			= faceServiceFeignClient.checkFace(requestDto);
+
 		int empId = response.getBody().getData().getEmpId();
 
-		//사원 이름 가져오기
-		String empName = "다희";
+		//이름 가져오기
+		EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
 
 		//스탬프 수 가져오기
-		ResponseEntity<DataResponseDto<StampResponseDto>> stampResponse
-			= cafeServiceFeignClient.getStampCnt(dto.getCafeId());
-		int stampCnt = stampResponse.getBody().getData().getStampCnt();
+		int stampCnt = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).getStampCnt();
+
 		//지원금 가져오기
-		int availableSubsidy = 1000;
+		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empId)
+			.getBody()
+			.getData()
+			.getAvailSubsidy();
+
 		PayInfoResponseDto responseDto = new PayInfoResponseDto(
-			empId, empName, stampCnt, availableSubsidy
+			empId, empData.getEmpName(), stampCnt, availableSubsidy
 		);
 		return DataResponseDto.of(responseDto);
 	}
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(PayInfoCardRequestDto dto) {
-		//card번호로 사원Id 와 사원이름 가져오기
-		int empId = 1;
-		String empName = "다희";
+		//cardID를 통해 사원 정보를 받아옴
+		CheckEmpResponseData empData = hrServiceFeignClient.checkCard(dto.getCardId()).getBody().getData();
 
 		//스탬프 수 가져오기
-		ResponseEntity<DataResponseDto<StampResponseDto>> stampResponse
-			= cafeServiceFeignClient.getStampCnt(dto.getCafeId());
-		int stampCnt = stampResponse.getBody().getData().getStampCnt();
+		int stampCnt = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).getStampCnt();
+
 		//지원금 가져오기
-		int availableSubsidy = 1000;
+		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
+			.getBody()
+			.getData()
+			.getAvailSubsidy();
+
 		PayInfoResponseDto responseDto = new PayInfoResponseDto(
-			empId, empName, stampCnt, availableSubsidy
+			empData.getEmpId(), empData.getEmpName(), stampCnt, availableSubsidy
 		);
 		return DataResponseDto.of(responseDto);
 	}
@@ -230,34 +243,41 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(PayInfoAuthRequestDto dto) {
 		//아이디 비번으로 사원 pk랑 이름 가져오기
-		int empId = 1;
-		String empName = "다희";
+		EmployeeSummaryData empData = hrServiceFeignClient
+			.getEmployeeDataByAuth(new LoginRequestDto(dto.getEmpNo(), dto.getPassword())).getBody().getData();
 
 		//스탬프 수 가져오기
-		ResponseEntity<DataResponseDto<StampResponseDto>> stampResponse
-			= cafeServiceFeignClient.getStampCnt(dto.getCafeId());
-		int stampCnt = stampResponse.getBody().getData().getStampCnt();
+		int stampCnt = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).getStampCnt();
+
 		//지원금 가져오기
-		int availableSubsidy = 1000;
+		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
+			.getBody()
+			.getData()
+			.getAvailSubsidy();
+
 		PayInfoResponseDto responseDto = new PayInfoResponseDto(
-			empId, empName, stampCnt, availableSubsidy
+			empData.getEmpId(), empData.getEmpName(), stampCnt, availableSubsidy
 		);
+
 		return DataResponseDto.of(responseDto);
 	}
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(Integer empId, String cafeId) {
 		//이름 가져오기
-		String empName = "다희";
+		EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
 
 		//스탬프 수 가져오기
-		ResponseEntity<DataResponseDto<StampResponseDto>> stampResponse
-			= cafeServiceFeignClient.getStampCnt(cafeId);
-		int stampCnt = stampResponse.getBody().getData().getStampCnt();
+		int stampCnt = stampRepository.findByEmpIdAndCafeId(empId, cafeId).getStampCnt();
+
 		//지원금 가져오기
-		int availableSubsidy = 1000;
+		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
+			.getBody()
+			.getData()
+			.getAvailSubsidy();
+
 		PayInfoResponseDto responseDto = new PayInfoResponseDto(
-			empId, empName, stampCnt, availableSubsidy
+			empId, empData.getEmpName(), stampCnt, availableSubsidy
 		);
 		return DataResponseDto.of(responseDto);
 	}
@@ -268,11 +288,18 @@ public class OrderServiceImpl implements OrderService {
 		LocalDateTime startOfMonth = YearMonth.of(year, month).atDay(1).atStartOfDay();
 		LocalDateTime endOfMonth = YearMonth.of(year, month).atEndOfMonth().atTime(23, 59, 59);
 
-		List<Order> orderList = orderRepository.findByEmployeeAndPickUpTimeBetween(startOfMonth, endOfMonth, empId);
+		List<OrderResultDto> orderList = customOrderRepository.findOrderDetailsByEmpId(empId, startOfMonth, endOfMonth);
+
 		List<OrderDto> orderDtos = new ArrayList<>();
-		for (Order order : orderList) {
-			ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeResponse = cafeServiceFeignClient.getCafeInfo(
-				order.getCafeId());
+
+		//근무지 이름 가져오기
+		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
+
+		// 근무지 목록을 Map으로 변환
+		Map<Integer, String> workplaceMap = workplaceData.getWorkplaceList().stream()
+			.collect(Collectors.toMap(WorkplaceDto::getWorkplaceId, WorkplaceDto::getWorkplaceName));
+
+		for (OrderResultDto order : orderList) {
 			// 주문의 모든 메뉴의 가격 합산
 			int totalOrderPrice = order.getMenus().stream()
 				.mapToInt(OrderMenu::getPrice)
@@ -281,11 +308,11 @@ public class OrderServiceImpl implements OrderService {
 			OrderDto orderDto = new OrderDto(
 				order.getId(),
 				order.getPickUpTime(),
-				cafeResponse.getBody().getData().getCafeName(),
+				order.getCafeName(),
 				order.getMenus().get(0).getName(),
 				order.getMenus().size(),
 				totalOrderPrice, // 계산된 총 가격
-				cafeResponse.getBody().getData().getWorkPlaceName()
+				workplaceMap.get(order.getWorkPlaceId())
 			);
 			orderDtos.add(orderDto); // 생성된 OrderDto를 리스트에 추가
 		}
@@ -295,9 +322,15 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(Integer empId, String orderId) {
-		Order order = orderRepository.findById(orderId).orElseThrow(OrderEntityNotFoundException::new);
+		OrderResultDto order = customOrderRepository.findOrderDetailByOrderId(orderId);
+
+		if (order == null) {
+			throw new OrderEntityNotFoundException();
+		}
+
 		List<OrderMenu> menus = order.getMenus();
 		List<OrderDetailMenuDto> orderDetailMenuDtos = new ArrayList<>();
+
 		int totalOrderPrice = 0;  // 전체 주문 가격을 저장할 변수
 		for (OrderMenu orderMenu : menus) {
 			// 각 메뉴의 옵션들에서 선택된 choice 이름을 문자열로 결합
@@ -315,12 +348,18 @@ public class OrderServiceImpl implements OrderService {
 			totalOrderPrice += orderMenu.getPrice();  // 메뉴 가격을 총합에 더함
 			orderDetailMenuDtos.add(orderDetailMenuDto);
 		}
-		ResponseEntity<DataResponseDto<CafeInfoForOrderListDto>> cafeInfo = cafeServiceFeignClient.getCafeInfo(
-			order.getCafeId());
+
+		//근무지 이름 가져오기
+		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
+
+		// 근무지 목록을 Map으로 변환
+		Map<Integer, String> workplaceMap = workplaceData.getWorkplaceList().stream()
+			.collect(Collectors.toMap(WorkplaceDto::getWorkplaceId, WorkplaceDto::getWorkplaceName));
+
 		OrderDetailResponseDto response = new OrderDetailResponseDto(
-			cafeInfo.getBody().getData().getCafeName(),
+			order.getCafeName(),
 			totalOrderPrice,
-			cafeInfo.getBody().getData().getWorkPlaceName(),
+			workplaceMap.get(order.getWorkPlaceId()),
 			order.getUsedSubsidy(),
 			order.getOrderTime(),
 			order.getPickUpTime(),

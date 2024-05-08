@@ -1,5 +1,6 @@
 package com.bbap.order.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,13 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class PayInfoAuthRequestDto {
+public class LoginRequestDto {
+	@NotNull
 	private String empNo;
+
+	@NotNull
 	private String password;
-	private String cafeId;
 }
