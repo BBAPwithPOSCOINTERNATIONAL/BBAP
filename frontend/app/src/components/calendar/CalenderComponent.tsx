@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { format, addMonths, subMonths, differenceInWeeks } from "date-fns";
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth } from "date-fns";
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  isSameMonth,
+} from "date-fns";
 import { addDays, isAfter } from "date-fns";
 import {
   getMonthlyPayments,
@@ -70,18 +76,39 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
           <img src={next} onClick={nextMonth} style={{ height: "1.3rem" }} />
         </div>
         <div style={{ paddingLeft: "0.5rem", fontSize: "18px" }}>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
-            <div style={{ width: "30vw" }}>총 결제금액</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1rem",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ width: "40vw" }}>총 결제금액</div>
             <div>{data.totalPaymentAmountSum.toLocaleString()} 원</div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
-            <div style={{ width: "30vw" }}>총 지원금</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1rem",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ width: "40vw" }}>총 지원금</div>
             <div style={{ color: "green" }}>
               {data.useSubsidySum.toLocaleString()} 원
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", justifyContent: 'space-between' }}>
-            <div style={{ width: "30vw" }}>총 본인부담금</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1rem",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ width: "40vw" }}>총 본인부담금</div>
             <div style={{ color: "blue" }}>
               {data.selfPaymentSum.toLocaleString()} 원
             </div>
@@ -126,7 +153,6 @@ const RenderDays = () => {
     </div>
   );
 };
-
 
 const RenderCells = ({
   currentMonth,
@@ -199,37 +225,37 @@ const RenderCells = ({
           `}
             // 일자별 숫자나오는칸 스타일링
             style={{
-             borderColor: 'gray',
+              borderColor: "gray",
               borderLeft: "1px solid rgb(105, 103, 126)",
               borderRight: "1px solid rgb(105, 103, 126)",
               borderTop: "1px solid rgb(105, 103, 126)",
               height: "1.3rem",
               fontSize: "10px",
               justifyContent: "center",
-              alignContent:'center',
+              alignContent: "center",
               textAlign: "center",
-              fontWeight: "bold",}}
+              fontWeight: "bold",
+            }}
           >
             {formattedDate}
           </span>
           {/* 일자별 지원금과 본인부담금 나오는 칸 스타일링 */}
           <div
             className={`bg-slate-50 border-transparent rounded-b-lg hover:bg-blue-200 shadow-right ${opacityClass}`}
-             
             style={{
               display: "flex",
               flexDirection: "column",
               height: "90%",
               width: "100%",
               justifyContent: "center",
-              fontWeight: 'bold',
+              fontWeight: "bold",
               // borderColor: 'gray',
               borderLeft: "1px solid rgb(105, 103, 126)",
               borderRight: "1px solid rgb(105, 103, 126)",
               borderBottom: "1px solid rgb(105, 103, 126)",
               overflow: "auto",
               alignItems: "center",
-              textAlign: 'center',
+              textAlign: "center",
               fontSize: "10px",
             }}
           >
@@ -256,10 +282,10 @@ const RenderCells = ({
           height: rowHeight,
           display: "flex",
           flexDirection: "row",
-          gap: '0.11rem',
+          gap: "0.11rem",
           marginLeft: "1vw",
           marginRight: "1vw",
-          marginBottom: '0.2rem',
+          marginBottom: "0.2rem",
         }}
       >
         {days}
@@ -343,7 +369,8 @@ export const CalendarComponent = () => {
         style={{
           paddingTop: "19vh",
           marginLeft: "1rem",
-          width: '40vw'}}
+          width: "40vw",
+        }}
       />
       <RenderDays />
       {paymentData && (

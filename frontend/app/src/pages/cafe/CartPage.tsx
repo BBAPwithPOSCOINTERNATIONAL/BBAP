@@ -91,7 +91,7 @@ function CartPage() {
           <img src={deletebutton} />
         </button>
         <h1 className="text-center text-3xl font-hyemin-bold flex-1">
-          카페이름 나올 예정
+          {/* {localStorage.getItem("cafeName")} */} 카페이름
         </h1>
         <div></div>{" "}
         {/* 이 div는 h1을 중앙에 위치시키기 위한 더미 요소입니다. */}
@@ -270,7 +270,7 @@ function CartPage() {
         </div>
 
         <hr className="bg-[#D2DBF0] h-0.5 fixed bottom-16 " />
-        <div className="text-sm text-center fixed bottom-16 w-full ">
+        <div className="text-sm text-center fixed bottom-16 left-0 w-full ">
           결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
         </div>
         <Button
