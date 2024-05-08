@@ -57,10 +57,11 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const token = await requestPermission();
+      const token = (await requestPermission()) || "";
       setFcmToken(token ?? "");
 
-      const response = await login(employeeId, password, fcmToken);
+      // console.log(token);
+      const response = await login(employeeId, password, token);
 
       if (response.data.accessToken && response.data.refreshToken) {
         localStorage.setItem("accessToken", response.data.accessToken);

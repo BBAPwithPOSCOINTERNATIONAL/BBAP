@@ -42,10 +42,10 @@ function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const token = await requestPermission();
+      const token = (await requestPermission()) || "";
       setFcmToken(token ?? "");
 
-      const response = await login(adminId, password, fcmToken);
+      const response = await login(adminId, password, token);
       if (response.data.accessToken && response.data.refreshToken) {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
