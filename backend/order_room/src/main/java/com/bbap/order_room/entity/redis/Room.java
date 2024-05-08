@@ -19,7 +19,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@RedisHash("Room")
+@RedisHash(value = "Room", timeToLive = 43200) // 12시간 유지
 public class Room {
 	@Id
 	private String roomId;

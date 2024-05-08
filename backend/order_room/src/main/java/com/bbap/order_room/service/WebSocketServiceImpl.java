@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.ChoiceRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
+import com.bbap.order_room.dto.requestDto.SendNoticeRequestDto;
 import com.bbap.order_room.dto.responseDto.DataResponseDto;
 import com.bbap.order_room.dto.responseDto.OrderResponseDto;
 import com.bbap.order_room.entity.redis.ChoiceOption;
@@ -29,6 +31,7 @@ import com.bbap.order_room.feign.OrderServiceFeignClient;
 import com.bbap.order_room.repository.ParticipantRepository;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
+import com.google.gson.Gson;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +48,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final SimpMessagingTemplate messagingTemplate;
 	private final HrServiceFeignClient hrServiceFeignClient;
 	private final OrderServiceFeignClient orderServiceFeignClient;
+
+	private final KafkaTemplate<String, String> kafkaTemplate;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
 		Long expiration = 3L * 60 * 60; // 방 유효기간 3시간
@@ -234,6 +239,13 @@ public class WebSocketServiceImpl implements WebSocketService{
 		}
 		Long orderNumber = orderResponse.getBody().getData().getOrderNum();
 		//알림 보내기 -> kafka
+		SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
+			empId, 2, "www.naver.com",null
+		);
+		String message = new Gson().toJson(sendNoticeRequestDto);
+		kafkaTemplate.send("notice_topic", message);
+		log.info("같이 주문 방 알림 전송");
+
 		//방 상태 주문 종료로 바꾸기
 		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
