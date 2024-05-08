@@ -181,7 +181,7 @@ public class PaymentServiceImpl implements PaymentService {
 			//결제 알림 템플릿 - 1
 			.noticeTemplateId(1)
 			//url 수정 필요
-			.noticeUrl(entity.getHistoryId().toString())
+			.noticeUrl("receipt")
 			.storeName(entity.getPayStore()).build();
 
 		String message = new Gson().toJson(noticeRequest);
