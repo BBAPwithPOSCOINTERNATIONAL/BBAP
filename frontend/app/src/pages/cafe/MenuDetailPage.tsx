@@ -152,7 +152,7 @@ function MenuDetailPage() {
                 </div>
               </div>
 
-              <div className="mx-10 text-start">
+              <div className="mx-5 text-start">
                 {optionOrder.map((optionName) => {
                   const option = selectedItem.options.find(
                     (opt: Option) => opt.optionName === optionName

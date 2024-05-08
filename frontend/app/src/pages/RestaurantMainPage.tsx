@@ -13,6 +13,7 @@ import unactiveback from "/assets/images/button/unactiveback.png";
 import next from "/assets/images/button/next.png";
 import unactivenext from "/assets/images/button/unactivenext.png";
 // import { useQuery } from "@tanstack/react-query";
+import { IoMdPerson } from "react-icons/io";
 
 function RestaurantMainPage() {
   const [restaurant, setRestaurant] = useState<number>(0);
@@ -161,7 +162,7 @@ function RestaurantMainPage() {
       <NavBar />
       <div className="flex flex-col items-center justify-center">
         <select
-          className="font-hyemin-bold bg-blue-100 w-2/3 h-8 text-center rounded-md mt-2"
+          className="font-hyemin-bold bg-blue-200 w-11/12 text-lg h-9 text-center rounded-md mt-2"
           value={restaurant}
           onChange={(e) => {
             setRestaurant(parseInt(e.target.value));
@@ -198,7 +199,7 @@ function RestaurantMainPage() {
                     console.log(date);
                     setSelectedDay(date);
                   }}
-                  className={`w-1/6 text-[11px] font-bold  px-1 rounded text-center ${
+                  className={`w-1/6 text-xs font-bold  px-1 rounded text-center ${
                     isActive
                       ? "border-2 border-blue-500"
                       : "border border-transparent"
@@ -251,34 +252,37 @@ function RestaurantMainPage() {
       </div>
       <hr className="h-2 w-full" />
       {/* 메뉴카드들 */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-[8px] px-2">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-[20px] px-2">
         {menus.map((menu, index) => (
           <div
             key={index}
-            className="flex flex-col bg-white border shadow-sm rounded-md dark:bg-neutral-900 dark:border-neutral-700 dark:shadow-neutral-700/70 h-full" // Ensure the card takes full height of its container
+            className="flex flex-col bg-white border-2 shadow-sm rounded-md dark:bg-neutral-900 dark:border-neutral-900 dark:shadow-neutral-700/70 h-full" // Ensure the card takes full height of its container
           >
-            <div className="bg-cafe-primary-color border-b rounded-t-md py-1 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
-              <h1 className="text-lg font-hyemin-bold dark:text-white text-center">
+            <div className="flex gap-[1px]  bg-[#739DB5] text-white border rounded-t-md py-2 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
+              <h1 className="text-lg mx-auto font-hyemin-bold dark:text-white text-center">
                 {menu.menuName}
               </h1>
+              <IoMdPerson className="text-lg mr-1 mt-1 font-hyemin-bold dark:text-white align-center" />
+              <h1 className="text-lg mr-1rem font-hyemin-bold dark:text-white text-center">
+                {menu.eatCount}
+              </h1>
             </div>
-            <hr className="h-1" />
+            {/* <hr className="h-1" /> */}
             <div className="flex-grow p-1 md:p-1">
               {menu.menuImage && (
                 <img
                   src={menu.menuImage}
                   alt="Menu"
-                  className="w-full h-auto mt-1 border"
+                  className="w-4/5 h-auto my-1 border flex mx-auto"
                   style={{ maxHeight: "200px" }}
                 />
               )}
-              <hr className="h-1" />
-              <p className="mt-2 text-center text-sm text-gray-500 dark:text-neutral-400">
+              <p className="mt-2 text-center bg-[#E2F1FF] p-2 rounded-md text-sm text-gray-800 dark:text-neutral-400">
                 {menu.menuDetail}
               </p>
             </div>
             <hr className="h-1" />
-            <div className="bg-cafe-primary-color rounded-b-md py-1 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
+            <div className="font-bold   bg-[#739DB5] text-white rounded-b-md py-1 px-4 md:py-4 md:px-5 dark:bg-neutral-900 dark:border-neutral-700">
               <p className="mt-1 text-lg text-center">{menu.menuPrice} 원</p>
             </div>
           </div>

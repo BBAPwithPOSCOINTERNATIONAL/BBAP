@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import apiClient from "./apiClient";
 
 /**
@@ -93,7 +94,6 @@ export const fetchEmployees = async (filters: {
 //  * @throws 400 "Bad request." 오류를 반환할 수 있습니다.
 //  */
 
-
 /**
  * "카테고리 목록 조회"
  * @remarks
@@ -132,6 +132,36 @@ export const fetchCategoryData = async (): Promise<CategoryResponse> => {
     return response.data;
   } catch (error) {
     console.error("Error fetching category data:", error);
+    throw error;
+  }
+};
+
+// 지원금 승인
+
+interface ApprovalsUpdateResponse {
+  message: string;
+}
+
+/**
+ * 승인 업데이트
+ * @remarks
+ * PUT 요청을 '/api/v1/approvals' 엔드포인트에 보냅니다. 성공시 메시지를 반환합니다.
+ * @param {number[]} employeeIds 업데이트할 employee ID 목록
+ * @returns {Promise<ApprovalsUpdateResponse>} "Success." 메시지를 반환합니다.
+ * @throws AxiosError PUT 요청 오류를 반환할 수 있습니다.
+ */
+export const updateApprovals = async (
+  employeeIds: number[]
+): Promise<ApprovalsUpdateResponse> => {
+  try {
+    const response = await apiClient.put<ApprovalsUpdateResponse>("approvals", {
+      employeeIds,
+    });
+    return response.data;
+  } catch (error) {
+    if (error && (error as AxiosError).response) {
+      throw (error as AxiosError).response!.data;
+    }
     throw error;
   }
 };

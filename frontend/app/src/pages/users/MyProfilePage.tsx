@@ -1,7 +1,6 @@
 import { useState, ReactNode, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import IdPhoto from "/assets/images/image1.png";
 import guide from "/assets/images/guideLine.png";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +22,7 @@ function Modal({ isOpen, children }: ModalProps) {
           얼굴을 등록해주세요
         </div>
         <div className="text-center text-base font-hyemin-regular mb-2">
-        얼굴을 가이드라인 안쪽으로 위치시켜주세요
-           
+          얼굴을 가이드라인 안쪽으로 위치시켜주세요
         </div>
 
         {children}
@@ -37,9 +35,9 @@ function Modal({ isOpen, children }: ModalProps) {
 }
 
 function MyProfilePage() {
-  const profile = {
-    imageUrl: IdPhoto,
-  };
+  // const profile = {
+  //   imageUrl: IdPhoto,
+  // };
 
   const [showVideo, setShowVideo] = useState(false);
   const [captured, setCaptured] = useState(false);
@@ -148,15 +146,14 @@ function MyProfilePage() {
     <div className="flex flex-col min-h-screen">
       <NavBar />
       <div className="flex flex-row justify-center items-end mt-6 ">
-        <img src={Pobap} className="w-16 mr-3"/>
-        <h1 className="text-2xl font-bold text-center mr-4">안녕하세요, {userInfo.empName} 님 </h1>
-         <button onClick={handleLogout} className="bg-blue-50 mb-1 text-sm p-1 px-3 rounded-md text-slate-400">
-              로그아웃
-         </button>
+        <img src={Pobap} className="w-16 mr-3" />
+        <h1 className="text-2xl font-bold text-center mr-4">
+          안녕하세요, {userInfo.empName} 님{" "}
+        </h1>
       </div>
-      <div className="flex-grow p-2 pt-8">
+      <div className="flex-grow p-4 pt-4">
         <div
-          className=" shadow-lg rounded-lg p-5"
+          className=" shadow-lg rounded-lg px-5 py-4"
           style={{
             boxShadow:
               "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
@@ -165,8 +162,9 @@ function MyProfilePage() {
           <div className="flex flex-col items-center">
             <img
               className="w-64 h-84 mb-2 mt-4"
-              src={profile.imageUrl}
+              src={userInfo.empImage}
               alt="Profile"
+              style={{ maxHeight: "310px" }}
             />
             <button
               className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-24 rounded-md text-2xl"
@@ -199,19 +197,24 @@ function MyProfilePage() {
                 </>
               )}
             </Modal>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 py-3 px-28 text-center ">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-28 text-center ">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 근무지 : {userInfo.workplace?.workplaceName}
               </p>
             </div>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-4 py-3 px-24 text-center">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-24 text-center">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 사번 : {userInfo.empNo}
               </p>
             </div>
           </div>
         </div>
-           
+        <button
+          onClick={handleLogout}
+          className="bg-slate-50 text-sm p-1 px-3 rounded-md text-slate-400 mx-auto flex mt-4"
+        >
+          로그아웃
+        </button>
       </div>
 
       <BottomTabBar />

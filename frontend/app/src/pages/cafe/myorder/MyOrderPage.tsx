@@ -10,60 +10,6 @@ import {
   OrderDetailResponse,
 } from "../../../api/orderAPI";
 
-// const dummyData: { [key: string]: Order[] } = {
-//   "2024-04": [
-//     {
-//       orderId: "order001",
-//       pickUpTime: "2024-04-10T15:00:00",
-//       cafeName: "Cafe Latte",
-//       firstMenuName: "Latte",
-//       menuCnt: 4,
-//       payAmount: 8000,
-//       workPlaceName: "Cafe Latte Branch 1",
-//     },
-//     {
-//       orderId: "order002",
-//       pickUpTime: "2024-04-10T15:30:00",
-//       cafeName: "Espresso House",
-//       firstMenuName: "Espresso",
-//       menuCnt: 1,
-//       payAmount: 4000,
-//       workPlaceName: "Espresso House Central",
-//     },
-//     {
-//       orderId: "order003",
-//       pickUpTime: "2024-04-30T15:30:00",
-//       cafeName: "Smoothie Station",
-//       firstMenuName: "Berry Smoothie",
-//       menuCnt: 3,
-//       payAmount: 15000,
-//       workPlaceName: "Smoothie Station Downtown",
-//     },
-//   ],
-//   "2024-05": [
-//     {
-//       orderId: "order003",
-//       pickUpTime: "2024-05-10T16:00:00",
-//       cafeName: "Smoothie Station",
-//       firstMenuName: "Berry Smoothie",
-//       menuCnt: 3,
-//       payAmount: 15000,
-//       workPlaceName: "Smoothie Station Downtown",
-//     },
-//   ],
-//   "2024-03": [
-//     {
-//       orderId: "order004",
-//       pickUpTime: "2024-03-10T17:00:00",
-//       cafeName: "Tea House",
-//       firstMenuName: "Green Tea",
-//       menuCnt: 2,
-//       payAmount: 5000,
-//       workPlaceName: "Tea House Suburb",
-//     },
-//   ],
-// };
-
 const MyOrderPage = () => {
   const [date, setDate] = useState<{ year: number; month: number }>({
     year: new Date().getFullYear(),

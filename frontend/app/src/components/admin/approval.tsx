@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./approval.css";
 import Pagination from "./pagination";
-import { fetchEmployees, Employee, fetchCategoryData, Workplace, Department, Position } from "../../api/approvalAPI";
+import {
+  fetchEmployees,
+  Employee,
+  fetchCategoryData,
+  Workplace,
+  Department,
+  Position,
+  updateApprovals,
+} from "../../api/approvalAPI";
 
 function Approve(): JSX.Element {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -12,6 +20,9 @@ function Approve(): JSX.Element {
   const [workplaceList, setWorkplaceList] = useState<Workplace[]>([]);
   const [departmentList, setDepartmentList] = useState<Department[]>([]);
   const [positionList, setPositionList] = useState<Position[]>([]);
+
+  const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
+
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -49,7 +60,6 @@ function Approve(): JSX.Element {
         setWorkplaceList(response.data.workplaceList);
         setDepartmentList(response.data.departmentList);
         setPositionList(response.data.positionList);
-
       } catch (error) {
         console.error("Error fetching employees:", error);
       }
@@ -89,6 +99,20 @@ function Approve(): JSX.Element {
       openModal(); // 선택 승인 모달
     }
   };
+
+  const finalizeApproval = async () => {
+    try {
+      const response = await updateApprovals(selectedEmployees);
+      console.log(response);
+      alert("승인되었습니다"); // 승인 성공 메시지
+      setSelectedEmployees([]); // 선택 초기화
+      closeModal(); // 모달 닫기
+    } catch (error) {
+      console.error("Error during approval:", error);
+      alert("승인 처리 중 오류가 발생했습니다.");
+    }
+  };
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value);
   };
@@ -111,7 +135,6 @@ function Approve(): JSX.Element {
     setDepartment(event.target.value);
   };
 
-  const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
   const handleCheckboxChange = (employeeId: number) => {
     if (selectedEmployees.includes(employeeId)) {
       setSelectedEmployees(selectedEmployees.filter((id) => id !== employeeId));
@@ -179,18 +202,19 @@ function Approve(): JSX.Element {
       </select>
       <button
         onClick={handleApprove}
-        className={`fixed right-8 top-[117px] font-hyemin-bold text-[18px] ${selectedEmployees.length === 0
-          ? "bg-[#163760]" // 하나도 선택되지 않은 경우
-          : selectedEmployees.length === employees.length
+        className={`fixed right-8 top-[117px] font-hyemin-bold text-[18px] ${
+          selectedEmployees.length === 0
+            ? "bg-[#163760]" // 하나도 선택되지 않은 경우
+            : selectedEmployees.length === employees.length
             ? "bg-[#179F0B]" // 모두 선택된 경우
             : "bg-[#179F0B]" // 하나 이상 선택된 경우
-          } text-white w-36 p-2 rounded-md m-5`}
+        } text-white w-36 p-2 rounded-md m-5`}
       >
         {selectedEmployees.length === employees.length
           ? "모두 승인"
           : selectedEmployees.length === 0
-            ? "승인"
-            : "선택 승인"}
+          ? "승인"
+          : "선택 승인"}
       </button>
 
       <table
@@ -303,10 +327,7 @@ function Approve(): JSX.Element {
                 취소
               </button>
               <button
-                onClick={() => {
-                  // 여기에 승인 처리 로직 추가
-                  closeModal(); // 모달 닫기
-                }}
+                onClick={finalizeApproval}
                 className="text-white bg-[#163760] px-8 py-2  rounded text-[30px] "
               >
                 승인

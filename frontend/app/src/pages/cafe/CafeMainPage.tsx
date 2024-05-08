@@ -36,7 +36,7 @@ function CafeMainPage() {
     { key: "history", label: "나의주문" },
   ];
 
-  const tabsHeight = 50; // CafeTabs의 높이 추정값
+  // const tabsHeight = 50; // CafeTabs의 높이 추정값
 
   return (
     <div>
@@ -47,7 +47,7 @@ function CafeMainPage() {
       <div
         className="sticky top-[55px] z-20 bg-white"
         style={{
-          height: `${tabsHeight}px`,
+          height: `50px`,
           width: "100vw",
           paddingLeft: "5vw",
           paddingRight: "5vw",

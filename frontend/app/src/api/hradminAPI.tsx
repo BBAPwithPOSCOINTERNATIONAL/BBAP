@@ -242,7 +242,6 @@ export const fetchSubsidyDetails = async (
   }
 };
 
-
 /**
  * "카테고리 목록 조회"
  * @remarks
@@ -269,4 +268,3 @@ export const fetchCategoryData = async (): Promise<CategoryResponse> => {
     throw error;
   }
 };
-
