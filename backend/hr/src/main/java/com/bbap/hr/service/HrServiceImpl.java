@@ -2,8 +2,10 @@ package com.bbap.hr.service;
 
 import com.bbap.hr.dto.*;
 import com.bbap.hr.dto.request.EmployeeSearchDto;
+import com.bbap.hr.dto.request.LoginRequestDto;
 import com.bbap.hr.dto.response.DataResponseDto;
 import com.bbap.hr.dto.response.EmployeePayData;
+import com.bbap.hr.dto.response.EmployeeSummaryData;
 import com.bbap.hr.dto.response.ListCategoryData;
 import com.bbap.hr.dto.response.ListEmployeeData;
 import com.bbap.hr.dto.response.ListSubsidyData;
@@ -13,12 +15,14 @@ import com.bbap.hr.entity.SubsidyEntity;
 import com.bbap.hr.entity.WorkplaceEntity;
 import com.bbap.hr.exception.EmployeeNotFoundException;
 import com.bbap.hr.exception.EmployeeWorkplaceNotFoundException;
+import com.bbap.hr.exception.InvalidPasswordException;
 import com.bbap.hr.exception.SubsidyNotFoundException;
 import com.bbap.hr.repository.DepartmentRepository;
 import com.bbap.hr.repository.EmployeeRepository;
 import com.bbap.hr.repository.PositionRepository;
 import com.bbap.hr.repository.SubsidyRepository;
 import com.bbap.hr.repository.WorkplaceRepository;
+import com.bbap.hr.util.PasswordEncoderUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +48,7 @@ public class HrServiceImpl implements HrService {
     private final WorkplaceRepository workplaceRepository;
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
+    private final PasswordEncoderUtils passwordEncoderUtils;
 
     @Override
     public ResponseEntity<DataResponseDto<ListSubsidyData>> getSubsidyByWorkplace(Integer workplaceId) {
@@ -201,6 +206,20 @@ public class HrServiceImpl implements HrService {
            .departmentList(departmentRepository.findAll())
            .positionList(positionRepository.findAll())
            .build();
+
+        return DataResponseDto.of(data);
+    }
+
+    @Override
+    public ResponseEntity<DataResponseDto<EmployeeSummaryData>> getEmployeeDataByAuth(LoginRequestDto request) {
+        EmployeeEntity employee = employeeRepository.findByEmpNo(request.getEmpNo())
+            .orElseThrow(EmployeeNotFoundException::new);
+
+        if (!passwordEncoderUtils.isMatch(request.getPassword(), employee.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        EmployeeSummaryData data = new EmployeeSummaryData(employee.getEmpId(), employee.getEmpName());
 
         return DataResponseDto.of(data);
     }
