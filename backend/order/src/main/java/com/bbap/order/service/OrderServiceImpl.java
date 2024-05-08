@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +72,6 @@ public class OrderServiceImpl implements OrderService {
 	private final MenuRepository menuRepository;
 	private final CafeRepository cafeRepository;
 	private final StampRepository stampRepository;
-	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
 	@Override
@@ -184,7 +182,7 @@ public class OrderServiceImpl implements OrderService {
 	public ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(PayInfoFaceRequestDto dto) {
 		FaceRequestDto requestDto = new FaceRequestDto(dto.getFaceImage());
 		ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
-			= faceServiceFeignClient.predictFace(requestDto);
+			= faceServiceFeignClient.checkFace(requestDto);
 		int empId = response.getBody().getData().getEmpId();
 
 		//사원 이름 가져오기
