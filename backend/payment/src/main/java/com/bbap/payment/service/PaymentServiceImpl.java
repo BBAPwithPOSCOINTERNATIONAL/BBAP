@@ -15,6 +15,7 @@ import com.bbap.payment.dto.DayPaymentDto;
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
 import com.bbap.payment.dto.request.ProcessPayRequestDto;
 import com.bbap.payment.dto.request.SendNoticeRequestDto;
+import com.bbap.payment.dto.response.AvailSubsidyResponseData;
 import com.bbap.payment.dto.response.CheckEmpResponseData;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
@@ -82,7 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request) {
-		//HR에서 empId를 이용해 사원정보를 받아옴(테스트 코드)
+		//HR에서 empId를 이용해 사원정보를 받아옴
 		CheckEmpResponseData empData = hrServiceFeignClient.checkId(request.getEmpId()).getBody().getData();
 
 		//HR에서 받아온 남은 지원금이 request의 사용 지원금보다 크다면 정상적으로 결제 처리
@@ -155,6 +156,19 @@ public class PaymentServiceImpl implements PaymentService {
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId) {
 		return DataResponseDto.of(paymentHistoryRepository.findByHistoryId(historyId).orElseThrow(
 			HistoryNotFoundException::new));
+	}
+
+	@Override
+	public ResponseEntity<DataResponseDto<AvailSubsidyResponseData>> availSubsidy(int empId) {
+		//HR에서 empId를 이용해 사원정보를 받아옴
+		CheckEmpResponseData empData = hrServiceFeignClient.checkId(empId).getBody().getData();
+
+		//이용 가능한 지원금 계산
+		int availSubsidy = calSubsidy(empData);
+
+		AvailSubsidyResponseData data = new AvailSubsidyResponseData(empData.getEmpName(), availSubsidy);
+
+		return DataResponseDto.of(data);
 	}
 
 	//결제 알림 전송

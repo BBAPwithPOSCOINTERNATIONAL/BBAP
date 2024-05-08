@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
 import com.bbap.payment.dto.request.ProcessPayRequestDto;
+import com.bbap.payment.dto.response.AvailSubsidyResponseData;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -23,4 +24,6 @@ public interface PaymentService {
 	ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(int empId, LocalDate date);
 
 	ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId);
+
+	ResponseEntity<DataResponseDto<AvailSubsidyResponseData>> availSubsidy(int empId);
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
 import com.bbap.payment.dto.request.ProcessPayRequestDto;
+import com.bbap.payment.dto.response.AvailSubsidyResponseData;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -98,5 +99,18 @@ public class PaymentController {
 	@GetMapping("/{historyId}")
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(@PathVariable int historyId) {
 		return paymentService.detailPayment(historyId);
+	}
+
+	@Operation(
+		summary = "지원금 조회",
+		description = "이용 가능한 지원금을 보여준다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "조회 성공."),
+	})
+	@GetMapping("/subsidy")
+	public ResponseEntity<DataResponseDto<AvailSubsidyResponseData>> availSubsidy(
+		@RequestHeader(value = "X-Employee-Id") int empId) {
+		return paymentService.availSubsidy(empId);
 	}
 }
