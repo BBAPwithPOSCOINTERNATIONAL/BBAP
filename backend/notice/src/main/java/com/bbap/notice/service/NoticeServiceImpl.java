@@ -20,7 +20,6 @@ import com.bbap.notice.exception.TemplateNotFoundException;
 import com.bbap.notice.repository.NoticeRepository;
 import com.bbap.notice.repository.NoticeTemplateRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.gson.Gson;
 
@@ -117,7 +116,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 				FirebaseMessaging.getInstance().send(message);
 
-			} catch (FirebaseMessagingException e) {
+			} catch (Exception e) {
 
 				log.info("푸시 알림 전송 실패");
 			}
