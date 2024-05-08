@@ -60,7 +60,7 @@ function LoginPage() {
       const token = (await requestPermission()) || "";
       setFcmToken(token ?? "");
 
-      // console.log(token);
+      console.log(fcmToken);
       const response = await login(employeeId, password, token);
 
       if (response.data.accessToken && response.data.refreshToken) {
