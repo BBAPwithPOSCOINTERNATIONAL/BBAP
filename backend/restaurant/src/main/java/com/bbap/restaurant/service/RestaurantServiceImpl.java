@@ -3,7 +3,9 @@ package com.bbap.restaurant.service;
 import java.sql.Date;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -48,19 +50,18 @@ public class RestaurantServiceImpl implements RestaurantService {
 		int mealClassification = classifyMealTime();
 
 		//근무지명 리스트 받아오기
-		ListWorkplaceData workplaceData = hrServiceFeignClient.ListWorkPlace().getBody().getData();
+		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
 		List<RestaurantDto> restaurantList =restaurantRepository.findAllDto();
 
+		// 근무지 목록을 Map으로 변환
+		Map<Integer, String> workplaceMap = workplaceData.getWorkplaceList().stream()
+			.collect(Collectors.toMap(WorkplaceDto::getWorkplaceId, WorkplaceDto::getWorkplaceName));
+
+		// 모든 레스토랑에 대한 근무지 이름 매핑
 		restaurantList.forEach(restaurant -> {
 			int workplaceId = restaurant.getWorkplaceId();
-
-			// 근무지 데이터에서 해당 ID를 가진 근무지 찾기
-			Optional<WorkplaceDto> matchingWorkplace = workplaceData.getWorkplaceList().stream()
-				.filter(workplace -> workplace.getWorkplaceId() == workplaceId)
-				.findFirst();
-
-			// 근무지 데이터가 존재하는 경우 근무지 이름 매핑
-			matchingWorkplace.ifPresent(workplace -> restaurant.setWorkplaceName(workplace.getWorkplaceName()));
+			String workplaceName = workplaceMap.getOrDefault(workplaceId, "Unknown Workplace");
+			restaurant.setWorkplaceName(workplaceName);
 		});
 
 		ListRestaurantResponseData data = ListRestaurantResponseData.builder()

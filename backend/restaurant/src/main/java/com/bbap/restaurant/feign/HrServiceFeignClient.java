@@ -15,5 +15,5 @@ public interface HrServiceFeignClient {
 	ResponseEntity<DataResponseDto<EmployeeDto>> getUserInfo(@RequestHeader(value = "X-Employee-Id") int empId);
 
 	@GetMapping("/workplaces")
-	public ResponseEntity<DataResponseDto<ListWorkplaceData>> ListWorkPlace();
+	ResponseEntity<DataResponseDto<ListWorkplaceData>> listWorkplace();
 }
