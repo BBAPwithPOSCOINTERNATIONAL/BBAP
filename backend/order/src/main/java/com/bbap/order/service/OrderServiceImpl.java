@@ -77,12 +77,14 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> order(Integer empId, PayRequestDto dto) {
 		// Validate pick-up time
+		log.info("직원 ID {}에 대한 주문 요청을 받았습니다.", empId);
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
 
 		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId());
 		//스탬프 조회와 개수 확인
+		log.info("스탬프 사용가능 여부를 확인 중입니다..");
 		if (dto.getCntCouponToUse() != 0)
 			validateStampAvailability(stamp, dto.getCntCouponToUse());
 
@@ -95,14 +97,19 @@ public class OrderServiceImpl implements OrderService {
 		int discountAccount = dto.getCntCouponToUse() * 3000;
 
 		// 할인 금액이 총 결제 가격보다 크지 않은지 확인
+		log.info("할인 금액이 총 결제금액보다 큰지 확인중입니다..");
+
 		if (dto.getCntCouponToUse() != 0)
 			validateDiscount(totalPaymentAccount, dto.getUsedSubsidy(), discountAccount);
 
 		//카페 이름 가져오기
 		Cafe cafe = cafeRepository.findById(dto.getCafeId()).orElseThrow(CafeEntityNotFoundException::new);
+		log.info("카페 정보를 받았습니다: {}", cafe);
 
 		Order order = new Order(dto.getCafeId(), empId, LocalDateTime.now(), dto.getPickUpTime(), dto.getUsedSubsidy(),
 			orderMenus);
+
+		log.info("주문 정보를 데이터베이스에 입력 중입니다..");
 		orderRepository.insert(order); // 주문 db에 넣기
 		PaymentRequestDto paymentRequestDto = PaymentRequestDto.builder()
 			.empId(empId)
@@ -112,6 +119,7 @@ public class OrderServiceImpl implements OrderService {
 			.payStore(cafe.getName()).build();
 
 		//결제 서비스 보내기
+		log.info("결제 서비스에 결제 요청을 보내고 있습니다..");
 		ResponseEntity<ResponseDto> response = paymentServiceFeignClient.pay(paymentRequestDto);
 		// String message = new Gson().toJson(paymentRequestDto);
 		// //결제 서비스 보내기
@@ -126,6 +134,7 @@ public class OrderServiceImpl implements OrderService {
 		Long orderNum = incrementOrderNumber(dto.getCafeId());
 		PayResponseDto payResponseDto = new PayResponseDto(orderNum);
 
+		log.info("주문이 성공적으로 처리되었습니다.");
 		return DataResponseDto.of(payResponseDto);
 	}
 
