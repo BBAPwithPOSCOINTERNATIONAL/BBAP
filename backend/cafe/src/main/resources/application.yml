@@ -4,9 +4,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /api/v1/api-docs
+    path: /api/v1/cafes/api-docs
   swagger-ui:
-    path: /api/v1/
+    path: /api/v1/cafes/swagger
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
