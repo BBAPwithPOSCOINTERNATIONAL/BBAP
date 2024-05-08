@@ -166,7 +166,7 @@ public class PaymentServiceImpl implements PaymentService {
 		//이용 가능한 지원금 계산
 		int availSubsidy = calSubsidy(empData);
 
-		AvailSubsidyResponseData data = new AvailSubsidyResponseData(empData.getEmpName(), availSubsidy);
+		AvailSubsidyResponseData data = new AvailSubsidyResponseData(empId, availSubsidy);
 
 		return DataResponseDto.of(data);
 	}

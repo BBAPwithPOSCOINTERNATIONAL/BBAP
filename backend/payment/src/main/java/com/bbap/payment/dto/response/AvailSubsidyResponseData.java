@@ -12,6 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AvailSubsidyResponseData {
-	private String empName;
+	private int empId;
 	private int availSubsidy;
 }
