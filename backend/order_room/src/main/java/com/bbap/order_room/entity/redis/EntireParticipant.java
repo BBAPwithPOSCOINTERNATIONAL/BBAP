@@ -20,8 +20,4 @@ public class EntireParticipant {
 	@Id
 	private Integer participantId;
 	private String roomId;
-
-	@TimeToLive
-	private Long expiration;
-
 }

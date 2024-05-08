@@ -28,9 +28,6 @@ public class Room {
 	private HashMap<Integer, String> orderers; //empId 사용
 	private List<OrderItem> orderItems;
 	private Long orderNumber;
-
-	@TimeToLive
-	private Long expiration;
 }
 
 

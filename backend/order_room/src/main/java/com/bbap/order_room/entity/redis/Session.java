@@ -21,7 +21,4 @@ public class Session {
 	private String sessionId;
 	private Integer empId;
 	private String roomId;
-
-	@TimeToLive
-	private Long expiration;
 }

@@ -52,8 +52,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final KafkaTemplate<String, String> kafkaTemplate;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
-		Long expiration = 3L * 60 * 60; // 방 유효기간 3시간
-		Session session = new Session(sessionId, empId, roomId, expiration);
+		Session session = new Session(sessionId, empId, roomId);
 		sessionRepository.save(session);
 		log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
 	}
@@ -115,8 +114,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 		// 주문을 담은 유저가 해당방에 참가중 상태가 아니라면 Participant 엔티티를 생성하거나 변경
 		Optional<EntireParticipant> participant = participantRepository.findById(empId);
 		if (participant.isEmpty()) {
-			Long expiration = 12L * 60 * 60;
-			EntireParticipant newParticipant = new EntireParticipant(empId, roomId, expiration);
+			EntireParticipant newParticipant = new EntireParticipant(empId, roomId);
             participantRepository.save(newParticipant);
 		} else {
 			EntireParticipant entireParticipant = participant.get();
