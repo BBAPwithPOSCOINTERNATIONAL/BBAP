@@ -206,6 +206,14 @@ public class WebSocketServiceImpl implements WebSocketService{
 		room.setCurrentOrderer(result); //주문자 변경
 		log.info("원판 결과에 따라 새로운 주문자 ID {}가 결정되었습니다.", result);
 
+		//알림 보내기 -> kafka
+		SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
+			result, 3, "www.naver.com",null
+		);
+		String message = new Gson().toJson(sendNoticeRequestDto);
+		kafkaTemplate.send("notice_topic", message);
+		log.info("같이 주문 방 내기 결과 알림 전송");
+
 		roomRepository.save(room);
 		messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
 		log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);

@@ -29,4 +29,3 @@ public class Room {
 	private Long orderNumber;
 }
 
-
