@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@RedisHash("Room")
+@RedisHash(value = "Session", timeToLive = 7200)
 public class Session {
 	@Id
 	private String sessionId;
