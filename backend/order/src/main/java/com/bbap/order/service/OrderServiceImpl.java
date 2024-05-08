@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 			throw new BadOrderRequestException();
 		}
 
-		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId());
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).orElse(null);
 		//스탬프 조회와 개수 확인
 		log.info("스탬프 사용가능 여부를 확인 중입니다..");
 		if (dto.getCntCouponToUse() != 0)
@@ -148,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public ResponseEntity<DataResponseDto<PayResponseDto>> orderKiosk(PayKioskRequestDto dto) {
 		int empId = dto.getEmpId();
-		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId());
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).orElse(null);
 		//스탬프 조회와 개수 확인
 		if (dto.getCntCouponToUse() != 0)
 			validateStampAvailability(stamp, dto.getCntCouponToUse());
@@ -206,7 +206,8 @@ public class OrderServiceImpl implements OrderService {
 		EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
 
 		//스탬프 수 가져오기
-		int stampCnt = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).getStampCnt();
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).orElse(null);
+		int stampCnt = stamp == null ? 0 : stamp.getStampCnt();
 
 		//지원금 가져오기
 		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empId)
@@ -226,7 +227,8 @@ public class OrderServiceImpl implements OrderService {
 		CheckEmpResponseData empData = hrServiceFeignClient.checkCard(dto.getCardId()).getBody().getData();
 
 		//스탬프 수 가져오기
-		int stampCnt = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).getStampCnt();
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).orElse(null);
+		int stampCnt = stamp == null ? 0 : stamp.getStampCnt();
 
 		//지원금 가져오기
 		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
@@ -247,7 +249,8 @@ public class OrderServiceImpl implements OrderService {
 			.getEmployeeDataByAuth(new LoginRequestDto(dto.getEmpNo(), dto.getPassword())).getBody().getData();
 
 		//스탬프 수 가져오기
-		int stampCnt = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).getStampCnt();
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empData.getEmpId(), dto.getCafeId()).orElse(null);
+		int stampCnt = stamp == null ? 0 : stamp.getStampCnt();
 
 		//지원금 가져오기
 		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
@@ -268,7 +271,8 @@ public class OrderServiceImpl implements OrderService {
 		EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
 
 		//스탬프 수 가져오기
-		int stampCnt = stampRepository.findByEmpIdAndCafeId(empId, cafeId).getStampCnt();
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, cafeId).orElse(null);
+		int stampCnt = stamp == null ? 0 : stamp.getStampCnt();
 
 		//지원금 가져오기
 		int availableSubsidy = paymentServiceFeignClient.availSubsidy(empData.getEmpId())
@@ -468,7 +472,7 @@ public class OrderServiceImpl implements OrderService {
 
 	private void addStampAfterOrder(Integer empId, String cafeId) {
 		// 사원 ID와 카페 ID를 이용해 스탬프 정보를 가져옴
-		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, cafeId);
+		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, cafeId).orElse(null);
 
 		// 스탬프가 없으면 새로 생성하여 초기화
 		if (stamp == null) {
