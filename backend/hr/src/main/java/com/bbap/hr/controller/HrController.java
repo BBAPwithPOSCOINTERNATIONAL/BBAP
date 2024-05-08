@@ -12,6 +12,7 @@ import com.bbap.hr.dto.response.ListSubsidyData;
 import com.bbap.hr.dto.response.ListWorkplaceData;
 import com.bbap.hr.service.HrService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/hr")
+@Tag(name = "hr", description = "사원 정보 API")
 public class HrController {
 
     private final HrService hrService;
