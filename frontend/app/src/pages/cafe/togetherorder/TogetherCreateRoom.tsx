@@ -20,7 +20,7 @@ const TogetherCreateRoom = () => {
     const fetchOrderRoomInfo = async () => {
       try {
         const response = await checkOrderRoomParticipation();
-        console.log(response.data.roomId);
+        console.log(response.data.roomId, orderRoomInfo);
         setOrderRoomInfo(response.data.roomId);
         // 방 ID가 존재하면 바로 해당 방으로 이동
         // if (response.data.roomId) {
