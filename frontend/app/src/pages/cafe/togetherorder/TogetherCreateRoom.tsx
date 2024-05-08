@@ -23,13 +23,13 @@ const TogetherCreateRoom = () => {
         console.log(response.data.roomId);
         setOrderRoomInfo(response.data.roomId);
         // 방 ID가 존재하면 바로 해당 방으로 이동
-        if (response.data.roomId) {
-          const cafeName =
-            localStorage.getItem("cafeName") || "Default Cafe Name";
-          navigate("/together", {
-            state: { cafeName: cafeName, roomId: response.data.roomId },
-          });
-        }
+        // if (response.data.roomId) {
+        //   const cafeName =
+        //     localStorage.getItem("cafeName") || "Default Cafe Name";
+        //   navigate("/together", {
+        //     state: { cafeName: cafeName, roomId: response.data.roomId },
+        //   });
+        // }
       } catch (error) {
         console.error("Failed to fetch order room info:", error);
       }
@@ -74,8 +74,9 @@ const TogetherCreateRoom = () => {
     try {
       const result = await createOrderRoom();
       console.log("Room created:", result);
+      setOrderRoomInfo(result.data.roomId);
       navigate("/together", {
-        state: { cafeName: selectedCafeName, roomId: orderRoomInfo },
+        state: { cafeName: selectedCafeName, roomId: result.data.roomId },
       });
     } catch (error) {
       console.error("Failed to create room:", error);
