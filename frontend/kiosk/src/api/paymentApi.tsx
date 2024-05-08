@@ -79,7 +79,7 @@ export async function payInfoByCard(
 ): Promise<PayInfoApiResponse> {
   try {
     const { data } = await apiClient.post<PayInfoApiResponse>(
-      `api/v1/order/payInfo/card`,
+      `api/v1/orders/payInfo/card`,
       { cardId: cardId, cafeId: CAFE_ID }
     );
     return data;
