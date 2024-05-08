@@ -3,7 +3,6 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import guide from "/assets/images/guideLine.png";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
-import { logout } from "../../api/hradminAPI";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/userStore";
 import Pobap from "/assets/images/hello.png";

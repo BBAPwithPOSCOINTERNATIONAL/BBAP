@@ -47,7 +47,7 @@ interface PaymentReqData {
 
 const CAFE_ID = "66276af2412ced9137ecabe9"; // 카페ID 고정
 
-// 미완성
+// 결제 정보 확인_ 얼굴인식
 export async function payInfoByFace(file: File): Promise<PayInfoApiResponse> {
   const formData = new FormData();
   formData.append("faceImage", file);
@@ -55,7 +55,7 @@ export async function payInfoByFace(file: File): Promise<PayInfoApiResponse> {
 
   try {
     const { data } = await apiClient.post<PayInfoApiResponse>(
-      `/api/v1/order/payInfo/face`,
+      `api/v1/orders/payInfo/face`,
       formData,
       {
         headers: {
@@ -73,12 +73,13 @@ export async function payInfoByFace(file: File): Promise<PayInfoApiResponse> {
   }
 }
 
+// 결제 정보 확인_사원증태그
 export async function payInfoByCard(
   cardId: string
 ): Promise<PayInfoApiResponse> {
   try {
     const { data } = await apiClient.post<PayInfoApiResponse>(
-      `order/payInfo/card`,
+      `api/v1/order/payInfo/card`,
       { cardId: cardId, cafeId: CAFE_ID }
     );
     return data;
@@ -91,12 +92,13 @@ export async function payInfoByCard(
   }
 }
 
+// 결제 정보 확인_사번&비번
 export async function payInfoByLogin(
   payload: AuthReqData
 ): Promise<PayInfoApiResponse> {
   try {
     const { data } = await apiClient.post<PayInfoApiResponse>(
-      `order/payInfo/auth`,
+      `api/v1/orders/payInfo/auth`,
       { ...payload, cafeId: CAFE_ID }
     );
     return data;
@@ -109,14 +111,18 @@ export async function payInfoByLogin(
   }
 }
 
+// 오더 결제 하기_키오스크
 export async function paymentReq(
   payload: PaymentReqData
 ): Promise<PayApiResponse> {
   try {
-    const { data } = await apiClient.post<PayApiResponse>(`orders/pay/kiosk`, {
-      ...payload,
-      cafeId: CAFE_ID,
-    });
+    const { data } = await apiClient.post<PayApiResponse>(
+      `api/v1/orders/pay/kiosk`,
+      {
+        ...payload,
+        cafeId: CAFE_ID,
+      }
+    );
     return data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -133,10 +139,13 @@ export async function paymentRestaurantReq(
 ): Promise<PayApiResponse> {
   const MENU_ID = "메뉴아이디"; // 메뉴아이디 고정
   try {
-    const { data } = await apiClient.post<PayApiResponse>(`/api/v1/`, {
-      menuId: MENU_ID,
-      cardId,
-    });
+    const { data } = await apiClient.post<PayApiResponse>(
+      `api/v1/payments/restaurant`,
+      {
+        menuId: MENU_ID,
+        cardId,
+      }
+    );
     return data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

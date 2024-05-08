@@ -34,6 +34,7 @@ const AloneOrderPage: React.FC = () => {
 
   // 처음 마운트 될 때 한 번만 카페 목록을 불러옵니다.
   useEffect(() => {
+    console.log(selectedCafeName);
     async function loadCafes() {
       const storedCafeId = localStorage.getItem("cafeId") || "-1";
       try {

@@ -66,7 +66,7 @@ function LoginPage() {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         const userInfo = await getUserInfo();
-        // console.log("userinfo", userInfo.data);
+        console.log("userinfo", userInfo.data);
         updateUserData(userInfo.data);
         navigate("/main");
       }
@@ -123,8 +123,9 @@ function LoginPage() {
             <button
               type="submit"
               className="font-hyemin-bold bg-primary-color shadow-lg hover:bg-blue-200 hover:text-black text-white text-2xl font-bold py-3 px-10 rounded-md focus:outline-none focus:shadow-outline"
+              disabled={loading}
             >
-              로그인
+              {loading ? "로그인 중" : "로그인"}
             </button>
           </div>
         </form>

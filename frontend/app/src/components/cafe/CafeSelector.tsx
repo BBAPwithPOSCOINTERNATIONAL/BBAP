@@ -22,7 +22,7 @@ const CafeSelector: React.FC<CafeSelectorProps> = ({
       >
         {cafeList.map((cafe) => (
           <option key={cafe.id} value={cafe.id}>
-            {cafe.name}
+            {cafe.name}({cafe.workPlaceName})
           </option>
         ))}
       </select>

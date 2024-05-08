@@ -34,6 +34,7 @@ export const login = async (
       password,
       fcmToken,
     });
+
     return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
