@@ -6,6 +6,13 @@ RUN gradle bootJar --no-daemon
 
 # Package stage
 FROM openjdk:17-jdk-alpine
+
+RUN apk --no-cache add tzdata \
+    && cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
+    && echo "Asia/Seoul" > /etc/timezone \
+    && apk del tzdata
+
+
 ENV SPRING_PROFILES_ACTIVE=local
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
 EXPOSE 8080
