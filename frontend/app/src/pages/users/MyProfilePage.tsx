@@ -146,10 +146,10 @@ function MyProfilePage() {
     <div className="flex flex-col min-h-screen">
       <NavBar />
       <div className="flex flex-row justify-center items-end mt-6 ">
-        <img src={Pobap} className="w-16 mr-3" />
         <h1 className="text-2xl font-bold text-center mr-4">
           안녕하세요, {userInfo.empName} 님{" "}
         </h1>
+        <img src={Pobap} className="w-16" />
       </div>
       <div className="flex-grow p-4 pt-4">
         <div
@@ -167,7 +167,7 @@ function MyProfilePage() {
               style={{ maxHeight: "310px" }}
             />
             <button
-              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-24 rounded-md text-2xl"
+              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-4 w-full rounded-md text-2xl"
               onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? "✅" : ""}
@@ -197,12 +197,12 @@ function MyProfilePage() {
                 </>
               )}
             </Modal>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-28 text-center ">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-4 w-full text-center ">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 근무지 : {userInfo.workplace?.workplaceName}
               </p>
             </div>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-24 text-center">
+            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-4 w-full text-center">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 사번 : {userInfo.empNo}
               </p>

@@ -9,6 +9,7 @@ import {
   Order,
   OrderDetailResponse,
 } from "../../../api/orderAPI";
+import Nodata from "../../../components/nodata";
 
 const MyOrderPage = () => {
   const [date, setDate] = useState<{ year: number; month: number }>({
@@ -103,7 +104,7 @@ const MyOrderPage = () => {
 
   return (
     <div className="font-hyemin-bold">
-      <div className="flex justify-center space-x-5">
+      <div className="flex justify-center space-x-5 py-2">
         <button onClick={handlePrevMonth}>
           <img src={back} alt="back" />
         </button>
@@ -158,7 +159,7 @@ const MyOrderPage = () => {
           })
         ) : (
           <div className="flex items-center justify-center w-full mt-20 text-3xl">
-            <p>데이터가 없습니다.</p>
+            <Nodata />
           </div>
         )}
         {showModal && (

@@ -53,7 +53,7 @@ function LoginPage() {
         navigate("/main");
       }
     } catch (error) {
-      alert('아이디 또는 비밀번호를 확인해주세요.')
+      alert("아이디 또는 비밀번호를 확인해주세요.");
       console.error("로그인 실패:", error);
     } finally {
       setLoading(false);
@@ -68,7 +68,7 @@ function LoginPage() {
           alt="Login Logo"
           className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full"
         /> */}
-          <PWAInstallPrompt />
+        <PWAInstallPrompt />
         <img
           src={bbapimg}
           alt="Login Logo"
@@ -95,7 +95,7 @@ function LoginPage() {
               value={password}
               onChange={onChangePassword}
               required
-              autoComplete="off" 
+              autoComplete="off"
               placeholder="비밀번호"
               className="font-hyemin-bold shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 mb-3 text-center leading-tight ring-2 focus:ring-blue-300 focus:outline-none 
               text-[18px] ring-slate-300 focus:outline-none focus:shadow-outline p-0"
