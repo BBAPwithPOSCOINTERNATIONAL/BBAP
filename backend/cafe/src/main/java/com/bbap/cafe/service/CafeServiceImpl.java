@@ -76,7 +76,7 @@ public class CafeServiceImpl implements CafeService {
 		List<Menu> menus = menuRepository.findByCafeId(cafeId);
 
 		//보여줄 카페의 메뉴들과 상세 정보 가져오기
-		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
+		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe, empId);
 
 		//근무지 이름 가져오기
 		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
@@ -101,7 +101,7 @@ public class CafeServiceImpl implements CafeService {
 		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
 		List<Menu> menus = menuRepository.findByCafeId(cafeId);
 		//보여줄 카페의 메뉴들과 상세 정보 가져오기
-		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
+		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe, empId);
 		return DataResponseDto.of(selectedCafe);
 	}
 
@@ -154,7 +154,7 @@ public class CafeServiceImpl implements CafeService {
 	// 	return DataResponseDto.of(response);
 	// }
 
-	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
+	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe, Integer empId) {
 		List<MenuDto> coffeeMenus = new ArrayList<>();
 		List<MenuDto> beverageMenus = new ArrayList<>();
 		List<MenuDto> dessertMenus = new ArrayList<>();
@@ -196,7 +196,7 @@ public class CafeServiceImpl implements CafeService {
 			}
 		}
 
-		int stampCount = getStampCount(cafe.getId(), 1);  // 직원 ID 예시로 '1' 사용, 실제로는 파라미터로 받거나 세션에서 가져올 수 있음
+		int stampCount = getStampCount(cafe.getId(), empId);  // 직원 ID 예시로 '1' 사용, 실제로는 파라미터로 받거나 세션에서 가져올 수 있음
 
 		// 선택된 카페의 모든 정보와 메뉴 리스트를 포함하여 SelectedCafeDto 객체 생성
 		return new SelectedCafeDto(
@@ -271,7 +271,6 @@ public class CafeServiceImpl implements CafeService {
 		List<MenuDto> popularMenuDtos = new ArrayList<>();
 		for (Document doc : results) {
 			String menuName = doc.getString("_id");
-			int totalOrders = doc.getInteger("totalOrders");
 
 			// 메뉴 이름으로 메뉴 정보를 가져옴
 			Optional<Menu> optionalMenu = menuRepository.findByCafeIdAndName(cafeId, menuName);
