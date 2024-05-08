@@ -47,7 +47,8 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final OrderServiceFeignClient orderServiceFeignClient;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
-		Session session = new Session(sessionId, empId, roomId);
+		Long expiration = 3L * 60 * 60; // 방 유효기간 3시간
+		Session session = new Session(sessionId, empId, roomId, expiration);
 		sessionRepository.save(session);
 		log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
 	}
@@ -106,6 +107,19 @@ public class WebSocketServiceImpl implements WebSocketService{
 			empId
 		);
 
+		// 주문을 담은 유저가 해당방에 참가중 상태가 아니라면 Participant 엔티티를 생성하거나 변경
+		Optional<EntireParticipant> participant = participantRepository.findById(empId);
+		if (participant.isEmpty()) {
+			Long expiration = 12L * 60 * 60;
+			EntireParticipant newParticipant = new EntireParticipant(empId, roomId, expiration);
+            participantRepository.save(newParticipant);
+		} else {
+			EntireParticipant entireParticipant = participant.get();
+			if (!Objects.equals(entireParticipant.getRoomId(), roomId)) {
+				entireParticipant.setRoomId(roomId);
+			}
+		}
+
 		room.getOrderItems().add(orderItem); //아이템 추가
 		log.info("주문 아이템이 성공적으로 추가되었습니다. 아이템: {}", orderItem);
 
@@ -123,7 +137,6 @@ public class WebSocketServiceImpl implements WebSocketService{
 	@Override
 	public void deleteOrderItem(String sessionId, String orderItemId) {
 		log.info("세션 ID {}과 주문 아이템 ID {}을 이용해 주문 아이템을 삭제하려고 합니다.", sessionId, orderItemId);
-
 
 		Integer empId = getEmpId(sessionId);
 		String roomId = getRoomId(sessionId);

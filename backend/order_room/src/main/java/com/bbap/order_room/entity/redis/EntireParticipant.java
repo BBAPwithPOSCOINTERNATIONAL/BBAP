@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @Setter
@@ -19,4 +20,8 @@ public class EntireParticipant {
 	@Id
 	private Integer participantId;
 	private String roomId;
+
+	@TimeToLive
+	private Long expiration;
+
 }

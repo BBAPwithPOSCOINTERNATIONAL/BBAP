@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @Setter
@@ -27,6 +28,9 @@ public class Room {
 	private HashMap<Integer, String> orderers; //empId 사용
 	private List<OrderItem> orderItems;
 	private Long orderNumber;
+
+	@TimeToLive
+	private Long expiration;
 }
 
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @Setter
@@ -20,4 +21,7 @@ public class Session {
 	private String sessionId;
 	private Integer empId;
 	private String roomId;
+
+	@TimeToLive
+	private Long expiration;
 }

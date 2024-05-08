@@ -65,10 +65,14 @@ public class RoomServiceImpl implements RoomService {
         log.info("사원 ID {}에 대해 새로운 방을 생성하는 중...", empId);
 
         String newRoomId = generateRoomId();
+        Long expiration = 12L * 60 * 60; // 방 유효기간 12시간
+
         Room newRoom = new Room(newRoomId, "INITIAL", empId,
-                new HashMap<>(), new ArrayList<>(), null);
+                new HashMap<>(), new ArrayList<>(), null, expiration);
         roomRepository.save(newRoom);
-        EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId);
+
+
+        EntireParticipant newParticipant = new EntireParticipant(empId, newRoomId, expiration);
         participantRepository.save(newParticipant);
 
         log.info("사원 ID {}에 대한 새로운 방 ID {}가 생성되었습니다.", empId, newRoomId);
