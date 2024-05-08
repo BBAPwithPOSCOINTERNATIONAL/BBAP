@@ -1,11 +1,14 @@
 package com.bbap.cafe.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
-import com.bbap.cafe.dto.response.MenuDto;
 import com.bbap.cafe.dto.response.MenuListDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.response.StampDto;
@@ -25,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "cafe", description = "카페 API")
 public class CafeController {
 	private final CafeService cafeService;
-
 
 	@Operation(
 		summary = "카페 목록",
@@ -48,7 +50,8 @@ public class CafeController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/menu-list/{cafeId}")
-	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable String cafeId) {
+	ResponseEntity<DataResponseDto<SelectedCafeDto>> cafeDetail(@RequestHeader(value = "X-Employee-Id") int empId,
+		@PathVariable String cafeId) {
 
 		return cafeService.cafeDetail(empId, cafeId);
 	}
@@ -61,8 +64,9 @@ public class CafeController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@GetMapping("/stamp/{cafeId}")
-	ResponseEntity<DataResponseDto<StampDto>> stampCnt(@PathVariable String cafeId) {
-		return cafeService.stampCnt(cafeId);
+	ResponseEntity<DataResponseDto<StampDto>> stampCnt(@RequestHeader(value = "X-Employee-Id") int empId,
+		@PathVariable String cafeId) {
+		return cafeService.stampCnt(empId, cafeId);
 	}
 
 	@Operation(
@@ -77,16 +81,16 @@ public class CafeController {
 		return cafeService.menuList(cafeId);
 	}
 
-	@Operation(
-		summary = "내부 api용 카페 이름, 근무지 이름",
-		description = "내부 api용 카페 이름, 근무지 이름을 가져온다."
-	)
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Success."),
-	})
-	@GetMapping("/order-list/{cafeId}")
-	ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(@PathVariable String cafeId) {
-		return cafeService.cafeInfoForOrderList(cafeId);
-	}
+	// @Operation(
+	// 	summary = "내부 api용 카페 이름, 근무지 이름",
+	// 	description = "내부 api용 카페 이름, 근무지 이름을 가져온다."
+	// )
+	// @ApiResponses(value = {
+	// 	@ApiResponse(responseCode = "200", description = "Success."),
+	// })
+	// @GetMapping("/order-list/{cafeId}")
+	// ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(@PathVariable String cafeId) {
+	// 	return cafeService.cafeInfoForOrderList(cafeId);
+	// }
 
 }

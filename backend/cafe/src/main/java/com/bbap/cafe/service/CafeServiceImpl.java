@@ -5,9 +5,7 @@ import static com.bbap.cafe.util.MakeKeyUtil.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.CafeSummaryDto;
 import com.bbap.cafe.dto.response.ChoiceDto;
@@ -39,11 +36,11 @@ import com.bbap.cafe.dto.response.SelectedCafeDto;
 import com.bbap.cafe.dto.response.StampDto;
 import com.bbap.cafe.dto.responseDto.DataResponseDto;
 import com.bbap.cafe.dto.responseDto.EmployeeDto;
+import com.bbap.cafe.dto.responseDto.ListWorkplaceData;
+import com.bbap.cafe.dto.responseDto.WorkplaceDto;
 import com.bbap.cafe.entity.Cafe;
 import com.bbap.cafe.entity.Menu;
 import com.bbap.cafe.entity.Option;
-import com.bbap.cafe.entity.Order;
-import com.bbap.cafe.entity.OrderMenu;
 import com.bbap.cafe.entity.Stamp;
 import com.bbap.cafe.exception.CafeEntityNotFoundException;
 import com.bbap.cafe.feign.HrServiceFeignClient;
@@ -82,11 +79,16 @@ public class CafeServiceImpl implements CafeService {
 		SelectedCafeDto selectedCafe = getSelectedCafeDto(menus, cafe);
 
 		//근무지 이름 가져오기
-		String workPlaceName = "근무지이름";
+		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
+
+		// 근무지 목록을 Map으로 변환
+		Map<Integer, String> workplaceMap = workplaceData.getWorkplaceList().stream()
+			.collect(Collectors.toMap(WorkplaceDto::getWorkplaceId, WorkplaceDto::getWorkplaceName));
 
 		//토글바에 들어갈 카페 목록
 		List<CafeSummaryDto> cafeSummaries = cafeRepository.findAll().stream()
-			.map(c -> new CafeSummaryDto(c.getId(), c.getName(), workPlaceName))
+			.map(c -> new CafeSummaryDto(c.getId(), c.getName(),
+				workplaceMap.getOrDefault(c.getWorkPlaceId(), "Unknown Workplace")))
 			.collect(Collectors.toList());
 
 		CafeListDto response = new CafeListDto(cafeSummaries, selectedCafe);
@@ -104,8 +106,7 @@ public class CafeServiceImpl implements CafeService {
 	}
 
 	@Override
-	public ResponseEntity<DataResponseDto<StampDto>> stampCnt(String cafeId) {
-		int empId = 1; //수정할 부분
+	public ResponseEntity<DataResponseDto<StampDto>> stampCnt(int empId, String cafeId) {
 		int stampCnt = getStampCount(cafeId, empId);
 		StampDto stampDto = new StampDto(stampCnt);
 		return DataResponseDto.of(stampDto);
@@ -140,18 +141,18 @@ public class CafeServiceImpl implements CafeService {
 		return DataResponseDto.of(menuListDto);
 	}
 
-	@Override
-	public ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId) {
-		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException:: new);
-		int workPlaceId = cafe.getWorkPlaceId();
-
-		//근무지 이름 가져오기
-		String workPlaceName = "부산";
-
-		CafeInfoOrderListDto response = new CafeInfoOrderListDto(cafe.getName(), workPlaceName);
-
-		return DataResponseDto.of(response);
-	}
+	// @Override
+	// public ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId) {
+	// 	Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
+	// 	int workPlaceId = cafe.getWorkPlaceId();
+	//
+	// 	//근무지 이름 가져오기
+	// 	String workPlaceName = "부산";
+	//
+	// 	CafeInfoOrderListDto response = new CafeInfoOrderListDto(cafe.getName(), workPlaceName);
+	//
+	// 	return DataResponseDto.of(response);
+	// }
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe) {
 		List<MenuDto> coffeeMenus = new ArrayList<>();
@@ -167,7 +168,8 @@ public class CafeServiceImpl implements CafeService {
 				List<ChoiceDto> choiceDtoList = option.getChoices().stream()
 					.map(choice -> new ChoiceDto(choice.getChoiceName(), choice.getPrice()))
 					.collect(Collectors.toList());
-				optionDtoList.add(new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList));
+				optionDtoList.add(
+					new OptionDto(option.getOptionName(), option.getType(), option.isRequired(), choiceDtoList));
 			}
 
 			// MenuDto 객체 생성
@@ -239,7 +241,8 @@ public class CafeServiceImpl implements CafeService {
 		Date startDate = Date.from(sevenDaysAgo.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 		// 카페 ID와 7일 이내의 주문 데이터를 필터링하는 Match 단계
-		MatchOperation matchOperation = Aggregation.match(Criteria.where("cafe_id").is(cafeId).and("order_time").gte(startDate));
+		MatchOperation matchOperation = Aggregation.match(
+			Criteria.where("cafe_id").is(cafeId).and("order_time").gte(startDate));
 
 		// 메뉴 배열을 펼쳐서 각 메뉴를 분석하기 위한 Unwind 단계
 		UnwindOperation unwindOperation = Aggregation.unwind("menus");
@@ -281,15 +284,5 @@ public class CafeServiceImpl implements CafeService {
 
 		return popularMenuDtos;
 	}
-
-
-
-
-
-
-
-
-
-
 
 }
