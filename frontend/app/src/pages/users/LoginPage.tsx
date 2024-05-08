@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import bbapimg from "/assets/images/bbap.png";
@@ -15,6 +15,24 @@ function LoginPage() {
   const [password, setPassword] = useState<string>("");
   const [fcmToken, setFcmToken] = useState("");
   const updateUserData = useUserStore((state) => state.updateUserData);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    const checkUserLoggedIn = async () => {
+      if (accessToken && refreshToken) {
+        try {
+          const userInfo = await getUserInfo();
+          updateUserData(userInfo.data);
+          navigate("/main"); // 유저 정보를 불러와서 업데이트하고 메인 페이지로 리다이렉트
+        } catch (error) {
+          console.error("Failed to fetch user info:", error);
+        }
+      }
+    };
+    checkUserLoggedIn();
+  }, [navigate, updateUserData]);
 
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmployeeId(() => e.target.value);

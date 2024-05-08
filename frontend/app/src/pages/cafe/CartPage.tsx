@@ -9,23 +9,23 @@ import Modal from "../../components/cafe/Modal";
 import { OptionChoice } from "../../api/cafeAPI";
 import deletebutton from "/assets/images/button/delete.png";
 import listdeletebutton from "/assets/images/button/listdelete.png";
+import { createOrder, getPayInfo } from "../../api/orderAPI";
 
 function CartPage() {
   const navigate = useNavigate();
   const [couponCount, setCouponCount] = useState<number>(0);
   const [selectedTime, setSelectedTime] = useState<number>(0);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
+  const [payInfo, setPayInfo] = useState({
+    empId: 0,
+    empName: "",
+    stampCnt: 0,
+    availableSubsidy: 0,
+  });
+  const cafeId = localStorage?.getItem("cafeId");
 
   // 모달
   const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
 
   // useCartStore에서 cartList를 추출
   const { cartList, removeFromCart, totalPrice, setCartCount } = useCartStore(
@@ -36,20 +36,36 @@ function CartPage() {
       setCartCount: state.setCartCount,
     })
   );
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
 
-  const ordererInfo = {
-    name: "젠킨스",
-    remainMoney: 3000,
-    coupon: 10,
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   useEffect(() => {
-    if (totalPrice - ((couponCount + 1) * 3000 + ordererInfo.remainMoney) < 0) {
-      setIsAddAvailable(false);
-    } else {
-      setIsAddAvailable(true);
+    async function loadPayInfo(cafeId: string) {
+      try {
+        const response = await getPayInfo(cafeId);
+        setPayInfo(response.data);
+      } catch (error) {
+        console.error("Failed to load payment info", error);
+      }
     }
-  }, [couponCount, totalPrice, ordererInfo.remainMoney]);
+
+    if (cafeId) {
+      loadPayInfo(cafeId);
+    } else {
+      console.error("Cafe ID is null.");
+    }
+  }, [cafeId]);
+
+  useEffect(() => {
+    const remaining =
+      totalPrice - ((couponCount + 1) * 3000 + payInfo.availableSubsidy);
+    setIsAddAvailable(remaining >= 0);
+  }, [couponCount, totalPrice, payInfo.availableSubsidy]);
 
   // 장바구니 아이템을 삭제하는 함수
   const handleRemove = (index: number) => {
@@ -63,10 +79,53 @@ function CartPage() {
     }
   };
 
+  const handleOrder = async () => {
+    // 예상 수령시간 선택되지 않았을 경우
+    if (selectedTime === 0) {
+      alert("예상 수령시간을 선택해주세요.");
+      return; // 함수 실행을 중단
+    }
+
+    const orderTime = new Date(); // 현재 시간 기준
+    orderTime.setMinutes(orderTime.getMinutes() + selectedTime); // 선택된 시간을 추가
+
+    // 주문 데이터 구성
+    const orderData = {
+      cafeId: localStorage.getItem("cafeId") ?? "",
+      usedSubsidy: payInfo.availableSubsidy,
+      pickUpTime: orderTime,
+      menuList: cartList.map((item) => ({
+        menuId: item.menuId,
+        cnt: item.cnt,
+        options: item.options.map((option) => ({
+          optionName: option.optionName,
+          type: option.type,
+          required: option.required,
+          choiceOptions: option.choice.map((choice) => ({
+            choiceName: choice.choiceName,
+            price: choice.price,
+          })),
+        })),
+      })),
+      cntCouponToUse: Math.floor(payInfo.stampCnt / 10),
+    };
+
+    try {
+      console.log(orderData);
+      const response = await createOrder(orderData);
+      console.log("Order Response:", response);
+      alert("주문이 완료되었습니다!");
+      navigate("/after"); // 성공적으로 주문 후 이동할 페이지
+    } catch (error) {
+      console.error("주문 실패:", error);
+      alert("주문에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   const support =
-    totalPrice <= ordererInfo.remainMoney
+    totalPrice <= payInfo.availableSubsidy
       ? totalPrice
-      : ordererInfo.remainMoney;
+      : payInfo.availableSubsidy;
 
   const handleIncrease = (index: number) => {
     const item = cartList[index];
@@ -91,15 +150,13 @@ function CartPage() {
           <img src={deletebutton} />
         </button>
         <h1 className="text-center text-3xl font-hyemin-bold flex-1">
-          {/* {localStorage.getItem("cafeName")} */} 카페이름
+          {localStorage.getItem("cafeName")}
         </h1>
         <div></div>{" "}
-        {/* 이 div는 h1을 중앙에 위치시키기 위한 더미 요소입니다. */}
       </div>
       <hr className="h-1 border-1 border-primary-color" />
       <hr className="h-1.5 -mt-1 bg-[#E3E9F6]" />
 
-      {/* <hr className="h-3 bg-[#E3E9F6]" /> */}
       {/* 주문목록 */}
       <h1 className="m-3 text-xl font-hyemin-bold">주문목록</h1>
       {/* <hr></hr> */}
@@ -168,21 +225,13 @@ function CartPage() {
         />
       </div>
       <hr className="h-3 bg-[#E3E9F6]" />
-      <h1 className="m-3 text-xl font-hyemin-bold">예상 수령시간</h1>
+      <h1 className="m-3 text-xl font-hyemin-bold">
+        예상 수령시간 <span style={{ color: "red" }}>*</span>
+      </h1>
       <div className="flex flex-col items-center mb-4 text-[15px]">
         <div className="flex justify-between w-full px-3">
           <button
-            className={`my-2 px-2 py-2 font-xs border-2 rounded-lg ${
-              selectedTime === 0
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(0)}
-          >
-            지금
-          </button>
-          <button
-            className={`my-2 px-2 py-2 font-xs border-2 rounded-lg ${
+            className={`my-2 px-3 py-2 font-xs border-2 rounded-lg ${
               selectedTime === 5
                 ? "bg-gray-500 text-white"
                 : "bg-white text-gray-500"
@@ -237,7 +286,7 @@ function CartPage() {
       <hr className="h-3 bg-[#E3E9F6]" />
 
       <Coupon
-        allCouponCount={ordererInfo.coupon}
+        allCouponCount={Math.floor(payInfo.stampCnt / 10)}
         setCouponCount={setCouponCount}
         isAddAvailable={isAddAvailable}
       />
@@ -274,7 +323,7 @@ function CartPage() {
           결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
         </div>
         <Button
-          onClick={() => navigate("/after")}
+          onClick={handleOrder}
           text="결제하기"
           className="w-full py-2 text-xl font-bold  bg-primary-color text-white h-14 fixed bottom-0 left-0"
         />

@@ -42,14 +42,12 @@ export const getPayInfo = async (cafeId: string): Promise<PayInfoResponse> => {
  * @throws   400 "잘못된 주문 요청입니다."와 404 "찾을수 없는 메뉴 아이디 입니다." 오류를 반환할 수 있습니다.
  */
 
-interface OrderOption {
-  optionName: string;
-  type: string;
-  required: boolean;
-  choiceOptions: {
-    choiceName: string;
-    price: number;
-  }[];
+interface OrderRequest {
+  cafeId: string;
+  usedSubsidy: number;
+  pickUpTime: Date;
+  menuList: MenuItem[];
+  cntCouponToUse: number;
 }
 
 interface MenuItem {
@@ -58,11 +56,14 @@ interface MenuItem {
   options: OrderOption[];
 }
 
-interface OrderRequest {
-  cafeId: string;
-  usedSubsidy: number;
-  pickUpTime: Date;
-  menuList: MenuItem[];
+interface OrderOption {
+  optionName: string;
+  type: string;
+  required: boolean;
+  choiceOptions: {
+    choiceName: string;
+    price: number;
+  }[];
 }
 
 interface OrderPayResponse {

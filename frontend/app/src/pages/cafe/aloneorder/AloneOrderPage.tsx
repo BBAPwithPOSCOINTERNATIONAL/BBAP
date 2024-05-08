@@ -31,7 +31,7 @@ const AloneOrderPage: React.FC = () => {
     else if (menu === "beverage") scrollToBeverage();
     else if (menu === "dessert") scrollToDessert();
   };
-  console.log(selectedCafeName);
+
   // 처음 마운트 될 때 한 번만 카페 목록을 불러옵니다.
   useEffect(() => {
     async function loadCafes() {

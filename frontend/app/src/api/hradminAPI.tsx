@@ -1,10 +1,8 @@
 import apiClient from "./apiClient";
-import { isAxiosError } from "axios";
+import axios, { isAxiosError } from "axios";
 
-interface ApiResponse {
+interface LogoutApiResponse {
   message: string;
-  accessToken?: string;
-  refreshToken?: string;
 }
 
 interface LoginResponse {
@@ -49,21 +47,21 @@ export const login = async (
  * 로그아웃
  * @remarks
  * POST 요청을 '/api/v1/hr/auth/logout' 엔드포인트에 보냅니다. 성공시 메시지를 반환합니다.
- * @returns {Promise<ApiResponse>} "Success." 메시지를 반환합니다.
+ * @returns {Promise<LogoutApiResponse>} "Success." 메시지를 반환합니다.
  * @throws 401 "Certification failed." 또는 403 "RefreshToken error." 오류를 반환할 수 있습니다.
  */
-export const logout = async (): Promise<ApiResponse> => {
+export const logout = async (): Promise<LogoutApiResponse> => {
   try {
-    const response = await apiClient.post<ApiResponse>("/hr/auth/logout");
+    const response = await apiClient.post<LogoutApiResponse>("hr/auth/logout");
     return response.data;
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      throw error.response.data;
+    if (axios.isAxiosError(error)) {
+      throw error.response ? error.response.data : new Error("Network error");
+    } else {
+      throw new Error("An unexpected error occurred");
     }
-    throw error;
   }
 };
-
 /**
  * 유저정보 받아오기
  * @remarks

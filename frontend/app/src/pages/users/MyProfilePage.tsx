@@ -3,6 +3,7 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import guide from "/assets/images/guideLine.png";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
+import { logout } from "../../api/hradminAPI";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/userStore";
 import Pobap from "/assets/images/hello.png";
@@ -66,6 +67,16 @@ function MyProfilePage() {
     useUserStore.getState().reset();
     navigate("/");
   };
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout();
+
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //     alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+  //   }
+  // };
 
   const handleCameraAccess = async () => {
     try {
