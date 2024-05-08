@@ -61,12 +61,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId) {
+    public ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(Integer empId, String cafeId) {
         log.info("사원 ID {}에 대해 새로운 방을 생성하는 중...", empId);
 
         String newRoomId = generateRoomId();
 
-        Room newRoom = new Room(newRoomId, "INITIAL", empId,
+        Room newRoom = new Room(newRoomId, cafeId, "INITIAL", empId,
                 new HashMap<>(), new ArrayList<>(), null);
         roomRepository.save(newRoom);
 

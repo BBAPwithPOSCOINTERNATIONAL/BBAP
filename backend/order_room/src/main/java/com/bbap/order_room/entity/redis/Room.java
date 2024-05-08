@@ -23,10 +23,13 @@ import org.springframework.data.redis.core.TimeToLive;
 public class Room {
 	@Id
 	private String roomId;
+	private String cafeId;
 	private String roomStatus;
 	private Integer currentOrderer; //empId 사용 - 사용자는 활성화된 하나의 방만 가질 수 있음
 	private HashMap<Integer, String> orderers; //empId 사용
 	private List<OrderItem> orderItems;
 	private Long orderNumber;
+
+
 }
 

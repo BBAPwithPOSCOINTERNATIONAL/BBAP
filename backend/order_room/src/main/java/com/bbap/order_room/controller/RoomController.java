@@ -1,5 +1,6 @@
 package com.bbap.order_room.controller;
 
+import com.bbap.order_room.dto.requestDto.RoomCreateRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +24,18 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api/v1/order-rooms")
 public class RoomController {
-	private final RoomService roomService;
-	@GetMapping
-	ResponseEntity<DataResponseDto<RoomParticipationDto>> hasRoom(@RequestHeader(value = "X-Employee-Id") Integer empId) {
-		return roomService.checkHasRoom(empId);
-	}
-	@PostMapping
-	ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(@RequestHeader(value = "X-Employee-Id") Integer empId) {
-		return roomService.createRoom(empId);
-	}
+    private final RoomService roomService;
+
+    @GetMapping
+    ResponseEntity<DataResponseDto<RoomParticipationDto>> hasRoom(@RequestHeader(value = "X-Employee-Id") Integer empId) {
+        return roomService.checkHasRoom(empId);
+    }
+
+    @PostMapping
+    ResponseEntity<DataResponseDto<RoomParticipationDto>> createRoom(@RequestHeader(value = "X-Employee-Id") Integer empId, @RequestBody RoomCreateRequestDto roomCreateRequestDto) {
+
+        return roomService.createRoom(empId, roomCreateRequestDto.getCafeId());
+    }
 
 
 }
