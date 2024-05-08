@@ -17,4 +17,5 @@ public class OrderRequestDto {
 	private int usedSubsidy;
 	private LocalDateTime pickUpTime;
 	private List<MenuRequestDto> menuList;
+	private int cntCouponToUse;
 }

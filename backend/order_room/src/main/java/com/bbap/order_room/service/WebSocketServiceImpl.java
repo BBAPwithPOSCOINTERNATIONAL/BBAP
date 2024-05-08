@@ -47,7 +47,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private final OrderServiceFeignClient orderServiceFeignClient;
 	@Override
 	public void connectRoom(Integer empId, String sessionId, String roomId) {
-		Session session = new Session(sessionId, empId);
+		Session session = new Session(sessionId, empId, roomId);
 		sessionRepository.save(session);
 		log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
 	}
@@ -56,12 +56,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	public void addOrderItem(String sessionId, AddOrderItemRequestDto requestDto) {
 		log.info("세션 ID {} 과 주문 상세 정보를 이용해 주문 아이템을 추가하려고 합니다: {}", sessionId, requestDto);
 		Integer empId = getEmpId(sessionId);
-		EntireParticipant participant = participantRepository.findById(empId)
-				.orElseThrow(() -> {
-					log.error("사용자가 어떤 방에도 참여하고 있지 않습니다. 사원 ID: {}", empId);
-					return new IllegalArgumentException("User is not in any room");
-				});
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(() -> {
 			log.error("잘못된 방 ID{} 가 주어졌습니다.", roomId);
 			return new IllegalArgumentException("Room not found");
@@ -131,12 +126,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 
 		Integer empId = getEmpId(sessionId);
-		EntireParticipant participant = participantRepository.findById(empId)
-				.orElseThrow(() -> {
-					log.error("사용자가 어떤 방에도 참여하고 있지 않습니다. 사원 ID: {}", empId);
-					return new IllegalArgumentException("User is not in any room");
-				});
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		// 방 상태 확인
 		if (!room.getRoomStatus().equals("ORDER_FILLED")) {
@@ -176,9 +166,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 		log.info("세션 ID {}을 이용해 게임 시작을 시도합니다.", sessionId);
 
 		Integer empId = getEmpId(sessionId);
-		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		// 방 상태 확인
 		if (!room.getRoomStatus().equals("ORDER_FILLED")) {
@@ -198,9 +186,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 	public void runWheel(String sessionId) {
 		log.info("세션 ID {}을 이용해 원판을 돌리려고 합니다.", sessionId);
 		Integer empId = getEmpId(sessionId);
-		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		// 방 상태 확인
 		if (!room.getRoomStatus().equals("GAME_START")) {
@@ -236,9 +222,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 		Long orderNumber = orderResponse.getBody().getData().getOrderNum();
 		//알림 보내기 -> kafka
 		//방 상태 주문 종료로 바꾸기
-		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 		room.setRoomStatus("ORDERED");
 		room.setOrderNumber(orderNumber);
@@ -259,9 +243,7 @@ public class WebSocketServiceImpl implements WebSocketService{
 
 		Integer empId = getEmpId(sessionId);
 		// 방과 관련된 `EntireParticipant` 객체를 찾음
-		EntireParticipant participant = participantRepository.findById(empId)
-			.orElseThrow(() -> new IllegalArgumentException("User is not in any room"));
-		String roomId = participant.getRoomId();
+		String roomId = getRoomId(sessionId);
 
 		// 해당 방 객체를 찾음
 		Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
@@ -306,6 +288,11 @@ public class WebSocketServiceImpl implements WebSocketService{
 	private Integer getEmpId(String sessionId){
 		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
 		return session.getEmpId();
+	}
+
+	private String getRoomId(String sessionId){
+		Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
+		return session.getRoomId();
 	}
 
 	private boolean isLastOrderFromUser(Room room, Integer empId) {

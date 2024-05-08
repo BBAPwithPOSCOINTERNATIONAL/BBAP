@@ -24,7 +24,6 @@ public class WebSocketController {
 
 	@MessageMapping("/connect/{roomId}/{empId}")
 	public void connet( @DestinationVariable String roomId, @DestinationVariable Integer empId, SimpMessageHeaderAccessor headerAccessor) {
-
 		// System.out.println("Received empId: " + accessor.getSessionId());
 		System.out.println("All headers: " + headerAccessor.toMap());
 		String sessionId = headerAccessor.getSessionId();

@@ -19,4 +19,5 @@ public class Session {
 	@Id
 	private String sessionId;
 	private Integer empId;
+	private String roomId;
 }
