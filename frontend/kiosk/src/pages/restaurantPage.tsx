@@ -74,8 +74,8 @@ const RestaurantPage: React.FC = () => {
           alt="순대국밥 사진"
           className="w-3/4 mx-auto my-20"
         />
-        <p className="text-xl">순대국밥</p>
-        <p className="text-xl">7,000 원</p>
+        <p className="text-xl">(뚝)돼지갈비찜</p>
+        <p className="text-xl">8,500 원</p>
         <BlinkingText className="text-lg text-red-500 my-10">
           사원증을 태그하세요
         </BlinkingText>

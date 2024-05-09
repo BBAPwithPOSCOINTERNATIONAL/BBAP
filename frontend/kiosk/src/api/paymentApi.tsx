@@ -138,7 +138,7 @@ export async function paymentReq(
 export async function paymentRestaurantReq(
   cardId: string
 ): Promise<PayApiResponse> {
-  const MENU_ID = 146; // 메뉴아이디 고정
+  const MENU_ID = 2432; // 메뉴아이디 고정
   try {
     const { data } = await apiClient.post<PayApiResponse>(
       `api/v1/payments/restaurant`,
