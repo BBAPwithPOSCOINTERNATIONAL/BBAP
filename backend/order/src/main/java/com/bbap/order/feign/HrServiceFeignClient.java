@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.bbap.order.dto.request.LoginRequestDto;
@@ -23,7 +24,7 @@ public interface HrServiceFeignClient {
 	ResponseEntity<DataResponseDto<CheckEmpResponseData>> checkCard(@PathVariable String empCard);
 
 	@PostMapping("/employees/user-info")
-	ResponseEntity<DataResponseDto<EmployeeSummaryData>> getEmployeeDataByAuth(LoginRequestDto request);
+	ResponseEntity<DataResponseDto<EmployeeSummaryData>> getEmployeeDataByAuth(@RequestBody LoginRequestDto request);
 
 	@GetMapping("/workplaces")
 	ResponseEntity<DataResponseDto<ListWorkplaceData>> listWorkplace();
