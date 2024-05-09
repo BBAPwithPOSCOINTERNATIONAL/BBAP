@@ -56,7 +56,7 @@ async def predict(file):
     faces_encodings = face_recognition.face_encodings(image_array, known_face_locations=face_locations)
     closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=1)
     print("유사도 거리 :",closest_distances[0][0][0])
-    are_matches = [closest_distances[0][i][0] <= 0.42 for i in range(len(face_locations))]
+    are_matches = [closest_distances[0][i][0] <= 0.30 for i in range(len(face_locations))]
     predictions=[(pred, loc) if rec else (-1, loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), face_locations, are_matches)]
 
     return predictions[0][0]
