@@ -20,7 +20,7 @@ async def train(file, empId):
     # 메모리에서 이미지 처리
     contents = await file.read()
     image_stream = BytesIO(contents)
-    image = Image.open(image_stream)
+    image = Image.open(image_stream).convert('RGB')
     image_array = np.array(image)
 
     face_locations = face_recognition.face_locations(image_array)
@@ -46,7 +46,7 @@ async def predict(file):
     # 메모리에서 이미지 처리
     contents = await file.read()
     image_stream = BytesIO(contents)
-    image = Image.open(image_stream)
+    image = Image.open(image_stream).convert('RGB')
     image_array = np.array(image)
 
     face_locations = face_recognition.face_locations(image_array)
