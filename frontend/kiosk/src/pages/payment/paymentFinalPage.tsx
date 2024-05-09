@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import Header from "../../components/header";
-import useModalStore from "../../store/modalStore";
 import useCartStore from "../../store/cartStore";
 import Button from "../../components/button";
 import Coupon from "../../components/coupon";
-import ConfirmModal from "../../components/confirmModal";
 import { CartItem } from "../../types";
 import { paymentReq } from "../../api/paymentApi";
 
@@ -51,8 +49,26 @@ const PaymentFinalPage: React.FC = () => {
   const location = useLocation();
   const [couponCount, setCouponCount] = useState<number>(0);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
-  const { openConfirmModal, isConfirmModalOpen } = useModalStore();
+
   const { cartList, totalPrice, resetCart } = useCartStore();
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+
+  const Modal = ({
+    isOpen,
+    children,
+  }: {
+    isOpen: boolean;
+    children: React.ReactNode;
+  }) => {
+    if (!isOpen) return null;
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+        <div className="bg-white p-5 rounded-lg w-4/5">{children}</div>
+      </div>
+    );
+  };
 
   const ordererInfo = location.state;
   useEffect(() => {
@@ -120,96 +136,36 @@ const PaymentFinalPage: React.FC = () => {
     // TODO 서버로 결제요청 보냄
     try {
       const response = await paymentReq(payload);
-      console.log("결제", response);
-      const content = (
-        <div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
-          <p className="text-lg font-bold text-primary-color">
-            주문이 완료되었습니다.
-          </p>
-          <p className="flex items-center justify-between mx-16">
-            <span className="text-lg font-bold text-primary-color">
-              주문번호
-            </span>{" "}
-            <span className="text-2xl font-bold">{response.data.orderNum}</span>
-          </p>
-          <Button
-            text="처음으로"
-            className="bg-bg-color w-[400px] text-lg text-white px-10 py-4 mx-auto"
-            onClick={() => {
-              handleModalClose();
-            }}
-          />
+      // console.log("결제", response);
+      setIsModalOpen(true);
+      setModalContent(
+        <div className="flex justify-center">
+          <div className="w-[550px] h-[500px] px-5 py-16 flex flex-col justify-between items-center">
+            <p className="text-xl font-bold text-primary-color text-center">
+              주문이 완료되었습니다.
+            </p>
+            <p className="flex items-center justify-between w-full px-16">
+              <span className="text-lg font-bold text-primary-color">
+                주문번호
+              </span>
+              <span className="text-2xl font-bold">
+                {response.data.orderNum}
+              </span>
+            </p>
+            <Button
+              text="처음으로"
+              className="bg-bg-color w-[400px] text-lg text-white px-10 py-4 mx-auto"
+              onClick={() => {
+                handleModalClose();
+              }}
+            />
+          </div>
         </div>
       );
-
-      openConfirmModal(content);
     } catch (error) {
       console.error("결제 오류:", error);
     }
   };
-
-  //     const menuList = cartList.reduce((acc: Menu[], item) => {
-  //       const tmp = {
-  //         menuId: item.menuId,
-  //         cnt: item.cnt,
-  //         options: [] as Option[],
-  //       };
-  //       const options: Option[] = item.options.map((option) => {
-  //         const choiceOptions = option.choice.map((choice) => {
-  //           return {
-  //             choiceName: choice.choiceName,
-  //             price: choice.price,
-  //           };
-  //         });
-  //         return {
-  //           optionName: option.optionName,
-  //           type: option.type,
-  //           required: option.required,
-  //           choiceOptions: choiceOptions,
-  //         };
-  //       });
-  //       tmp["options"] = options;
-  //       acc.push(tmp);
-  //       return acc;
-  //     }, []);
-  //     // body에 담아서 보내야하는 데이터
-  //     const payload = {
-  //       empId: ordererInfo.empId,
-  //       usedSubsidy: support,
-  //       menuList,
-  //     };
-
-  //     // TODO 서버로 결제요청 보냄
-  //     try {
-  //       const response = await paymentReq(payload);
-  //       // const response = { data: { orderNum: 120 } };
-  //       console.log("결제");
-  //       const content = (
-  //         <div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
-  //           <p className="text-lg font-bold text-primary-color">
-  //             주문이 완료되었습니다.
-  //           </p>
-  //           <p className="flex items-center justify-between mx-16">
-  //             <span className="text-lg font-bold text-primary-color">
-  //               주문번호
-  //             </span>{" "}
-  //             <span className="text-2xl font-bold">{response.data.orderNum}</span>
-  //           </p>
-  //           <Button
-  //             text="처음으로"
-  //             className="bg-bg-color w-[400px] text-lg text-white px-10 py-4 mx-auto"
-  //             onClick={() => {
-  //               handleModalClose();
-  //             }}
-  //           />
-  //         </div>
-  //       );
-
-  //       openConfirmModal(content);
-  //     } catch (error) {
-  //       console.error("결제 오류:", error);
-  //     }
-  //   };
 
   return (
     <div>
@@ -290,7 +246,7 @@ const PaymentFinalPage: React.FC = () => {
           }}
         />
       </div>
-      {isConfirmModalOpen && <ConfirmModal handleClose={handleModalClose} />}
+      {isModalOpen && <Modal isOpen={isModalOpen}>{modalContent}</Modal>}
     </div>
   );
 };
