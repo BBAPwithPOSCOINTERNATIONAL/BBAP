@@ -12,6 +12,6 @@ import com.bbap.order.dto.responseDto.DataResponseDto;
 
 @FeignClient(name = "face-api", url = "${feign-face}")
 public interface FaceServiceFeignClient {
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/check", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<DataResponseDto<CheckFaceResponseData>> checkFace(@ModelAttribute FaceRequestDto request);
 }
