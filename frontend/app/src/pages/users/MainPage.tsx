@@ -3,16 +3,16 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import { useUserStore } from "../../store/userStore";
 import { getMonthlyPayments, PaymentData } from "../../api/paymentsAPI";
-// <a href="https://www.flaticon.com/kr/free-icons/-" title="신용 카드 결제 아이콘">신용 카드 결제 아이콘 제작자: SBTS2018 - Flaticon</a>
 import totalpayment from "/assets/images/main/totalpayment.png";
-// <a href="https://www.flaticon.com/kr/free-icons/" title="돈 아이콘">돈 아이콘 제작자: monkik - Flaticon</a>
 import totalsubsidy from "/assets/images/main/totalsubsidy.png";
 import yours from "/assets/images/main/yours.png";
+import Loading from "../../components/Loading";
 
 function MainPage() {
   const userInfo = useUserStore((state) => state);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const carouselItems = paymentData
     ? [
         {
@@ -46,8 +46,10 @@ function MainPage() {
       try {
         const response = await getMonthlyPayments(getCurrentDate());
         setPaymentData(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch payment data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -61,6 +63,10 @@ function MainPage() {
 
     return () => clearInterval(timer);
   }, [carouselItems.length]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden pb-16">
