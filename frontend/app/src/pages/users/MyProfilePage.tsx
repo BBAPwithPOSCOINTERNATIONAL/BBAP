@@ -153,9 +153,9 @@ function MyProfilePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pb-16">
       <NavBar />
-      <div className="flex flex-row justify-center items-end mt-6 ">
+      <div className="flex flex-row justify-center items-end mt-4">
         <h1 className="text-2xl font-bold text-center mr-4">
           안녕하세요, {userInfo.empName} 님{" "}
         </h1>

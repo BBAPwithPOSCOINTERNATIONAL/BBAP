@@ -45,7 +45,7 @@ export const getPayInfo = async (cafeId: string): Promise<PayInfoResponse> => {
 interface OrderRequest {
   cafeId: string;
   usedSubsidy: number;
-  pickUpTime: Date;
+  pickUpTime: string;
   menuList: MenuItem[];
   cntCouponToUse: number;
 }

@@ -88,12 +88,15 @@ function CartPage() {
 
     const orderTime = new Date(); // 현재 시간 기준
     orderTime.setMinutes(orderTime.getMinutes() + selectedTime); // 선택된 시간을 추가
+    orderTime.setHours(orderTime.getHours() + 9);
+    const formattedOrderTime = orderTime.toISOString().replace(/\.\d{3}Z$/, "");
 
     // 주문 데이터 구성
     const orderData = {
       cafeId: localStorage.getItem("cafeId") ?? "",
+      // usedSubsidy: payInfo.availableSubsidy,
       usedSubsidy: payInfo.availableSubsidy,
-      pickUpTime: orderTime,
+      pickUpTime: formattedOrderTime,
       menuList: cartList.map((item) => ({
         menuId: item.menuId,
         cnt: item.cnt,
@@ -107,15 +110,14 @@ function CartPage() {
           })),
         })),
       })),
-      cntCouponToUse: Math.floor(payInfo.stampCnt / 10),
+      cntCouponToUse: couponCount * 10,
     };
 
     try {
-      console.log(orderData);
       const response = await createOrder(orderData);
       console.log("Order Response:", response);
       alert("주문이 완료되었습니다!");
-      navigate("/after"); // 성공적으로 주문 후 이동할 페이지
+      navigate("/after", { state: response }); // 성공적으로 주문 후 이동할 페이지
     } catch (error) {
       console.error("주문 실패:", error);
       alert("주문에 실패했습니다. 다시 시도해주세요.");

@@ -159,7 +159,7 @@ function RestaurantMainPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pb-20">
       <NavBar />
       <div className="flex flex-col items-center justify-center">
         <select
