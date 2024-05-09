@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { useNavigate, useLocation } from "react-router";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import Header from "../../components/header";
 import useModalStore from "../../store/modalStore";
 import useCartStore from "../../store/cartStore";
@@ -49,11 +48,13 @@ const OrderItem: React.FC<{ data: CartItem }> = ({ data }) => {
 
 const PaymentFinalPage: React.FC = () => {
   const navigate = useNavigate();
-  // const location = useLocation();
+  const location = useLocation();
   const [couponCount, setCouponCount] = useState<number>(0);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
   const { openConfirmModal, isConfirmModalOpen } = useModalStore();
   const { cartList, totalPrice, resetCart } = useCartStore();
+
+  const ordererInfo = location.state.data;
 
   useEffect(() => {
     if (
@@ -73,12 +74,6 @@ const PaymentFinalPage: React.FC = () => {
 
   // 사원 정보 -> 이름, 남은 지원금, 해당 카페의 쿠폰 수 (이전 페이지에서 api 요청의 결과로 받음)
   // const ordererInfo = { ...location.state };
-  const ordererInfo = {
-    empId: 12,
-    empName: "젠킨스",
-    availableSubsidy: 3000,
-    stampCnt: 10,
-  };
 
   // 가능한 지원금 금액과 결제 금액을 비교함
   // 1. 지원금 <= 결제 금액: 지원금 전체를 사용
@@ -95,36 +90,32 @@ const PaymentFinalPage: React.FC = () => {
         cnt: item.cnt,
         options: [] as Option[],
       };
-      const options: Option[] = item.options.map((option) => {
+      item.options.forEach((option) => {
         const choiceOptions = option.choice.map((choice) => {
           return {
             choiceName: choice.choiceName,
             price: choice.price,
           };
         });
-        return {
+        tmp.options.push({
           optionName: option.optionName,
           type: option.type,
           required: option.required,
-          choiceOptions: choiceOptions,
-        };
+          choiceOptions,
+        });
       });
-      tmp["options"] = options;
       acc.push(tmp);
       return acc;
     }, []);
-    // body에 담아서 보내야하는 데이터
+
     const payload = {
       empId: ordererInfo.empId,
-      usedSubsidy: support,
+      usedSubsidy: ordererInfo.availableSubsidy,
       menuList,
     };
 
-    // TODO 서버로 결제요청 보냄
     try {
       const response = await paymentReq(payload);
-      // const response = { data: { orderNum: 120 } };
-      console.log("결제");
       const content = (
         <div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
           <p className="text-lg font-bold text-primary-color">
@@ -151,6 +142,70 @@ const PaymentFinalPage: React.FC = () => {
       console.error("결제 오류:", error);
     }
   };
+
+  //   const handlePayment = async () => {
+  //     const menuList = cartList.reduce((acc: Menu[], item) => {
+  //       const tmp = {
+  //         menuId: item.menuId,
+  //         cnt: item.cnt,
+  //         options: [] as Option[],
+  //       };
+  //       const options: Option[] = item.options.map((option) => {
+  //         const choiceOptions = option.choice.map((choice) => {
+  //           return {
+  //             choiceName: choice.choiceName,
+  //             price: choice.price,
+  //           };
+  //         });
+  //         return {
+  //           optionName: option.optionName,
+  //           type: option.type,
+  //           required: option.required,
+  //           choiceOptions: choiceOptions,
+  //         };
+  //       });
+  //       tmp["options"] = options;
+  //       acc.push(tmp);
+  //       return acc;
+  //     }, []);
+  //     // body에 담아서 보내야하는 데이터
+  //     const payload = {
+  //       empId: ordererInfo.empId,
+  //       usedSubsidy: support,
+  //       menuList,
+  //     };
+
+  //     // TODO 서버로 결제요청 보냄
+  //     try {
+  //       const response = await paymentReq(payload);
+  //       // const response = { data: { orderNum: 120 } };
+  //       console.log("결제");
+  //       const content = (
+  //         <div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
+  //           <p className="text-lg font-bold text-primary-color">
+  //             주문이 완료되었습니다.
+  //           </p>
+  //           <p className="flex items-center justify-between mx-16">
+  //             <span className="text-lg font-bold text-primary-color">
+  //               주문번호
+  //             </span>{" "}
+  //             <span className="text-2xl font-bold">{response.data.orderNum}</span>
+  //           </p>
+  //           <Button
+  //             text="처음으로"
+  //             className="bg-bg-color w-[400px] text-lg text-white px-10 py-4 mx-auto"
+  //             onClick={() => {
+  //               handleModalClose();
+  //             }}
+  //           />
+  //         </div>
+  //       );
+
+  //       openConfirmModal(content);
+  //     } catch (error) {
+  //       console.error("결제 오류:", error);
+  //     }
+  //   };
 
   return (
     <div>

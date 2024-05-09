@@ -19,7 +19,7 @@ interface PayApiResponse {
 }
 
 interface AuthReqData {
-  empNo: string;
+  empNo: number;
   password: string;
 }
 
