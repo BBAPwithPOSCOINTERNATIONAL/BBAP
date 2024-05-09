@@ -119,7 +119,7 @@ function MyProfilePage() {
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async (blob) => {
         if (blob) {
-          const file = new File([blob], "faceImage.png", { type: "image/png" });
+          const file = new File([blob], "faceImage.jpg", { type: "image/jpg" });
           try {
             const uploadResponse = await uploadFace(file);
             console.log("Upload status:", uploadResponse);
