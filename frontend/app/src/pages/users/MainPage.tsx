@@ -63,10 +63,10 @@ function MainPage() {
   }, [carouselItems.length]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden pb-16">
       <NavBar />
       <div className="p-4">
-        <div className="text-center mt-8">
+        <div className="text-center mt-4">
           {userInfo && userInfo.empName ? (
             <h1 className="text-4xl font-hyemin-bold text-white">
               {userInfo.empName} 님의 {today.getMonth() + 1}월
@@ -76,21 +76,21 @@ function MainPage() {
               Loading or error...
             </h1>
           )}
-          <p className="text-4xl mt-4 font-hyemin-bold text-white">BBAP 기록</p>
+          <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
           <div
-            className="mt-8 w-68 bg-amber-50 rounded-lg z-0"
+            className="mt-4 w-full bg-amber-50 rounded-lg z-0"
             style={{ height: "30rem" }}
           >
             <div className="z-10 pt-14">
               {paymentData && carouselItems.length > 0 && (
                 <>
-                  <div className="text-5xl font-hyemin-bold mb-8">
+                  <div className="text-5xl font-hyemin-bold mb-6">
                     {carouselItems[carouselIndex].label}
                   </div>
                   <img
                     src={carouselItems[carouselIndex].picture}
                     alt="Carousel Image"
-                    className="h-40 mb-8 mx-auto"
+                    className="h-40 mb-6 mx-auto"
                   />
                   <p className="text-4xl font-hyemin-bold text-primary-color">
                     {carouselItems[carouselIndex].value}
