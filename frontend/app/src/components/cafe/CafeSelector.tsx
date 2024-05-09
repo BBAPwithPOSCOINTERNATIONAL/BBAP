@@ -13,7 +13,7 @@ const CafeSelector: React.FC<CafeSelectorProps> = ({
   handleCafeSelect,
 }) => {
   return (
-    <div className="sticky top-[105px] bg-white flex flex-col w-full items-center z-20">
+    <div className="sticky top-[105px] bg-white mb-1 flex flex-col w-full items-center z-30">
       <select
         id="cafe-select"
         value={selectedCafeId}

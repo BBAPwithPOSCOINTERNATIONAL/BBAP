@@ -119,12 +119,12 @@ const AloneOrderPage: React.FC = () => {
   const totalOffset = navBarHeight + tabsHeight + couponAndButtonsHeight;
 
   const { element: coffeeRef, onMoveToElement: scrollToCoffee } = useMoveScroll(
-    totalOffset + 270
+    totalOffset + 200
   );
   const { element: beverageRef, onMoveToElement: scrollToBeverage } =
-    useMoveScroll(totalOffset + 270);
+    useMoveScroll(totalOffset + 200);
   const { element: dessertRef, onMoveToElement: scrollToDessert } =
-    useMoveScroll(totalOffset + 270);
+    useMoveScroll(totalOffset + 200);
 
   const handleCafeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCafe = cafeList.find((cafe) => cafe.id === e.target.value);
@@ -143,8 +143,8 @@ const AloneOrderPage: React.FC = () => {
         selectedCafeId={selectedCafeId}
         handleCafeSelect={handleCafeSelect}
       />
-      <div className=" sticky top-[140px] z-20 bg-white">
-        <CafeCoupon orderCount={10} couponCount={couponCnt} />
+      <div className=" sticky top-[141px] z-20 bg-white">
+        <CafeCoupon couponCount={couponCnt} />
         <div className="flex mt-1">
           <MenuButtons
             selectedMenu={selectedMenu}

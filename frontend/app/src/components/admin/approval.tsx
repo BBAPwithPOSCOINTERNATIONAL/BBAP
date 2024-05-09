@@ -107,9 +107,31 @@ function Approve(): JSX.Element {
       alert("승인되었습니다"); // 승인 성공 메시지
       setSelectedEmployees([]); // 선택 초기화
       closeModal(); // 모달 닫기
+      refetchEmployees();
     } catch (error) {
       console.error("Error during approval:", error);
       alert("승인 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const refetchEmployees = async () => {
+    try {
+      const filters = {
+        name: searchTerm || undefined,
+        workplaceId: location ? parseInt(location) : undefined,
+        positionId: rank ? parseInt(rank) : undefined,
+        departmentId: department ? parseInt(department) : undefined,
+      };
+
+      const activeFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, v]) => v !== undefined)
+      );
+
+      const response = await fetchEmployees(activeFilters);
+      setEmployees(response.data.employeeList);
+      setCurrentPage(1); // Reset pagination to the first page
+    } catch (error) {
+      console.error("Error fetching employees after approval:", error);
     }
   };
 
