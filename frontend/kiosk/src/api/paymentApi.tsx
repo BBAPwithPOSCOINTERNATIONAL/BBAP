@@ -19,7 +19,7 @@ interface PayApiResponse {
 }
 
 interface AuthReqData {
-  empNo: string;
+  empNo: number;
   password: string;
 }
 
@@ -123,6 +123,7 @@ export async function paymentReq(
         cafeId: CAFE_ID,
       }
     );
+    console.log(data);
     return data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -137,7 +138,7 @@ export async function paymentReq(
 export async function paymentRestaurantReq(
   cardId: string
 ): Promise<PayApiResponse> {
-  const MENU_ID = "메뉴아이디"; // 메뉴아이디 고정
+  const MENU_ID = 146; // 메뉴아이디 고정
   try {
     const { data } = await apiClient.post<PayApiResponse>(
       `api/v1/payments/restaurant`,
