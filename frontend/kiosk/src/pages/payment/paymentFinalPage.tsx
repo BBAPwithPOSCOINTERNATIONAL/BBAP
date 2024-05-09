@@ -54,23 +54,24 @@ const PaymentFinalPage: React.FC = () => {
   const { openConfirmModal, isConfirmModalOpen } = useModalStore();
   const { cartList, totalPrice, resetCart } = useCartStore();
 
-  const ordererInfo = location.state.data;
-
+  const ordererInfo = location.state;
   useEffect(() => {
     if (
-      totalPrice - ((couponCount + 1) * 3000 + ordererInfo.availableSubsidy) <
-      0
+      ordererInfo &&
+      totalPrice - ((couponCount + 1) * 3000 + ordererInfo.availableSubsidy) < 0
     ) {
       setIsAddAvailable(false);
     } else {
       setIsAddAvailable(true);
     }
-  }, [couponCount]);
+  }, [couponCount, ordererInfo, totalPrice]);
 
   const handleModalClose = () => {
     navigate("/");
     resetCart();
   };
+
+  const availableCoupons = Math.floor(ordererInfo.stampCnt / 10);
 
   // 사원 정보 -> 이름, 남은 지원금, 해당 카페의 쿠폰 수 (이전 페이지에서 api 요청의 결과로 받음)
   // const ordererInfo = { ...location.state };
@@ -78,10 +79,11 @@ const PaymentFinalPage: React.FC = () => {
   // 가능한 지원금 금액과 결제 금액을 비교함
   // 1. 지원금 <= 결제 금액: 지원금 전체를 사용
   // 2. 지원금 > 결제 금액: 결제 금액 만큼만 지원금으로 사용
-  const support =
-    totalPrice <= ordererInfo.availableSubsidy
+  const support = ordererInfo
+    ? totalPrice <= ordererInfo.availableSubsidy
       ? totalPrice
-      : ordererInfo.availableSubsidy;
+      : ordererInfo.availableSubsidy
+    : 0;
 
   const handlePayment = async () => {
     const menuList = cartList.reduce((acc: Menu[], item) => {
@@ -90,32 +92,35 @@ const PaymentFinalPage: React.FC = () => {
         cnt: item.cnt,
         options: [] as Option[],
       };
-      item.options.forEach((option) => {
+      const options: Option[] = item.options.map((option) => {
         const choiceOptions = option.choice.map((choice) => {
           return {
             choiceName: choice.choiceName,
             price: choice.price,
           };
         });
-        tmp.options.push({
+        return {
           optionName: option.optionName,
           type: option.type,
           required: option.required,
-          choiceOptions,
-        });
+          choiceOptions: choiceOptions,
+        };
       });
+      tmp["options"] = options;
       acc.push(tmp);
       return acc;
     }, []);
-
+    // body에 담아서 보내야하는 데이터
     const payload = {
       empId: ordererInfo.empId,
-      usedSubsidy: ordererInfo.availableSubsidy,
+      usedSubsidy: support,
       menuList,
     };
 
+    // TODO 서버로 결제요청 보냄
     try {
       const response = await paymentReq(payload);
+      console.log("결제", response);
       const content = (
         <div className="w-[550px] h-[500px] px-12 py-16 flex flex-col justify-between">
           <p className="text-lg font-bold text-primary-color">
@@ -143,7 +148,6 @@ const PaymentFinalPage: React.FC = () => {
     }
   };
 
-  //   const handlePayment = async () => {
   //     const menuList = cartList.reduce((acc: Menu[], item) => {
   //       const tmp = {
   //         menuId: item.menuId,
@@ -236,7 +240,7 @@ const PaymentFinalPage: React.FC = () => {
           </table>
         </div>
         <Coupon
-          allCouponCount={ordererInfo.stampCnt}
+          allCouponCount={availableCoupons}
           setCouponCount={setCouponCount}
           isAddAvailable={isAddAvailable}
         />
