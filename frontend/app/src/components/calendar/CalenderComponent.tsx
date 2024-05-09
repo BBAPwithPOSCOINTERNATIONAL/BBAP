@@ -34,82 +34,32 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
   data,
 }: RenderHeaderProps) => {
   return (
-    <div
-      className="font-hyemin-bold"
-      style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        padding: "1rem",
-        width: "100vw",
-        height: "17vh",
-        backgroundColor: "#EFF7FF",
-        boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
-        position: "fixed",
-        gap: "0.7rem",
-      }}
-    >
+    <div className="font-hyemin-bold flex justify-start p-4 w-full bg-[#EFF7FF] shadow-md fixed gap-1.75 z-10">
       <div>
-        <div
-          style={{
-            display: "flex",
-            // flexDirection: "row",
-            gap: "0.7rem",
-            marginBottom: "0.3rem",
-            fontSize: "22px",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src={back}
-            onClick={prevMonth}
-            style={{ height: "1.3rem", paddingLeft: "0.5rem" }}
-          />
+        <div className="flex gap-12 mb-1 text-xl items-center justify-start">
+          <img src={back} onClick={prevMonth} className="h-5 pl-2" />
           <div>
-            <span className="text">
-              <span className="text month">
-                {format(currentMonth, "yyyy")}년
-              </span>
-              {"  "}
+            <span className="text month">
+              {format(currentMonth, "yyyy")}년 {"  "}
               {format(currentMonth, "M")}월
             </span>
           </div>
-          <img src={next} onClick={nextMonth} style={{ height: "1.3rem" }} />
+          <img src={next} onClick={nextMonth} className="h-5" />
         </div>
-        <div style={{ paddingLeft: "0.5rem", fontSize: "18px" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "1rem",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ width: "40vw" }}>총 결제금액</div>
+        <div className="pl-2 text-lg justify-between w-full">
+          <div className="flex flex-row gap-4 justify-between">
+            <div className="w-40vw">총 결제금액</div>
             <div>{data.totalPaymentAmountSum.toLocaleString()} 원</div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "1rem",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ width: "40vw" }}>총 지원금</div>
-            <div style={{ color: "green" }}>
+          <div className="flex flex-row gap-4 justify-between">
+            <div className="w-40vw">총 지원금</div>
+            <div className="text-green-500">
               {data.useSubsidySum.toLocaleString()} 원
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "1rem",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{ width: "40vw" }}>총 본인부담금</div>
-            <div style={{ color: "blue" }}>
+          <div className="flex flex-row gap-4 justify-between">
+            <div className="w-40vw">총 본인부담금</div>
+            <div className="text-blue-500">
               {data.selfPaymentSum.toLocaleString()} 원
             </div>
           </div>
@@ -221,7 +171,7 @@ const RenderCells = ({
         >
           <span
             className={`
-            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} 
+            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} z-0
           `}
             // 일자별 숫자나오는칸 스타일링
             style={{
@@ -367,7 +317,7 @@ export const CalendarComponent = () => {
         src={group}
         alt="지원금 및 본인부담금"
         style={{
-          paddingTop: "19vh",
+          paddingTop: "22vh",
           marginLeft: "1rem",
           width: "40vw",
         }}
