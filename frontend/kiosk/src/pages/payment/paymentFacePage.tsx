@@ -10,6 +10,7 @@ const PaymentFacePage: React.FC = () => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const canvasRef = useRef<HTMLDivElement>(null);
 	const [warningMsg, setWarningMsg] = useState<string>("");
+	const [retryCount, setRetryCount] = useState(0);
 
 	const navigate = useNavigate();
 
@@ -93,11 +94,17 @@ const PaymentFacePage: React.FC = () => {
 	};
 
 	const sendImageDataToServer = async (file: File) => {
-		try {
-			const response = await payInfoByFace(file);
-			navigate("/payment-final", { state: response.data });
-		} catch (err) {
+		if (retryCount < 10) {
+			try {
+				const response = await payInfoByFace(file);
+				navigate("/payment-final", { state: response.data });
+			} catch (err) {
+				setRetryCount(retryCount + 1);
+				detection();
+			}
+		} else {
 			setWarningMsg("등록되지 않은 사원입니다");
+			setRetryCount(0); // 재시도 횟수 초기화
 		}
 	};
 
