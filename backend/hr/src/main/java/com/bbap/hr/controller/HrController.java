@@ -50,7 +50,7 @@ public class HrController {
     }
 
     @PostMapping("/employees/user-info")
-    public ResponseEntity<DataResponseDto<EmployeeSummaryData>> getEmployeeDataByAuth(LoginRequestDto request) {
+    public ResponseEntity<DataResponseDto<EmployeeSummaryData>> getEmployeeDataByAuth(@RequestBody LoginRequestDto request) {
 
         return hrService.getEmployeeDataByAuth(request);
     }
