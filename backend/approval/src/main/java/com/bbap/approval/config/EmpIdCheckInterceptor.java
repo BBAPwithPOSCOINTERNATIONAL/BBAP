@@ -17,6 +17,12 @@ public class EmpIdCheckInterceptor implements HandlerInterceptor {
 			return true; // 모든 PREFLIGHT 요청 허용
 		}
 
+		// Swagger UI 경로 요청 검사
+		String uri = request.getRequestURI();
+		if (uri.startsWith("/api/v1/hr/swagger-ui/")) {
+			return true; // Swagger UI 경로면 검사 무시
+		}
+
 		// EmpID 헤더 값 검사
 		String empId = request.getHeader("X-Employee-Id");
 		if ("1".equals(empId)) {
