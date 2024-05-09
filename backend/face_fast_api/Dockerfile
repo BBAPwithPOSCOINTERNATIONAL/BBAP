@@ -8,7 +8,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 
 # Add the current directory contents into the container at /app
-COPY ../../../../s210_backend_bak/S10P31S210/backend/face_fast_api /app
+COPY . /app
 
 # Install any needed packages specified in requirements.txt
 RUN apt-get update -y \
