@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import {useRef, useState} from "react";
+import {useNavigate} from "react-router";
 import NavBar from "../../../components/Navbar";
-import CafeSelector from "../../../components/cafe/CafeSelector";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
+import {useParams} from "react-router-dom";
 
 interface Product {
   owner: boolean;
@@ -22,11 +22,11 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  name,
-  menuname,
-  options,
-  price,
-}) => {
+                                                   name,
+                                                   menuname,
+                                                   options,
+                                                   price,
+                                                 }) => {
   return (
     <div className="m-3 mt-5 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
       <div className="px-6 py-4">
@@ -55,7 +55,7 @@ interface ProductListProps {
   products: Product[];
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products }) => {
+const ProductList: React.FC<ProductListProps> = ({products}) => {
   return (
     <div className="product-list">
       {products.map((product, index) => (
@@ -69,6 +69,8 @@ function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const {roomId} = useParams();
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -116,9 +118,9 @@ function TogetherOrderPage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar/>
       <div className="flex items-center">
-        <CafeSelector />
+
         <button
           onClick={() => navigate(-1)}
           className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
@@ -131,17 +133,18 @@ function TogetherOrderPage() {
           ref={inputRef}
           type="text"
           className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
-          placeholder="링크들어올자리"
-        ></input>
+          value={`https://ssafybbap.com/together/${roomId}`}
+          readOnly
+        />
         <button
           onClick={handleCopy}
           className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
         >
           <span>공유</span>
-          <img src={share} alt="share icon" className="ml-1" />
+          <img src={share} alt="share icon" className="ml-1"/>
         </button>
       </div>
-      <ProductList products={products} />
+      <ProductList products={products}/>
       <footer
         id="footer"
         className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"

@@ -71,7 +71,7 @@ const router = createBrowserRouter([
     element: <MoreDetail />,
   },
   {
-    path: "together",
+    path: "together/:roomId",
     element: <TogetherOrderPage />,
   },
   {

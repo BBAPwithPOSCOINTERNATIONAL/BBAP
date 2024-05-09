@@ -1,49 +1,42 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import CafeTabs from "../../components/cafe/CafeTabs";
-import together from "/assets/images/together.png";
+// import together from "/assets/images/together.png";
 
 import CafeSelector from "../../components/cafe/CafeSelector";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import useContentStore from "../../store/contentStore";
 import MyOrderPage from "./myorder/MyOrderPage";
-import {
-  checkOrderRoomParticipation,
-  createOrderRoom,
-} from "../../api/togetherAPI";
+// import {
+//   createOrderRoom,
+// } from "../../api/togetherAPI";
+import { TogetherBase } from "./togetherorder/TogetherBase";
+
 
 function CafeMainPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { content, setContent } = useContentStore();
 
-  const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+  // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log(orderRoomInfo);
-    if (content === "together") {
-      const fetchOrderRoomInfo = async () => {
-        try {
-          const response = await checkOrderRoomParticipation();
-          console.log(response.data.roomId);
-          setOrderRoomInfo(response.data.roomId);
-        } catch (error) {
-          console.error("Failed to fetch order room info:", error);
-        }
-      };
+  // useEffect(() => {
+  //   console.log(orderRoomInfo);
+  //   if (content === "together") {
+  //     const fetchOrderRoomInfo = async () => {
+  //       try {
+  //         const response = await checkOrderRoomParticipation();
+  //         console.log(response.data.roomId);
+  //         setOrderRoomInfo(response.data.roomId);
+  //       } catch (error) {
+  //         console.error("Failed to fetch order room info:", error);
+  //       }
+  //     };
+  //
+  //     fetchOrderRoomInfo();
+  //   }
+  // }, [content]);
 
-      fetchOrderRoomInfo();
-    }
-  }, [content]);
 
-  const handleCreateRoom = async () => {
-    try {
-      const result = await createOrderRoom();
-      console.log("Room created:", result);
-      navigate("/together");
-    } catch (error) {
-      console.error("Failed to create room:", error);
-    }
-  };
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
@@ -83,32 +76,7 @@ function CafeMainPage() {
         )}
         {content === "together" && (
           <>
-            <div className="mt-2 flex flex-col items-center">
-              <div className="bg-light-primary-color text-white border rounded-md p-1 w-11/12 font-hyemin-bold text-center">
-                <h2 className="m-8 text-4xl">우리같이 주문 할래 ?</h2>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
-                >
-                  <img src={together} alt="together" style={{ width: "80%" }} />
-                </div>
-
-                <hr className="h-1 bg-white m-2 mx-auto w-11/12" />
-                <p className="m-4 text-2xl">
-                  각자 원하는 메뉴를 담아두면 한꺼번에 주문할 수 있어요!!
-                </p>
-              </div>
-
-              <button
-                className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
-                onClick={handleCreateRoom}
-              >
-                방 만들러 가기
-              </button>
-            </div>
+              <TogetherBase/>
           </>
         )}
         {content === "history" && (
