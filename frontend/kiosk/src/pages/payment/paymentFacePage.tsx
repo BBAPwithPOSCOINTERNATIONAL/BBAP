@@ -88,6 +88,24 @@ const PaymentFacePage: React.FC = () => {
     }
   };
 
+	const sendImageDataToServer = async (file: File) => {
+		try {
+			const response = await payInfoByFace(file);
+			navigate("/payment-final", { state: response.data });
+		} catch (err) {
+			setRetryCount(prevCount => prevCount + 1); // 에러 발생 시 재시도 횟수만 증가
+		}
+	};
+
+	useEffect(() => {
+		if (retryCount > 0 && retryCount < 10) {
+			detection(); // 재시도 함수 호출
+		} else if (retryCount >= 10) {
+			setWarningMsg("등록되지 않은 사원입니다");
+			setRetryCount(0); // 재시도 횟수 초기화
+		}
+	}, [retryCount]);
+
   const captureImage = () => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
@@ -105,21 +123,6 @@ const PaymentFacePage: React.FC = () => {
           console.error("Failed to convert canvas data to Blob");
         }
       }, "image/png");
-    }
-  };
-
-  const sendImageDataToServer = async (file: File) => {
-    if (retryCount < 10) {
-      try {
-        const response = await payInfoByFace(file);
-        navigate("/payment-final", { state: response.data });
-      } catch (err) {
-        setRetryCount(retryCount + 1);
-        detection();
-      }
-    } else {
-      setWarningMsg("등록되지 않은 사원입니다");
-      setRetryCount(0); // 재시도 횟수 초기화
     }
   };
 
