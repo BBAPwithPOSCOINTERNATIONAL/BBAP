@@ -8,8 +8,8 @@ const customNotificationContainer = document.getElementById(
 
 onMessage(messaging, (payload) => {
 	console.log("알림 도착 ", payload);
-	const notificationTitle = payload.notification.title;
-	const notificationBody = payload.notification.body;
+	const notificationTitle = payload.data.title;
+	const notificationBody = payload.data.body;
 
 	if (Notification.permission === "granted") {
 		// Create a custom notification div

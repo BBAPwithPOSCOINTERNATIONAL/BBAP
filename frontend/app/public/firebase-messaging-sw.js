@@ -33,10 +33,18 @@ const messaging = firebaseApp.messaging();
 
 // 백그라운드 메시지 이벤트 리스너
 messaging.onBackgroundMessage((payload) => {
-	const notificationTitle = payload.notification.title;
+	const notificationTitle = payload.data.title;
 	const notificationOptions = {
-		body: payload.notification.body,
-		// icon: payload.notification.icon
+		body: payload.data.body,
+		icon: '/favicon.ico',
+		data: { url: payload.data.url } // 클릭 시 열릴 URL 저장
 	};
 	self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener('notificationclick', function (event) {
+	event.notification.close();
+	if (event.notification.data.url) {
+		clients.openWindow(event.notification.data.url);
+	}
 });

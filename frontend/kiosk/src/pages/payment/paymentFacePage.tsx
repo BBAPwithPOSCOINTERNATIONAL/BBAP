@@ -83,7 +83,7 @@ const PaymentFacePage: React.FC = () => {
 			// Convert data URL to file
 			canvas.toBlob((blob) => {
 				if (blob) {
-					const file = new File([blob], "captured.png", { type: "image/png" });
+					const file = new File([blob], "captured.jpg", { type: "image/jpg" });
 					sendImageDataToServer(file);
 				} else {
 					console.error("Failed to convert canvas data to Blob");
