@@ -1,12 +1,19 @@
+import useCartStore from "../../store/cartStore";
 import useContentStore from "../../store/contentStore";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function AfterPaymentPage() {
   const navigate = useNavigate();
   const setContent = useContentStore((state) => state.setContent);
 
+  const { resetCart } = useCartStore((state) => ({
+    resetCart: state.resetCart,
+  }));
+  const location = useLocation();
+
   const handleClick = () => {
     setContent("history");
+    resetCart();
     navigate("/cafemain");
   };
 
@@ -14,7 +21,7 @@ function AfterPaymentPage() {
     <>
       <header>
         <h1 className="text-center text-3xl font-hyemin-bold flex-1">
-          카페이름 나올 예정
+          {localStorage.getItem("cafeName")}
         </h1>
         <hr className="h-1 border-1 bg-black mb-2 w-full" />
       </header>
@@ -22,7 +29,9 @@ function AfterPaymentPage() {
         <div className="flex justify-center items-center h-screen">
           <div className="max-w-lg">
             <p className="text-center text-5xl mb-2">주문번호</p>
-            <p className="text-center text-6xl mb-4">32</p>
+            <p className="text-center text-6xl mb-4">
+              {location.state.data.orderNum}
+            </p>
             <hr className="h-1 border-1 bg-black mb-4" />
             <div className="text-center mb-8">
               <p className="text-2xl font-hyemin-regular">사번으로</p>
