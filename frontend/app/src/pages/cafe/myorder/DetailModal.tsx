@@ -90,8 +90,8 @@ const DetailModal = ({
           >
             {order.data.menuList.map((item, idx) => (
               <div key={idx}>
-                <span>{item.menuName}</span>
-                <span>{item.menuPrice.toLocaleString()} 원</span>
+                <span>{item.menuName} X {item.menuCnt}</span>
+                <span>  {item.menuPrice.toLocaleString()} 원</span>
               </div>
             ))}
           </div>
