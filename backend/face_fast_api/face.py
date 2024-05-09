@@ -7,7 +7,7 @@ from sklearn import neighbors
 import pickle
 import os
 
-MODEL_PATH = 'trained_knn_model.clf'
+MODEL_PATH = 'clf/trained_knn_model.clf'
 
 # 모델이 이미 존재하는지 확인하고 로드하거나 새로운 모델을 생성
 if os.path.exists(MODEL_PATH):
