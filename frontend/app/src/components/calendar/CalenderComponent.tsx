@@ -34,9 +34,9 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
   data,
 }: RenderHeaderProps) => {
   return (
-    <div className="font-hyemin-bold flex justify-start p-4 w-full h-17vh bg-[#EFF7FF] shadow-md fixed gap-1.75">
+    <div className="font-hyemin-bold flex justify-start p-4 w-full bg-[#EFF7FF] shadow-md fixed gap-1.75 z-10">
       <div>
-        <div className="flex gap-4 mb-1 text-xl items-center">
+        <div className="flex gap-12 mb-1 text-xl items-center justify-start">
           <img src={back} onClick={prevMonth} className="h-5 pl-2" />
           <div>
             <span className="text month">
@@ -171,7 +171,7 @@ const RenderCells = ({
         >
           <span
             className={`
-            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} 
+            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} z-0
           `}
             // 일자별 숫자나오는칸 스타일링
             style={{
@@ -317,7 +317,7 @@ export const CalendarComponent = () => {
         src={group}
         alt="지원금 및 본인부담금"
         style={{
-          paddingTop: "19vh",
+          paddingTop: "22vh",
           marginLeft: "1rem",
           width: "40vw",
         }}

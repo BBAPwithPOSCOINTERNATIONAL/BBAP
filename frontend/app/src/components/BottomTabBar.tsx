@@ -23,9 +23,12 @@ function BottomTabBar() {
       <div>
         <Outlet /> {/* 메인 콘텐츠 */}
       </div>
-      <footer className="bg-slate-50 text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300" style={{
-            boxShadow:"-3px -2px 3px rgba(0, 0, 0, 0.1)",
-          }}>
+      <footer
+        className="bg-slate-50 text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300"
+        style={{
+          boxShadow: "-3px -2px 3px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         {" "}
         {/* 하단바 */}
         <nav>
