@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import question from "/assets/images/button/question.png";
@@ -33,6 +33,15 @@ function ReceiptDetail() {
     date: "",
     payments: { data: { paymentList: [] } },
   };
+  const [sortedPayments, setSortedPayments] = useState<Payment[]>([]);
+
+  useEffect(() => {
+    // 데이터가 있으면 역순으로 정렬
+    if (payments && payments.data && payments.data.paymentList.length > 0) {
+      const reversedPayments = [...payments.data.paymentList].reverse();
+      setSortedPayments(reversedPayments);
+    }
+  }, [payments]);
 
   const handleQuestionClick = () => {
     setIsModalOpen(!isModalOpen);
@@ -55,7 +64,7 @@ function ReceiptDetail() {
       <NavBar />
       <div className="flex-grow flex flex-col items-center justify-start my-20">
         {/* 카드 형식으로 각각의 카드를 렌더링 */}
-        {payments.data.paymentList.map((payment, index) => (
+        {sortedPayments.map((payment, index) => (
           <div
             key={index}
             className="bg-white rounded-md shadow-lg p-4 py-6 mb-4 w-90 border border-neutral-400"
