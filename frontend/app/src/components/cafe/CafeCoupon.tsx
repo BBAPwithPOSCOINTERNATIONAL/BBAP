@@ -26,10 +26,7 @@ const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
 
   return (
     <>
-      <p className="font-hyemin-bold pl-[25px] pt-[3px]">
-        현재 주문량: {orderCount}개
-      </p>
-      <div className="mt-1 flex flex-col items-center">
+      <div className="flex flex-col items-center">
         <div className="bg-cafe-primary-color border p-3 rounded-lg w-11/12 font-hyemin-bold">
           <div>
             <div className="flex justify-between">

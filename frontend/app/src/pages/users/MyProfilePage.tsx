@@ -26,7 +26,7 @@ function Modal({ isOpen, children }: ModalProps) {
         </div>
 
         {children}
-        <div className="absolute flex top-32 left-20 justify-center items-center z-10">
+        <div className="absolute flex top-32 left-16 justify-center items-center z-10">
           <img src={guide} alt="Profile" className="w-40 h-40 mb-3 z-10" />
         </div>
       </div>
@@ -35,10 +35,6 @@ function Modal({ isOpen, children }: ModalProps) {
 }
 
 function MyProfilePage() {
-  // const profile = {
-  //   imageUrl: IdPhoto,
-  // };
-
   const [showVideo, setShowVideo] = useState(false);
   const [captured, setCaptured] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,16 +62,6 @@ function MyProfilePage() {
     useUserStore.getState().reset();
     navigate("/");
   };
-  // const handleLogout = async () => {
-  //   try {
-  //     await logout();
-
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Logout failed:", error);
-  //     alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
-  //   }
-  // };
 
   const handleCameraAccess = async () => {
     try {
@@ -125,6 +111,7 @@ function MyProfilePage() {
             console.log("Upload status:", uploadResponse);
             if (uploadResponse.success) {
               setCaptured(true); // 이미지 업로드 성공 시 상태 업데이트
+              handleCloseModal();
             } else {
               console.error("Upload failed:", uploadResponse.message);
               alert(uploadResponse.message); // 실패 메시지를 alert로 표시

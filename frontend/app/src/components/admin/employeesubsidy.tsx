@@ -9,8 +9,19 @@ function EmployeeSubsidy(): JSX.Element {
   const location = useLocation();
   const empName = location.state?.empName || "Default Name";
   const empNo = location.state?.empNo || "Default empNo";
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+
+  const currentDate = new Date();
+
+  const firstDayOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth()
+  );
+  const formatDate = (date: Date) => date.toISOString().slice(0, 10);
+
+  const [startDate, setStartDate] = useState<string>(
+    formatDate(firstDayOfMonth)
+  );
+  const [endDate, setEndDate] = useState<string>(formatDate(currentDate));
   const [transactions, setTransactions] = useState<PaymentDetail[]>([]);
   const [currentTransactions, setCurrentTransactions] = useState<
     PaymentDetail[]
@@ -55,6 +66,16 @@ function EmployeeSubsidy(): JSX.Element {
     if (start) setStartDate(start);
     if (end) setEndDate(end);
     setCurrentPage(1);
+  };
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
   return (
@@ -120,7 +141,7 @@ function EmployeeSubsidy(): JSX.Element {
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-indigo-500/10 cursor-pointer"
               >
                 <td className="py-2 px-4 text-[17px]">
-                  {transaction.paymentDate}
+                  {formatDateTime(transaction.paymentDate)}
                 </td>
                 <td className="py-2 px-4 text-[17px]">
                   {transaction.totalPaymentAmount.toLocaleString()}

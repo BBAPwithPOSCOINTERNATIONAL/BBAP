@@ -115,8 +115,7 @@ function CartPage() {
 
     try {
       const response = await createOrder(orderData);
-      console.log("Order Response:", response);
-      alert("주문이 완료되었습니다!");
+      // console.log("Order Response:", response);
       navigate("/after", { state: response }); // 성공적으로 주문 후 이동할 페이지
     } catch (error) {
       console.error("주문 실패:", error);
