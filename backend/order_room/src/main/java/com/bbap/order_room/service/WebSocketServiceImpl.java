@@ -57,7 +57,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         sessionRepository.save(session);
         log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-        messagingTemplate.convertAndSendToUser(sessionId, "/topic/room/" + roomId, room);
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
     }
 
     @Override
