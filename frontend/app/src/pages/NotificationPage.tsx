@@ -18,64 +18,7 @@ import NoticeItem from "../components/NoticeItem";
 3. 함께주문 -> 내가 들어간 주문 방에서 게임이 시작될 때, 결제자로 선택되었을 때, 주문이 되었을 때 알림
 4. 영수증 -> 한달의 끝에 알림
 */
-const dummyNoticeList: Notice[] = [
-	{
-		noticeId: 1,
-		noticeClassification: "결제",
-		noticeText: "결제가 완료되었습니다",
-		noticeUrl: "url1",
-		storeName: "A 구내식당(송도)",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 2,
-		noticeClassification: "결제",
-		noticeText: "결제가 완료되었습니다",
-		noticeUrl: "url1",
-		storeName: "A 카페(송도)",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 3,
-		noticeClassification: "카페주문",
-		noticeText: "주문하신 메뉴가 준비되었습니다",
-		noticeUrl: "",
-		storeName: "A 카페(송도)",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 4,
-		noticeClassification: "함께주문",
-		noticeText: "게임이 시작되었습니다",
-		noticeUrl: "url1",
-		storeName: "",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 5,
-		noticeClassification: "함께주문",
-		noticeText: "결제자로 선택되었습니다",
-		noticeUrl: "url1",
-		storeName: "",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 6,
-		noticeClassification: "함께주문",
-		noticeText: "함께주문을 성공했어요",
-		noticeUrl: "url1",
-		storeName: "A 카페(송도)",
-		noticeDate: "2024-04-30T14:26:14.303557",
-	},
-	{
-		noticeId: 7,
-		noticeClassification: "영수증",
-		noticeText: "이번 달 사용내역을 확인해보세요",
-		noticeUrl: "url1",
-		storeName: "",
-		noticeDate: "2024-05-10T11:26:14.303557",
-	},
-];
+const dummyNoticeList: Notice[] = [];
 
 const NotificationPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -96,7 +39,8 @@ const NotificationPage: React.FC = () => {
 
 	useEffect(() => {
 		if (response) {
-			setNoticeList(response.data.noticeList);
+			const reversedData = [...response.data.noticeList].reverse();
+			setNoticeList(reversedData);
 		} else {
 			// 더미 데이터 사용
 			setNoticeList(dummyNoticeList);
@@ -105,12 +49,14 @@ const NotificationPage: React.FC = () => {
 
 	const handleDeleteAllNotification = async () => {
 		const response = await deleteAllNotificationData();
-		setNoticeList(response?.data.noticeList);
+		const reversedData = [...response.data.noticeList].reverse();
+		setNoticeList(reversedData);
 	};
 
 	const handleDeleteNotification = async (noticeId: number) => {
 		const response = await deleteNotificationData(noticeId);
-		setNoticeList(response?.data.noticeList);
+		const reversedData = [...response.data.noticeList].reverse();
+		setNoticeList(reversedData);
 	};
 
 	return (
