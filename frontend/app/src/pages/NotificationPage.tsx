@@ -18,7 +18,7 @@ import useNoticeStore from '../store/noticeStore';
 */
 
 const NotificationPage: React.FC = () => {
-	const { noticeList, deleteAllNotices } = useNoticeStore();
+	const { noticeList, deleteNotice, deleteAllNotices } = useNoticeStore();
 	const navigate = useNavigate();
 	const goBack = () => {
 		navigate(-1);
@@ -31,6 +31,7 @@ const NotificationPage: React.FC = () => {
 
 	const handleDeleteNotification = async (noticeId: number) => {
 		await deleteNotificationData(noticeId);
+		deleteNotice(noticeId);
 	};
 
 	return (
