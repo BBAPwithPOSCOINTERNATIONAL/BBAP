@@ -24,6 +24,8 @@ import RoulettePage from "./pages/cafe/togetherorder/RoulettePage";
 import AfterPaymentPage from "./pages/cafe/AfterPaymentPage";
 import WinnerPage from "./pages/cafe/togetherorder/WinnerPage";
 import NotificationPage from "./pages/NotificationPage";
+import TogetherMenuSelector from "./pages/cafe/togetherorder/TogetherMenuSelector.tsx";
+import TogetherMenuDetail from "./pages/cafe/togetherorder/TogetherMenuDetail.tsx";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +75,14 @@ const router = createBrowserRouter([
   {
     path: "together/:roomId",
     element: <TogetherOrderPage />,
+  },
+  {
+    path: "together/:roomId/menus",
+    element: <TogetherMenuSelector />
+  },
+  {
+    path: "together/:roomId/detail",
+    element: <TogetherMenuDetail />
   },
   {
     path: "detail",

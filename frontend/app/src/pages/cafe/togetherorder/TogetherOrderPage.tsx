@@ -1,10 +1,15 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router";
 import NavBar from "../../../components/Navbar";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
 import {useParams} from "react-router-dom";
+import useWebSocket from "../../../api/useWebSocket.tsx";
+import {getCafeList, Cafe, SelectedCafe, CafeMenus} from "../../../api/cafeAPI";
+import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
+import {useRoomStore} from "../../../store/roomStore.tsx";
+
 
 interface Product {
   owner: boolean;
@@ -72,6 +77,58 @@ function TogetherOrderPage() {
 
   const {roomId} = useParams();
 
+  const websocketUrl = 'https://pobap.com/websocket'
+
+  const {
+    room,
+    disconnectFromRoom,
+    deleteOrderItem,
+    addOrderItem,
+    startGame,
+    runWheel
+  } = useWebSocket(websocketUrl, roomId);
+
+  const { currentCafe, setCafe, setCafeMenus } = useRoomStore()
+
+  useEffect(() => {
+    if (room == null) {
+      return
+    }
+
+    if (room.cafeId === currentCafe?.id) {
+      return;
+    }
+
+    const setJoinedCafe = async (cafeId: string) => {
+
+      const cafeResponse = await getCafeList(cafeId)
+      const cafeList = cafeResponse.data.cafeList
+
+      const joinedCafe = cafeList.find(cafe => cafe.id === cafeId);
+      const selectedCafe: SelectedCafe = cafeResponse.data.selectedCafe;
+
+      console.log(cafeId)
+      console.log(joinedCafe)
+      const cafeMenus: CafeMenus = {
+        menuListCoffee: selectedCafe.menuListCoffee,
+        menuListBeverage: selectedCafe.menuListBeverage,
+        menuListDesert: selectedCafe.menuListDesert
+      };
+
+      setCafeMenus(cafeMenus)
+
+      if (joinedCafe) {
+        console.log('카페추가')
+        setCafe(joinedCafe)
+      }
+
+    }
+
+    setJoinedCafe(room.cafeId)
+
+
+  }, [room]);
+
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -84,6 +141,10 @@ function TogetherOrderPage() {
     setModalOpen(false);
     navigate("/roulette");
   };
+
+  const navigateToMenus = () => {
+    navigate(`/together/${roomId}/menus`)
+  }
 
   const products: Product[] = [
     {
@@ -120,7 +181,7 @@ function TogetherOrderPage() {
     <>
       <NavBar/>
       <div className="flex items-center">
-
+        {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
         <button
           onClick={() => navigate(-1)}
           className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
@@ -157,7 +218,7 @@ function TogetherOrderPage() {
         </div>
         <div className="flex justify-center items-center mt-3">
           <button
-            onClick={() => console.log("담기")}
+            onClick={navigateToMenus}
             className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
           >
             담기버튼

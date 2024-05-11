@@ -49,11 +49,17 @@ export interface CafeMenuData {
   menuListDessert: CafeMenuItem[];
 }
 
-interface SelectedCafe {
+export interface SelectedCafe {
   id: string;
   openTime: string;
   closeTime: string;
   stampCnt: number;
+  menuListCoffee: CafeMenuItem[];
+  menuListBeverage: CafeMenuItem[];
+  menuListDesert: CafeMenuItem[];
+}
+
+export interface CafeMenus {
   menuListCoffee: CafeMenuItem[];
   menuListBeverage: CafeMenuItem[];
   menuListDesert: CafeMenuItem[];

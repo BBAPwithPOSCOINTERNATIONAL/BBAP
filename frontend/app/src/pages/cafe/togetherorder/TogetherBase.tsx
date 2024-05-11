@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import {getCafeList, Cafe} from "../../../api/cafeAPI";
 import {createOrderRoom} from "../../../api/togetherAPI.tsx";
 
+
 export const TogetherBase = () => {
 
   const navigate = useNavigate();
