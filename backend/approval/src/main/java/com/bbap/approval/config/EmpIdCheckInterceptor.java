@@ -19,7 +19,7 @@ public class EmpIdCheckInterceptor implements HandlerInterceptor {
 
 		// Swagger UI 경로 요청 검사
 		String uri = request.getRequestURI();
-		if (uri.startsWith("/api/v1/hr/swagger-ui/")) {
+		if (uri.startsWith("https://pobap.com/api/v1/hr/swagger-ui/")) {
 			return true; // Swagger UI 경로면 검사 무시
 		}
 
