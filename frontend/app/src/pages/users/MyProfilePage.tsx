@@ -111,6 +111,7 @@ function MyProfilePage() {
             console.log("Upload status:", uploadResponse);
             if (uploadResponse.success) {
               setCaptured(true); // 이미지 업로드 성공 시 상태 업데이트
+              alert("사진 등록이 완료되었습니다!");
               handleCloseModal();
             } else {
               console.error("Upload failed:", uploadResponse.message);
@@ -142,7 +143,7 @@ function MyProfilePage() {
   return (
     <div className="flex flex-col min-h-screen pb-16">
       <NavBar />
-      <div className="flex flex-row justify-center items-end mt-4">
+      <div className="flex flex-row justify-center items-end mt-2">
         <h1 className="text-2xl font-bold text-center mr-4">
           안녕하세요, {userInfo.empName} 님{" "}
         </h1>
@@ -158,10 +159,10 @@ function MyProfilePage() {
         >
           <div className="flex flex-col items-center">
             <img
-              className="w-64 h-84 mb-2 mt-4"
+              className="w-64 h-80 mb-2 mt-4"
               src={userInfo.empImage}
               alt="Profile"
-              style={{ maxHeight: "310px" }}
+              style={{ maxHeight: "280px" }}
             />
             <button
               className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-4 w-full rounded-md text-2xl"
@@ -194,6 +195,7 @@ function MyProfilePage() {
                 </>
               )}
             </Modal>
+
             <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-4 w-full text-center ">
               <p className="text-gray-600 font-hyemin-bold text-lg">
                 근무지 : {userInfo.workplace?.workplaceName}

@@ -13,6 +13,19 @@ function MainPage() {
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [dynamicHeight, setDynamicHeight] = useState("27rem");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newHeight = window.innerHeight <= 770 ? "27rem" : "30rem";
+      setDynamicHeight(newHeight);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const carouselItems = paymentData
     ? [
         {
@@ -72,7 +85,7 @@ function MainPage() {
     <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden pb-16">
       <NavBar />
       <div className="p-4">
-        <div className="text-center mt-4">
+        <div className="text-center mt-2">
           {userInfo && userInfo.empName ? (
             <h1 className="text-4xl font-hyemin-bold text-white">
               {userInfo.empName} 님의 {today.getMonth() + 1}월
@@ -85,18 +98,18 @@ function MainPage() {
           <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
           <div
             className="mt-4 w-full bg-amber-50 rounded-lg z-0"
-            style={{ height: "30rem" }}
+            style={{ height: dynamicHeight }}
           >
             <div className="z-10 pt-14">
               {paymentData && carouselItems.length > 0 && (
                 <>
-                  <div className="text-5xl font-hyemin-bold mb-6">
+                  <div className="text-4xl font-hyemin-bold mb-8">
                     {carouselItems[carouselIndex].label}
                   </div>
                   <img
                     src={carouselItems[carouselIndex].picture}
                     alt="Carousel Image"
-                    className="h-40 mb-6 mx-auto"
+                    className="h-40 mb-8 mx-auto"
                   />
                   <p className="text-4xl font-hyemin-bold text-primary-color">
                     {carouselItems[carouselIndex].value}

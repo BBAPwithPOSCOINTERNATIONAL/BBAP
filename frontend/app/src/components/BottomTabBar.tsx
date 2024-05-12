@@ -23,9 +23,12 @@ function BottomTabBar() {
       <div>
         <Outlet /> {/* 메인 콘텐츠 */}
       </div>
-      <footer className="bg-slate-50 text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300" style={{
-            boxShadow:"-3px -2px 3px rgba(0, 0, 0, 0.1)",
-          }}>
+      <footer
+        className="bg-slate-50 text-center p-1 fixed inset-x-0 bottom-0 border-t border-gray-300"
+        style={{
+          boxShadow: "-3px -2px 3px rgba(0, 0, 0, 0.1)",
+        }}
+      >
         {" "}
         {/* 하단바 */}
         <nav>
@@ -62,7 +65,7 @@ function BottomTabBar() {
                   alt="receipts"
                   className="w-8"
                 />
-                내영수증
+                사용내역
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">

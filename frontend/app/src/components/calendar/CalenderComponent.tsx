@@ -41,7 +41,7 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
         justifyContent: "flex-start",
         padding: "1rem",
         width: "100vw",
-        height: "17vh",
+        height: "18vh",
         backgroundColor: "#EFF7FF",
         boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
         position: "fixed",
