@@ -165,7 +165,7 @@ function MyProfilePage() {
               style={{ maxHeight: "280px" }}
             />
             <button
-              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-3 px-4 w-full rounded-md text-2xl"
+              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-2 w-full rounded-md text-2xl"
               onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? "✅" : ""}

@@ -69,13 +69,21 @@ function MainPage() {
     fetchPayments();
   }, []);
 
+  const changeCarousel = (newIndex: number) => {
+    setCarouselIndex(newIndex % carouselItems.length);
+  };
+
+  const handleNext = () => {
+    changeCarousel(carouselIndex + 1);
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, 3000); // Rotate every 3 seconds
+      changeCarousel(carouselIndex + 1);
+    }, 3000);
 
     return () => clearInterval(timer);
-  }, [carouselItems.length]);
+  }, [carouselIndex, carouselItems.length]);
 
   if (isLoading) {
     return <Loading />;
@@ -99,6 +107,7 @@ function MainPage() {
           <div
             className="mt-4 w-full bg-amber-50 rounded-lg z-0"
             style={{ height: dynamicHeight }}
+            onTouchStart={handleNext}
           >
             <div className="z-10 pt-14">
               {paymentData && carouselItems.length > 0 && (
