@@ -11,6 +11,8 @@ import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
 import {useRoomStore} from "../../../store/roomStore.tsx";
 import {useUserStore} from "../../../store/userStore.tsx";
 
+import {MenuOption} from "../../../api/useWebSocket.tsx";
+
 const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
 
 
@@ -19,8 +21,12 @@ interface Product {
   orderItemId: string;
   name: string;
   menuname: string;
-  options: string[];
+  optionsString: string[];
+  options: MenuOption[]
   price: number;
+  cnt: number;
+  menuId: string;
+
 }
 
 interface ProductCardProps {
@@ -28,8 +34,11 @@ interface ProductCardProps {
   orderItemId: string;
   name: string;
   menuname: string;
-  options: string[];
+  optionsString: string[];
+  options: MenuOption[]
   price: number;
+  cnt: number
+  menuId: string;
   deleteOrderItem: (orderId: string) => void;
 }
 
@@ -38,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                                    orderItemId,
                                                    name,
                                                    menuname,
-                                                   options,
+                                                   optionsString,
                                                    price,
                                                    deleteOrderItem,
                                                  }) => {
@@ -59,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div>
           <span className="px-6">{menuname}</span>
           <span className="font-hyemin-regular text-sm">
-            {options.map((option, index) => (
+            {optionsString.map((option, index) => (
               <span key={index} className="inline-block mr-2">
                 {option}
               </span>
@@ -93,7 +102,7 @@ function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([])
+  // const [products, setProducts] = useState<Product[]>([])
 
 
   const empId = useUserStore((state) => state.empId);
@@ -104,7 +113,7 @@ function TogetherOrderPage() {
     deleteOrderItem
   } = useWebSocket(websocketURL, roomId);
 
-  const {currentCafe, currentCafeMenuList, setCafe, setCafeMenus} = useRoomStore()
+  const {currentCafe, currentCafeMenuList, products, setCafe, setCafeMenus, setProducts} = useRoomStore()
 
 
   useEffect(() => {
@@ -157,15 +166,19 @@ function TogetherOrderPage() {
     const products = room.orderItems.map((item) => {
       const menu = allMenuItems.find((m) => m.id === item.menuId) || {name: "", price: 0, options: []};
 
+      const cnt = item.cnt;
       const orderItemId = item.orderItemId;
       const owner = item.orderer === empId;
       const name = room.orderers ? room.orderers[item.orderer] : "";
       const menuname = menu.name;
       const choiceOptions = item.options ? item.options.flatMap((option) => option.choiceOptions || []) : [];
-      const options = choiceOptions.map(choice => choice.choiceName);
-      const price = (menu.price + choiceOptions.reduce((sum, ch) => sum + ch.price, 0)) * item.cnt;
+      const options = item.options || [];
+      const optionsString = choiceOptions.map(choice => choice.choiceName);
 
-      return {owner, orderItemId, name, menuname, options, price};
+      const price = (menu.price + choiceOptions.reduce((sum, ch) => sum + ch.price, 0)) * item.cnt;
+      const menuId = item.menuId;
+
+      return {cnt, owner, orderItemId, name, menuname, optionsString, options, price, menuId, choiceOptions};
     });
 
 
@@ -187,6 +200,10 @@ function TogetherOrderPage() {
 
   const navigateToMenus = () => {
     navigate(`/together/${roomId}/menus`)
+  }
+
+  const navigateOrderPage = () => {
+    navigate(`/together/${roomId}/order`)
   }
 
   const handleCopy = () => {
@@ -231,14 +248,15 @@ function TogetherOrderPage() {
           <img src={share} alt="share icon" className="ml-1"/>
         </button>
       </div>
-      <ProductList products={products} deleteOrderItem={deleteOrderItem} />
+      <ProductList products={products} deleteOrderItem={deleteOrderItem}/>
       <footer
         id="footer"
         className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
       >
         <div className="flex justify-between items-center">
 
-          <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명</div>
+          <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
+          </div>
           {room && room.currentOrderer === empId && (
             <button onClick={handleOpenModal}>
               <img src={game} className="mr-4"/>
@@ -253,7 +271,7 @@ function TogetherOrderPage() {
             담기버튼
           </button>
           <button
-            onClick={() => console.log("주문")}
+            onClick={navigateOrderPage}
             className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
           >
             주문하기

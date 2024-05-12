@@ -3,7 +3,7 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client'
 import {useUserStore} from "../store/userStore.tsx";
 
-import { OptionChoice } from "./cafeAPI.tsx";
+import {OptionChoice} from "./cafeAPI.tsx";
 
 type Message = {
   body: string;
@@ -32,7 +32,7 @@ type OrderItem = {
 export type OrderItemPayload = Pick<OrderItem, 'menuId' | 'cnt' | 'options'>;
 
 
-type MenuOption = {
+export type MenuOption = {
   optionName: string;
   type: string;
   required: boolean;
@@ -40,16 +40,14 @@ type MenuOption = {
 };
 
 
+export type OrderRequestDto = {
+  cafeId: string;
+  usedSubsidy: number;
+  pickUpTime: Date;
+  menuList: OrderItemPayload[];
+  cntCouponToUse: number;
+}
 
-// type StompHook = {
-//   room: Room | null;
-//   disconnectFromRoom: () => void;
-//   disconnectSession: () => void;
-//   deleteOrderItem: (orderItemId: string) => void;
-//   addOrderItem: (orderItem: OrderItemPayload) => void;
-//   startGame: () => void;
-//   runWheel: () => void;
-// };
 
 
 const useWebSocket = (url: string, roomId: string | undefined): {
@@ -59,7 +57,8 @@ const useWebSocket = (url: string, roomId: string | undefined): {
   addOrderItem: (orderItem: OrderItemPayload) => void;
   startGame: () => void;
   room: Room | null;
-  runWheel: () => void
+  runWheel: () => void;
+  order: (requestDto: OrderRequestDto) => void
 } => {
   // const [client, setClient] = useState<Client | null>(null);
   const client = useRef<Client | null>(null);
@@ -163,6 +162,17 @@ const useWebSocket = (url: string, roomId: string | undefined): {
     }
   }
 
+  const order = (requestDto: OrderRequestDto) => {
+    if (client?.current?.connected) {
+      client.current.publish({
+        destination: `/app/order`,
+        body: JSON.stringify(requestDto),
+      });
+    } else {
+      console.log('소켓 서버에 연결되지 않았습니다.');
+    }
+  }
+
 
   return {
     room,
@@ -171,7 +181,8 @@ const useWebSocket = (url: string, roomId: string | undefined): {
     addOrderItem,
     startGame,
     runWheel,
-    disconnectSession
+    disconnectSession,
+    order
   };
 };
 

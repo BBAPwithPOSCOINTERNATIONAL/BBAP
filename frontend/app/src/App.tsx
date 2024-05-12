@@ -26,6 +26,7 @@ import WinnerPage from "./pages/cafe/togetherorder/WinnerPage";
 import NotificationPage from "./pages/NotificationPage";
 import TogetherMenuSelector from "./pages/cafe/togetherorder/TogetherMenuSelector.tsx";
 import TogetherMenuDetail from "./pages/cafe/togetherorder/TogetherMenuDetail.tsx";
+import TogetherPayment from "./pages/cafe/togetherorder/TogetherPayment.tsx";
 
 const router = createBrowserRouter([
   {
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
   {
     path: "together/:roomId/roulette",
     element: <RoulettePage />,
+  },
+  {
+    path: "together/:roomId/order",
+    element: <TogetherPayment />,
   },
   {
     path: "after",
