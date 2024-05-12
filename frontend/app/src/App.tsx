@@ -93,7 +93,7 @@ const router = createBrowserRouter([
     element: <CartPage />,
   },
   {
-    path: "roulette",
+    path: "together/:roomId/roulette",
     element: <RoulettePage />,
   },
   {
@@ -101,7 +101,7 @@ const router = createBrowserRouter([
     element: <AfterPaymentPage />,
   },
   {
-    path: "winner/:winner",
+    path: "together/:roomId/winner",
     element: <WinnerPage />,
   },
   {

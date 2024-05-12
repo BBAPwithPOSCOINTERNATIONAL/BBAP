@@ -182,7 +182,7 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
-    navigate("/roulette");
+    navigate(`/together/${roomId}/roulette`);
   };
 
   const navigateToMenus = () => {
@@ -237,10 +237,13 @@ function TogetherOrderPage() {
         className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
       >
         <div className="flex justify-between items-center">
-          <div className="text-xl ml-4">총 주문 인원: {products.length}</div>
-          <button onClick={handleOpenModal}>
-            <img src={game} className="mr-4"></img>
-          </button>
+
+          <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명</div>
+          {room && room.currentOrderer === empId && (
+            <button onClick={handleOpenModal}>
+              <img src={game} className="mr-4"/>
+            </button>
+          )}
         </div>
         <div className="flex justify-center items-center mt-3">
           <button

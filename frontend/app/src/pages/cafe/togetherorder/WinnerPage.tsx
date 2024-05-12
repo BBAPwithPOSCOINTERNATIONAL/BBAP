@@ -1,10 +1,24 @@
-import { useParams } from "react-router-dom";
 import NavBar from "../../../components/Navbar";
+import {useRoomStore} from "../../../store/roomStore.tsx";
+import {useEffect, useState} from "react";
+import {Employee} from "../../../store/roomStore.tsx";
 
 function WinnerPage() {
-  const { winner } = useParams(); // useParams를 사용하여 winner 파라미터를 가져옵니다.
+  const [penaltyWinner, setPenaltyWinner] = useState<Employee>()
+  const [nonWinners, setNonWinners] = useState<Employee[]>([])
 
-  const eatMan = ["박영진", "조혜원"];
+
+  const {
+    orderers,
+  } = useRoomStore();
+
+  useEffect(() => {
+    const penaltyWinner = orderers.find((orderer) => orderer.isWinner);
+    const nonWinners = orderers.filter((orderer) => !orderer.isWinner);
+
+    setPenaltyWinner(penaltyWinner);
+    setNonWinners(nonWinners);
+  }, [orderers]);
 
   return (
     <>
@@ -15,12 +29,12 @@ function WinnerPage() {
         </h1>
         <p className="text-center text-3xl my-4">
           <div className="text-center text-3xl mt-4">사줄 사람</div>
-          {` ${winner}님(사번)입니다!`}
+          {` ${penaltyWinner?.empName}님입니다!`}
         </p>
         <div className="text-center text-3xl mt-4">맛있게 먹을사람</div>
-        {eatMan.map((item, index) => (
-          <div key={index} className="text-center text-3xl">
-            {item} 님
+        {nonWinners.map((item) => (
+          <div key={item.empNo} className="text-center text-3xl">
+            {item.empName} 님
           </div>
         ))}
         <button className="mt-32 w-1/2 bg-primary-color text-white font-bold py-2 px-4 rounded">
