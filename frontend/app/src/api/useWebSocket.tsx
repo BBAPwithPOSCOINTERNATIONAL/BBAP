@@ -1,8 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client'
 import {useUserStore} from "../store/userStore.tsx";
 
+import { OptionChoice } from "./cafeAPI.tsx";
 
 type Message = {
   body: string;
@@ -28,67 +29,70 @@ type OrderItem = {
 };
 
 
-type OrderItemPayload = Pick<OrderItem, 'menuId' | 'cnt' | 'options'>;
+export type OrderItemPayload = Pick<OrderItem, 'menuId' | 'cnt' | 'options'>;
 
 
 type MenuOption = {
   optionName: string;
   type: string;
   required: boolean;
-  choiceOptions: ChoiceOption[];
+  choiceOptions: OptionChoice[];
 };
 
-type ChoiceOption = {
-  choiceName: string;
-  price: number;
-};
 
-type StompHook = {
-  room: Room | null;
+
+// type StompHook = {
+//   room: Room | null;
+//   disconnectFromRoom: () => void;
+//   disconnectSession: () => void;
+//   deleteOrderItem: (orderItemId: string) => void;
+//   addOrderItem: (orderItem: OrderItemPayload) => void;
+//   startGame: () => void;
+//   runWheel: () => void;
+// };
+
+
+const useWebSocket = (url: string, roomId: string | undefined): {
   disconnectFromRoom: () => void;
   deleteOrderItem: (orderItemId: string) => void;
+  disconnectSession: () => void;
   addOrderItem: (orderItem: OrderItemPayload) => void;
   startGame: () => void;
-  runWheel: () => void;
-};
-
-
-const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
-  const [client, setClient] = useState<Client | null>(null);
+  room: Room | null;
+  runWheel: () => void
+} => {
+  // const [client, setClient] = useState<Client | null>(null);
+  const client = useRef<Client | null>(null);
   const [room, setRoom] = useState<Room | null>(null);
   const empId = useUserStore((state) => state.empId);
 
   useEffect(() => {
-    if (!roomId) {
-      return
-    }
-
     const socket = new SockJS(url);
-    const stompClient = new Client({
+    client.current = new Client({
       webSocketFactory: () => socket,
     });
 
 
-    stompClient.onConnect = () => {
+    client.current.onConnect = () => {
       console.log('Connected to room ' + roomId);
-      stompClient.subscribe(`/topic/room/${roomId}`, messageOutput);
-      stompClient.publish({
+      client.current?.subscribe(`/topic/room/${roomId}`, messageOutput);
+      client.current?.publish({
         destination: `/app/connect/${roomId}/${empId}`, // empId
       });
     };
 
-    stompClient.onStompError = frame => {
-      console.log(
-        'Broker reported error: ' + frame.headers['message'] + ' - ' + frame.body
-      );
-    };
+    // client.current?.onStompError = frame => {
+    //   console.log(
+    //     'Broker reported error: ' + frame.headers['message'] + ' - ' + frame.body
+    //   );
+    // };
 
-    setClient(stompClient);
-    stompClient.activate();
+
+    client.current?.activate()
 
     return () => {
-      if (stompClient.connected) {
-        disconnectFromRoom();
+      if (client.current?.connected) {
+        client.current?.deactivate();
       }
     };
   }, [roomId]);
@@ -103,19 +107,24 @@ const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
 
   const disconnectFromRoom = () => {
     if (client) {
-      client.publish({
+      client.current?.publish({
         destination: `/app/leave-room`,
       });
-      client.deactivate();
+      client.current?.deactivate();
 
       console.log('연결 종료');
     }
   };
 
+  const disconnectSession = () => {
+    console.log('세션 종료 수행')
+    client.current?.deactivate()
+  }
+
 
   const deleteOrderItem = (orderItemId: string) => {
-    if (client?.connected) {
-      client.publish({
+    if (client.current?.connected) {
+      client.current?.publish({
         destination: `/app/delete-order-item/${orderItemId}`,
       });
     } else {
@@ -124,8 +133,8 @@ const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
   }
 
   const addOrderItem = (orderItem: OrderItemPayload) => {
-    if (client?.connected) {
-      client.publish({
+    if (client.current?.connected) {
+      client.current?.publish({
         destination: '/app/add-order-item',
         body: JSON.stringify(orderItem),
       });
@@ -135,8 +144,8 @@ const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
   }
 
   const startGame = () => {
-    if (client?.connected) {
-      client.publish({
+    if (client.current?.connected) {
+      client.current?.publish({
         destination: `/app/start-game`,
       });
     } else {
@@ -145,8 +154,8 @@ const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
   }
 
   const runWheel = () => {
-    if (client?.connected) {
-      client.publish({
+    if (client?.current?.connected) {
+      client.current?.publish({
         destination: `/app/run-wheel`,
       });
     } else {
@@ -161,7 +170,8 @@ const useWebSocket = (url: string, roomId: string | undefined): StompHook => {
     deleteOrderItem,
     addOrderItem,
     startGame,
-    runWheel
+    runWheel,
+    disconnectSession
   };
 };
 

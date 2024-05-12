@@ -6,36 +6,54 @@ import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
 import {useParams} from "react-router-dom";
 import useWebSocket from "../../../api/useWebSocket.tsx";
-import {getCafeList, Cafe, SelectedCafe, CafeMenus} from "../../../api/cafeAPI";
+import {getCafeList, SelectedCafe, CafeMenus} from "../../../api/cafeAPI";
 import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
 import {useRoomStore} from "../../../store/roomStore.tsx";
+import {useUserStore} from "../../../store/userStore.tsx";
+
+const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
 
 
 interface Product {
   owner: boolean;
-  name: string;
-  menuname: string;
-  options: string[]; // options는 문자열 배열로 가정합니다.
-  price: number;
-}
-
-interface ProductCardProps {
+  orderItemId: string;
   name: string;
   menuname: string;
   options: string[];
   price: number;
 }
 
+interface ProductCardProps {
+  owner: boolean;
+  orderItemId: string;
+  name: string;
+  menuname: string;
+  options: string[];
+  price: number;
+  deleteOrderItem: (orderId: string) => void;
+}
+
 const ProductCard: React.FC<ProductCardProps> = ({
+                                                   owner,
+                                                   orderItemId,
                                                    name,
                                                    menuname,
                                                    options,
                                                    price,
+                                                   deleteOrderItem,
                                                  }) => {
   return (
     <div className="m-3 mt-5 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 flex justify-between items-center">
         <div className="font-bold text-xl mb-2">{name} 님</div>
+        {owner && (
+          <button
+            className="text-base"
+            onClick={() => deleteOrderItem(orderItemId)}
+          >
+            삭제
+          </button>
+        )}
       </div>
       <div className="flex flex-row justify-between">
         <div>
@@ -58,13 +76,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 interface ProductListProps {
   products: Product[];
+  deleteOrderItem: (orderId: string) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({products}) => {
+const ProductList: React.FC<ProductListProps> = ({products, deleteOrderItem}) => {
   return (
     <div className="product-list">
       {products.map((product, index) => (
-        <ProductCard key={index} {...product} />
+        <ProductCard key={index} {...product} deleteOrderItem={deleteOrderItem}/> // 수정
       ))}
     </div>
   );
@@ -74,21 +93,19 @@ function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([])
 
+
+  const empId = useUserStore((state) => state.empId);
   const {roomId} = useParams();
-
-  const websocketUrl = 'https://pobap.com/websocket'
 
   const {
     room,
-    disconnectFromRoom,
-    deleteOrderItem,
-    addOrderItem,
-    startGame,
-    runWheel
-  } = useWebSocket(websocketUrl, roomId);
+    deleteOrderItem
+  } = useWebSocket(websocketURL, roomId);
 
-  const { currentCafe, setCafe, setCafeMenus } = useRoomStore()
+  const {currentCafe, currentCafeMenuList, setCafe, setCafeMenus} = useRoomStore()
+
 
   useEffect(() => {
     if (room == null) {
@@ -100,7 +117,6 @@ function TogetherOrderPage() {
     }
 
     const setJoinedCafe = async (cafeId: string) => {
-
       const cafeResponse = await getCafeList(cafeId)
       const cafeList = cafeResponse.data.cafeList
 
@@ -118,16 +134,43 @@ function TogetherOrderPage() {
       setCafeMenus(cafeMenus)
 
       if (joinedCafe) {
-        console.log('카페추가')
         setCafe(joinedCafe)
       }
-
     }
 
     setJoinedCafe(room.cafeId)
 
-
   }, [room]);
+
+  useEffect(() => {
+    if (room == null || !room?.orderItems || !currentCafeMenuList) {
+      return;
+    }
+
+    // 모든 메뉴 아이템을 하나의 배열로 합칩니다.
+    const allMenuItems = [
+      ...currentCafeMenuList.menuListCoffee,
+      ...currentCafeMenuList.menuListBeverage,
+      ...currentCafeMenuList.menuListDesert,
+    ];
+
+    const products = room.orderItems.map((item) => {
+      const menu = allMenuItems.find((m) => m.id === item.menuId) || {name: "", price: 0, options: []};
+
+      const orderItemId = item.orderItemId;
+      const owner = item.orderer === empId;
+      const name = room.orderers ? room.orderers[item.orderer] : "";
+      const menuname = menu.name;
+      const choiceOptions = item.options ? item.options.flatMap((option) => option.choiceOptions || []) : [];
+      const options = choiceOptions.map(choice => choice.choiceName);
+      const price = (menu.price + choiceOptions.reduce((sum, ch) => sum + ch.price, 0)) * item.cnt;
+
+      return {owner, orderItemId, name, menuname, options, price};
+    });
+
+
+    setProducts(products);
+  }, [currentCafeMenuList, room?.orderItems, empId]);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -145,23 +188,6 @@ function TogetherOrderPage() {
   const navigateToMenus = () => {
     navigate(`/together/${roomId}/menus`)
   }
-
-  const products: Product[] = [
-    {
-      owner: true,
-      name: "젠킨스",
-      menuname: "아메리카노",
-      options: ["HOT", "Medium", "Option 3"],
-      price: 3000,
-    },
-    {
-      owner: false,
-      name: "토로로",
-      menuname: "스트로베리 라떼",
-      options: ["ICE", "large"],
-      price: 5000,
-    },
-  ];
 
   const handleCopy = () => {
     const input = inputRef.current;
@@ -183,7 +209,7 @@ function TogetherOrderPage() {
       <div className="flex items-center">
         {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => console.log('나가기핸들링')}
           className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
         >
           나가기
@@ -205,7 +231,7 @@ function TogetherOrderPage() {
           <img src={share} alt="share icon" className="ml-1"/>
         </button>
       </div>
-      <ProductList products={products}/>
+      <ProductList products={products} deleteOrderItem={deleteOrderItem} />
       <footer
         id="footer"
         className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"

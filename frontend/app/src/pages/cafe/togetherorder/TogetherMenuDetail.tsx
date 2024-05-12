@@ -2,22 +2,28 @@ import {useEffect, useState} from "react";
 import NavBar from "../../../components/Navbar";
 import useCafeStore from "../../../store/cafeStore";
 import Button from "../../../components/button";
-import useCartStore from "../../../store/cartStore";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Option, OptionChoice} from "../../../api/cafeAPI";
+import useWebSocket from "../../../api/useWebSocket.tsx";
 
+const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
 
 function TogetherMenuDetail() {
   const selectedItem = useCafeStore((state) => state.selectedItem);
-  const {addToCart} = useCartStore();
+  // const {addToCart} = useCartStore();
   const [totalPrice, setTotalPrice] = useState<number>(
     (selectedItem && selectedItem.price) || 0
   );
   const [warningText, setWarningText] = useState<string>("");
   const [count, setCount] = useState<number>(1);
   const navigate = useNavigate();
+
+
+  const {roomId} = useParams();
+  const { addOrderItem } = useWebSocket(websocketURL, roomId);
+
 
   useEffect(() => {
     // 페이지가 처음 렌더링될 때 스크롤을 맨 위로 이동
@@ -107,15 +113,20 @@ function TogetherMenuDetail() {
 
   const handleAddCart = () => {
     if (checkOptions()) {
-      addToCart({
+      const requestDto = {
         menuId: selectedItem ? selectedItem.id : "",
-        cnt: count,
-        name: selectedItem ? selectedItem.name : "",
-        price: totalPrice / count,
-        options: selectedOptions,
-      });
+        cnt : count,
+        options: selectedOptions ? selectedOptions.map(option => ({
+          optionName : option.optionName,
+          type : option.type,
+          required : option.required,
+          choiceOptions : option.choice
+        })) : [],
+      }
 
-      navigate("/cafemain");
+      addOrderItem(requestDto);
+
+      navigate(-2);
     }
   };
 
