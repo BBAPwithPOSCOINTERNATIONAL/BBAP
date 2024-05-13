@@ -5,13 +5,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.EntityResolver;
 
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
-import com.bbap.order_room.dto.requestDto.ChoiceRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
 import com.bbap.order_room.dto.requestDto.SendNoticeRequestDto;
@@ -57,7 +58,9 @@ public class WebSocketServiceImpl implements WebSocketService {
         sessionRepository.save(session);
         log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // 특정 세션 ID에 메시지 전송
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
     }
 
     @Override
@@ -345,5 +348,12 @@ public class WebSocketServiceImpl implements WebSocketService {
         // 리스트에서 랜덤 인덱스로 요소 선택
         int randomIndex = random.nextInt(list.size()); // 리스트 크기 내에서 랜덤 인덱스 생성
         return list.get(randomIndex);
+    }
+
+    private MessageHeaders createHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
     }
 }
