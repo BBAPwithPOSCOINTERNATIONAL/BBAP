@@ -72,12 +72,11 @@ const TogetherCreateRoom = () => {
 
   const handleCreateRoom = async () => {
     try {
-      const result = await createOrderRoom();
-      console.log("Room created:", result);
-      setOrderRoomInfo(result.data.roomId);
-      navigate("/together", {
-        state: { cafeName: selectedCafeName, roomId: result.data.roomId },
-      });
+      const result = await createOrderRoom(selectedCafeId);
+      const roomId = result.data.roomId;
+      console.log(`주문방 생성 - 주문방 ID : ${roomId}`)
+      navigate(`/together/${roomId}`)
+
     } catch (error) {
       console.error("Failed to create room:", error);
     }

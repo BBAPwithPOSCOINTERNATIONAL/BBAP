@@ -1,44 +1,74 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import {useEffect, useRef, useState} from "react";
+import {useNavigate} from "react-router";
 import NavBar from "../../../components/Navbar";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
-import SockJS from "sockjs-client";
-import { Client, Stomp } from "@stomp/stompjs";
-import { useUserStore } from "../../../store/userStore";
+import {useParams} from "react-router-dom";
+import useWebSocket from "../../../api/useWebSocket.tsx";
+import {getCafeList, SelectedCafe, CafeMenus} from "../../../api/cafeAPI";
+import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
+import {useRoomStore} from "../../../store/roomStore.tsx";
+import {useUserStore} from "../../../store/userStore.tsx";
+
+import {MenuOption} from "../../../api/useWebSocket.tsx";
+
+const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
+
 
 interface Product {
   owner: boolean;
+  orderItemId: string;
   name: string;
   menuname: string;
-  options: string[]; // options는 문자열 배열로 가정합니다.
+  optionsString: string[];
+  options: MenuOption[]
   price: number;
+  cnt: number;
+  menuId: string;
+
 }
 
 interface ProductCardProps {
+  owner: boolean;
+  orderItemId: string;
   name: string;
   menuname: string;
-  options: string[];
+  optionsString: string[];
+  options: MenuOption[]
   price: number;
+  cnt: number
+  menuId: string;
+  deleteOrderItem: (orderId: string) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  name,
-  menuname,
-  options,
-  price,
-}) => {
+                                                   owner,
+                                                   orderItemId,
+                                                   name,
+                                                   menuname,
+                                                   optionsString,
+                                                   price,
+                                                   deleteOrderItem,
+                                                 }) => {
   return (
     <div className="m-3 mt-5 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 flex justify-between items-center">
         <div className="font-bold text-xl mb-2">{name} 님</div>
+        {owner && (
+          <button
+            className="text-base"
+            onClick={() => deleteOrderItem(orderItemId)}
+          >
+            삭제
+          </button>
+        )}
       </div>
       <div className="flex flex-row justify-between">
         <div>
           <span className="px-6">{menuname}</span>
           <span className="font-hyemin-regular text-sm">
-            {options.map((option, index) => (
+            {optionsString.map((option, index) => (
               <span key={index} className="inline-block mr-2">
                 {option}
               </span>
@@ -55,13 +85,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 interface ProductListProps {
   products: Product[];
+  deleteOrderItem: (orderId: string) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products }) => {
+const ProductList: React.FC<ProductListProps> = ({products, deleteOrderItem}) => {
   return (
     <div className="product-list">
       {products.map((product, index) => (
-        <ProductCard key={index} {...product} />
+        <ProductCard key={index} {...product} deleteOrderItem={deleteOrderItem}/> // 수정
       ))}
     </div>
   );
@@ -70,56 +101,96 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const stompClient = useRef<Client | null>(null);
-
   const [modalOpen, setModalOpen] = useState(false);
-  const { empId } = useUserStore();
-  // const [couponCnt, setCouponCnt] = useState(0);
-  // const [menuListCoffee, setMenuListCoffee] = useState<CafeMenuItem[]>([]);
-  // const [menuListBeverage, setMenuListBeverage] = useState<CafeMenuItem[]>([]);
-  // const [menuListDessert, setMenuListDessert] = useState<CafeMenuItem[]>([]);
-  const location = useLocation();
-  const cafeName = location.state?.cafeName;
-  const roomId = location.state?.roomId;
-  const url = "https://pobap.com/websocket";
+
+
+  // TODO 1. 나가기 버튼 눌렀을 때 처리 (방장이면 알림창 추가)
+  // TODO 2. 아래에 버튼 분기 처리 내 empId와 room?.currentOrderer가 일치할 때 / 일치하지 않을 때
+  // TODO room?.roomStatus가 'GAME_START', 'GAME_END'인 경우 담기버튼 없어야 함. 주문자면 주문하기 주문자 아니면 결제대기
+  // TODO 3. product 비어 있는 경우 텅 처리
+  // TODO 4. 공유 눌렀을 때 알림창
+
+
+  const empId = useUserStore((state) => state.empId);
+  const {roomId} = useParams();
+
+  const {
+    room,
+    deleteOrderItem
+  } = useWebSocket(websocketURL, roomId);
+
+  const {currentCafe, currentCafeMenuList, products, setCafe, setCafeMenus, setProducts} = useRoomStore()
+
 
   useEffect(() => {
-    if (!location.state?.roomId || !empId) {
-      console.error("Room ID or Employee ID is missing");
+    if (room == null) {
+      return
+    }
+
+    if (room.cafeId === currentCafe?.id) {
       return;
     }
 
-    const roomId = location.state.roomId;
+    const setJoinedCafe = async (cafeId: string) => {
+      const cafeResponse = await getCafeList(cafeId)
+      const cafeList = cafeResponse.data.cafeList
 
-    const client = Stomp.over(() => new SockJS(url));
-    client.connect(
-      {},
-      () => {
-        console.log("Connected to WebSocket server");
-        client.subscribe(`/topic/room/${roomId}`, (message) => {
-          console.log("Received message:", JSON.parse(message.body));
-        });
+      const joinedCafe = cafeList.find(cafe => cafe.id === cafeId);
+      const selectedCafe: SelectedCafe = cafeResponse.data.selectedCafe;
 
-        // 메시지를 /app/connect/{roomId}/{empId}로 보내는 로직
-        client.publish({
-          destination: `/app/connect/${roomId}/${empId}`,
-          body: JSON.stringify({ message: "Connecting to room" }),
-        });
-      },
-      (error: any) => {
-        console.error("Connection error:", error);
+      console.log(cafeId)
+      console.log(joinedCafe)
+      const cafeMenus: CafeMenus = {
+        menuListCoffee: selectedCafe.menuListCoffee,
+        menuListBeverage: selectedCafe.menuListBeverage,
+        menuListDesert: selectedCafe.menuListDesert
+      };
+
+      setCafeMenus(cafeMenus)
+
+      if (joinedCafe) {
+        setCafe(joinedCafe)
       }
-    );
+    }
 
-    stompClient.current = client;
-    return () => {
-      if (client.active) {
-        client.disconnect(() => {
-          console.log("Disconnected");
-        });
-      }
-    };
-  }, [location.state, empId]);
+    setJoinedCafe(room.cafeId)
+
+  }, [room]);
+
+  useEffect(() => {
+    if (room == null || !room?.orderItems || !currentCafeMenuList) {
+      setProducts([])
+      return;
+    }
+
+    // 모든 메뉴 아이템을 하나의 배열로 합칩니다.
+    const allMenuItems = [
+      ...currentCafeMenuList.menuListCoffee,
+      ...currentCafeMenuList.menuListBeverage,
+      ...currentCafeMenuList.menuListDesert,
+    ];
+
+    const products = room.orderItems.map((item) => {
+      const menu = allMenuItems.find((m) => m.id === item.menuId) || {name: "", price: 0, options: []};
+
+      const cnt = item.cnt;
+      const orderItemId = item.orderItemId;
+      const owner = item.orderer === empId;
+      const name = room.orderers ? room.orderers[item.orderer] : "";
+      const menuname = menu.name;
+      const choiceOptions = item.options ? item.options.flatMap((option) => option.choiceOptions || []) : [];
+      const options = item.options || [];
+      const optionsString = choiceOptions.map(choice => choice.choiceName);
+
+      const price = (menu.price + choiceOptions.reduce((sum, ch) => sum + ch.price, 0)) * item.cnt;
+      const menuId = item.menuId;
+
+      return {cnt, owner, orderItemId, name, menuname, optionsString, options, price, menuId, choiceOptions};
+    });
+
+
+    setProducts(products);
+  }, [currentCafeMenuList, room?.orderItems, empId]);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -131,25 +202,16 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
-    navigate("/roulette");
+    navigate(`/together/${roomId}/roulette`);
   };
 
-  const products: Product[] = [
-    {
-      owner: true,
-      name: "젠킨스",
-      menuname: "아메리카노",
-      options: ["HOT", "Medium", "Option 3"],
-      price: 3000,
-    },
-    {
-      owner: false,
-      name: "토로로",
-      menuname: "스트로베리 라떼",
-      options: ["ICE", "large"],
-      price: 5000,
-    },
-  ];
+  const navigateToMenus = () => {
+    navigate(`/together/${roomId}/menus`)
+  }
+
+  const navigateOrderPage = () => {
+    navigate(`/together/${roomId}/order`)
+  }
 
   const handleCopy = () => {
     const input = inputRef.current;
@@ -165,66 +227,108 @@ function TogetherOrderPage() {
     }
   };
 
-  return (
-    <>
-      <NavBar />
-      <div className="flex justify-center items-center">
-        <div className="mx-5">카페명 : {cafeName}</div>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
-        >
-          나가기
-        </button>
-      </div>
-      <div className="flex items-center">
-        <input
-          ref={inputRef}
-          type="text"
-          className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
-          placeholder={roomId}
-        ></input>
-        <button
-          onClick={handleCopy}
-          className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
-        >
-          <span>공유</span>
-          <img src={share} alt="share icon" className="ml-1" />
-        </button>
-      </div>
-      <ProductList products={products} />
-      <footer
-        id="footer"
-        className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
-      >
-        <div className="flex justify-between items-center">
-          <div className="text-xl ml-4">총 주문 인원: {products.length}</div>
-          <button onClick={handleOpenModal}>
-            <img src={game} className="mr-4 w-20"></img>
+  if (room !== null && room.roomStatus === 'ORDERED') {
+    return (
+      <>
+        <header>
+          <h1 className="text-center text-3xl font-hyemin-bold flex-1">
+            {currentCafe?.name}
+          </h1>
+          <hr className="h-1 border-1 bg-black mb-2 w-full"/>
+        </header>
+        <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold">
+          <div className="my-4 text-center">
+            <p>함께주문하기가 완료된 방입니다.</p>
+          </div>
+          <section className="bg-white m-2 p-10 text-black text-center rounded">
+            <p>&lt;주문내역&gt;</p>
+            {room && room.orderItems && currentCafeMenuList ?
+              room.orderItems.map((item, index) => {
+                const menuLists = [...currentCafeMenuList.menuListCoffee, ...currentCafeMenuList.menuListBeverage, ...currentCafeMenuList.menuListDesert];
+                const match = menuLists.find(menu => menu.id === item.menuId);
+                return match ? <p key={index}>{match.name} X {item.cnt}</p> : null;
+              })
+              : null
+            }
+          </section>
+          <button
+            className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-3xl"
+            onClick={() => navigate('/main')}
+          >
+            확인
           </button>
         </div>
-        <div className="flex justify-center items-center mt-3">
+      </>
+    )
+  } else {
+    return (
+      <>
+        <NavBar/>
+        <div className="flex items-center">
+          {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
           <button
-            onClick={() => console.log("담기")}
-            className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
+            onClick={() => console.log('나가기핸들링')}
+            className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
           >
-            담기버튼
-          </button>
-          <button
-            onClick={() => console.log("주문")}
-            className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
-          >
-            주문하기
+            나가기
           </button>
         </div>
-      </footer>
-      <GameModal
-        isOpen={modalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirm}
-      />
-    </>
-  );
+        <div className="flex items-center">
+          <input
+            ref={inputRef}
+            type="text"
+            className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
+            value={`https://ssafybbap.com/together/${roomId}`}
+            readOnly
+          />
+          <button
+            onClick={handleCopy}
+            className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
+          >
+            <span>공유</span>
+            <img src={share} alt="share icon" className="ml-1"/>
+          </button>
+        </div>
+        <ProductList products={products} deleteOrderItem={deleteOrderItem}/>
+        <footer
+          id="footer"
+          className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
+        >
+          <div className="flex justify-between items-center">
+
+            <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
+            </div>
+            {room && room.currentOrderer === empId && (
+              <button onClick={handleOpenModal}>
+                <img src={game} className="mr-4"/>
+              </button>
+            )}
+          </div>
+          <div className="flex justify-center items-center mt-3">
+            <button
+              onClick={navigateToMenus}
+              className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
+            >
+              담기버튼
+            </button>
+            <button
+              onClick={navigateOrderPage}
+              className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
+            >
+              주문하기
+            </button>
+          </div>
+        </footer>
+        <GameModal
+          isOpen={modalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirm}
+        />
+      </>
+    );
+  }
+
+
 }
 
 export default TogetherOrderPage;
