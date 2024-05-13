@@ -16,12 +16,12 @@ const NoticeItem: React.FC<NoticeProps> = ({ noticeData, handleDelete }) => {
 	const imgSrc: { [key: string]: string } = {
 		결제: "/assets/images/notification/payment.png",
 		카페주문: "/assets/images/notification/cafe.png",
-		함께주문: "/assets/images/notification/game.png",
+		"같이 주문": "/assets/images/notification/game.png",
 		영수증: "/assets/images/notification/receipt.png",
 	};
 	const urlText: { [key: string]: string } = {
 		결제: "결제내역 보러가기",
-		함께주문: "함께주문 보러가기",
+		"같이 주문": "함께주문 보러가기",
 		영수증: "사용내역 보러가기",
 	};
 
