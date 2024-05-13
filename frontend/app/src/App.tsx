@@ -24,6 +24,10 @@ import RoulettePage from "./pages/cafe/togetherorder/RoulettePage";
 import AfterPaymentPage from "./pages/cafe/AfterPaymentPage";
 import WinnerPage from "./pages/cafe/togetherorder/WinnerPage";
 import NotificationPage from "./pages/NotificationPage";
+import TogetherMenuSelector from "./pages/cafe/togetherorder/TogetherMenuSelector.tsx";
+import TogetherMenuDetail from "./pages/cafe/togetherorder/TogetherMenuDetail.tsx";
+import TogetherPayment from "./pages/cafe/togetherorder/TogetherPayment.tsx";
+import TogetherAfterPaymentPage from "./pages/cafe/togetherorder/TogetherAfterPaymentPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -71,8 +75,16 @@ const router = createBrowserRouter([
     element: <MoreDetail />,
   },
   {
-    path: "together",
+    path: "together/:roomId",
     element: <TogetherOrderPage />,
+  },
+  {
+    path: "together/:roomId/menus",
+    element: <TogetherMenuSelector />
+  },
+  {
+    path: "together/:roomId/detail",
+    element: <TogetherMenuDetail />
   },
   {
     path: "detail",
@@ -83,15 +95,23 @@ const router = createBrowserRouter([
     element: <CartPage />,
   },
   {
-    path: "roulette",
+    path: "together/:roomId/roulette",
     element: <RoulettePage />,
+  },
+  {
+    path: "together/:roomId/order",
+    element: <TogetherPayment />,
+  },
+  {
+    path: "together/:roomId/ordered",
+    element: <TogetherAfterPaymentPage />,
   },
   {
     path: "after",
     element: <AfterPaymentPage />,
   },
   {
-    path: "winner/:winner",
+    path: "together/:roomId/winner",
     element: <WinnerPage />,
   },
   {

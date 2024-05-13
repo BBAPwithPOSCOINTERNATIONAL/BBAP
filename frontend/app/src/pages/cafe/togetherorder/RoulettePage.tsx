@@ -1,23 +1,67 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import NavBar from "../../../components/Navbar";
+import useWebSocket from "../../../api/useWebSocket.tsx";
+import {useRoomStore} from "../../../store/roomStore.tsx";
 
-type Name = string[];
+const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
+
+
 
 const RoulettePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [winner, setWinner] = useState<string | null>(null);
+  // const [winner, setWinner] = useState<Employee | null>(null);
   const navigate = useNavigate();
   const [rouletteText, setRouletteText] = useState("돌려 돌려 돌림판"); // 기본 텍스트 설정
+  // const [orderers, setOrderers] = useState<Employee[]>([]);
 
-  const teamNames: Name = [
-    "박영진",
-    "조혜원",
-    "이시은",
-    "강성은",
-    "이성완",
-    "김다희",
-  ];
+
+  const {roomId} = useParams();
+
+  const {
+    room,
+    startGame,
+    runWheel,
+  } = useWebSocket(websocketURL, roomId);
+
+  const {
+    orderers,
+    setOrderers,
+    setWinner
+  } = useRoomStore();
+
+  useEffect(() => {
+    if (room?.roomStatus !== 'GAME_END' && room?.orderers) {
+      const ordererObjs = Object.entries(room.orderers).map(([empNo, empName]) => ({
+        empNo: Number(empNo),
+        empName,
+        isWinner: false
+      }));
+      setOrderers(ordererObjs);
+    } else if (room?.roomStatus === 'GAME_END' && room?.currentOrderer) {
+      const winner = orderers.find((orderer) => orderer.empNo === room?.currentOrderer);
+      winner && setWinner(winner);
+    }
+  }, [room]);
+
+
+
+  useEffect(() => {
+    if (orderers.length > 0) {
+      startGame()
+    }
+  }, [orderers]);
+
+
+
+  // const orderers: Name = [
+  //   "박영진",
+  //   "조혜원",
+  //   "이시은",
+  //   "강성은",
+  //   "이성완",
+  //   "김다희",
+  // ];
 
   const colors = [
     "#dc0936",
@@ -40,10 +84,10 @@ const RoulettePage = () => {
       if (ctx) {
         const cw = canvas.width / 2;
         const ch = canvas.height / 2;
-        const arc = Math.PI / (teamNames.length / 2);
+        const arc = Math.PI / (orderers.length / 2);
 
         // Draw sectors
-        teamNames.forEach((_, i) => {
+        orderers.forEach((_, i) => {
           ctx.beginPath();
           ctx.fillStyle = colors[i % colors.length];
           ctx.moveTo(cw, ch);
@@ -56,7 +100,8 @@ const RoulettePage = () => {
         ctx.font = "18px Pretendard";
         ctx.textAlign = "center";
 
-        teamNames.forEach((name, i) => {
+        orderers.forEach((orderer, i) => {
+          // do other stuff...
           const angle = arc * i + arc / 2;
           ctx.save();
           ctx.translate(
@@ -64,31 +109,31 @@ const RoulettePage = () => {
             ch + Math.sin(angle) * (ch - 50)
           );
           ctx.rotate(angle + Math.PI / 2);
-          ctx.fillText(name, 0, 0);
+          ctx.fillText(orderer.empName, 0, 0); // change here
           ctx.restore();
         });
       }
     }
-  }, []);
+  }, [orderers]);
 
   const rotate = () => {
-    console.log(winner);
     const canvas = canvasRef.current;
     if (canvas) {
-      const randomIndex = Math.floor(Math.random() * teamNames.length);
-      const arc = 360 / teamNames.length;
+      const randomIndex = Math.floor(Math.random() * orderers.length);
+      const arc = 360 / orderers.length;
       const rotateDeg = randomIndex * arc + 3600 + arc * 3 - arc / 1.5;
       canvas.style.transition = "transform 2s";
       canvas.style.transform = `rotate(-${rotateDeg}deg)`;
       setRouletteText("누가 누가 걸릴까");
 
       setTimeout(() => {
-        const selectedWinner = teamNames[randomIndex];
-        setWinner(selectedWinner);
+        // const selectedWinner = orderers[randomIndex];
+        // setWinner(selectedWinner);
+        runWheel()
 
         // 상태 업데이트 후 네비게이션 실행
         setTimeout(() => {
-          navigate(`/winner/${selectedWinner}`);
+          navigate(`/together/${roomId}/winner`);
         }, 1500);
       }, 2000);
     }
@@ -96,7 +141,7 @@ const RoulettePage = () => {
 
   return (
     <div className="flex flex-col items-center relative w-full overflow-hidden">
-      <NavBar />
+      <NavBar/>
       <h1 className="font-hyemin-bold text-4xl my-4">{rouletteText}</h1>
       <canvas
         ref={canvasRef}
@@ -104,7 +149,7 @@ const RoulettePage = () => {
         height="380"
         className="transition duration-3000 my-5"
       ></canvas>
-      <div className="font-hyemin-bold">총 주문 인원 : {teamNames.length}</div>
+      <div className="font-hyemin-bold">총 주문 인원 : {orderers.length}</div>
       <button
         onClick={rotate}
         className="w-1/2 mt-4 bg-primary-color text-white font-hyemin-bold p-3 text-lg font-bold rounded transition duration-200 active:bg-gray-700 active:text-white cursor-pointer"

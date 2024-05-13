@@ -1,36 +1,40 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import CafeTabs from "../../components/cafe/CafeTabs";
 
 import useContentStore from "../../store/contentStore";
 import MyOrderPage from "./myorder/MyOrderPage";
-import { checkOrderRoomParticipation } from "../../api/togetherAPI";
+// import {
+//   createOrderRoom,
+// } from "../../api/togetherAPI";
+
 import AloneOrderPage from "./aloneorder/AloneOrderPage";
 import TogetherCreateRoom from "./togetherorder/TogetherCreateRoom";
 import { useNavigate } from "react-router-dom";
 
 function CafeMainPage() {
+  const navigate = useNavigate();
   const { content, setContent } = useContentStore();
 
-  const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+  // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log(orderRoomInfo);
-    if (content === "together") {
-      const fetchOrderRoomInfo = async () => {
-        try {
-          const response = await checkOrderRoomParticipation();
-          console.log(response.data.roomId);
-          setOrderRoomInfo(response.data.roomId);
-        } catch (error) {
-          console.error("Failed to fetch order room info:", error);
-        }
-      };
-
-      fetchOrderRoomInfo();
-    }
-  }, [content]);
+  // useEffect(() => {
+  //   console.log(orderRoomInfo);
+  //   if (content === "together") {
+  //     const fetchOrderRoomInfo = async () => {
+  //       try {
+  //         const response = await checkOrderRoomParticipation();
+  //         console.log(response.data.roomId);
+  //         setOrderRoomInfo(response.data.roomId);
+  //       } catch (error) {
+  //         console.error("Failed to fetch order room info:", error);
+  //       }
+  //     };
+  //
+  //     fetchOrderRoomInfo();
+  //   }
+  // }, [content]);
 
   const tabs = [
     { key: "alone", label: "혼자주문" },
@@ -38,7 +42,7 @@ function CafeMainPage() {
     { key: "history", label: "나의주문" },
   ];
 
-  // const tabsHeight = 50; // CafeTabs의 높이 추정값
+  const tabsHeight = 50; // CafeTabs의 높이 추정값
 
   const goBack = () => {
     navigate("/");
@@ -52,7 +56,7 @@ function CafeMainPage() {
       <div
         className="sticky top-[55px] z-20 bg-white"
         style={{
-          height: `50px`,
+          height: `${tabsHeight}px`,
           width: "100vw",
           paddingLeft: "5vw",
           paddingRight: "5vw",
@@ -71,7 +75,11 @@ function CafeMainPage() {
             </div>
           </>
         )}
-        {content === "together" && <TogetherCreateRoom />}
+        {content === "together" && (
+          <>
+            <TogetherCreateRoom />
+          </>
+        )}
         {content === "history" && (
           <>
             <MyOrderPage />

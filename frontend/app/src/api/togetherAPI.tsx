@@ -34,9 +34,11 @@ export const checkOrderRoomParticipation =
  * @throws  오류를 반환할 수 있습니다.
  */
 
-export const createOrderRoom = async (): Promise<OrderRoomResponse> => {
+export const createOrderRoom = async (cafeId: string): Promise<OrderRoomResponse> => {
   try {
-    const response = await apiClient.post<OrderRoomResponse>("/order-rooms");
+    const response = await apiClient.post<OrderRoomResponse>("/order-rooms", {
+      cafeId: cafeId,
+    });
     return response.data;
   } catch (error) {
     console.error("Error while creating order room:", error);
