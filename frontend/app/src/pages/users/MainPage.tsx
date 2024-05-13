@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import { useUserStore } from "../../store/userStore";
-import { getMonthlyPayments, PaymentData } from "../../api/paymentsAPI";
+import {
+  getMonthlyPayments,
+  PaymentData,
+  getSubsidy,
+  SubsidyDetails,
+} from "../../api/paymentsAPI";
 import totalpayment from "/assets/images/main/totalpayment.png";
 import totalsubsidy from "/assets/images/main/totalsubsidy.png";
 import yours from "/assets/images/main/yours.png";
@@ -14,6 +19,7 @@ function MainPage() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState("27rem");
+  const [subSidy, setSubSidy] = useState<SubsidyDetails | null>();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +51,6 @@ function MainPage() {
         },
       ]
     : [];
-
   const today = new Date();
 
   const getCurrentDate = () => {
@@ -55,6 +60,20 @@ function MainPage() {
   };
 
   useEffect(() => {
+    const fetchSubsidy = async () => {
+      try {
+        const response = await getSubsidy();
+        setSubSidy(response.data);
+      } catch (error) {
+        console.error("Failed to fetch payment data:", error);
+        setIsLoading(true);
+      }
+    };
+
+    fetchSubsidy();
+  }, []);
+
+  useEffect(() => {
     const fetchPayments = async () => {
       try {
         const response = await getMonthlyPayments(getCurrentDate());
@@ -62,28 +81,20 @@ function MainPage() {
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch payment data:", error);
-        setIsLoading(false);
+        setIsLoading(true);
       }
     };
 
     fetchPayments();
   }, []);
 
-  const changeCarousel = (newIndex: number) => {
-    setCarouselIndex(newIndex % carouselItems.length);
-  };
-
-  const handleNext = () => {
-    changeCarousel(carouselIndex + 1);
-  };
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      changeCarousel(carouselIndex + 1);
+    const interval = setInterval(() => {
+      setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
     }, 3000);
 
-    return () => clearInterval(timer);
-  }, [carouselIndex, carouselItems.length]);
+    return () => clearInterval(interval);
+  }, [carouselItems.length]);
 
   if (isLoading) {
     return <Loading />;
@@ -94,38 +105,34 @@ function MainPage() {
       <NavBar />
       <div className="p-4">
         <div className="text-center mt-2">
-          {userInfo && userInfo.empName ? (
-            <h1 className="text-4xl font-hyemin-bold text-white">
-              {userInfo.empName} 님의 {today.getMonth() + 1}월
-            </h1>
-          ) : (
-            <h1 className="text-4xl font-hyemin-bold text-white">
-              Loading or error...
-            </h1>
-          )}
-          <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
-          <div
-            className="mt-4 w-full bg-amber-50 rounded-lg z-0"
-            style={{ height: dynamicHeight }}
-            onTouchStart={handleNext}
-          >
-            <div className="z-10 pt-14">
-              {paymentData && carouselItems.length > 0 && (
-                <>
-                  <div className="text-4xl font-hyemin-bold mb-8">
-                    {carouselItems[carouselIndex].label}
-                  </div>
+          <h1 className="text-2xl font-hyemin-bold text-white">
+            {userInfo.empName} 님의 {new Date().getMonth() + 1}월
+          </h1>
+          <p className="text-2xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
+          <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0">
+            <div className="flex items-center">
+              {carouselItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="w-1/3 text-center flex flex-col items-center"
+                >
+                  <p>{item.label}</p>
                   <img
-                    src={carouselItems[carouselIndex].picture}
-                    alt="Carousel Image"
-                    className="h-40 mb-8 mx-auto"
+                    src={item.picture}
+                    alt={item.label}
+                    className="w-16 h-16"
                   />
-                  <p className="text-4xl font-hyemin-bold text-primary-color">
-                    {carouselItems[carouselIndex].value}
-                  </p>
-                </>
-              )}
+                  <p>{item.value}</p>
+                </div>
+              ))}
             </div>
+          </div>
+          <div className="text-xl font-hyemin-bold text-white mt-4">
+            <p>현재 {userInfo.empName}님이 </p>
+            <p className="text-2xl">사용가능한 지원금</p>{" "}
+          </div>
+          <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0 h-40">
+            {subSidy?.availSubsidy}원
           </div>
         </div>
       </div>
