@@ -7,6 +7,7 @@ import totalpayment from "/assets/images/main/totalpayment.png";
 import totalsubsidy from "/assets/images/main/totalsubsidy.png";
 import yours from "/assets/images/main/yours.png";
 import Loading from "../../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 function MainPage() {
   const userInfo = useUserStore((state) => state);
@@ -88,10 +89,15 @@ function MainPage() {
   if (isLoading) {
     return <Loading />;
   }
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden pb-16">
-      <NavBar />
+      <NavBar goBack={goBack} />
       <div className="p-4">
         <div className="text-center mt-2">
           {userInfo && userInfo.empName ? (

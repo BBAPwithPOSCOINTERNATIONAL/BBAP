@@ -15,6 +15,7 @@ import unactivenext from "/assets/images/button/unactivenext.png";
 import Loading from "../components/Loading";
 import { IoMdPerson } from "react-icons/io";
 import Nodata from "../components/nodata";
+import { useNavigate } from "react-router-dom";
 
 function RestaurantMainPage() {
   const [restaurant, setRestaurant] = useState<number>(0);
@@ -25,6 +26,7 @@ function RestaurantMainPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [canGoBack, setCanGoBack] = useState<boolean>(true);
   const [canGoForward, setCanGoForward] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -166,10 +168,14 @@ function RestaurantMainPage() {
     return <Loading />;
   }
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="flex flex-col min-h-screen pb-20">
       <div className="sticky top-0 bg-white ">
-        <NavBar />
+        <NavBar goBack={goBack} />
         <div className="flex flex-col items-center justify-center">
           <select
             className="font-hyemin-bold bg-blue-200 w-11/12 text-lg h-9 text-center rounded-md mt-2"

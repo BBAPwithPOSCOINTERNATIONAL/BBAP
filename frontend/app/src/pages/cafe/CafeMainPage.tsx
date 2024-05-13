@@ -7,11 +7,13 @@ import MyOrderPage from "./myorder/MyOrderPage";
 import { checkOrderRoomParticipation } from "../../api/togetherAPI";
 import AloneOrderPage from "./aloneorder/AloneOrderPage";
 import TogetherCreateRoom from "./togetherorder/TogetherCreateRoom";
+import { useNavigate } from "react-router-dom";
 
 function CafeMainPage() {
   const { content, setContent } = useContentStore();
 
   const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(orderRoomInfo);
@@ -38,10 +40,13 @@ function CafeMainPage() {
 
   // const tabsHeight = 50; // CafeTabs의 높이 추정값
 
+  const goBack = () => {
+    navigate("/");
+  };
   return (
     <div>
       <div className="sticky top-0 z-30 bg-white" style={{ height: "50px" }}>
-        <NavBar />
+        <NavBar goBack={goBack} />
       </div>
 
       <div

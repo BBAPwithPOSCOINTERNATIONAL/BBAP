@@ -118,6 +118,10 @@ function MenuDetailPage() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const navBarHeight = 50; // NavBar의 높이 추정값
   return (
     <div>
@@ -125,7 +129,7 @@ function MenuDetailPage() {
         className="sticky top-0 z-30 bg-white"
         style={{ height: `${navBarHeight}px` }}
       >
-        <NavBar />
+        <NavBar goBack={goBack} />
       </div>
 
       {selectedItem && (

@@ -141,7 +141,7 @@ function CartPage() {
   };
 
   const handleAddMoreItems = () => {
-    navigate(-1);
+    navigate("main");
   };
 
   return (

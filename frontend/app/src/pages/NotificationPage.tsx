@@ -2,11 +2,11 @@ import React from "react";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import {
-	deleteAllNotificationData,
-	deleteNotificationData,
+  deleteAllNotificationData,
+  deleteNotificationData,
 } from "../api/notificationAPI";
 import NoticeItem from "../components/NoticeItem";
-import useNoticeStore from '../store/noticeStore';
+import useNoticeStore from "../store/noticeStore";
 
 /* 
 알림종류
@@ -18,51 +18,51 @@ import useNoticeStore from '../store/noticeStore';
 */
 
 const NotificationPage: React.FC = () => {
-	const { noticeList, deleteNotice, deleteAllNotices } = useNoticeStore();
-	const navigate = useNavigate();
-	const goBack = () => {
-		navigate(-1);
-	};
+  const { noticeList, deleteNotice, deleteAllNotices } = useNoticeStore();
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
 
-	const handleDeleteAllNotification = async () => {
-		await deleteAllNotificationData();
-		deleteAllNotices();
-	};
+  const handleDeleteAllNotification = async () => {
+    await deleteAllNotificationData();
+    deleteAllNotices();
+  };
 
-	const handleDeleteNotification = async (noticeId: number) => {
-		await deleteNotificationData(noticeId);
-		deleteNotice(noticeId);
-	};
+  const handleDeleteNotification = async (noticeId: number) => {
+    await deleteNotificationData(noticeId);
+    deleteNotice(noticeId);
+  };
 
-	return (
-		<>
-			<div id="header" className="flex mt-2">
-				<button onClick={goBack} className="absolute p-1">
-					<FiArrowLeftCircle className="text-4xl cursor-pointer text-primary-color" />
-				</button>
-				<p className="text-3xl font-bold mx-auto">알림</p>
-			</div>
-			<div className="flex justify-end">
-				<button
-					className="border border-2 border-black rounded-lg w-24 text-center font-bold mx-3 p-1"
-					onClick={handleDeleteAllNotification}
-				>
-					모두 지우기
-				</button>
-			</div>
-			<div id="body">
-				{/* {isLoading && <p>로딩중...</p>}
+  return (
+    <>
+      <div id="header" className="flex mt-2">
+        <button onClick={goBack} className="absolute p-1">
+          <FiArrowLeftCircle className="text-4xl cursor-pointer text-primary-color" />
+        </button>
+        <p className="text-3xl font-bold mx-auto">알림</p>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="border border-2 border-black rounded-lg w-24 text-center font-bold mx-3 p-1"
+          onClick={handleDeleteAllNotification}
+        >
+          모두 지우기
+        </button>
+      </div>
+      <div id="body">
+        {/* {isLoading && <p>로딩중...</p>}
 				{isError && <p>데이터 요청 실패</p>} */}
-				{noticeList?.map((notice, index) => (
-					<NoticeItem
-						key={index}
-						noticeData={notice}
-						handleDelete={handleDeleteNotification}
-					/>
-				))}
-			</div>
-		</>
-	);
+        {noticeList?.map((notice, index) => (
+          <NoticeItem
+            key={index}
+            noticeData={notice}
+            handleDelete={handleDeleteNotification}
+          />
+        ))}
+      </div>
+    </>
+  );
 };
 
 export default NotificationPage;

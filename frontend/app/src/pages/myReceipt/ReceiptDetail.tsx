@@ -57,11 +57,15 @@ function ReceiptDetail() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const formattedDate = date ? format(new Date(date), "M월 d일") : "";
 
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar />
+      <NavBar goBack={goBack} />
       <div className="flex-grow flex flex-col items-center justify-start my-16 ">
         {/* 카드 형식으로 각각의 카드를 렌더링 */}
         {sortedPayments.map((payment, index) => (

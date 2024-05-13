@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { OrderDetailResponse } from "../../../api/orderAPI";
-
 import closeimg from "/assets/images/button/close.png";
 
 const DetailModal = ({
@@ -34,18 +33,16 @@ const DetailModal = ({
 
   const formatDate = (isoString: Date) => {
     const date = new Date(isoString);
-    return (
-      date
-        .toLocaleString("ko-KR", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        })
-        // .replace(/\./g, "-")
-        .replace(/ /g, "")
-        .replace(/:/g, ":")
-    );
-    // .slice(0, -3); // 초 단위 제거
+    let dateString = date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    // 마지막 점(.) 제거
+    if (dateString.endsWith(".")) {
+      dateString = dateString.slice(0, -1);
+    }
+    return dateString.replace(/ /g, "").replace(/:/g, ":");
   };
 
   const formatTime = (isoString: Date) => {
@@ -70,39 +67,32 @@ const DetailModal = ({
         <div>
           <h2 className="text-3xl text-center">{order.data.cafeName}</h2>
           <p className="text-[12px] text-center my-1">
-            주문일 : {formatDate(order.data.orderTime)} / 주문시간 :
+            주문일: {formatDate(order.data.orderTime)} / 주문시간:{" "}
             {formatTime(order.data.orderTime)}
           </p>
-            <hr className="h-1 bg-[#bbc6dd] mb-5 w-11/12 m-auto rounded-lg" />
+          <hr className="h-1 bg-[#bbc6dd] mb-5 w-11/12 m-auto rounded-lg" />
         </div>
         {/* 중간 */}
-        <div className="grow">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              backgroundColor: "#afc2eb",
-              height: "3rem",
-              alignItems: "center",
-              padding: "15px",
-              borderRadius: "7px",
-            }}
-          >
-            {order.data.menuList.map((item, idx) => (
-              <div key={idx}>
-                <span>{item.menuName} X {item.menuCnt}</span>
-                <span>  {item.menuPrice.toLocaleString()} 원</span>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col grow gap-2">
+          {order.data.menuList.map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-[#afc2eb] p-2 rounded-lg flex justify-between items-center"
+            >
+              <span className="font-semibold">
+                {item.menuName} x {item.menuCnt}
+              </span>
+              <span>{item.menuPrice.toLocaleString()} 원</span>
+            </div>
+          ))}
         </div>
         {/* 하단 */}
         <div>
           <button
             onClick={onClose}
-            className=" block mx-auto  font-bold py-2 px-4 rounded "
+            className="block mx-auto font-bold py-2 px-4 rounded"
           >
-            <img src={closeimg} className="w-10 " />
+            <img src={closeimg} className="w-10" alt="close" />
           </button>
         </div>
       </div>

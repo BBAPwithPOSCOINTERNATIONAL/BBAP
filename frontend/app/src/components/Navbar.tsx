@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import bbapimg from "/assets/images/bbap.png";
 import bbaphomeimg from "/assets/images/bbaphome.png";
@@ -8,7 +8,11 @@ import bell from "/assets/images/bell.png";
 
 import useNoticeStore from "../store/noticeStore";
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  goBack: () => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ goBack }) => {
   const { noticeList } = useNoticeStore();
   const location = useLocation();
 
@@ -25,11 +29,6 @@ const NavBar: React.FC = () => {
       setNavBarHeight(navBarRef.current.clientHeight);
     }
   }, []);
-
-  const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  };
 
   return (
     <>
