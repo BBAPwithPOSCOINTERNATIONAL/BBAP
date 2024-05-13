@@ -144,7 +144,7 @@ const AloneOrderPage: React.FC = () => {
         handleCafeSelect={handleCafeSelect}
       />
       <div className=" sticky top-[141px] z-20 bg-white">
-        <CafeCoupon orderCount={10} couponCount={couponCnt} />
+        <CafeCoupon couponCount={couponCnt} />
         <div className="flex mt-1">
           <MenuButtons
             selectedMenu={selectedMenu}

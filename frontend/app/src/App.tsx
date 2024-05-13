@@ -6,7 +6,7 @@ import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 // Firebase 사용하려면 아래 주석해제 해야함
 import "./service/initFirebase.ts";
-import "./service/foregroundMessage.js";
+import NotificationListener from './service/foregroundMessage.ts';
 
 // Page들
 import LoginPage from "./pages/users/LoginPage";
@@ -105,6 +105,7 @@ function App() {
     <>
       <div>
         <QueryClientProvider client={queryClient}>
+          <NotificationListener />
           <RouterProvider router={router} />
         </QueryClientProvider>
       </div>

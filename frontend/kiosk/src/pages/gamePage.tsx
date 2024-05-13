@@ -120,7 +120,7 @@ const GamePage: React.FC = () => {
 			<Header text="내기하기" className="" />
 			<div className="text-lg font-bold text-center my-7">
 				{selectedPoint ? (
-					<p className="text-orange-700 text-[60px] bg-blue-100">
+					<p className="text-orange-700 text-2xl">
 						오늘 카페는 {selectedPoint.id}번이 쏜다!!!
 					</p>
 				) : (

@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FiArrowLeftCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import {
 	deleteAllNotificationData,
 	deleteNotificationData,
-	fetchNotificationData,
-	Notice,
 } from "../api/notificationAPI";
 import NoticeItem from "../components/NoticeItem";
+import useNoticeStore from '../store/noticeStore';
 
 /* 
 알림종류
@@ -18,45 +16,22 @@ import NoticeItem from "../components/NoticeItem";
 3. 함께주문 -> 내가 들어간 주문 방에서 게임이 시작될 때, 결제자로 선택되었을 때, 주문이 되었을 때 알림
 4. 영수증 -> 한달의 끝에 알림
 */
-const dummyNoticeList: Notice[] = [];
 
 const NotificationPage: React.FC = () => {
+	const { noticeList, deleteNotice, deleteAllNotices } = useNoticeStore();
 	const navigate = useNavigate();
 	const goBack = () => {
 		navigate(-1);
 	};
 
-	const [noticeList, setNoticeList] = useState<Notice[] | undefined>();
-
-	const {
-		data: response,
-		// isLoading,
-		// isError,
-	} = useQuery({
-		queryKey: ["notificationData"],
-		queryFn: fetchNotificationData,
-	});
-
-	useEffect(() => {
-		if (response) {
-			const reversedData = [...response.data.noticeList].reverse();
-			setNoticeList(reversedData);
-		} else {
-			// 더미 데이터 사용
-			setNoticeList(dummyNoticeList);
-		}
-	}, [response]);
-
 	const handleDeleteAllNotification = async () => {
-		const response = await deleteAllNotificationData();
-		const reversedData = [...response.data.noticeList].reverse();
-		setNoticeList(reversedData);
+		await deleteAllNotificationData();
+		deleteAllNotices();
 	};
 
 	const handleDeleteNotification = async (noticeId: number) => {
-		const response = await deleteNotificationData(noticeId);
-		const reversedData = [...response.data.noticeList].reverse();
-		setNoticeList(reversedData);
+		await deleteNotificationData(noticeId);
+		deleteNotice(noticeId);
 	};
 
 	return (

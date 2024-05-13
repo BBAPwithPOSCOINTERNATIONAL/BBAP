@@ -6,7 +6,10 @@ import bbapimg from "/assets/images/bbap.png";
 import bbaphomeimg from "/assets/images/bbaphome.png";
 import bell from "/assets/images/bell.png";
 
+import useNoticeStore from '../store/noticeStore';
+
 const NavBar: React.FC = () => {
+  const { noticeList } = useNoticeStore();
   const location = useLocation();
 
   // MainPage에서만 타이틀과 알람 표시
@@ -62,6 +65,9 @@ const NavBar: React.FC = () => {
           <Link to="/notification">
             {" "}
             <img src={bell} className="text-2xl cursor-pointer h-8" />
+            {noticeList.length > 0 && (
+              <span className="absolute top-3 right-3 block h-3.5 w-3.5 rounded-full bg-red-500"></span>
+            )}
           </Link>
         </div>
       </div>

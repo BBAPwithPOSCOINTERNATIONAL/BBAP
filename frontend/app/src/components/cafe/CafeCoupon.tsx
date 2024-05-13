@@ -1,14 +1,10 @@
 import React from "react";
 
 interface CafeCouponStatusProps {
-  orderCount: number;
   couponCount: number;
 }
 
-const CafeCoupon: React.FC<CafeCouponStatusProps> = ({
-  orderCount,
-  couponCount,
-}) => {
+const CafeCoupon: React.FC<CafeCouponStatusProps> = ({ couponCount }) => {
   // 계산된 쿠폰 수와 스탬프 수
   const coupons = Math.floor(couponCount / 10);
   const stamps = couponCount % 10;

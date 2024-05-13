@@ -110,7 +110,7 @@ function CartPage() {
           })),
         })),
       })),
-      cntCouponToUse: couponCount * 10,
+      cntCouponToUse: couponCount,
     };
 
     try {
