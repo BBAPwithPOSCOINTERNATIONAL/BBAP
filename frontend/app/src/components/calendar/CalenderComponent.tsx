@@ -34,20 +34,7 @@ const RenderHeader: React.FC<RenderHeaderProps> = ({
   data,
 }: RenderHeaderProps) => {
   return (
-    <div
-      className="font-hyemin-bold"
-      style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        padding: "1rem",
-        width: "100vw",
-        height: "18vh",
-        backgroundColor: "#EFF7FF",
-        boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
-        position: "fixed",
-        gap: "0.7rem",
-      }}
-    >
+    <div className="font-hyemin-bold flex justify-start p-4 w-full bg-[#EFF7FF] shadow-md fixed gap-1.75 z-10">
       <div>
         <div className="flex gap-12 mb-1 text-xl items-center justify-start">
           <img src={back} onClick={prevMonth} className="h-5 pl-2" />
