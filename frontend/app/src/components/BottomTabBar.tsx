@@ -11,11 +11,13 @@ function BottomTabBar() {
   const location = useLocation();
 
   const getImage = (
-    path: string,
+    paths: string[],
     defaultImg: string,
     activeImg: string
   ): string => {
-    return location.pathname === path ? activeImg : defaultImg;
+    return paths.some((path) => location.pathname.startsWith(path))
+      ? activeImg
+      : defaultImg;
   };
 
   return (
@@ -48,7 +50,7 @@ function BottomTabBar() {
                 className="flex flex-col items-center justify-center text-sm"
               >
                 <img
-                  src={getImage("/restaurantmain", res, resClick)}
+                  src={getImage(["/restaurantmain"], res, resClick)}
                   alt="restaurant"
                   className="w-8"
                 />
@@ -61,7 +63,11 @@ function BottomTabBar() {
                 className="flex flex-col items-center justify-center text-sm"
               >
                 <img
-                  src={getImage("/receipt", receipts, receiptsClick)}
+                  src={getImage(
+                    ["/receipt", "/receiptDetail", "/moredetail"],
+                    receipts,
+                    receiptsClick
+                  )}
                   alt="receipts"
                   className="w-8"
                 />
@@ -74,7 +80,7 @@ function BottomTabBar() {
                 className="flex flex-col items-center justify-center text-sm"
               >
                 <img
-                  src={getImage("/profile", myprofile, myprofileClick)}
+                  src={getImage(["/profile"], myprofile, myprofileClick)}
                   alt="myprofile"
                   className="w-8"
                 />

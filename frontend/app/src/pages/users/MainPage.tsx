@@ -15,6 +15,7 @@ function MainPage() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [dynamicHeight, setDynamicHeight] = useState("27rem");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,7 +90,6 @@ function MainPage() {
   if (isLoading) {
     return <Loading />;
   }
-  const navigate = useNavigate();
 
   const goBack = () => {
     navigate(-1);

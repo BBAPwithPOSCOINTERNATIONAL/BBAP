@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
@@ -21,9 +21,14 @@ function ReceiptDetail() {
     ? format(new Date(payments.paymentDate), "yyyy년 MM월 dd일 HH:mm:ss")
     : "";
 
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="flex flex-col min-h-screen relative text-center items-center">
-      <NavBar />
+      <NavBar goBack={goBack} />
       <img
         src={receipt}
         alt="영수증 이미지"
