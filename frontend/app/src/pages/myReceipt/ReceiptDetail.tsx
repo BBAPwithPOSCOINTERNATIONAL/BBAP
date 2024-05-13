@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import question from "/assets/images/button/question.png";
@@ -62,7 +62,7 @@ function ReceiptDetail() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="flex-grow flex flex-col items-center justify-start my-20">
+      <div className="flex-grow flex flex-col items-center justify-start my-16 ">
         {/* 카드 형식으로 각각의 카드를 렌더링 */}
         {sortedPayments.map((payment, index) => (
           <div
@@ -114,7 +114,6 @@ function ReceiptDetail() {
       {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
       <img
         src={question}
-        
         alt="지원금 모달"
         className="fixed bottom-[65px] right-0 mb-4 mr-2 cursor-pointer"
         onClick={handleQuestionClick}
