@@ -110,9 +110,16 @@ const PaymentFacePage: React.FC = () => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
     if (context && videoRef.current) {
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const width = videoRef.current.videoWidth;
+      const height = videoRef.current.videoHeight;
+      const centerX = width * 0.25;
+      const centerY = height * 0.25;
+      const rectWidth = width * 0.5;
+      const rectHeight = height * 0.7;
+
+      canvas.width = rectWidth;
+      canvas.height = rectHeight;
+      context.drawImage(videoRef.current, centerX, centerY, rectWidth, rectHeight, 0, 0, rectWidth, rectHeight);
 
       // Convert data URL to file
       canvas.toBlob((blob) => {
