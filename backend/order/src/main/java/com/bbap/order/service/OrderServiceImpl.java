@@ -88,6 +88,10 @@ public class OrderServiceImpl implements OrderService {
 		if (dto.getPickUpTime().isBefore(LocalDateTime.now())) {
 			throw new BadOrderRequestException();
 		}
+		
+		//주문 메뉴 체크
+		if (dto.getMenuList().isEmpty())
+			throw new BadOrderRequestException();
 
 		Stamp stamp = stampRepository.findByEmpIdAndCafeId(empId, dto.getCafeId()).orElse(null);
 		//스탬프 조회와 개수 확인
