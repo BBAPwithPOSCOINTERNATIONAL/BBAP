@@ -3,16 +3,29 @@ import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import { useUserStore } from "../../store/userStore";
 import { getMonthlyPayments, PaymentData } from "../../api/paymentsAPI";
-// <a href="https://www.flaticon.com/kr/free-icons/-" title="신용 카드 결제 아이콘">신용 카드 결제 아이콘 제작자: SBTS2018 - Flaticon</a>
 import totalpayment from "/assets/images/main/totalpayment.png";
-// <a href="https://www.flaticon.com/kr/free-icons/" title="돈 아이콘">돈 아이콘 제작자: monkik - Flaticon</a>
 import totalsubsidy from "/assets/images/main/totalsubsidy.png";
 import yours from "/assets/images/main/yours.png";
+import Loading from "../../components/Loading";
 
 function MainPage() {
   const userInfo = useUserStore((state) => state);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dynamicHeight, setDynamicHeight] = useState("27rem");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newHeight = window.innerHeight <= 770 ? "27rem" : "30rem";
+      setDynamicHeight(newHeight);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const carouselItems = paymentData
     ? [
         {
@@ -46,27 +59,41 @@ function MainPage() {
       try {
         const response = await getMonthlyPayments(getCurrentDate());
         setPaymentData(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch payment data:", error);
+        setIsLoading(false);
       }
     };
 
     fetchPayments();
   }, []);
 
+  const changeCarousel = (newIndex: number) => {
+    setCarouselIndex(newIndex % carouselItems.length);
+  };
+
+  const handleNext = () => {
+    changeCarousel(carouselIndex + 1);
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, 3000); // Rotate every 3 seconds
+      changeCarousel(carouselIndex + 1);
+    }, 3000);
 
     return () => clearInterval(timer);
-  }, [carouselItems.length]);
+  }, [carouselIndex, carouselItems.length]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-color overflow-hidden pb-16">
       <NavBar />
       <div className="p-4">
-        <div className="text-center mt-4">
+        <div className="text-center mt-2">
           {userInfo && userInfo.empName ? (
             <h1 className="text-4xl font-hyemin-bold text-white">
               {userInfo.empName} 님의 {today.getMonth() + 1}월
@@ -79,18 +106,19 @@ function MainPage() {
           <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
           <div
             className="mt-4 w-full bg-amber-50 rounded-lg z-0"
-            style={{ height: "30rem" }}
+            style={{ height: dynamicHeight }}
+            onTouchStart={handleNext}
           >
             <div className="z-10 pt-14">
               {paymentData && carouselItems.length > 0 && (
                 <>
-                  <div className="text-5xl font-hyemin-bold mb-6">
+                  <div className="text-4xl font-hyemin-bold mb-8">
                     {carouselItems[carouselIndex].label}
                   </div>
                   <img
                     src={carouselItems[carouselIndex].picture}
                     alt="Carousel Image"
-                    className="h-40 mb-6 mx-auto"
+                    className="h-40 mb-8 mx-auto"
                   />
                   <p className="text-4xl font-hyemin-bold text-primary-color">
                     {carouselItems[carouselIndex].value}

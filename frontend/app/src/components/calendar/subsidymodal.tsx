@@ -34,7 +34,7 @@ const Modal = ({ onClose }: { onClose: () => void }) => {
       className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30"
       onClick={onClose}
     >
-      <div className="p-7 rounded-lg bg-slate-100" >
+      <div className="p-7 rounded-lg bg-slate-100">
         <h2 className="text-xl font-hyemin-bold mb-4 text-center">
           나의 지원금
         </h2>

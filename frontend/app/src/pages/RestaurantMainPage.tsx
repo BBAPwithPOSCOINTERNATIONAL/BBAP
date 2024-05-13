@@ -12,7 +12,7 @@ import back from "/assets/images/button/back.png";
 import unactiveback from "/assets/images/button/unactiveback.png";
 import next from "/assets/images/button/next.png";
 import unactivenext from "/assets/images/button/unactivenext.png";
-// import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Loading";
 import { IoMdPerson } from "react-icons/io";
 import Nodata from "../components/nodata";
 
@@ -25,6 +25,8 @@ function RestaurantMainPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [canGoBack, setCanGoBack] = useState<boolean>(true);
   const [canGoForward, setCanGoForward] = useState<boolean>(true);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const today = new Date();
   const options: Intl.DateTimeFormatOptions = {
@@ -39,6 +41,7 @@ function RestaurantMainPage() {
   const [selectedDay, setSelectedDay] = useState<string>(dayOfWeekString);
 
   const rendering = async (restaurantId: number) => {
+    setIsLoading(true);
     try {
       const result = await fetchRestaurantData(restaurantId);
 
@@ -55,6 +58,7 @@ function RestaurantMainPage() {
     } catch (error) {
       console.error("식당 리스트 요청 실패", error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -158,100 +162,106 @@ function RestaurantMainPage() {
     }
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen pb-20">
-      <NavBar />
-      <div className="flex flex-col items-center justify-center">
-        <select
-          className="font-hyemin-bold bg-blue-200 w-11/12 text-lg h-9 text-center rounded-md mt-2"
-          value={restaurant}
-          onChange={(e) => {
-            setRestaurant(parseInt(e.target.value));
-            rendering(parseInt(e.target.value));
-            //식당 선택 시 로컬스토리지에 저장
-            localStorage.setItem("restaurantId", e.target.value);
-          }}
-        >
-          {restaurantList?.map((r) => (
-            <option key={r.restaurantId} value={r.restaurantId}>
-              {r.restaurantName}({r.workplaceName})
-            </option>
-          ))}
-        </select>
-
-        <hr className=" w-full mt-2" />
-        <div className="flex w-full justify-between px-4">
-          {/* 이전 주로 가는 버튼 */}
-          <button onClick={goToPreviousWeek} disabled={!canGoBack}>
-            {canGoBack ? (
-              <img src={back} alt="Back Button" />
-            ) : (
-              <img src={unactiveback} alt="Inactive Back Button" />
-            )}
-          </button>
-          {/* 월화수목금토일 */}
-          <div className="flex justify-center my-2 w-full px-2">
-            {weekDates.map((date, index) => {
-              const isActive = date === selectedDay;
-              return (
-                <button
-                  key={index}
-                  onClick={() => {
-                    console.log(date);
-                    setSelectedDay(date);
-                  }}
-                  className={`w-1/6 text-xs font-bold  px-1 rounded text-center ${
-                    isActive
-                      ? "border-2 border-blue-500"
-                      : "border border-transparent"
-                  } hover:border-black ${
-                    date.split("\n")[0].includes("토")
-                      ? "text-blue-500"
-                      : date.split("\n")[0].includes("일")
-                      ? "text-red-500"
-                      : ""
-                  }`}
-                >
-                  <span className="block">{date.split("\n")[0]}</span>
-                  <span className="block">{date.split("\n")[1]}</span>
-                </button>
-              );
-            })}
-          </div>
-          {/* 다음주로가는 버튼 */}
-          <button onClick={goToNextWeek} disabled={!canGoForward}>
-            {canGoForward ? (
-              <img src={next} alt="Back Button" />
-            ) : (
-              <img src={unactivenext} alt="Inactive Back Button" />
-            )}
-          </button>
-        </div>
-        <hr className="w-full" />
-      </div>
-      {/* 아침/점심/저녁/도시락 */}
-      <div className="mx-1 flex flex-wrap justify-start">
-        {mealTypes.map((type) => (
-          <button
-            key={type}
-            onClick={() => {
-              setMealType(type);
+      <div className="sticky top-0 bg-white ">
+        <NavBar />
+        <div className="flex flex-col items-center justify-center">
+          <select
+            className="font-hyemin-bold bg-blue-200 w-11/12 text-lg h-9 text-center rounded-md mt-2"
+            value={restaurant}
+            onChange={(e) => {
+              setRestaurant(parseInt(e.target.value));
+              rendering(parseInt(e.target.value));
+              //식당 선택 시 로컬스토리지에 저장
+              localStorage.setItem("restaurantId", e.target.value);
             }}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            className={`m-1 font-hyemin-bold py-2 px-1 rounded-full w-16 h-8 ${
-              mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
-            }`}
           >
-            {mealTypeDisplayNames[type]}
-          </button>
-        ))}
+            {restaurantList?.map((r) => (
+              <option key={r.restaurantId} value={r.restaurantId}>
+                {r.restaurantName}({r.workplaceName})
+              </option>
+            ))}
+          </select>
+
+          <hr className=" w-full mt-2" />
+          <div className="flex w-full justify-between px-4">
+            {/* 이전 주로 가는 버튼 */}
+            <button onClick={goToPreviousWeek} disabled={!canGoBack}>
+              {canGoBack ? (
+                <img src={back} alt="Back Button" />
+              ) : (
+                <img src={unactiveback} alt="Inactive Back Button" />
+              )}
+            </button>
+            {/* 월화수목금토일 */}
+            <div className="flex justify-center my-2 w-full px-2">
+              {weekDates.map((date, index) => {
+                const isActive = date === selectedDay;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      console.log(date);
+                      setSelectedDay(date);
+                    }}
+                    className={`w-1/6 text-xs font-bold  px-1 rounded text-center ${
+                      isActive
+                        ? "border-2 border-blue-500"
+                        : "border border-transparent"
+                    } hover:border-black ${
+                      date.split("\n")[0].includes("토")
+                        ? "text-blue-500"
+                        : date.split("\n")[0].includes("일")
+                        ? "text-red-500"
+                        : ""
+                    }`}
+                  >
+                    <span className="block">{date.split("\n")[0]}</span>
+                    <span className="block">{date.split("\n")[1]}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {/* 다음주로가는 버튼 */}
+            <button onClick={goToNextWeek} disabled={!canGoForward}>
+              {canGoForward ? (
+                <img src={next} alt="Back Button" />
+              ) : (
+                <img src={unactivenext} alt="Inactive Back Button" />
+              )}
+            </button>
+          </div>
+          <hr className="w-full" />
+        </div>
+        {/* 아침/점심/저녁/도시락 */}
+        <div className="mx-1 flex flex-wrap justify-start">
+          {mealTypes.map((type) => (
+            <button
+              key={type}
+              onClick={() => {
+                setMealType(type);
+              }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              className={`m-1 font-hyemin-bold py-2 px-1 rounded-full w-16 h-8 ${
+                mealType === type ? "bg-[#739DB5] text-white" : "bg-[#E2F1FF]"
+              }`}
+            >
+              {mealTypeDisplayNames[type]}
+            </button>
+          ))}
+        </div>
+        <hr className="h-2 w-full" />
       </div>
-      <hr className="h-2 w-full" />
       {/* 메뉴카드들 */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-[20px] px-2">
         {menus.length > 0 ? (

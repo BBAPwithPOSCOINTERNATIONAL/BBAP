@@ -65,7 +65,7 @@ function BottomTabBar() {
                   alt="receipts"
                   className="w-8"
                 />
-                내영수증
+                사용내역
               </Link>
             </li>
             <li className="active:scale-95 active:bg-gray-400 p-2 rounded-lg transition duration-150 ease-in-out font-hyemin-bold">

@@ -35,7 +35,7 @@ const NavBar: React.FC = () => {
     <>
       <div
         ref={navBarRef}
-        className="fixed top-0 left-0 right-0 z-50 bg-primary-color text-black p-3 flex justify-between items-center overflow-hidden"
+        className="fixed top-0 left-0 right-0 z-0 bg-primary-color text-black p-3 flex justify-between items-center overflow-hidden"
       >
         <div className="text-left flex items-center space-x-4">
           {/* MainPage가 아닐 때 뒤로가기와 홈 버튼 표시 */}
