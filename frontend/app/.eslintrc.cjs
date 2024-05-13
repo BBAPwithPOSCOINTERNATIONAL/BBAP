@@ -18,12 +18,15 @@ module.exports = {
   settings: {
     react: {
       version: "detect", // React 버전 자동 감지
+      runtime: "automatic",
     },
   },
   rules: {
+    "react/react-in-jsx-scope": "off",
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
     ],
+    "react/prop-types": "off",
   },
 };
