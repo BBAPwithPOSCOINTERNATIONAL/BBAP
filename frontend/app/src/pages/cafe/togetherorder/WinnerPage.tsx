@@ -2,15 +2,22 @@ import NavBar from "../../../components/Navbar";
 import {useRoomStore} from "../../../store/roomStore.tsx";
 import {useEffect, useState} from "react";
 import {Employee} from "../../../store/roomStore.tsx";
+import {useNavigate, useParams} from "react-router-dom";
 
 function WinnerPage() {
   const [penaltyWinner, setPenaltyWinner] = useState<Employee>()
   const [nonWinners, setNonWinners] = useState<Employee[]>([])
 
+  const navigate = useNavigate();
+  const {roomId} = useParams();
 
   const {
     orderers,
   } = useRoomStore();
+
+  const navigateToOrderRoom = () => {
+    navigate(`/together/${roomId}`)
+  }
 
   useEffect(() => {
     const penaltyWinner = orderers.find((orderer) => orderer.isWinner);
@@ -37,7 +44,10 @@ function WinnerPage() {
             {item.empName} 님
           </div>
         ))}
-        <button className="mt-32 w-1/2 bg-primary-color text-white font-bold py-2 px-4 rounded">
+        <button
+          className="mt-32 w-1/2 bg-primary-color text-white font-bold py-2 px-4 rounded"
+          onClick={navigateToOrderRoom}
+        >
           확인
         </button>
       </div>

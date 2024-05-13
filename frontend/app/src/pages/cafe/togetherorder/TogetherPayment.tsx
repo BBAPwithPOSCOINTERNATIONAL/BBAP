@@ -19,9 +19,12 @@ function TogetherPayment() {
   const [totalPrice, setTotalPrice] = useState<number>(0)
 
 
+  // TODO 쿠폰 지원금 현재 하드코딩된 거 수정해야함.
+
   const {currentCafe, products} = useRoomStore()
   const {roomId} = useParams();
   const {
+    room,
     order,
   } = useWebSocket(websocketURL, roomId);
 
@@ -30,7 +33,6 @@ function TogetherPayment() {
     if (products) {
       console.log(products);
       const sum = products.reduce((total, product) => {
-        // `price` 속성이 존재하는 경우에만 더합니다.
         return product.price ? total + product.price : total;
       }, 0);
       setTotalPrice(sum);
@@ -91,9 +93,17 @@ function TogetherPayment() {
       cntCouponToUse: 0,
     };
 
-    console.log(orderDto);
     order(orderDto);
   };
+
+
+  useEffect(() => {
+    if (room?.orderNumber != null) {
+      navigate(`/together/${roomId}/ordered`)
+    }
+  }, [room]);
+
+
 
   return (
     <div className="mb-20">

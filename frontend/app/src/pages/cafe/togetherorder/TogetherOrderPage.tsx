@@ -102,7 +102,13 @@ function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  // const [products, setProducts] = useState<Product[]>([])
+
+
+  // TODO 1. 나가기 버튼 눌렀을 때 처리 (방장이면 알림창 추가)
+  // TODO 2. 아래에 버튼 분기 처리 내 empId와 room?.currentOrderer가 일치할 때 / 일치하지 않을 때
+  // TODO room?.roomStatus가 'GAME_START', 'GAME_END'인 경우 담기버튼 없어야 함. 주문자면 주문하기 주문자 아니면 결제대기
+  // TODO 3. product 비어 있는 경우 텅 처리
+  // TODO 4. 공유 눌렀을 때 알림창
 
 
   const empId = useUserStore((state) => state.empId);
@@ -153,6 +159,7 @@ function TogetherOrderPage() {
 
   useEffect(() => {
     if (room == null || !room?.orderItems || !currentCafeMenuList) {
+      setProducts([])
       return;
     }
 
@@ -220,71 +227,108 @@ function TogetherOrderPage() {
     }
   };
 
-  return (
-    <>
-      <NavBar/>
-      <div className="flex items-center">
-        {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
-        <button
-          onClick={() => console.log('나가기핸들링')}
-          className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
-        >
-          나가기
-        </button>
-      </div>
-      <div className="flex items-center">
-        <input
-          ref={inputRef}
-          type="text"
-          className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
-          value={`https://ssafybbap.com/together/${roomId}`}
-          readOnly
-        />
-        <button
-          onClick={handleCopy}
-          className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
-        >
-          <span>공유</span>
-          <img src={share} alt="share icon" className="ml-1"/>
-        </button>
-      </div>
-      <ProductList products={products} deleteOrderItem={deleteOrderItem}/>
-      <footer
-        id="footer"
-        className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
-      >
-        <div className="flex justify-between items-center">
-
-          <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
+  if (room !== null && room.roomStatus === 'ORDERED') {
+    return (
+      <>
+        <header>
+          <h1 className="text-center text-3xl font-hyemin-bold flex-1">
+            {currentCafe?.name}
+          </h1>
+          <hr className="h-1 border-1 bg-black mb-2 w-full"/>
+        </header>
+        <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold">
+          <div className="my-4 text-center">
+            <p>함께주문하기가 완료된 방입니다.</p>
           </div>
-          {room && room.currentOrderer === empId && (
-            <button onClick={handleOpenModal}>
-              <img src={game} className="mr-4"/>
+          <section className="bg-white m-2 p-10 text-black text-center rounded">
+            <p>&lt;주문내역&gt;</p>
+            {room && room.orderItems && currentCafeMenuList ?
+              room.orderItems.map((item, index) => {
+                const menuLists = [...currentCafeMenuList.menuListCoffee, ...currentCafeMenuList.menuListBeverage, ...currentCafeMenuList.menuListDesert];
+                const match = menuLists.find(menu => menu.id === item.menuId);
+                return match ? <p key={index}>{match.name} X {item.cnt}</p> : null;
+              })
+              : null
+            }
+          </section>
+          <button
+            className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-3xl"
+            onClick={() => navigate('/main')}
+          >
+            확인
+          </button>
+        </div>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <NavBar/>
+        <div className="flex items-center">
+          {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
+          <button
+            onClick={() => console.log('나가기핸들링')}
+            className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
+          >
+            나가기
+          </button>
+        </div>
+        <div className="flex items-center">
+          <input
+            ref={inputRef}
+            type="text"
+            className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
+            value={`https://ssafybbap.com/together/${roomId}`}
+            readOnly
+          />
+          <button
+            onClick={handleCopy}
+            className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
+          >
+            <span>공유</span>
+            <img src={share} alt="share icon" className="ml-1"/>
+          </button>
+        </div>
+        <ProductList products={products} deleteOrderItem={deleteOrderItem}/>
+        <footer
+          id="footer"
+          className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
+        >
+          <div className="flex justify-between items-center">
+
+            <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
+            </div>
+            {room && room.currentOrderer === empId && (
+              <button onClick={handleOpenModal}>
+                <img src={game} className="mr-4"/>
+              </button>
+            )}
+          </div>
+          <div className="flex justify-center items-center mt-3">
+            <button
+              onClick={navigateToMenus}
+              className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
+            >
+              담기버튼
             </button>
-          )}
-        </div>
-        <div className="flex justify-center items-center mt-3">
-          <button
-            onClick={navigateToMenus}
-            className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
-          >
-            담기버튼
-          </button>
-          <button
-            onClick={navigateOrderPage}
-            className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
-          >
-            주문하기
-          </button>
-        </div>
-      </footer>
-      <GameModal
-        isOpen={modalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirm}
-      />
-    </>
-  );
+            <button
+              onClick={navigateOrderPage}
+              className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
+            >
+              주문하기
+            </button>
+          </div>
+        </footer>
+        <GameModal
+          isOpen={modalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirm}
+        />
+      </>
+    );
+  }
+
+
 }
 
 export default TogetherOrderPage;
