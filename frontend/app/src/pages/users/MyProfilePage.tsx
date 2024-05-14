@@ -1,38 +1,11 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import guide from "/assets/images/guideLine.png";
+import Modal from "../../components/users/Modal";
+import ProfileCard from "../../components/users/ProfileCard";
 import { FaceRegistrationStatus, uploadFace } from "../../api/faceAPI";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/userStore";
-import Pobap from "/assets/images/hello.png";
-
-interface ModalProps {
-  isOpen: boolean;
-  children: ReactNode;
-}
-
-function Modal({ isOpen, children }: ModalProps) {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-lg relative w-4/5">
-        <div className="text-center font-hyemin-bold text-2xl my-2">
-          얼굴을 등록해주세요
-        </div>
-        <div className="text-center text-base font-hyemin-regular mb-2">
-          얼굴을 가이드라인 안쪽으로 위치시켜주세요
-        </div>
-
-        {children}
-        <div className="absolute flex top-32 left-16 justify-center items-center z-10">
-          <img src={guide} alt="Profile" className="w-40 h-40 mb-3 z-10" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function MyProfilePage() {
   const [showVideo, setShowVideo] = useState(false);
@@ -159,79 +132,33 @@ function MyProfilePage() {
         </button>
       </div>
 
-      <div className="flex-grow p-4 pt-4  ">
-        <div
-          className="rounded-lg "
-          style={{
-            backgroundImage: `url(/assets/images/card.png)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            // boxShadow:
-            //   "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <div className="flex flex-col items-center pt-24 pb-4">
-            <img src={Pobap} className="w-36" />
-            <button
-              className="mt-4 mb-2 bg-[#6397C8] hover:bg-gray-200 text-white font-bold py-2 w-4/5 rounded-md text-2xl"
-              onClick={handleCameraAccess}
-            >
-              얼굴 인식 등록 {captured ? "✅" : ""}
-            </button>
-            <div className="text-center font-hyemin-bold text-gray-500 text-sm ">
-              <p>등록을 많이 할 수록 인식률이 높아집니다 :)</p>{" "}
-              <p>다양한 모습을 등록해주세요</p>
-            </div>
-            <Modal isOpen={modalOpen}>
-              {showVideo && (
-                <>
-                  <video
-                    id="cameraPreview"
-                    className="scale-x-[-1] z-10"
-                    autoPlay
-                  ></video>
-                  <div className="flex flex-row justify-center items-center mt-4">
-                    <button
-                      className="z-30 mr-5 bg-slate-200 hover:bg-slate-400 hover:text-white font-bold py-2 px-4 rounded-md"
-                      onClick={handleCloseModal}
-                    >
-                      닫기
-                    </button>
-                    <button
-                      className="z-30 ml-5 bg-primary-color text-white font-bold py-2 px-4 rounded-md"
-                      onClick={handleCaptureImage}
-                    >
-                      사진찍기
-                    </button>
-                  </div>
-                </>
-              )}
-            </Modal>
-
-            {/* 사원증 하단 */}
-            <div className="flex felx-row items-end mt-4">
-              <div>
-                <img
-                  className="w-24 h-28 border"
-                  src={userInfo.empImage}
-                  alt="Profile"
-                  style={{ maxHeight: "280px" }}
-                />
+      <div className="flex-grow p-4 pt-4">
+        <ProfileCard captured={captured} onCameraAccess={handleCameraAccess} />
+        <Modal isOpen={modalOpen} onClose={handleCloseModal}>
+          {showVideo && (
+            <>
+              <video
+                id="cameraPreview"
+                className="scale-x-[-1] z-10"
+                autoPlay
+              ></video>
+              <div className="flex flex-row justify-center items-center mt-4">
+                <button
+                  className="z-30 mr-5 bg-slate-200 hover:bg-slate-400 hover:text-white font-bold py-2 px-4 rounded-md"
+                  onClick={handleCloseModal}
+                >
+                  닫기
+                </button>
+                <button
+                  className="z-30 ml-5 bg-primary-color text-white font-bold py-2 px-4 rounded-md"
+                  onClick={handleCaptureImage}
+                >
+                  사진찍기
+                </button>
               </div>
-
-              <div className="font-hyemin-bold text-lg ml-4">
-                <div className="mt-2 w-full text-left">
-                  근무지 : {userInfo.workplace?.workplaceName}
-                </div>
-                <div className="mb-2 w-full text-left">
-                  {userInfo.empName} ({userInfo.empNo})
-                </div>
-              </div>
-            </div>
-
-            {/* 사원증 하단 끝 */}
-          </div>
-        </div>
+            </>
+          )}
+        </Modal>
       </div>
       <BottomTabBar />
     </div>

@@ -22,7 +22,7 @@ const TogetherMenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
     return (
       <div ref={ref}>
         <div>
-          <h2 className="sticky top-[120px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
+          <h2 className="sticky top-[130px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
             {title} 메뉴
           </h2>
           <ul className="list-none p-0">

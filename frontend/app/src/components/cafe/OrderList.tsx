@@ -27,7 +27,7 @@ const OrderList: React.FC<OrderListProps> = ({
         ))
       ) : (
         <div className="flex items-center justify-center w-full mt-20 text-3xl">
-          <Nodata />
+          <Nodata content="주문이" />
         </div>
       )}
       {showModal && (
