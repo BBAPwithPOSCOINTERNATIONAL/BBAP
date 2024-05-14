@@ -3,6 +3,8 @@ package com.bbap.order_room.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.aspectj.weaver.ast.Or;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.MessageHeaders;
@@ -16,9 +18,11 @@ import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
 import com.bbap.order_room.dto.requestDto.SendNoticeRequestDto;
+import com.bbap.order_room.dto.responseDto.CheckEmpResponseData;
 import com.bbap.order_room.dto.responseDto.DataResponseDto;
 import com.bbap.order_room.dto.responseDto.OrderResponseDto;
 import com.bbap.order_room.entity.redis.ChoiceOption;
+import com.bbap.order_room.entity.redis.Orderer;
 import com.bbap.order_room.entity.redis.EntireParticipant;
 import com.bbap.order_room.entity.redis.MenuOption;
 import com.bbap.order_room.entity.redis.OrderItem;
@@ -132,8 +136,11 @@ public class WebSocketServiceImpl implements WebSocketService {
         room.getOrderItems().add(orderItem); //아이템 추가
         log.info("주문 아이템이 성공적으로 추가되었습니다. 아이템: {}", orderItem);
 
-        String name = hrServiceFeignClient.checkId(empId).getBody().getData().getEmpName();
-        room.getOrderers().put(empId, name);
+        CheckEmpResponseData data = hrServiceFeignClient.checkId(empId).getBody().getData();
+        String name = data.getEmpName();
+        String empNo = data.getEmpNo();
+        Orderer currentOrderer = new Orderer(empId, name, empNo);
+        room.getOrderers().put(empId, currentOrderer);
         log.info("사원 ID {}와 이름 {}을 주문자 목록에 추가했습니다.", empId, name);
 
         room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
@@ -219,13 +226,23 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("방 {}의 상태가 'GAME_END'로 변경되었습니다.", roomId);
 
         // 원판 결과 생성 (랜덤 또는 사전 정의된 결과를 사용)
-        Integer result = generateWheelResult(room.getOrderers());
+        Orderer result = generateWheelResult(room.getOrderers());
         room.setCurrentOrderer(result); //주문자 변경
         log.info("원판 결과에 따라 새로운 주문자 ID {}가 결정되었습니다.", result);
-        Integer[] empIds = new Integer[]{result};
+        // Orderer[] currentOrderers = new Orderer[]{result};
+
+        //알림용 empId 목록 생성
+        HashMap<Integer, Orderer> orderers = room.getOrderers();
+        Integer[] empIds = new Integer[orderers.size()];
+        for (int i = 0; i < orderers.size(); i++) {
+            empIds[i] = orderers.get(i).getEmpId();
+        }
+        //알림용 url 생성
+        StringBuilder url = new StringBuilder();
+        url.append("https://ssafybbap.com/together/").append(roomId);
         //알림 보내기 -> kafka
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-                empIds, 3, "www.naver.com", null
+                empIds, 3, url.toString(), result.getName()
         );
         String message = new Gson().toJson(sendNoticeRequestDto);
         kafkaTemplate.send("notice_topic", message);
@@ -259,10 +276,13 @@ public class WebSocketServiceImpl implements WebSocketService {
         roomRepository.save(room);
 
         //알림 보내기 -> kafka
-        Map<Integer, String> orderers = room.getOrderers();
+        Map<Integer, Orderer> orderers = room.getOrderers();
         Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
+        //알림용 url 생성
+        StringBuilder url = new StringBuilder();
+        url.append("https://ssafybbap.com/together/").append(roomId);
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-                empIds, 2, "www.naver.com", null
+                empIds, 2, url.toString(), null
         );
         String message = new Gson().toJson(sendNoticeRequestDto);
         kafkaTemplate.send("notice_topic", message);
@@ -340,14 +360,14 @@ public class WebSocketServiceImpl implements WebSocketService {
                 .noneMatch(item -> item.getOrderer().equals(empId));
     }
 
-    private Integer generateWheelResult(HashMap<Integer, String> orderers) {
+    private Orderer generateWheelResult(HashMap<Integer, Orderer> orderers) {
         // HashSet을 List로 변환
         List<Integer> list = new ArrayList<>(orderers.keySet());
         // 랜덤 객체 생성
         Random random = new Random();
         // 리스트에서 랜덤 인덱스로 요소 선택
         int randomIndex = random.nextInt(list.size()); // 리스트 크기 내에서 랜덤 인덱스 생성
-        return list.get(randomIndex);
+        return orderers.get(list.get(randomIndex));
     }
 
     private MessageHeaders createHeaders(String sessionId) {

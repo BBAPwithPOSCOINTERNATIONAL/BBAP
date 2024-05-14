@@ -14,8 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheckEmpResponseData {
-	private int empId;
+	private Integer empId;
 	private String empName;
+	private String empNo;
 	private SubsidyDto subsidy;
 	private LocalTime currTime;
 }

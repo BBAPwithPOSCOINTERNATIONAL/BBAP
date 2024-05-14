@@ -2,8 +2,6 @@ package com.bbap.order_room.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,19 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bbap.order_room.dto.data.RoomParticipationDto;
-import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
-import com.bbap.order_room.dto.requestDto.ChoiceRequestDto;
-import com.bbap.order_room.dto.requestDto.OptionRequestDto;
+import com.bbap.order_room.dto.responseDto.CheckEmpResponseData;
 import com.bbap.order_room.dto.responseDto.DataResponseDto;
-import com.bbap.order_room.dto.responseDto.ResponseDto;
-import com.bbap.order_room.entity.redis.ChoiceOption;
+import com.bbap.order_room.entity.redis.Orderer;
 import com.bbap.order_room.entity.redis.EntireParticipant;
-import com.bbap.order_room.entity.redis.MenuOption;
-import com.bbap.order_room.entity.redis.OrderItem;
 import com.bbap.order_room.entity.redis.Room;
-import com.bbap.order_room.entity.redis.Session;
-import com.bbap.order_room.exception.RoomEntityNotFoundException;
-import com.bbap.order_room.exception.SessionEntityNotFoundException;
+import com.bbap.order_room.feign.HrServiceFeignClient;
 import com.bbap.order_room.repository.ParticipantRepository;
 import com.bbap.order_room.repository.RoomRepository;
 import com.bbap.order_room.repository.SessionRepository;
@@ -41,6 +32,8 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final ParticipantRepository participantRepository;
     private final SessionRepository sessionRepository;
+
+    private final HrServiceFeignClient hrServiceFeignClient;
     private SimpMessagingTemplate messagingTemplate;
 
     @Override
@@ -65,8 +58,11 @@ public class RoomServiceImpl implements RoomService {
         log.info("사원 ID {}에 대해 새로운 방을 생성하는 중...", empId);
 
         String newRoomId = generateRoomId();
-
-        Room newRoom = new Room(newRoomId, cafeId, "INITIAL", empId,
+        CheckEmpResponseData data = hrServiceFeignClient.checkId(empId).getBody().getData();
+        String name = data.getEmpName();
+        String empNo = data.getEmpNo();
+        Orderer currentOrderer = new Orderer(empId, name, empNo);
+        Room newRoom = new Room(newRoomId, cafeId, "INITIAL", currentOrderer,
                 new HashMap<>(), new ArrayList<>(), null);
         roomRepository.save(newRoom);
 
