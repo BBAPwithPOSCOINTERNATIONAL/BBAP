@@ -201,7 +201,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         if (!room.getRoomStatus().equals("ORDER_FILLED")) {
             throw new IllegalStateException("'ORDER_FILLED' 상태여야 게임 시작이 가능합니다.");
         }
-        if (!Objects.equals(room.getCurrentOrderer(), empId)) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
+        if (!Objects.equals(room.getCurrentOrderer().getEmpId(), empId)) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
         room.setRoomStatus("GAME_START");
         log.info("방 {}의 상태가 'GAME_START'로 변경되었습니다.", roomId);
 
@@ -221,7 +221,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         if (!room.getRoomStatus().equals("GAME_START")) {
             throw new IllegalStateException("'GAME_START' 상태여야 게임 시작이 가능합니다.");
         }
-        if (!Objects.equals(room.getCurrentOrderer(), empId)) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
+        if (!Objects.equals(room.getCurrentOrderer().getEmpId(), empId)) throw new IllegalStateException("현재 주문자만 게임 시작이 가능합니다.");
         room.setRoomStatus("GAME_END");
         log.info("방 {}의 상태가 'GAME_END'로 변경되었습니다.", roomId);
 
