@@ -5,16 +5,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bbap.notice.dto.request.SaveFcmRequestDto;
 import com.bbap.notice.dto.response.DataResponseDto;
 import com.bbap.notice.dto.response.ListNoticeResponseData;
-import com.bbap.notice.dto.response.ResponseDto;
 import com.bbap.notice.service.NoticeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,20 +72,5 @@ public class NoticeController {
 	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> deleteAllNotice(
 		@RequestHeader(value = "X-Employee-Id") int empId) {
 		return noticeService.deleteAllNotice(empId);
-	}
-
-	@Operation(
-		summary = "fcm토큰 저장",
-		description = "이용자의 fcm토큰을 저장한다."
-	)
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "fcm토큰 저장 성공."),
-		@ApiResponse(responseCode = "401", description = "토큰 인증 실패."),
-		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
-	})
-	@PostMapping("/fcm")
-	public ResponseEntity<ResponseDto> saveFcm(@RequestHeader(value = "X-Employee-Id") int empId,
-		@RequestBody SaveFcmRequestDto request) {
-		return noticeService.saveFcm(empId, request);
 	}
 }

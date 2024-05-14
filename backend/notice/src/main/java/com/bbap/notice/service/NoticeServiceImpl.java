@@ -13,7 +13,6 @@ import com.bbap.notice.dto.request.SaveFcmRequestDto;
 import com.bbap.notice.dto.request.SendNoticeRequestDto;
 import com.bbap.notice.dto.response.DataResponseDto;
 import com.bbap.notice.dto.response.ListNoticeResponseData;
-import com.bbap.notice.dto.response.ResponseDto;
 import com.bbap.notice.entity.NoticeEntity;
 import com.bbap.notice.entity.NoticeTemplateEntity;
 import com.bbap.notice.exception.TemplateNotFoundException;
@@ -58,19 +57,20 @@ public class NoticeServiceImpl implements NoticeService {
 		return DataResponseDto.of(data);
 	}
 
+	@KafkaListener(topics = "fcm_topic", groupId = "fcm-service-group")
 	@Override
-	public ResponseEntity<ResponseDto> saveFcm(int empId, SaveFcmRequestDto request) {
+	public void saveFcm(String kafkaMessage) {
+		SaveFcmRequestDto request = new Gson().fromJson(kafkaMessage, SaveFcmRequestDto.class);
+
 		//레디스에 유저별 fcmToken저장
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
 		if (request.getFcmToken() == null)
-			redisTemplate.delete(String.valueOf(empId));
+			redisTemplate.delete(String.valueOf(request.getEmpId()));
 		else
-			valueOperations.set(String.valueOf(empId), request.getFcmToken());
+			valueOperations.set(String.valueOf(request.getEmpId()), request.getFcmToken());
 
-		log.info("{} : 토큰 저장 - {}", empId, request.getFcmToken());
-
-		return ResponseDto.success();
+		log.info("{} : 토큰 저장 - {}", request.getEmpId(), request.getFcmToken());
 	}
 
 	@KafkaListener(topics = "notice_topic", groupId = "notice-service-group")
