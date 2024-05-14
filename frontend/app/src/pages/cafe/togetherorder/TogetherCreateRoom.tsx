@@ -1,31 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import together from "/assets/images/together.png";
 import CafeSelector from "../../../components/cafe/CafeSelector";
-import { Cafe, getCafeList } from "../../../api/cafeAPI";
+import {Cafe, getCafeList} from "../../../api/cafeAPI";
 import {
   checkOrderRoomParticipation,
   createOrderRoom,
 } from "../../../api/togetherAPI";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const TogetherCreateRoom = () => {
   const [cafeList, setCafeList] = useState<Cafe[]>([]);
   const [selectedCafeId, setSelectedCafeId] = useState<string>("");
   const [selectedCafeName, setSelectedCafeName] = useState<string>("");
   const navigate = useNavigate();
-
+  const [orderRoomId, setOrderRoomId] = useState<string>('')
   // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
 
+
+  // TODO 기존에 참여한 방이 있을 때 로직이 아직 뭔가 이상함.
   useEffect(() => {
     const fetchOrderRoomInfo = async () => {
       try {
         const response = await checkOrderRoomParticipation();
-        // console.log(response.data.roomId, orderRoomInfo);
-        // setOrderRoomInfo(response.data.roomId);
-        // 방 ID가 존재하면 바로 해당 방으로 이동
-        // if (response.data.roomId) {
-        //   navigate(`/together/${response.data.roomId}`);
-        // }
+        if (response.data.roomId) {
+          // navigate(`/together/${response.data.roomId}`);
+          setOrderRoomId(response.data.roomId)
+        }
+
       } catch (error) {
         console.error("Failed to fetch order room info:", error);
       }
@@ -55,6 +56,7 @@ const TogetherCreateRoom = () => {
         console.error("Error fetching cafe list:", error);
       }
     }
+
     loadCafes();
   }, []);
 
@@ -78,6 +80,10 @@ const TogetherCreateRoom = () => {
     }
   };
 
+  const navigateToRoom = (roomId: string) => {
+    navigate(`/together/${roomId}`)
+  }
+
   return (
     <>
       <CafeSelector
@@ -95,10 +101,10 @@ const TogetherCreateRoom = () => {
               width: "100%",
             }}
           >
-            <img src={together} alt="together" style={{ width: "80%" }} />
+            <img src={together} alt="together" style={{width: "80%"}}/>
           </div>
 
-          <hr className="h-1 bg-white m-2 mx-auto w-11/12" />
+          <hr className="h-1 bg-white m-2 mx-auto w-11/12"/>
           <p className="m-4 text-2xl">
             각자 원하는 메뉴를 담아두면 한꺼번에 주문할 수 있어요!!
           </p>
@@ -108,8 +114,16 @@ const TogetherCreateRoom = () => {
           className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
           onClick={handleCreateRoom}
         >
-          방 만들러 가기
+          새로운 주문방 만들기
         </button>
+        {orderRoomId !== '' && (
+          <button
+            className="bg-primary-color text-white py-2 px-4 rounded hover:bg-primary-dark mt-4 font-hyemin-bold w-11/12"
+            onClick={() => navigateToRoom(orderRoomId)}
+          >
+            참여중인 방 들어가기
+          </button>
+        )}
       </div>
     </>
   );

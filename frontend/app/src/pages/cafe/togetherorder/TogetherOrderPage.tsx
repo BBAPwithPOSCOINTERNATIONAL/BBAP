@@ -108,10 +108,8 @@ function TogetherOrderPage() {
 
 
   // TODO 1. 나가기 버튼 눌렀을 때 처리 (방장이면 알림창 추가)
-  // TODO 2. 아래에 버튼 분기 처리 내 empId와 room?.currentOrderer가 일치할 때 / 일치하지 않을 때
-  // TODO room?.roomStatus가 'GAME_START', 'GAME_END'인 경우 담기버튼 없어야 함. 주문자면 주문하기 주문자 아니면 결제대기
-  // TODO 3. product 비어 있는 경우 텅 처리
-  // TODO 4. 공유 눌렀을 때 알림창
+  // TODO 2. product 비어 있는 경우 텅 처리
+  // TODO 3. 공유 눌렀을 때 알림창
 
 
   const empId = useUserStore((state) => state.empId);
@@ -241,6 +239,7 @@ function TogetherOrderPage() {
         .writeText(input.value)
         .then(() => {
           console.log("Text copied to clipboard");
+          alert('클립보드에 복사되었습니다.')
         })
         .catch((err) => {
           console.error("Failed to copy text: ", err);
