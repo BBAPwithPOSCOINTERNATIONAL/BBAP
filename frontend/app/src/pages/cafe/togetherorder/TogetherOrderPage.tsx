@@ -12,6 +12,8 @@ import {useRoomStore} from "../../../store/roomStore.tsx";
 import {useUserStore} from "../../../store/userStore.tsx";
 
 import {MenuOption} from "../../../api/useWebSocket.tsx";
+import RoulettePage from "./RoulettePage.tsx";
+import WinnerPage from "./WinnerPage.tsx";
 
 const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
 
@@ -105,6 +107,7 @@ function TogetherOrderPage() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [gameResultDisplay, setGameResultDisplay] = useState<number>(1)
 
 
   // TODO 1. 나가기 버튼 눌렀을 때 처리 (방장이면 알림창 추가)
@@ -118,7 +121,9 @@ function TogetherOrderPage() {
   const {
     room,
     deleteOrderItem,
-    disconnectFromRoom
+    disconnectFromRoom,
+    startGame,
+    runWheel
   } = useWebSocket(websocketURL, roomId);
 
   const {currentCafe, currentCafeMenuList, products, setCafe, setCafeMenus, setProducts} = useRoomStore()
@@ -127,6 +132,11 @@ function TogetherOrderPage() {
   useEffect(() => {
     if (room == null) {
       return
+    }
+
+
+    if (room.roomStatus === 'GAME_START') {
+      setGameResultDisplay(2);
     }
 
     if (room.cafeId === currentCafe?.id) {
@@ -157,6 +167,8 @@ function TogetherOrderPage() {
 
     setJoinedCafe(room.cafeId)
 
+
+
   }, [room]);
 
   useEffect(() => {
@@ -178,7 +190,7 @@ function TogetherOrderPage() {
       const cnt = item.cnt;
       const orderItemId = item.orderItemId;
       const owner = item.orderer === empId;
-      const name = room.orderers ? room.orderers[item.orderer] : "";
+      const name = room.orderers ? room.orderers[item.orderer].name : "";
       const menuname = menu.name;
       const choiceOptions = item.options ? item.options.flatMap((option) => option.choiceOptions || []) : [];
       const options = item.options || [];
@@ -204,8 +216,9 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
+    setGameResultDisplay(2)
     if ((room?.orderers ? Object.keys(room.orderers).length : 0) >= 2) {
-      navigate(`/together/${roomId}/roulette`);
+      startGame()
     } else {
       alert('주문자가 2명 이상일 때만 게임을 시작할 수 있습니다.')
     }
@@ -222,7 +235,6 @@ function TogetherOrderPage() {
       // TODO 다른 UI 필요한가
       alert('주문목록이 없습니다.')
     }
-
   }
 
   const handleExitRoom = () => {
@@ -280,7 +292,7 @@ function TogetherOrderPage() {
         </div>
       </>
     )
-  } else {
+  } else if (room !== null && (room.roomStatus === 'INITIAL' || room.roomStatus === 'GAME_END' || room.roomStatus === 'ORDER_FILLED') && gameResultDisplay === 1) {
     return (
       <>
         <NavBar/>
@@ -318,7 +330,7 @@ function TogetherOrderPage() {
 
             <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
             </div>
-            {room && room.currentOrderer === empId && (room?.roomStatus === 'INITIAL' || room?.roomStatus === 'ORDER_FILLED') && (
+            {room && room.currentOrderer.empId === empId && (room?.roomStatus === 'INITIAL' || room?.roomStatus === 'ORDER_FILLED') && (
               <button onClick={handleOpenModal}>
                 <img src={game} className="mr-4 h-16"/>
               </button>
@@ -333,7 +345,7 @@ function TogetherOrderPage() {
                 담기
               </button>
             )}
-            {(room?.currentOrderer === empId) && (
+            {(room?.currentOrderer.empId === empId) && (
               <button
                 onClick={navigateOrderPage}
                 className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
@@ -341,15 +353,22 @@ function TogetherOrderPage() {
                 주문하기
               </button>
             )}
-            {(room?.currentOrderer !== empId) && (room?.roomStatus === 'GAME_START' || room?.roomStatus === 'GAME_END') && (
+            {(room?.currentOrderer.empId !== empId) && (room?.roomStatus === 'GAME_END') && (
               <button
                 disabled={true}
                 className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-2xl mx-4"
               >
-                결제대기(주문자: {room?.orderers ? room.orderers[room?.currentOrderer] : ""})
+                결제대기(주문자: {room.currentOrderer.name})
               </button>
             )}
-
+            {(room?.currentOrderer.empId !== empId) && (room?.roomStatus === 'INITIAL' || room.roomStatus === 'ORDER_FILLED') && (
+              <button
+                disabled={true}
+                className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-2xl mx-4"
+              >
+                주문자 : {room.currentOrderer.name}
+              </button>
+            )}
           </div>
         </footer>
         <GameModal
@@ -358,6 +377,20 @@ function TogetherOrderPage() {
           onConfirm={handleConfirm}
         />
       </>
+    );
+  } else if (room !== null && (room.roomStatus === 'GAME_START' || room.roomStatus === 'GAME_END') && gameResultDisplay === 2) {
+    return (
+      <RoulettePage
+        room={room}
+        setGameResultDisplay={setGameResultDisplay}
+        runWheel={runWheel}
+      />
+    );
+  } else if (room !== null && room?.roomStatus === 'GAME_END' && gameResultDisplay === 3) {
+    return (<WinnerPage
+        setGameResultDisplay={setGameResultDisplay}
+        room={room}
+      />
     );
   }
 

@@ -6,7 +6,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   plugins: [VitePWA({ registerType: "autoUpdate" })],
   define: {global: 'window'},
-  // server: {
-  //   port: 3000,
-  // }
+  server: {
+    port: 3000,
+  }
 });

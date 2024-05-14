@@ -2,22 +2,48 @@ import NavBar from "../../../components/Navbar";
 import {useRoomStore} from "../../../store/roomStore.tsx";
 import {useEffect, useState} from "react";
 import {Employee} from "../../../store/roomStore.tsx";
-import {useNavigate, useParams} from "react-router-dom";
+import {Room} from "../../../api/useWebSocket.tsx";
+// import {Room} from "../../../api/useWebSocket.tsx";
 
-function WinnerPage() {
+// import {useNavigate, useParams} from "react-router-dom";
+
+
+interface WinnerPageProps {
+  setGameResultDisplay: (value: number) => void;
+  room: Room;
+}
+
+const WinnerPage: React.FC<WinnerPageProps> = ({setGameResultDisplay, room}) => {
   const [penaltyWinner, setPenaltyWinner] = useState<Employee>()
   const [nonWinners, setNonWinners] = useState<Employee[]>([])
 
-  const navigate = useNavigate();
-  const {roomId} = useParams();
+  // const navigate = useNavigate();
+  // const {roomId} = useParams();
 
   const {
     orderers,
+    setWinner
   } = useRoomStore();
 
-  const navigateToOrderRoom = () => {
-    navigate(`/together/${roomId}`)
-  }
+
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setGameResultDisplay(1);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (room?.roomStatus === 'GAME_END' && room?.currentOrderer) {
+      const winner = orderers.find((orderer) => orderer.empNo === room?.currentOrderer.empNo);
+      winner && setWinner(winner);
+    }
+  }, [room]);
 
   useEffect(() => {
     const penaltyWinner = orderers.find((orderer) => orderer.isWinner);
@@ -29,7 +55,7 @@ function WinnerPage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar/>
       <div className="flex flex-col items-center justify-center font-hyemin-bold">
         <h1 className="text-center mb-4 font-hyemin-bold">
           카페이름 들어올자리
@@ -46,7 +72,7 @@ function WinnerPage() {
         ))}
         <button
           className="mt-32 w-1/2 bg-primary-color text-white font-bold py-2 px-4 rounded"
-          onClick={navigateToOrderRoom}
+          onClick={() => setGameResultDisplay(1)}
         >
           확인
         </button>

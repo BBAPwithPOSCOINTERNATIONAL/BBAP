@@ -1,57 +1,46 @@
 import {useEffect, useRef, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+// import {useNavigate, useParams} from "react-router-dom";
 import NavBar from "../../../components/Navbar";
-import useWebSocket from "../../../api/useWebSocket.tsx";
 import {useRoomStore} from "../../../store/roomStore.tsx";
+import {OrderEmployee, Room} from "../../../api/useWebSocket.tsx";
+import {useUserStore} from "../../../store/userStore.tsx";
 
-const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
+
+interface RoulettePageProps {
+  setGameResultDisplay: (value: number) => void;
+  runWheel: () => void;
+  room: Room;
+}
 
 
-
-const RoulettePage = () => {
+const RoulettePage: React.FC<RoulettePageProps> = ({setGameResultDisplay, runWheel, room}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // const [winner, setWinner] = useState<Employee | null>(null);
-  const navigate = useNavigate();
   const [rouletteText, setRouletteText] = useState("돌려 돌려 돌림판"); // 기본 텍스트 설정
   // const [orderers, setOrderers] = useState<Employee[]>([]);
 
 
-  const {roomId} = useParams();
-
-  const {
-    room,
-    startGame,
-    runWheel,
-  } = useWebSocket(websocketURL, roomId);
+  const empId = useUserStore((state) => state.empId);
 
   const {
     orderers,
     setOrderers,
-    setWinner
   } = useRoomStore();
 
   useEffect(() => {
     if (room?.roomStatus !== 'GAME_END' && room?.orderers) {
-      const ordererObjs = Object.entries(room.orderers).map(([empNo, empName]) => ({
-        empNo: Number(empNo),
-        empName,
+      const ordererObjs = Object.values<OrderEmployee>(room.orderers).map(({ empNo, name }) => ({
+        empNo,
+        empName : name,
         isWinner: false
       }));
       setOrderers(ordererObjs);
-    } else if (room?.roomStatus === 'GAME_END' && room?.currentOrderer) {
-      const winner = orderers.find((orderer) => orderer.empNo === room?.currentOrderer);
-      winner && setWinner(winner);
+    }
+
+    if (room?.roomStatus === 'GAME_END') {
+      rotate();
     }
   }, [room]);
-
-
-
-  useEffect(() => {
-    if (orderers.length > 0) {
-      startGame()
-    }
-  }, [orderers]);
-
 
 
   // const orderers: Name = [
@@ -127,14 +116,17 @@ const RoulettePage = () => {
       setRouletteText("누가 누가 걸릴까");
 
       setTimeout(() => {
+        setGameResultDisplay(3);
         // const selectedWinner = orderers[randomIndex];
         // setWinner(selectedWinner);
-        runWheel()
 
-        // 상태 업데이트 후 네비게이션 실행
-        setTimeout(() => {
-          navigate(`/together/${roomId}/winner`);
-        }, 1500);
+
+        // // 상태 업데이트 후 네비게이션 실행
+        // setTimeout(() => {
+        //   // navigate(`/together/${roomId}/winner`);
+        //   setGameResultDisplay(false)
+        //
+        // }, 1500);
       }, 2000);
     }
   };
@@ -150,14 +142,15 @@ const RoulettePage = () => {
         className="transition duration-3000 my-5"
       ></canvas>
       <div className="font-hyemin-bold">총 주문 인원 : {orderers.length}</div>
-      <button
-        onClick={rotate}
-        className="w-1/2 mt-4 bg-primary-color text-white font-hyemin-bold p-3 text-lg font-bold rounded transition duration-200 active:bg-gray-700 active:text-white cursor-pointer"
-      >
-        룰렛 돌리기
-      </button>
+      { room.currentOrderer.empId === empId && room.roomStatus === 'GAME_START' &&
+        <button
+          onClick={runWheel}
+          className="w-1/2 mt-4 bg-primary-color text-white font-hyemin-bold p-3 text-lg font-bold rounded transition duration-200 active:bg-gray-700 active:text-white cursor-pointer"
+        >
+          룰렛 돌리기
+        </button>
+      }
     </div>
   );
 };
-
 export default RoulettePage;
