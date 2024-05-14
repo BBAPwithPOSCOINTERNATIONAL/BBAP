@@ -232,14 +232,15 @@ public class WebSocketServiceImpl implements WebSocketService {
         // Orderer[] currentOrderers = new Orderer[]{result};
 
         //알림용 empId 목록 생성
-        HashMap<Integer, Orderer> orderers = room.getOrderers();
-        Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
+        // HashMap<Integer, Orderer> orderers = room.getOrderers();
+        // Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
+        Integer[] empIds = new Integer[]{result.getEmpId()};
         //알림용 url 생성
         StringBuilder url = new StringBuilder();
         url.append("together/").append(roomId);
         //알림 보내기 -> kafka
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-                empIds, 3, url.toString(), result.getName()
+            empIds, 3, url.toString(), result.getName()
         );
         String message = new Gson().toJson(sendNoticeRequestDto);
         kafkaTemplate.send("notice_topic", message);
