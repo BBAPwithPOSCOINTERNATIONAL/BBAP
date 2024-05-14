@@ -16,6 +16,7 @@ function ReceiptDetail() {
   const handleQuestionClick = () => {
     setIsModalOpen(!isModalOpen);
   };
+  console.log(payments);
 
   const navigate = useNavigate();
   const goBack = () => {

@@ -1,16 +1,16 @@
-import {forwardRef} from "react";
-import {useNavigate} from "react-router-dom";
+import { forwardRef } from "react";
+import { useNavigate } from "react-router-dom";
 import useCafe from "../../store/cafeStore"; // 스토어 임포트
-import {CafeMenuItem} from "../../api/cafeAPI";
+import { CafeMenuItem } from "../../api/cafeAPI";
 
 interface MenuSectionProps {
-  items: CafeMenuItem[],
-  title: string,
-  roomId?: string
+  items: CafeMenuItem[];
+  title: string;
+  roomId?: string;
 }
 
 const TogetherMenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
-  ({items, title, roomId}, ref) => {
+  ({ items, title, roomId }, ref) => {
     const navigate = useNavigate();
     const setSelectedItem = useCafe((state) => state.setSelectedItem);
 
@@ -22,7 +22,7 @@ const TogetherMenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
     return (
       <div ref={ref}>
         <div>
-          <h2 className="sticky top-[325px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
+          <h2 className="sticky top-[120px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
             {title} 메뉴
           </h2>
           <ul className="list-none p-0">
