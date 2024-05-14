@@ -118,7 +118,7 @@ function MainPage() {
           </div>
           {/* 아직 디자인 수정 필요 */}
           <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0 h-36 text-[40px] font-bold flex items-center justify-center gap-6">
-            <img src={nowsubsidy} alt="현재지원금" className="w-24 h-24" />
+            <img src={nowsubsidy} alt="현재지원금" className="w-28 h-24" />
             <div>{subSidy?.availSubsidy}원</div>
           </div>
         </div>
