@@ -14,21 +14,17 @@ const TogetherCreateRoom = () => {
   const [selectedCafeName, setSelectedCafeName] = useState<string>("");
   const navigate = useNavigate();
 
-  const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
+  // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchOrderRoomInfo = async () => {
       try {
         const response = await checkOrderRoomParticipation();
-        console.log(response.data.roomId, orderRoomInfo);
-        setOrderRoomInfo(response.data.roomId);
+        // console.log(response.data.roomId, orderRoomInfo);
+        // setOrderRoomInfo(response.data.roomId);
         // 방 ID가 존재하면 바로 해당 방으로 이동
         // if (response.data.roomId) {
-        //   const cafeName =
-        //     localStorage.getItem("cafeName") || "Default Cafe Name";
-        //   navigate("/together", {
-        //     state: { cafeName: cafeName, roomId: response.data.roomId },
-        //   });
+        //   navigate(`/together/${response.data.roomId}`);
         // }
       } catch (error) {
         console.error("Failed to fetch order room info:", error);

@@ -9,6 +9,7 @@ import useWebSocket, {OrderItemPayload, OrderRequestDto} from "../../../api/useW
 
 const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
 import {addMinutes} from 'date-fns';
+import {getPayInfo} from "../../../api/orderAPI.tsx";
 
 
 function TogetherPayment() {
@@ -17,9 +18,12 @@ function TogetherPayment() {
   const [selectedTime, setSelectedTime] = useState<number>(1);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
   const [totalPrice, setTotalPrice] = useState<number>(0)
-
-
-  // TODO 쿠폰 지원금 현재 하드코딩된 거 수정해야함.
+  const [payInfo, setPayInfo] = useState({
+    empId: 0,
+    empName: "",
+    stampCnt: 0,
+    availableSubsidy: 0,
+  });
 
   const {currentCafe, products} = useRoomStore()
   const {roomId} = useParams();
@@ -39,25 +43,37 @@ function TogetherPayment() {
     }
   }, [products]);
 
-  const ordererInfo = {
-    name: "젠킨스",
-    remainMoney: 0,
-    coupon: 10,
-  };
 
   useEffect(() => {
-    if (totalPrice - ((couponCount + 1) * 3000 + ordererInfo.remainMoney) < 0) {
+    async function loadPayInfo(cafeId: string) {
+      try {
+        const response = await getPayInfo(cafeId);
+        setPayInfo(response.data);
+      } catch (error) {
+        console.error("Failed to load payment info", error);
+      }
+    }
+
+    if (currentCafe?.id) {
+      loadPayInfo(currentCafe.id);
+    } else {
+      console.error("Cafe ID is null.");
+    }
+  }, [currentCafe]);
+
+  useEffect(() => {
+    if (totalPrice - ((couponCount + 1) * 3000 + payInfo.availableSubsidy) < 0) {
       setIsAddAvailable(false);
     } else {
       setIsAddAvailable(true);
     }
-  }, [couponCount, totalPrice, ordererInfo.remainMoney]);
+  }, [couponCount, totalPrice, payInfo.availableSubsidy]);
 
 
   const support =
-    totalPrice <= ordererInfo.remainMoney
+    totalPrice <= payInfo.availableSubsidy
       ? totalPrice
-      : ordererInfo.remainMoney;
+      : payInfo.availableSubsidy;
 
 
   const handleSelectTime = (time: number) => {
@@ -87,10 +103,10 @@ function TogetherPayment() {
 
     const orderDto: OrderRequestDto = {
       cafeId: currentCafe?.id || '',
-      usedSubsidy: 0,
+      usedSubsidy: payInfo.availableSubsidy,
       pickUpTime,
       menuList,
-      cntCouponToUse: 0,
+      cntCouponToUse: couponCount,
     };
 
     order(orderDto);
@@ -102,7 +118,6 @@ function TogetherPayment() {
       navigate(`/together/${roomId}/ordered`)
     }
   }, [room]);
-
 
 
   return (
@@ -223,7 +238,7 @@ function TogetherPayment() {
       <hr className="h-2 bg-[#E3E9F6]"/>
 
       <Coupon
-        allCouponCount={ordererInfo.coupon}
+        allCouponCount={Math.floor(payInfo.stampCnt / 10)}
         setCouponCount={setCouponCount}
         isAddAvailable={isAddAvailable}
       />

@@ -5,7 +5,7 @@ import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
 import GameModal from "../../../components/cafe/GameModal";
 import {useParams} from "react-router-dom";
-import useWebSocket from "../../../api/useWebSocket.tsx";
+import useWebSocket, {Room} from "../../../api/useWebSocket.tsx";
 import {getCafeList, SelectedCafe, CafeMenus} from "../../../api/cafeAPI";
 import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
 import {useRoomStore} from "../../../store/roomStore.tsx";
@@ -40,6 +40,7 @@ interface ProductCardProps {
   cnt: number
   menuId: string;
   deleteOrderItem: (orderId: string) => void;
+  room: Room;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -50,12 +51,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                                    optionsString,
                                                    price,
                                                    deleteOrderItem,
+                                                   room,
                                                  }) => {
   return (
     <div className="m-3 mt-5 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
       <div className="px-6 py-4 flex justify-between items-center">
         <div className="font-bold text-xl mb-2">{name} 님</div>
-        {owner && (
+        {owner && (room?.roomStatus === 'INITIAL' || room?.roomStatus === 'ORDER_FILLED') && (
           <button
             className="text-base"
             onClick={() => deleteOrderItem(orderItemId)}
@@ -86,13 +88,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 interface ProductListProps {
   products: Product[];
   deleteOrderItem: (orderId: string) => void;
+  room: Room;
 }
 
-const ProductList: React.FC<ProductListProps> = ({products, deleteOrderItem}) => {
+const ProductList: React.FC<ProductListProps> = ({products, deleteOrderItem, room}) => {
   return (
     <div className="product-list">
       {products.map((product, index) => (
-        <ProductCard key={index} {...product} deleteOrderItem={deleteOrderItem}/> // 수정
+        <ProductCard key={index} {...product} deleteOrderItem={deleteOrderItem} room={room}/> // 수정
       ))}
     </div>
   );
@@ -116,7 +119,8 @@ function TogetherOrderPage() {
 
   const {
     room,
-    deleteOrderItem
+    deleteOrderItem,
+    disconnectFromRoom
   } = useWebSocket(websocketURL, roomId);
 
   const {currentCafe, currentCafeMenuList, products, setCafe, setCafeMenus, setProducts} = useRoomStore()
@@ -202,7 +206,11 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
-    navigate(`/together/${roomId}/roulette`);
+    if ((room?.orderers ? Object.keys(room.orderers).length : 0) >= 2) {
+      navigate(`/together/${roomId}/roulette`);
+    } else {
+      alert('주문자가 2명 이상일 때만 게임을 시작할 수 있습니다.')
+    }
   };
 
   const navigateToMenus = () => {
@@ -210,8 +218,21 @@ function TogetherOrderPage() {
   }
 
   const navigateOrderPage = () => {
-    navigate(`/together/${roomId}/order`)
+    if (products.length > 0) {
+      navigate(`/together/${roomId}/order`)
+    } else {
+      // TODO 다른 UI 필요한가
+      alert('주문목록이 없습니다.')
+    }
+
   }
+
+  const handleExitRoom = () => {
+    disconnectFromRoom()
+    navigate('/main')
+  }
+  room?.roomStatus
+
 
   const handleCopy = () => {
     const input = inputRef.current;
@@ -267,7 +288,7 @@ function TogetherOrderPage() {
         <div className="flex items-center">
           {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
           <button
-            onClick={() => console.log('나가기핸들링')}
+            onClick={handleExitRoom}
             className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
           >
             나가기
@@ -289,7 +310,7 @@ function TogetherOrderPage() {
             <img src={share} alt="share icon" className="ml-1"/>
           </button>
         </div>
-        <ProductList products={products} deleteOrderItem={deleteOrderItem}/>
+        {room && <ProductList products={products} deleteOrderItem={deleteOrderItem} room={room}/>}
         <footer
           id="footer"
           className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
@@ -298,25 +319,38 @@ function TogetherOrderPage() {
 
             <div className="text-xl ml-4">총 주문 인원: {room && room.orderers && Object.keys(room.orderers).length || 0}명
             </div>
-            {room && room.currentOrderer === empId && (
+            {room && room.currentOrderer === empId && (room?.roomStatus === 'INITIAL' || room?.roomStatus === 'ORDER_FILLED') && (
               <button onClick={handleOpenModal}>
-                <img src={game} className="mr-4"/>
+                <img src={game} className="mr-4 h-16"/>
               </button>
             )}
           </div>
           <div className="flex justify-center items-center mt-3">
-            <button
-              onClick={navigateToMenus}
-              className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
-            >
-              담기버튼
-            </button>
-            <button
-              onClick={navigateOrderPage}
-              className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
-            >
-              주문하기
-            </button>
+            {(room?.roomStatus === 'INITIAL' || room?.roomStatus === 'ORDER_FILLED') && (
+              <button
+                onClick={navigateToMenus}
+                className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
+              >
+                담기
+              </button>
+            )}
+            {(room?.currentOrderer === empId) && (
+              <button
+                onClick={navigateOrderPage}
+                className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
+              >
+                주문하기
+              </button>
+            )}
+            {(room?.currentOrderer !== empId) && (room?.roomStatus === 'GAME_START' || room?.roomStatus === 'GAME_END') && (
+              <button
+                disabled={true}
+                className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-2xl mx-4"
+              >
+                결제대기(주문자: {room?.orderers ? room.orderers[room?.currentOrderer] : ""})
+              </button>
+            )}
+
           </div>
         </footer>
         <GameModal
