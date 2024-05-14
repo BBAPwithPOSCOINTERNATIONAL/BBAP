@@ -345,7 +345,7 @@ function TogetherOrderPage() {
           {currentCafe && <CafeNameInfo cafe={currentCafe} />}
           <button
             onClick={handleExitRoom}
-            className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
+            className="mt-2 mx-2 min-w-[72px] bg-[#00588A]  text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
           >
             나가기
           </button>
@@ -354,16 +354,16 @@ function TogetherOrderPage() {
           <input
             ref={inputRef}
             type="text"
-            className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
+            className="mt-2 mx-2 border rounded-md p-1 w-11/12 font-hyemin-bold text-center"
             value={`https://ssafybbap.com/together/${roomId}`}
             readOnly
           />
           <button
             onClick={handleCopy}
-            className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
+            className="flex items-center mt-2 mr-2 min-w-[72px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-base"
           >
             <span>공유</span>
-            <img src={share} alt="share icon" className="ml-1" />
+            <img src={share} alt="share icon" className="mx-1 w-6" />
           </button>
         </div>
         {room && (
@@ -427,7 +427,8 @@ function TogetherOrderPage() {
                   disabled={true}
                   className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-2xl mx-4"
                 >
-                  주문자 : {room.currentOrderer.name}
+                  주문자 <br />
+                  {room.currentOrderer.name}
                 </button>
               )}
           </div>
