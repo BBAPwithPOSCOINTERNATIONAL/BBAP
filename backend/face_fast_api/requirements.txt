@@ -28,7 +28,7 @@ mdurl==0.1.2
 mkl==2021.4.0
 mpmath==1.3.0
 networkx==3.2.1
-numpy @ file:///D:/bld/numpy_1707225561314/work/dist/numpy-1.26.4-cp39-cp39-win_amd64.whl#sha256=af5f40857bb7ceb2d3be562fa763863d2f954c104873e89b8ee370f75e047ecf
+numpy==1.26.4
 opencv-python==4.9.0.80
 orjson==3.10.3
 pillow==10.3.0
