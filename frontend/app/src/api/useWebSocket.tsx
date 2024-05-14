@@ -14,11 +14,17 @@ export type Room = {
   roomId: string;
   cafeId: string;
   roomStatus: string;
-  currentOrderer: number;
-  orderers: Record<number, string> | null; // nullable
+  currentOrderer: OrderEmployee;
+  orderers: Record<number, OrderEmployee> | null; // nullable
   orderItems: OrderItem[] | null; // nullable
   orderNumber: number | null; // nullable
 };
+
+export type OrderEmployee = {
+  empId: number;
+  empNo: string;
+  name: string;
+}
 
 type OrderItem = {
   orderItemId: string;
@@ -47,7 +53,6 @@ export type OrderRequestDto = {
   menuList: OrderItemPayload[];
   cntCouponToUse: number;
 }
-
 
 
 const useWebSocket = (url: string, roomId: string | undefined): {

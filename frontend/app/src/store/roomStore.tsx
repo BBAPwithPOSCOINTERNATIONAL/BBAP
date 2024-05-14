@@ -5,7 +5,7 @@ import {MenuOption} from "../api/useWebSocket.tsx";
 
 
 export type Employee = {
-  empNo: number;
+  empNo: string;
   empName: string;
   isWinner: boolean;
 };
