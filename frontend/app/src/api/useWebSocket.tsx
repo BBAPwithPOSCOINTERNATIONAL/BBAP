@@ -10,7 +10,7 @@ type Message = {
 };
 
 
-type Room = {
+export type Room = {
   roomId: string;
   cafeId: string;
   roomStatus: string;
@@ -110,8 +110,6 @@ const useWebSocket = (url: string, roomId: string | undefined): {
         destination: `/app/leave-room`,
       });
       client.current?.deactivate();
-
-      console.log('연결 종료');
     }
   };
 
