@@ -233,10 +233,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
         //알림용 empId 목록 생성
         HashMap<Integer, Orderer> orderers = room.getOrderers();
-        Integer[] empIds = new Integer[orderers.size()];
-        for (int i = 0; i < orderers.size(); i++) {
-            empIds[i] = orderers.get(i).getEmpId();
-        }
+        Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
         //알림용 url 생성
         StringBuilder url = new StringBuilder();
         url.append("https://ssafybbap.com/together/").append(roomId);
