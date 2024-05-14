@@ -91,10 +91,10 @@ const TogetherMenuSelector: React.FC = () => {
       <div className="sticky top-0 z-30 bg-white" style={{ height: "50px" }}>
         <NavBar goBack={goBack} />
       </div>
-      <div className="sticky top-[60px] bg-white flex flex-col w-full items-center z-20">
+      <div className="sticky top-[55px] bg-white flex flex-col w-full items-center z-20">
         {currentCafe && <CafeNameInfo cafe={currentCafe} />}
       </div>
-      <div className=" sticky top-[100px] z-20 bg-white">
+      <div className=" sticky top-[95px] z-20 bg-white">
         <div className="flex mt-1">
           <MenuButtons
             selectedMenu={selectedMenu}

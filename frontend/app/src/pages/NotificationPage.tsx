@@ -7,6 +7,7 @@ import {
 } from "../api/notificationAPI";
 import NoticeItem from "../components/NoticeItem";
 import useNoticeStore from "../store/noticeStore";
+import Nodata from "../components/nodata";
 
 /* 
 알림종류
@@ -51,15 +52,17 @@ const NotificationPage: React.FC = () => {
         </button>
       </div>
       <div id="body">
-        {/* {isLoading && <p>로딩중...</p>}
-				{isError && <p>데이터 요청 실패</p>} */}
-        {noticeList?.map((notice, index) => (
-          <NoticeItem
-            key={index}
-            noticeData={notice}
-            handleDelete={handleDeleteNotification}
-          />
-        ))}
+        {noticeList.length === 0 ? (
+          <Nodata content="알림이" />
+        ) : (
+          noticeList.map((notice, index) => (
+            <NoticeItem
+              key={index}
+              noticeData={notice}
+              handleDelete={handleDeleteNotification}
+            />
+          ))
+        )}
       </div>
     </>
   );

@@ -200,7 +200,7 @@ function RestaurantMainPage() {
           menus.map((menu, index) => <MenuCard key={index} menu={menu} />)
         ) : (
           <p className="text-center w-full">
-            <Nodata />
+            <Nodata content="메뉴가" />
           </p>
         )}
       </div>
