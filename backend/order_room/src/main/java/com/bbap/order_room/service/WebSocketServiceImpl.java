@@ -236,7 +236,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
         //알림용 url 생성
         StringBuilder url = new StringBuilder();
-        url.append("https://ssafybbap.com/together/").append(roomId);
+        url.append("/together/").append(roomId);
         //알림 보내기 -> kafka
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
                 empIds, 3, url.toString(), result.getName()
@@ -277,7 +277,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
         //알림용 url 생성
         StringBuilder url = new StringBuilder();
-        url.append("https://ssafybbap.com/together/").append(roomId);
+        url.append("/together/").append(roomId);
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
                 empIds, 2, url.toString(), null
         );
