@@ -16,8 +16,15 @@ const ReceiptHeader: React.FC<ReceiptHeaderProps> = ({
 
   return (
     <div>
-      <div className="font-hyemin-bold text-3xl mt-3 mb-5">
-        {payStore || "식당 정보 없음"}
+      <div
+        className="font-hyemin-bold text-2xl mb-4 mt-1"
+        style={{
+          // width: "100vw",
+          paddingTop: "0.6rem",
+          paddingBottom: "0.3rem",
+        }}
+      >
+        🍰 {payStore || "식당 정보 없음"} 🍰
       </div>
       <div className="font-hyemin-regular text-lg m-5 mt-0">
         {formattedDate}

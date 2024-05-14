@@ -28,8 +28,8 @@ function ReceiptDetail() {
       <img
         src={receipt}
         alt="영수증 이미지"
-        className="absolute top-28 w-94 h-[39rem] z-0"
-        style={{ marginLeft: "2px" }}
+        className="absolute top-28 w-94  z-0"
+        style={{ marginLeft: "2px", height: "75vh" }}
       />
       <div className="relative z-10">
         <ReceiptHeader

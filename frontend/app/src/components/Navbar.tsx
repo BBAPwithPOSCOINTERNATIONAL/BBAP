@@ -44,7 +44,6 @@ const NavBar: React.FC<NavBarProps> = ({ goBack }) => {
                 <FiArrowLeft className="text-3xl cursor-pointer text-white" />
               </button>
               <Link to="/main">
-                {/* <a href="https://www.flaticon.com/kr/free-icons/" title="밥솥 아이콘">밥솥 아이콘 제작자: Freepik - Flaticon</a> */}
                 <img
                   src={bbaphomeimg}
                   className="text-2xl cursor-pointer h-8"
@@ -65,7 +64,7 @@ const NavBar: React.FC<NavBarProps> = ({ goBack }) => {
             {" "}
             <img src={bell} className="text-2xl cursor-pointer h-8" />
             {noticeList.length > 0 && (
-              <span className="absolute top-3 right-3 block h-3.5 w-3.5 rounded-full bg-red-500"></span>
+              <span className="absolute top-4 right-3.5 block h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
             )}
           </Link>
         </div>

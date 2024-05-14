@@ -24,7 +24,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ payment, onClick }) => {
           {payment.totalPaymentAmount} 원
         </p>
       </div>
-      <div className="font-hyemin-regular text-lg flex mt-2 gap-8 justify-between">
+      <div className="font-hyemin-regular text-md flex mt-2 gap-8 justify-between">
         <p style={{ color: "#179F0B" }}>지원금 {payment.useSubsidy} 원</p>
         <p style={{ color: "#346186" }}>본인부담금 {payment.selfPayment} 원</p>
       </div>
