@@ -14,18 +14,21 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   selfPayment,
 }) => {
   return (
-    <div className="m-5 mt-4 flex flex-col items-center">
-      <p className="font-hyemin-bold text-3xl">{paymentDetail}</p>
+    <div
+      className="m-5 mt-4 flex flex-col items-center"
+      style={{ width: "70vw", display: "felx" }}
+    >
+      <p className="font-hyemin-bold text-2xl">{paymentDetail}</p>
       <div className="w-full">
-        <div className="flex justify-between items-center text-2xl my-2">
+        <div className="flex justify-between items-center text-xl my-2">
           <span>총 금액</span>
           <span>{totalPaymentAmount.toLocaleString()}원</span>
         </div>
-        <div className="font-hyemin-bold flex justify-between items-center text-2xl text-green-600 mb-2">
+        <div className="font-hyemin-bold flex justify-between items-center text-xl text-green-600 mb-2">
           <span>지원금</span>
           <span>{useSubsidy.toLocaleString()}원</span>
         </div>
-        <div className="font-hyemin-bold flex justify-between items-center text-2xl text-blue-700 mb-2">
+        <div className="font-hyemin-bold flex justify-between items-center text-xl text-blue-700 mb-2">
           <span>본인부담금</span>
           <span>{selfPayment.toLocaleString()}원</span>
         </div>

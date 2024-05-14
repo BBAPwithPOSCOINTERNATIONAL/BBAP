@@ -11,10 +11,17 @@ import MyOrderPage from "./myorder/MyOrderPage";
 import AloneOrderPage from "./aloneorder/AloneOrderPage";
 import TogetherCreateRoom from "./togetherorder/TogetherCreateRoom";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function CafeMainPage() {
   const navigate = useNavigate();
+
   const { content, setContent } = useContentStore();
+
+  // 수정위해서 탭 고정시켜둠 _나중에 주석이나 삭제하기
+  useEffect(() => {
+    setContent("together"); // 초기 상태를 "together"로 설정
+  }, [setContent]);
 
   // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
   // const [orderRoomInfo, setOrderRoomInfo] = useState<string | null>(null);
