@@ -8,6 +8,8 @@ import {
 } from "../../../api/togetherAPI";
 import { useNavigate } from "react-router-dom";
 
+import Pobap from "/assets/images/hello.png";
+
 const TogetherCreateRoom = () => {
   const [cafeList, setCafeList] = useState<Cafe[]>([]);
   const [selectedCafeId, setSelectedCafeId] = useState<string>("");
@@ -136,6 +138,8 @@ const TogetherCreateRoom = () => {
         </div>
 
         <div className="flex px-4 gap-2 w-full flex-grow ">
+          <img src={Pobap} className="w-36 fixed top-[70%] left-[7%]" />
+          <img src={Pobap} className="w-36 fixed top-[70%] right-[6%]" />
           <button
             className={`bg-primary-color text-lg py-2 px-4 rounded hover:bg-primary-dark mt-2 font-hyemin-bold w-1/2 pb-24 button-door ${
               isDoorOpen && clickedButton === "newRoom" ? "open" : ""
@@ -147,7 +151,7 @@ const TogetherCreateRoom = () => {
               <br />
               들어가기
             </div>
-            <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-500"></span>
+            <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-200"></span>
           </button>
           {orderRoomId !== "" && (
             <button
@@ -162,7 +166,7 @@ const TogetherCreateRoom = () => {
                 <br />
                 들어가기
               </div>
-              <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-500"></span>
+              <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-200"></span>
             </button>
           )}
         </div>

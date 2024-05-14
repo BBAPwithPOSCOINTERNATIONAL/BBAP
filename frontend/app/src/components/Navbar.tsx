@@ -64,7 +64,7 @@ const NavBar: React.FC<NavBarProps> = ({ goBack }) => {
             {" "}
             <img src={bell} className="text-2xl cursor-pointer h-8" />
             {noticeList.length > 0 && (
-              <span className="absolute top-4 right-3.5 block h-2.5 w-2.5 rounded-full bg-red-500"></span>
+              <span className="absolute top-4 right-3.5 block h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
             )}
           </Link>
         </div>
