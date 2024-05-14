@@ -13,7 +13,7 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install -y build-essential cmake \
+    && apt-get install -y build-essential cmake libgl1-mesa-glx libglib2.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && pip install --no-cache-dir -r requirements.txt
