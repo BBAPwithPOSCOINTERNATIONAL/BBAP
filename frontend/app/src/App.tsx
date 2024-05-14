@@ -95,10 +95,6 @@ const router = createBrowserRouter([
     element: <CartPage />,
   },
   {
-    path: "together/:roomId/roulette",
-    element: <RoulettePage />,
-  },
-  {
     path: "together/:roomId/order",
     element: <TogetherPayment />,
   },
@@ -109,10 +105,6 @@ const router = createBrowserRouter([
   {
     path: "after",
     element: <AfterPaymentPage />,
-  },
-  {
-    path: "together/:roomId/winner",
-    element: <WinnerPage />,
   },
   {
     path: "notification",
