@@ -11,12 +11,10 @@ import com.bbap.face.dto.response.DataResponseDto;
 import com.bbap.face.dto.response.ResponseDto;
 import com.bbap.face.entity.FaceEntity;
 import com.bbap.face.exception.FaceNotFoundException;
-import com.bbap.face.exception.FaceUnprocessException;
 import com.bbap.face.exception.RegisterNotFoundException;
 import com.bbap.face.feign.FaceServiceFeignClient;
 import com.bbap.face.repository.FaceRepository;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,35 +38,27 @@ public class FaceServiceImpl implements FaceService {
 
 		//fast api로 등록 처리
 		RegisterFaceRequestDto feignRequest = new RegisterFaceRequestDto(request.getFaceImage(), empId);
-		try {
-			log.info("{} : 얼굴 정보 등록 성공", empId);
-			return faceServiceFeignClient.registerFace(feignRequest);
 
-		} catch (FeignException e) {
-			log.debug("{} : 얼굴 등록 실패", empId);
-			throw new FaceUnprocessException();
-		}
+		ResponseEntity<ResponseDto> result = faceServiceFeignClient.registerFace(feignRequest);
+
+		log.info("{} : 얼굴 정보 등록 성공", empId);
+
+		return result;
 	}
 
 	@Override
 	public ResponseEntity<DataResponseDto<CheckFaceResponseData>> checkFace(FaceRequestDto request) {
 		//얼굴 인식 처리
-		try {
-			ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
-				= faceServiceFeignClient.predictFace(request);
+		ResponseEntity<DataResponseDto<CheckFaceResponseData>> response
+			= faceServiceFeignClient.predictFace(request);
 
-			if (response.getBody() == null || response.getBody().getData().getEmpId() == -1) {
-				log.debug("등록되지 않은 얼굴");
-				throw new FaceNotFoundException();
-			}
-
-			log.info("인식된 empId : {}", response.getBody().getData().getEmpId());
-			return response;
-
-		} catch (FeignException e) {
-			log.debug("얼굴 인식 실패");
-			throw new FaceUnprocessException();
+		if (response.getBody() == null || response.getBody().getData().getEmpId() == -1) {
+			log.debug("등록되지 않은 얼굴");
+			throw new FaceNotFoundException();
 		}
+
+		log.info("인식된 empId : {}", response.getBody().getData().getEmpId());
+		return response;
 	}
 
 	@Override
@@ -78,7 +68,7 @@ public class FaceServiceImpl implements FaceService {
 			log.debug("{} : 얼굴 정보를 등록하지 않은 사원", empId);
 			throw new RegisterNotFoundException();
 		}
-		
+
 		return ResponseDto.success();
 	}
 }
