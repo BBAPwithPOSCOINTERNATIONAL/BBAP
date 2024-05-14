@@ -135,6 +135,7 @@ public class HrServiceImpl implements HrService {
         EmployeePayData data = EmployeePayData
                 .builder()
                 .empId(employee.getEmpId())
+                .empNo(employee.getEmpNo())
                 .empName(employee.getEmpName())
                 .subsidy(
                         SubsidyDto.builder()
@@ -174,6 +175,7 @@ public class HrServiceImpl implements HrService {
         EmployeePayData data = EmployeePayData
             .builder()
             .empId(employee.getEmpId())
+            .empNo(employee.getEmpNo())
             .empName(employee.getEmpName())
             .subsidy(
                 SubsidyDto.builder()

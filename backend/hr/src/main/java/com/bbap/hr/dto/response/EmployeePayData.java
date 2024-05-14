@@ -12,6 +12,7 @@ import java.sql.Time;
 @Builder
 public class EmployeePayData {
     private Integer empId;
+    private String empNo;
     private String empName;
     private SubsidyDto subsidy;
     private Time currTime;
