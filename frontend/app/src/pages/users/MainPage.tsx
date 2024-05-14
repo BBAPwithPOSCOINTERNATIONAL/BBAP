@@ -2,29 +2,23 @@ import { useEffect, useState } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
 import { useUserStore } from "../../store/userStore";
-import { getMonthlyPayments, PaymentData } from "../../api/paymentsAPI";
+import {
+  getMonthlyPayments,
+  PaymentData,
+  getSubsidy,
+  SubsidyDetails,
+} from "../../api/paymentsAPI";
 import totalpayment from "/assets/images/main/totalpayment.png";
 import totalsubsidy from "/assets/images/main/totalsubsidy.png";
+import nowsubsidy from "/assets/images/main/nowsubsidy.png";
 import yours from "/assets/images/main/yours.png";
 import Loading from "../../components/Loading";
 
 function MainPage() {
   const userInfo = useUserStore((state) => state);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [dynamicHeight, setDynamicHeight] = useState("27rem");
-
-  useEffect(() => {
-    const handleResize = () => {
-      const newHeight = window.innerHeight <= 770 ? "27rem" : "30rem";
-      setDynamicHeight(newHeight);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const [subSidy, setSubSidy] = useState<SubsidyDetails | null>();
 
   const carouselItems = paymentData
     ? [
@@ -45,7 +39,6 @@ function MainPage() {
         },
       ]
     : [];
-
   const today = new Date();
 
   const getCurrentDate = () => {
@@ -55,6 +48,20 @@ function MainPage() {
   };
 
   useEffect(() => {
+    const fetchSubsidy = async () => {
+      try {
+        const response = await getSubsidy();
+        setSubSidy(response.data);
+      } catch (error) {
+        console.error("Failed to fetch payment data:", error);
+        setIsLoading(true);
+      }
+    };
+
+    fetchSubsidy();
+  }, []);
+
+  useEffect(() => {
     const fetchPayments = async () => {
       try {
         const response = await getMonthlyPayments(getCurrentDate());
@@ -62,28 +69,12 @@ function MainPage() {
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch payment data:", error);
-        setIsLoading(false);
+        setIsLoading(true);
       }
     };
 
     fetchPayments();
   }, []);
-
-  const changeCarousel = (newIndex: number) => {
-    setCarouselIndex(newIndex % carouselItems.length);
-  };
-
-  const handleNext = () => {
-    changeCarousel(carouselIndex + 1);
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      changeCarousel(carouselIndex + 1);
-    }, 3000);
-
-    return () => clearInterval(timer);
-  }, [carouselIndex, carouselItems.length]);
 
   if (isLoading) {
     return <Loading />;
@@ -94,38 +85,35 @@ function MainPage() {
       <NavBar />
       <div className="p-4">
         <div className="text-center mt-2">
-          {userInfo && userInfo.empName ? (
-            <h1 className="text-4xl font-hyemin-bold text-white">
-              {userInfo.empName} 님의 {today.getMonth() + 1}월
-            </h1>
-          ) : (
-            <h1 className="text-4xl font-hyemin-bold text-white">
-              Loading or error...
-            </h1>
-          )}
-          <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
-          <div
-            className="mt-4 w-full bg-amber-50 rounded-lg z-0"
-            style={{ height: dynamicHeight }}
-            onTouchStart={handleNext}
-          >
-            <div className="z-10 pt-14">
-              {paymentData && carouselItems.length > 0 && (
-                <>
-                  <div className="text-4xl font-hyemin-bold mb-8">
-                    {carouselItems[carouselIndex].label}
-                  </div>
+          <h1 className="text-2xl font-hyemin-bold text-white">
+            {userInfo.empName}님의 {new Date().getMonth() + 1}월
+          </h1>
+          <p className="text-3xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
+          <div className="mt-4 w-full p-4 py-8 bg-amber-50 rounded-lg z-0">
+            <div className="flex items-center">
+              {carouselItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="w-1/3 text-center flex flex-col items-center"
+                >
+                  <p className="font-bold text-lg">{item.label}</p>
                   <img
-                    src={carouselItems[carouselIndex].picture}
-                    alt="Carousel Image"
-                    className="h-40 mb-8 mx-auto"
+                    src={item.picture}
+                    alt={item.label}
+                    className="w-16 h-16 my-4"
                   />
-                  <p className="text-4xl font-hyemin-bold text-primary-color">
-                    {carouselItems[carouselIndex].value}
-                  </p>
-                </>
-              )}
+                  <p className="font-bold ">{item.value}</p>
+                </div>
+              ))}
             </div>
+          </div>
+          <div className="text-xl font-hyemin-bold text-white mt-8">
+            <p className="text-2xl">현재 사용가능한 지원금</p>{" "}
+          </div>
+          {/* 아직 디자인 수정 필요 */}
+          <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0 h-36 text-[40px] font-bold flex items-center justify-center gap-6">
+            <img src={nowsubsidy} alt="현재지원금" className="w-24 h-24" />
+            <div>{subSidy?.availSubsidy}원</div>
           </div>
         </div>
       </div>

@@ -121,3 +121,26 @@ export const getPaymentDetails = async (
     throw error;
   }
 };
+
+export interface SubsidyDetails {
+  empId: number;
+  availSubsidy: number;
+}
+
+export interface SubsidyDetailsResponse {
+  message: string;
+  data: SubsidyDetails;
+}
+
+export const getSubsidy = async (): Promise<SubsidyDetailsResponse> => {
+  try {
+    const response = await apiClient.get<SubsidyDetailsResponse>(
+      `payments/subsidy`
+    );
+    console.log("Subsidy Details:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};

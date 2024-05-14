@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: "IM_Hyemin-Bold";
-	src: url("/assets/fonts/IM_Hyemin-Bold.ttf");
+  font-family: "IM_Hyemin-Bold";
+  src: url("/assets/fonts/IM_Hyemin-Bold.woff2");
 }
 
 @font-face {
-	font-family: "IM_Hyemin-Regular";
-	src: url("/assets/fonts/IM_Hyemin-Regular.ttf");
+  font-family: "IM_Hyemin-Regular";
+  src: url("/assets/fonts/IM_Hyemin-Regular.woff2");
 }
 
 :root {
-	background-color: #ffffff;
-	padding: 0;
+  background-color: #ffffff;
+  padding: 0;
 }
