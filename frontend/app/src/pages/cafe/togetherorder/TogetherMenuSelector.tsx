@@ -1,25 +1,24 @@
-import React, {useEffect, useState} from "react";
-import {CafeMenuItem} from "../../../api/cafeAPI";
+import React, { useEffect, useState } from "react";
+import { CafeMenuItem } from "../../../api/cafeAPI";
 
 import MenuButtons from "../../../components/cafe/MenuButtons.tsx";
 import useMoveScroll from "../../../hooks/useMoveScroll.tsx";
-import {useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../../../components/Navbar.tsx";
-import {CafeNameInfo} from "../../../components/cafe/CafeNameInfo.tsx";
-import {useRoomStore} from "../../../store/roomStore.tsx";
+import { CafeNameInfo } from "../../../components/cafe/CafeNameInfo.tsx";
+import { useRoomStore } from "../../../store/roomStore.tsx";
 import TogetherMenuSection from "../../../components/cafe/TogetherMenuSection.tsx";
 
 const TogetherMenuSelector: React.FC = () => {
-
-
+  const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("coffee");
   const [menuListCoffee, setMenuListCoffee] = useState<CafeMenuItem[]>([]);
   const [menuListBeverage, setMenuListBeverage] = useState<CafeMenuItem[]>([]);
   const [menuListDessert, setMenuListDessert] = useState<CafeMenuItem[]>([]);
 
-  const {currentCafe, currentCafeMenuList} = useRoomStore()
+  const { currentCafe, currentCafeMenuList } = useRoomStore();
 
-  const {roomId} = useParams();
+  const { roomId } = useParams();
 
   useEffect(() => {
     if (currentCafeMenuList) {
@@ -27,7 +26,6 @@ const TogetherMenuSelector: React.FC = () => {
       setMenuListBeverage(currentCafeMenuList.menuListBeverage);
       setMenuListDessert(currentCafeMenuList.menuListDesert);
     }
-
   }, [currentCafeMenuList]);
 
   const handleMenuSelect = (menu: string) => {
@@ -36,7 +34,6 @@ const TogetherMenuSelector: React.FC = () => {
     else if (menu === "beverage") scrollToBeverage();
     else if (menu === "dessert") scrollToDessert();
   };
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,22 +76,24 @@ const TogetherMenuSelector: React.FC = () => {
   const couponAndButtonsHeight = 10; // CafeCoupon과 버튼 그룹의 높이 추정값
   const totalOffset = navBarHeight + tabsHeight + couponAndButtonsHeight;
 
-  const {element: coffeeRef, onMoveToElement: scrollToCoffee} = useMoveScroll(
+  const { element: coffeeRef, onMoveToElement: scrollToCoffee } = useMoveScroll(
     totalOffset + 270
   );
-  const {element: beverageRef, onMoveToElement: scrollToBeverage} =
+  const { element: beverageRef, onMoveToElement: scrollToBeverage } =
     useMoveScroll(totalOffset + 270);
-  const {element: dessertRef, onMoveToElement: scrollToDessert} =
+  const { element: dessertRef, onMoveToElement: scrollToDessert } =
     useMoveScroll(totalOffset + 270);
 
-
+  const goBack = () => {
+    navigate(-1);
+  };
   return (
     <>
-      <div className="sticky top-0 z-30 bg-white" style={{height: "50px"}}>
-        <NavBar/>
+      <div className="sticky top-0 z-30 bg-white" style={{ height: "50px" }}>
+        <NavBar goBack={goBack} />
       </div>
       <div className="sticky top-[65px] bg-white flex flex-col w-full items-center z-20">
-        {currentCafe && <CafeNameInfo cafe={currentCafe}/>}
+        {currentCafe && <CafeNameInfo cafe={currentCafe} />}
       </div>
       <div className=" sticky top-[100px] z-20 bg-white">
         <div className="flex mt-1">

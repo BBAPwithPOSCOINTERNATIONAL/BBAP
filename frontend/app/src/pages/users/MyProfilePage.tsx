@@ -140,9 +140,13 @@ function MyProfilePage() {
     setShowVideo(false); // 비디오 표시 상태도 업데이트
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="flex flex-col min-h-screen pb-16">
-      <NavBar />
+      <NavBar goBack={goBack} />
       <div className="flex flex-row">
         <p className="text-2xl font-bold text-center mt-6 mx-auto">
           안녕하세요, {userInfo.empName} 님{" "}

@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../../../components/Navbar";
 import useCafeStore from "../../../store/cafeStore";
 import Button from "../../../components/button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import {useNavigate, useParams} from "react-router-dom";
-import {Option, OptionChoice} from "../../../api/cafeAPI";
+import { useNavigate, useParams } from "react-router-dom";
+import { Option, OptionChoice } from "../../../api/cafeAPI";
 import useWebSocket from "../../../api/useWebSocket.tsx";
 
-const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
+const { VITE_WEBSOCKET_URL: websocketURL } = import.meta.env;
 
 function TogetherMenuDetail() {
   const selectedItem = useCafeStore((state) => state.selectedItem);
@@ -20,10 +20,8 @@ function TogetherMenuDetail() {
   const [count, setCount] = useState<number>(1);
   const navigate = useNavigate();
 
-
-  const {roomId} = useParams();
+  const { roomId } = useParams();
   const { addOrderItem } = useWebSocket(websocketURL, roomId);
-
 
   useEffect(() => {
     // 페이지가 처음 렌더링될 때 스크롤을 맨 위로 이동
@@ -33,7 +31,7 @@ function TogetherMenuDetail() {
   const optionOrder = ["온도", "사이즈", "에스프레소 샷", "추가옵션"];
   const initialSelectedOptions: Option[] = [];
   selectedItem?.options.forEach((option: Option) => {
-    initialSelectedOptions.push({...option, choice: []});
+    initialSelectedOptions.push({ ...option, choice: [] });
   });
 
   const [selectedOptions, setSelectedOptions] = useState<Option[]>(
@@ -115,14 +113,16 @@ function TogetherMenuDetail() {
     if (checkOptions()) {
       const requestDto = {
         menuId: selectedItem ? selectedItem.id : "",
-        cnt : count,
-        options: selectedOptions ? selectedOptions.map(option => ({
-          optionName : option.optionName,
-          type : option.type,
-          required : option.required,
-          choiceOptions : option.choice
-        })) : [],
-      }
+        cnt: count,
+        options: selectedOptions
+          ? selectedOptions.map((option) => ({
+              optionName: option.optionName,
+              type: option.type,
+              required: option.required,
+              choiceOptions: option.choice,
+            }))
+          : [],
+      };
 
       addOrderItem(requestDto);
 
@@ -130,14 +130,18 @@ function TogetherMenuDetail() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const navBarHeight = 50; // NavBar의 높이 추정값
   return (
     <div>
       <div
         className="sticky top-0 z-30 bg-white"
-        style={{height: `${navBarHeight}px`}}
+        style={{ height: `${navBarHeight}px` }}
       >
-        <NavBar/>
+        <NavBar goBack={goBack} />
       </div>
 
       {selectedItem && (
@@ -159,8 +163,7 @@ function TogetherMenuDetail() {
                 <p className="text-xl font-hyemin-bold text-center">
                   {selectedItem.price.toLocaleString()}원
                 </p>
-                <div
-                  className="text-sm font-hyemin-regular break-keep mx-6 bg-slate-100 p-4 my-2 text-center b rounded-lg">
+                <div className="text-sm font-hyemin-regular break-keep mx-6 bg-slate-100 p-4 my-2 text-center b rounded-lg">
                   <p>{selectedItem.description}</p>
                 </div>
               </div>
@@ -196,16 +199,16 @@ function TogetherMenuDetail() {
                                   choice.choiceName === "HOT"
                                     ? "border-red-300"
                                     : choice.choiceName === "ICE"
-                                      ? "border-blue-300"
-                                      : ""
+                                    ? "border-blue-300"
+                                    : ""
                                 } ${
                                   selectedTemp === "ICE" &&
                                   choice.choiceName === "ICE"
                                     ? "bg-blue-200 border-2"
                                     : selectedTemp === "HOT" &&
-                                    choice.choiceName === "HOT"
-                                      ? "bg-red-200 border-2"
-                                      : ""
+                                      choice.choiceName === "HOT"
+                                    ? "bg-red-200 border-2"
+                                    : ""
                                 }`}
                               />
                             )

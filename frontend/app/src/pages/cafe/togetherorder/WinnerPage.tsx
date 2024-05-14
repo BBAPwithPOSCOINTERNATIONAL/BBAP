@@ -1,23 +1,21 @@
 import NavBar from "../../../components/Navbar";
-import {useRoomStore} from "../../../store/roomStore.tsx";
-import {useEffect, useState} from "react";
-import {Employee} from "../../../store/roomStore.tsx";
-import {useNavigate, useParams} from "react-router-dom";
+import { useRoomStore } from "../../../store/roomStore.tsx";
+import { useEffect, useState } from "react";
+import { Employee } from "../../../store/roomStore.tsx";
+import { useNavigate, useParams } from "react-router-dom";
 
 function WinnerPage() {
-  const [penaltyWinner, setPenaltyWinner] = useState<Employee>()
-  const [nonWinners, setNonWinners] = useState<Employee[]>([])
+  const [penaltyWinner, setPenaltyWinner] = useState<Employee>();
+  const [nonWinners, setNonWinners] = useState<Employee[]>([]);
 
   const navigate = useNavigate();
-  const {roomId} = useParams();
+  const { roomId } = useParams();
 
-  const {
-    orderers,
-  } = useRoomStore();
+  const { orderers } = useRoomStore();
 
   const navigateToOrderRoom = () => {
-    navigate(`/together/${roomId}`)
-  }
+    navigate(`/together/${roomId}`);
+  };
 
   useEffect(() => {
     const penaltyWinner = orderers.find((orderer) => orderer.isWinner);
@@ -26,10 +24,12 @@ function WinnerPage() {
     setPenaltyWinner(penaltyWinner);
     setNonWinners(nonWinners);
   }, [orderers]);
-
+  const goBack = () => {
+    navigate(-1);
+  };
   return (
     <>
-      <NavBar />
+      <NavBar goBack={goBack} />
       <div className="flex flex-col items-center justify-center font-hyemin-bold">
         <h1 className="text-center mb-4 font-hyemin-bold">
           카페이름 들어올자리

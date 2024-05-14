@@ -91,10 +91,10 @@ function MainPage() {
       <NavBar goBack={goBack} />
       <div className="p-4">
         <div className="text-center mt-2">
-          <h1 className="text-2xl font-hyemin-bold text-white">
+          <h1 className="text-3xl font-hyemin-bold text-white">
             {userInfo.empName}님의 {new Date().getMonth() + 1}월
           </h1>
-          <p className="text-3xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
+          <p className="text-4xl mt-2 font-hyemin-bold text-white">BBAP 기록</p>
           <div className="mt-4 w-full p-4 py-8 bg-amber-50 rounded-lg z-0">
             <div className="flex items-center">
               {carouselItems.map((item, index) => (
@@ -114,7 +114,7 @@ function MainPage() {
             </div>
           </div>
           <div className="text-xl font-hyemin-bold text-white mt-8">
-            <p className="text-2xl">현재 사용가능한 지원금</p>{" "}
+            <p className="text-3xl">현재 사용가능한 지원금</p>{" "}
           </div>
           {/* 아직 디자인 수정 필요 */}
           <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0 h-36 text-[40px] font-bold flex items-center justify-center gap-6">

@@ -1,12 +1,10 @@
-import {useEffect, useRef, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../../../components/Navbar";
 import useWebSocket from "../../../api/useWebSocket.tsx";
-import {useRoomStore} from "../../../store/roomStore.tsx";
+import { useRoomStore } from "../../../store/roomStore.tsx";
 
-const {VITE_WEBSOCKET_URL: websocketURL} = import.meta.env;
-
-
+const { VITE_WEBSOCKET_URL: websocketURL } = import.meta.env;
 
 const RoulettePage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -15,44 +13,35 @@ const RoulettePage = () => {
   const [rouletteText, setRouletteText] = useState("돌려 돌려 돌림판"); // 기본 텍스트 설정
   // const [orderers, setOrderers] = useState<Employee[]>([]);
 
+  const { roomId } = useParams();
 
-  const {roomId} = useParams();
+  const { room, startGame, runWheel } = useWebSocket(websocketURL, roomId);
 
-  const {
-    room,
-    startGame,
-    runWheel,
-  } = useWebSocket(websocketURL, roomId);
-
-  const {
-    orderers,
-    setOrderers,
-    setWinner
-  } = useRoomStore();
+  const { orderers, setOrderers, setWinner } = useRoomStore();
 
   useEffect(() => {
-    if (room?.roomStatus !== 'GAME_END' && room?.orderers) {
-      const ordererObjs = Object.entries(room.orderers).map(([empNo, empName]) => ({
-        empNo: Number(empNo),
-        empName,
-        isWinner: false
-      }));
+    if (room?.roomStatus !== "GAME_END" && room?.orderers) {
+      const ordererObjs = Object.entries(room.orderers).map(
+        ([empNo, empName]) => ({
+          empNo: Number(empNo),
+          empName,
+          isWinner: false,
+        })
+      );
       setOrderers(ordererObjs);
-    } else if (room?.roomStatus === 'GAME_END' && room?.currentOrderer) {
-      const winner = orderers.find((orderer) => orderer.empNo === room?.currentOrderer);
+    } else if (room?.roomStatus === "GAME_END" && room?.currentOrderer) {
+      const winner = orderers.find(
+        (orderer) => orderer.empNo === room?.currentOrderer
+      );
       winner && setWinner(winner);
     }
   }, [room]);
 
-
-
   useEffect(() => {
     if (orderers.length > 0) {
-      startGame()
+      startGame();
     }
   }, [orderers]);
-
-
 
   // const orderers: Name = [
   //   "박영진",
@@ -129,7 +118,7 @@ const RoulettePage = () => {
       setTimeout(() => {
         // const selectedWinner = orderers[randomIndex];
         // setWinner(selectedWinner);
-        runWheel()
+        runWheel();
 
         // 상태 업데이트 후 네비게이션 실행
         setTimeout(() => {
@@ -138,10 +127,13 @@ const RoulettePage = () => {
       }, 2000);
     }
   };
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="flex flex-col items-center relative w-full overflow-hidden">
-      <NavBar/>
+      <NavBar goBack={goBack} />
       <h1 className="font-hyemin-bold text-4xl my-4">{rouletteText}</h1>
       <canvas
         ref={canvasRef}
