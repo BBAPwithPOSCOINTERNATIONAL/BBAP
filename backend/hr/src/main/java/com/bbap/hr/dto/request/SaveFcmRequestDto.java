@@ -15,6 +15,8 @@ import lombok.ToString;
 @ToString
 public class SaveFcmRequestDto {
 	@NotNull
+	int empId;
+
 	@Schema(description = "FcmToken")
 	private String fcmToken;
 }
