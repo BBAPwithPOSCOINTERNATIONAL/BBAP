@@ -143,33 +143,41 @@ function MyProfilePage() {
   return (
     <div className="flex flex-col min-h-screen pb-16">
       <NavBar />
-      <div className="flex flex-row justify-center items-end mt-2">
-        <h1 className="text-2xl font-bold text-center mr-4">
+      <div className="flex flex-row">
+        <p className="text-2xl font-bold text-center mt-6 mx-auto">
           안녕하세요, {userInfo.empName} 님{" "}
-        </h1>
-        <img src={Pobap} className="w-16" />
+        </p>
+        <button
+          onClick={handleLogout}
+          className="bg-slate-50 text-sm p-1 px-3 rounded-md text-center text-slate-400 flex mt-8 mr-5"
+        >
+          로그아웃
+        </button>
       </div>
-      <div className="flex-grow p-4 pt-4">
+
+      <div className="flex-grow p-4 pt-4  ">
         <div
-          className=" shadow-lg rounded-lg px-5 py-4"
+          className="rounded-lg "
           style={{
-            boxShadow:
-              "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
+            backgroundImage: `url(/assets/images/card.png)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            // boxShadow:
+            //   "4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <div className="flex flex-col items-center">
-            <img
-              className="w-64 h-80 mb-2 mt-4"
-              src={userInfo.empImage}
-              alt="Profile"
-              style={{ maxHeight: "280px" }}
-            />
+          <div className="flex flex-col items-center pt-24 pb-4">
+            <img src={Pobap} className="w-36" />
             <button
-              className="mt-4 mb-2 bg-primary-color hover:bg-gray-200 text-white font-bold py-2 px-2 w-full rounded-md text-2xl"
+              className="mt-4 mb-2 bg-[#6397C8] hover:bg-gray-200 text-white font-bold py-2 w-4/5 rounded-md text-2xl"
               onClick={handleCameraAccess}
             >
               얼굴 인식 등록 {captured ? "✅" : ""}
             </button>
+            <div className="text-center font-hyemin-bold text-gray-500 text-sm ">
+              <p>등록을 많이 할 수록 인식률이 높아집니다 :)</p>{" "}
+              <p>다양한 모습을 등록해주세요</p>
+            </div>
             <Modal isOpen={modalOpen}>
               {showVideo && (
                 <>
@@ -196,26 +204,31 @@ function MyProfilePage() {
               )}
             </Modal>
 
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-4 w-full text-center ">
-              <p className="text-gray-600 font-hyemin-bold text-lg">
-                근무지 : {userInfo.workplace?.workplaceName}
-              </p>
+            {/* 사원증 하단 */}
+            <div className="flex felx-row items-end mt-4">
+              <div>
+                <img
+                  className="w-24 h-28 border"
+                  src={userInfo.empImage}
+                  alt="Profile"
+                  style={{ maxHeight: "280px" }}
+                />
+              </div>
+
+              <div className="font-hyemin-bold text-lg ml-4">
+                <div className="mt-2 w-full text-left">
+                  근무지 : {userInfo.workplace?.workplaceName}
+                </div>
+                <div className="mb-2 w-full text-left">
+                  {userInfo.empName} ({userInfo.empNo})
+                </div>
+              </div>
             </div>
-            <div className="bg-blue-100 rounded-md p-4 mt-2 mb-2 py-3 px-4 w-full text-center">
-              <p className="text-gray-600 font-hyemin-bold text-lg">
-                사번 : {userInfo.empNo}
-              </p>
-            </div>
+
+            {/* 사원증 하단 끝 */}
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="bg-slate-50 text-sm p-1 px-3 rounded-md text-slate-400 mx-auto flex mt-4"
-        >
-          로그아웃
-        </button>
       </div>
-
       <BottomTabBar />
     </div>
   );
