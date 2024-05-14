@@ -6,6 +6,7 @@ import {
   startOfWeek,
   endOfWeek,
   isSameMonth,
+  isSameDay,
 } from "date-fns";
 import { addDays, isAfter } from "date-fns";
 import {
@@ -103,17 +104,12 @@ const RenderDays = () => {
     </div>
   );
 };
-
-const RenderCells = ({
-  currentMonth,
-  data,
-  navigation,
-}: {
+const RenderCells: React.FC<{
   currentMonth: Date;
   selectedDate: Date;
   data: PaymentData;
   navigation: NavigateFunction;
-}) => {
+}> = ({ currentMonth, data, navigation }) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -148,6 +144,7 @@ const RenderCells = ({
   const rows = [];
   let days = [];
   let day = startDate;
+  const today = new Date(); // 현재 날짜를 가져옵니다.
 
   while (day <= endDate) {
     for (let i = 0; i < 7; i++) {
@@ -155,7 +152,9 @@ const RenderCells = ({
       const formattedDate = format(day, "d"); // 날짜 텍스트를 형식화하여 할당
       const dayData = paymentsMap.get(day.getDate());
       const isCurrentMonth = isSameMonth(currentDay, currentMonth);
+      const isToday = isSameDay(currentDay, today); // 오늘 날짜인지 확인합니다.
       const opacityClass = isCurrentMonth ? "" : "opacity-50 bg-indigo-50"; // 현재 달이 아닌 날짜에 대한 불투명 클래스
+      const todayClass = isToday ? "bg-yellow-300" : ""; // 오늘 날짜를 강조하는 클래스
 
       days.push(
         <div
@@ -170,10 +169,8 @@ const RenderCells = ({
           onClick={() => onDateClick(currentDay)}
         >
           <span
-            className={`
-            bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} z-0
-          `}
-            // 일자별 숫자나오는칸 스타일링
+            className={`bg-blue-100 border-transparent rounded-t-lg shadow-right ${opacityClass} ${todayClass} z-0`}
+            // 일자별 숫자 나오는 칸 스타일링
             style={{
               borderColor: "gray",
               borderLeft: "1px solid rgb(105, 103, 126)",
@@ -199,7 +196,6 @@ const RenderCells = ({
               width: "100%",
               justifyContent: "center",
               fontWeight: "bold",
-              // borderColor: 'gray',
               borderLeft: "1px solid rgb(105, 103, 126)",
               borderRight: "1px solid rgb(105, 103, 126)",
               borderBottom: "1px solid rgb(105, 103, 126)",

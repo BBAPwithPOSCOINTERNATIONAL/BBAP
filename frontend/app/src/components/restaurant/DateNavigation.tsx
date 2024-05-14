@@ -45,7 +45,7 @@ const DateNavigationButtons: React.FC<DateNavigationButtonsProps> = ({
               isActive
                 ? "border-2 border-blue-500"
                 : "border border-transparent"
-            } hover:border-black ${
+            } hover:border-blue-500 ${
               date.split("\n")[0].includes("토")
                 ? "text-blue-500"
                 : date.split("\n")[0].includes("일")
