@@ -38,6 +38,9 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public ResponseEntity<DataResponseDto<ListNoticeResponseData>> listNotice(int empId) {
 		ListNoticeResponseData data = new ListNoticeResponseData(noticeRepository.findByEmpId(empId));
+
+		//알림 목록 정렬
+		data.getNoticeList().sort((e1, e2) -> e1.getNoticeId() - e2.getNoticeId());
 		return DataResponseDto.of(data);
 	}
 
