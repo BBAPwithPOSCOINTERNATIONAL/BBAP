@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import BottomTabBar from "../../components/BottomTabBar";
-import question from "/assets/images/button/question.png";
-import Modal from "../../components/calendar/subsidymodal"; // 모달 컴포넌트를 import 합니다.
+import Modal from "../../components/calendar/subsidymodal";
 import { useNavigate, useLocation } from "react-router-dom";
 import { format } from "date-fns";
 import { getPaymentDetails } from "../../api/paymentsAPI";
+import PaymentCard from "../../components/receipt/PaymentCard";
+import Header from "../../components/receipt/Header";
+import question from "/assets/images/button/question.png";
 
 interface Payment {
   historyId: number;
@@ -25,7 +27,7 @@ interface LocationState {
 }
 
 function ReceiptDetail() {
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태를 저장하는 변수를 추가합니다.
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState | undefined;
@@ -36,7 +38,6 @@ function ReceiptDetail() {
   const [sortedPayments, setSortedPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
-    // 데이터가 있으면 역순으로 정렬
     if (payments && payments.data && payments.data.paymentList.length > 0) {
       const reversedPayments = [...payments.data.paymentList].reverse();
       setSortedPayments(reversedPayments);
@@ -66,56 +67,16 @@ function ReceiptDetail() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar goBack={goBack} />
-      <div className="flex-grow flex flex-col items-center justify-start my-16 ">
-        {/* 카드 형식으로 각각의 카드를 렌더링 */}
+      <div className="flex-grow flex flex-col items-center justify-start my-16">
         {sortedPayments.map((payment, index) => (
-          <div
+          <PaymentCard
             key={index}
-            className="bg-white rounded-md shadow-lg p-4 py-6 mb-4 w-90 border border-neutral-400"
-            style={{ borderWidth: "2px" }}
-            onClick={() => handleCardClick(payment.historyId)}
-          >
-            <div className="flex justify-between">
-              <p className="font-hyemin-bold text-xl">
-                {payment.paymentDetail}
-              </p>
-              <p className="font-hyemin-bold text-xl">
-                {payment.totalPaymentAmount} 원
-              </p>
-            </div>
-            <div className="font-hyemin-regular text-lg flex mt-2 gap-8 justify-between">
-              <p style={{ color: "#179F0B" }}>지원금 {payment.useSubsidy} 원</p>
-              <p style={{ color: "#346186" }}>
-                본인부담금 {payment.selfPayment} 원
-              </p>
-            </div>
-          </div>
+            payment={payment}
+            onClick={handleCardClick}
+          />
         ))}
       </div>
-
-      <div
-        className="font-hyemin-bold text-2xl"
-        style={{
-          display: "flex",
-          justifyContent: "center", // 가로 가운데 정렬
-          alignItems: "center", // 세로 가운데 정렬
-          width: "100vw",
-          height: "13vh",
-          backgroundColor: "#EFF7FF",
-          boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.3)", // 그림자 추가
-          position: "fixed",
-          gap: "0.7rem",
-        }}
-      >
-        <div
-          style={{
-            marginTop: "3.3rem",
-          }}
-        >
-          <p>{formattedDate} 사용내역</p>
-        </div>
-      </div>
-      {/* question 이미지를 클릭하면 모달을 열도록 합니다. */}
+      <Header formattedDate={formattedDate} />
       <img
         src={question}
         alt="지원금 모달"
