@@ -254,7 +254,7 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
-    setGameResultDisplay(2);
+
     if ((room?.orderers ? Object.keys(room.orderers).length : 0) >= 2) {
       startGame();
     } else {
