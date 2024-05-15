@@ -17,7 +17,7 @@ import { getPayInfo } from "../../../api/orderAPI.tsx";
 function TogetherPayment() {
   const navigate = useNavigate();
   const [couponCount, setCouponCount] = useState<number>(0);
-  const [selectedTime, setSelectedTime] = useState<number>(1);
+  const [selectedTime, setSelectedTime] = useState<number>(0);
   const [isAddAvailable, setIsAddAvailable] = useState<boolean>(true);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [payInfo, setPayInfo] = useState({
@@ -84,6 +84,11 @@ function TogetherPayment() {
   };
 
   const executeOrder = () => {
+    // 예상 수령시간 선택되지 않았을 경우
+    if (selectedTime === 0) {
+      alert("예상 수령시간을 선택해주세요.");
+      return; // 함수 실행을 중단
+    }
     const menuList = products.map(
       (product): OrderItemPayload => ({
         menuId: product.menuId,
@@ -121,17 +126,17 @@ function TogetherPayment() {
   return (
     <div className="mb-20">
       <div className="flex items-center justify-between m-1">
-        <button onClick={() => navigate(-1)} className="text-4xl ml-2">
-          <img src={deletebutton} />
+        <button onClick={() => navigate(-1)} className="ml-2">
+          <img src={deletebutton} className="w-6" />
         </button>
-        <h1 className="text-center text-3xl font-hyemin-bold flex-1">
+        <h1 className="text-center text-2xl font-hyemin-bold flex-1">
           {localStorage.getItem("cafeName")}
         </h1>
         <div></div>{" "}
         {/* 이 div는 h1을 중앙에 위치시키기 위한 더미 요소입니다. */}
       </div>
-      <hr className="h-1 border-1 bg-black mb-2" />
-      <h1 className="m-3 text-2xl font-hyemin-bold">주문목록</h1>
+      <hr className="h-1 bg-gray-400 mb-2" />
+      <h1 className="m-3 text-xl font-hyemin-bold">주문목록</h1>
       <ul className="list-none p-0 m-3">
         {products.map((item, index) => {
           const options = item.options
@@ -179,7 +184,9 @@ function TogetherPayment() {
         />
       </div>
       <hr className="h-2 bg-[#E3E9F6]" />
-      <h1 className="m-3 text-2xl font-hyemin-bold">예상 수령시간</h1>
+      <h1 className="m-3 text-xl font-hyemin-bold">
+        예상 수령시간<span style={{ color: "red" }}>*</span>
+      </h1>
       <div className="flex flex-col items-center mb-4 text-[15px]">
         <div className="flex justify-between w-full px-3">
           <button
@@ -244,7 +251,7 @@ function TogetherPayment() {
       />
 
       <hr className="h-2 bg-[#E3E9F6] my-4" />
-      <div className="text-2xl w-11/12 mx-auto space-y-2 font-hyemin-bold">
+      <div className="text-xl w-11/12 mx-auto space-y-2 font-hyemin-bold">
         <div className="flex justify-between font-hyemin-bold">
           <span>총 주문금액</span>
           <span>{totalPrice.toLocaleString()} 원</span>
@@ -277,7 +284,7 @@ function TogetherPayment() {
         <Button
           onClick={executeOrder}
           text="결제하기"
-          className="w-full text-3xl bg-primary-color text-white h-16 fixed bottom-0 left-0"
+          className="w-full text-2xl bg-primary-color text-white h-16 fixed bottom-0 left-0"
         />
       </div>
     </div>

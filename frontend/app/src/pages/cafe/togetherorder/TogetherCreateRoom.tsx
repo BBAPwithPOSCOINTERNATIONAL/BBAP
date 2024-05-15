@@ -7,6 +7,7 @@ import {
   createOrderRoom,
 } from "../../../api/togetherAPI";
 import { useNavigate } from "react-router-dom";
+import CreateRoomModal from "../../../components/cafe/CreateRoomModal"; // 올바른 import 경로 확인
 
 import Pobap from "/assets/images/hello.png";
 
@@ -18,6 +19,11 @@ const TogetherCreateRoom = () => {
   const [orderRoomId, setOrderRoomId] = useState<string>("");
   const [isDoorOpen, setIsDoorOpen] = useState(false);
   const [clickedButton, setClickedButton] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchOrderRoomInfo = async () => {
@@ -67,6 +73,14 @@ const TogetherCreateRoom = () => {
   };
 
   const handleCreateRoom = async () => {
+    if (orderRoomId) {
+      setIsModalOpen(true);
+    } else {
+      createNewRoom();
+    }
+  };
+
+  const createNewRoom = async () => {
     try {
       setClickedButton("newRoom");
       setIsDoorOpen(true);
@@ -141,10 +155,13 @@ const TogetherCreateRoom = () => {
           <img src={Pobap} className="w-36 fixed top-[70%] left-[7%]" />
           <img src={Pobap} className="w-36 fixed top-[70%] right-[6%]" />
           <button
-            className={`bg-primary-color text-lg py-2 px-4 rounded hover:bg-primary-dark mt-2 font-hyemin-bold w-1/2 pb-24 button-door ${
+            className={`${
+              orderRoomId ? "bg-gray-300" : "bg-primary-color"
+            } text-lg py-2 px-4 rounded hover:bg-primary-dark mt-2 font-hyemin-bold w-1/2 pb-24 button-door ${
               isDoorOpen && clickedButton === "newRoom" ? "open" : ""
             }`}
             onClick={handleCreateRoom}
+            // disabled={!!orderRoomId}
           >
             <div className="bg-blue-50 rounded p-2">
               새로운 주문방
@@ -153,24 +170,30 @@ const TogetherCreateRoom = () => {
             </div>
             <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-200"></span>
           </button>
-          {orderRoomId !== "" && (
-            <button
-              className={`bg-primary-color text-lg py-2 px-4 rounded hover:bg-primary-dark mt-2 font-hyemin-bold w-1/2 pb-24 button-door ${
-                isDoorOpen && clickedButton === "existingRoom" ? "open" : ""
-              }`}
-              style={{ height: "33vh" }}
-              onClick={() => navigateToRoom(orderRoomId)}
-            >
-              <div className="bg-blue-50 rounded p-2">
-                참여중인 방
-                <br />
-                들어가기
-              </div>
-              <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-200"></span>
-            </button>
-          )}
+          <button
+            className={`${
+              !orderRoomId ? "bg-gray-300" : "bg-primary-color"
+            } text-lg py-2 px-4 rounded hover:bg-primary-dark mt-2 font-hyemin-bold w-1/2 pb-24 button-door ${
+              isDoorOpen && clickedButton === "existingRoom" ? "open" : ""
+            }`}
+            style={{ height: "33vh" }}
+            onClick={() => navigateToRoom(orderRoomId)}
+            // disabled={!orderRoomId}
+          >
+            <div className="bg-blue-50 rounded p-2">
+              참여중인 방
+              <br />
+              들어가기
+            </div>
+            <span className="relative top-8 left-28 block h-5 w-4 rounded-full bg-yellow-200"></span>
+          </button>
         </div>
       </div>
+      <CreateRoomModal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        onConfirm={createNewRoom}
+      />
     </>
   );
 };
