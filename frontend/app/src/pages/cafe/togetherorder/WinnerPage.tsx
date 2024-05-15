@@ -1,31 +1,29 @@
 import NavBar from "../../../components/Navbar";
-import {useRoomStore} from "../../../store/roomStore.tsx";
-import {useEffect, useState} from "react";
-import {Employee} from "../../../store/roomStore.tsx";
-import {Room} from "../../../api/useWebSocket.tsx";
-import {useNavigate} from "react-router";
+import { useRoomStore } from "../../../store/roomStore.tsx";
+import { useEffect, useState } from "react";
+import { Employee } from "../../../store/roomStore.tsx";
+import { Room } from "../../../api/useWebSocket.tsx";
+import { useNavigate } from "react-router";
 // import {Room} from "../../../api/useWebSocket.tsx";
 
 // import {useNavigate, useParams} from "react-router-dom";
-
 
 interface WinnerPageProps {
   setGameResultDisplay: (value: number) => void;
   room: Room;
 }
 
-const WinnerPage: React.FC<WinnerPageProps> = ({setGameResultDisplay, room}) => {
-  const [penaltyWinner, setPenaltyWinner] = useState<Employee>()
-  const [nonWinners, setNonWinners] = useState<Employee[]>([])
+const WinnerPage: React.FC<WinnerPageProps> = ({
+  setGameResultDisplay,
+  room,
+}) => {
+  const [penaltyWinner, setPenaltyWinner] = useState<Employee>();
+  const [nonWinners, setNonWinners] = useState<Employee[]>([]);
 
   const navigate = useNavigate();
   // const {roomId} = useParams();
 
-  const {
-    orderers,
-    setWinner
-  } = useRoomStore();
-
+  const { orderers, setWinner } = useRoomStore();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,10 +35,11 @@ const WinnerPage: React.FC<WinnerPageProps> = ({setGameResultDisplay, room}) => 
     };
   }, []);
 
-
   useEffect(() => {
-    if (room?.roomStatus === 'GAME_END' && room?.currentOrderer) {
-      const winner = orderers.find((orderer) => orderer.empNo === room?.currentOrderer.empNo);
+    if (room?.roomStatus === "GAME_END" && room?.currentOrderer) {
+      const winner = orderers.find(
+        (orderer) => orderer.empNo === room?.currentOrderer.empNo
+      );
       winner && setWinner(winner);
     }
   }, [room]);
@@ -53,16 +52,15 @@ const WinnerPage: React.FC<WinnerPageProps> = ({setGameResultDisplay, room}) => 
     setNonWinners(nonWinners);
   }, [orderers]);
 
-
   const goBack = () => {
-    navigate(-1)
-  }
+    navigate(-1);
+  };
   return (
     <>
-      <NavBar goBack={goBack}/>
+      <NavBar goBack={goBack} />
       <div className="flex flex-col items-center justify-center font-hyemin-bold">
         <h1 className="text-center mb-4 font-hyemin-bold">
-          카페이름 들어올자리
+          {localStorage.getItem("cafeName")}
         </h1>
         <p className="text-center text-3xl my-4">
           <div className="text-center text-3xl mt-4">사줄 사람</div>
@@ -83,6 +81,6 @@ const WinnerPage: React.FC<WinnerPageProps> = ({setGameResultDisplay, room}) => 
       </div>
     </>
   );
-}
+};
 
 export default WinnerPage;
