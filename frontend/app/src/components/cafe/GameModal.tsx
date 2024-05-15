@@ -21,7 +21,7 @@ const GameModal: React.FC<ConfirmModalProps> = ({
         <h2 className="mb-3 text-3xl">룰렛 게임을</h2>
         <h2 className="mb-4 text-3xl">시작하시겠습니까?</h2>
         <div className="flex justify-center mb-4">
-          <img src={gameModal} alt="game modal" />
+          <img src={gameModal} alt="game modal" className="w-28"/>
         </div>
         <div className="text-lg">게임을 시작하시면</div>
         <div className="mb-5 text-lg">주문 내역 추가나 변경이 불가합니다</div>

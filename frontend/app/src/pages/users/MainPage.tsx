@@ -15,6 +15,8 @@ import yours from "/assets/images/main/yours.png";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 
+import sadimg from "/assets/images/sad.png";
+
 function MainPage() {
   const userInfo = useUserStore((state) => state);
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
@@ -118,8 +120,19 @@ function MainPage() {
           </div>
           {/* 아직 디자인 수정 필요 */}
           <div className="mt-4 w-full p-4 bg-amber-50 rounded-lg z-0 h-36 text-[40px] font-bold flex items-center justify-center gap-6">
-            <img src={nowsubsidy} alt="현재지원금" className="w-28 h-24" />
-            <div>{subSidy?.availSubsidy}원</div>
+          {subSidy?.availSubsidy !== 0 && (
+    <img src={nowsubsidy} alt="현재지원금" className="w-28 h-24" />
+  )}
+           <div>
+  {subSidy?.availSubsidy === 0 ? (
+    <div className="flex flex-col items-center">
+      <img src={sadimg} alt="슬픈 이미지" className="w-16 mb-2"/>
+      <p className="text-lg">현재 사용할 수 있는 지원금이 없어요</p>
+    </div>
+  ) : (
+    `${subSidy?.availSubsidy}원`
+  )}
+</div>
           </div>
         </div>
       </div>

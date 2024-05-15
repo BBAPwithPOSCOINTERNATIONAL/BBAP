@@ -44,9 +44,12 @@ const NotificationPage: React.FC = () => {
         <p className="text-3xl font-bold mx-auto">알림</p>
       </div>
       <div className="flex justify-end">
-        <button
-          className="border border-2 border-black rounded-lg w-24 text-center font-bold mx-3 p-1"
+      <button
+          className={`border border-2 ${
+            noticeList.length === 0 ? "border-gray-300 text-gray-400" : "border-black"
+          } rounded-lg w-24 text-center font-bold mx-3 p-1`}
           onClick={handleDeleteAllNotification}
+          disabled={noticeList.length === 0} // 버튼 비활성화
         >
           모두 지우기
         </button>
