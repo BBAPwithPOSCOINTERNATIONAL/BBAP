@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import NavBar from "../../../components/Navbar";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
@@ -119,6 +119,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
 function TogetherOrderPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [gameResultDisplay, setGameResultDisplay] = useState<number>(1);
@@ -143,6 +144,13 @@ function TogetherOrderPage() {
   } = useRoomStore();
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      // 로그인되지 않은 경우 로그인 페이지로 리디렉션하고 현재 경로를 상태로 전달
+      navigate("/", { state: { from: location } });
+      return;
+    }
+
     if (room == null) {
       return;
     }
