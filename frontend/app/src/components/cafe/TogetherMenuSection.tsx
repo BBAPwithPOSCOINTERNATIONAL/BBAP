@@ -22,7 +22,7 @@ const TogetherMenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
     return (
       <div ref={ref}>
         <div>
-          <h2 className="sticky top-[130px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
+          <h2 className="sticky top-[142px] z-0 bg-bg-color text-white py-2 p-4 w-full font-hyemin-bold text-lg">
             {title} 메뉴
           </h2>
           <ul className="list-none p-0">
@@ -37,7 +37,7 @@ const TogetherMenuSection = forwardRef<HTMLDivElement, MenuSectionProps>(
                 <li
                   key={index}
                   onClick={() => handleItemClick(item)}
-                  className="flex items-center mb-5 border border-gray-300 p-2.5 rounded-lg font-hyemin-bold"
+                  className="flex items-center border border-gray-300 p-2.5 rounded-lg font-hyemin-bold"
                 >
                   <img
                     src={item.imageUrl}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import NavBar from "../../../components/Navbar";
 import game from "/assets/images/game.png";
 import share from "/assets/images/share.png";
@@ -55,14 +55,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   room,
 }) => {
   return (
-    <div className="m-3 mt-5 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
-      <div className="px-6 py-4 flex justify-between items-center">
+    <div className="m-3 mt-3 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
+      <div className="px-6 pr-3 py-4 pb-2 flex justify-between items-center">
         <div className="font-bold text-xl mb-2">{name} 님</div>
         {owner &&
           (room?.roomStatus === "INITIAL" ||
             room?.roomStatus === "ORDER_FILLED") && (
             <button
-              className="text-base"
+              className="text-base border border-gray-400 px-2 rounded-md mb-2"
               onClick={() => deleteOrderItem(orderItemId)}
             >
               삭제
@@ -119,6 +119,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
 function TogetherOrderPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [gameResultDisplay, setGameResultDisplay] = useState<number>(1);
@@ -143,6 +144,13 @@ function TogetherOrderPage() {
   } = useRoomStore();
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      // 로그인되지 않은 경우 로그인 페이지로 리디렉션하고 현재 경로를 상태로 전달
+      navigate("/", { state: { from: location } });
+      return;
+    }
+
     if (room == null) {
       return;
     }
@@ -289,6 +297,9 @@ function TogetherOrderPage() {
     navigate(-1);
   };
 
+  // 총 주문 가격 계산
+  const totalPrice = products.reduce((sum, product) => sum + product.price, 0);
+
   if (room !== null && room.roomStatus === "ORDERED") {
     return (
       <>
@@ -341,48 +352,52 @@ function TogetherOrderPage() {
     return (
       <>
         <NavBar goBack={goBack} />
-        <div className="flex items-center">
-          {currentCafe && <CafeNameInfo cafe={currentCafe} />}
-          <button
-            onClick={handleExitRoom}
-            className="mt-2 mr-2 min-w-[64px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-base"
-          >
-            나가기
-          </button>
+        <div className="sticky top-[55px] bg-white pb-1">
+          <div className="flex items-center">
+            {currentCafe && <CafeNameInfo cafe={currentCafe} />}
+            <button
+              onClick={handleExitRoom}
+              className="mt-2 mx-1 mr-2 min-w-[80px] bg-[#00588A] text-white border rounded-md p-1 font-hyemin-bold text-center text-xl"
+            >
+              나가기
+            </button>
+          </div>
+          <div className="flex items-center">
+            <input
+              ref={inputRef}
+              type="text"
+              className="mt-2 mx-2 border rounded-md p-1 w-11/12 font-hyemin-bold text-center"
+              value={`https://ssafybbap.com/together/${roomId}`}
+              readOnly
+            />
+            <button
+              onClick={handleCopy}
+              className="flex items-center mt-2 mr-2 min-w-[72px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-base"
+            >
+              <span>공유</span>
+              <img src={share} alt="share icon" className="mx-1 w-6" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center">
-          <input
-            ref={inputRef}
-            type="text"
-            className="border rounded-md m-2 p-1 w-11/12 font-hyemin-bold text-center"
-            value={`https://ssafybbap.com/together/${roomId}`}
-            readOnly
-          />
-          <button
-            onClick={handleCopy}
-            className="flex items-center mr-2 min-w-[85px] bg-[#FFF965] border rounded-md p-1 font-hyemin-bold text-center text-xl"
-          >
-            <span>공유</span>
-            <img src={share} alt="share icon" className="ml-1" />
-          </button>
+        <div className="main-content pb-36">
+          {room && (
+            <ProductList
+              products={products}
+              deleteOrderItem={deleteOrderItem}
+              room={room}
+            />
+          )}
         </div>
-        {room && (
-          <ProductList
-            products={products}
-            deleteOrderItem={deleteOrderItem}
-            room={room}
-          />
-        )}
         <footer
           id="footer"
-          className="fixed bottom-0 left-0 w-full p-4 font-hyemin-bold"
+          className="fixed bottom-0 left-0 w-full p-2 font-hyemin-bold bg-white shadow-md"
         >
           <div className="flex justify-between items-center">
-            <div className="text-xl ml-4">
+            <div className="text-base ml-4">
               총 주문 인원:{" "}
               {(room && room.orderers && Object.keys(room.orderers).length) ||
                 0}
-              명
+              명 <br /> 총 주문 가격: {totalPrice} 원
             </div>
             {room &&
               room.currentOrderer.empId === empId &&
@@ -398,7 +413,7 @@ function TogetherOrderPage() {
               room?.roomStatus === "ORDER_FILLED") && (
               <button
                 onClick={navigateToMenus}
-                className="min-w-[64px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-4"
+                className="min-w-[80px] w-full bg-primary-color text-white border rounded-md p-1 text-center text-2xl mx-1"
               >
                 담기
               </button>
@@ -406,7 +421,7 @@ function TogetherOrderPage() {
             {room?.currentOrderer.empId === empId && (
               <button
                 onClick={navigateOrderPage}
-                className="min-w-[64px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-4"
+                className="min-w-[80px] w-full bg-[#4786C1] text-white border rounded-md p-1  text-center text-2xl mx-1"
               >
                 주문하기
               </button>
@@ -425,9 +440,10 @@ function TogetherOrderPage() {
                 room.roomStatus === "ORDER_FILLED") && (
                 <button
                   disabled={true}
-                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-2xl mx-4"
+                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-lg mx-4"
                 >
-                  주문자 : {room.currentOrderer.name}
+                  주문자 <br />
+                  {room.currentOrderer.name}
                 </button>
               )}
           </div>
