@@ -130,7 +130,7 @@ function TogetherPayment() {
           <img src={deletebutton} className="w-6" />
         </button>
         <h1 className="text-center text-2xl font-hyemin-bold flex-1">
-          {localStorage.getItem("cafeName")}
+          {currentCafe?.name}
         </h1>
         <div></div>{" "}
         {/* 이 div는 h1을 중앙에 위치시키기 위한 더미 요소입니다. */}
