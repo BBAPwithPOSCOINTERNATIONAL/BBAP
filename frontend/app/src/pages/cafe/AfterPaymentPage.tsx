@@ -19,20 +19,18 @@ function AfterPaymentPage() {
 
   return (
     <>
-      <header>
-        <h1 className="text-center text-3xl font-hyemin-bold flex-1">
-          {localStorage.getItem("cafeName")}
-        </h1>
-        <hr className="h-1 border-1 bg-black mb-2 w-full" />
-      </header>
       <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold">
+     
         <div className="flex justify-center items-center h-screen">
           <div className="max-w-lg">
+          <h1 className="text-center text-4xl font-hyemin-bold flex-1">
+          {localStorage.getItem("cafeName")}
+        </h1>
             <p className="text-center text-5xl mb-2">주문번호</p>
             <p className="text-center text-6xl mb-4">
               {location.state.data.orderNum}
             </p>
-            <hr className="h-1 border-1 bg-black mb-4" />
+            <hr className="h-1 border-1 bg-blue-100 mb-4 rounded" />
             <div className="text-center mb-8">
               <p className="text-2xl font-hyemin-regular">사번으로</p>
               <p className="text-2xl font-hyemin-regular">

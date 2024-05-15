@@ -36,7 +36,7 @@ const PWAInstallPrompt = () => {
   };
 
   return (
-    <div className="mx-auto mb-5 w-40 h-40 shadow-lg bg-indigo-50 rounded-full">
+    <div className="mx-auto my-4 w-40 h-40 shadow-lg bg-indigo-50 rounded-full">
       <button onClick={handleInstallClick}>
         {" "}
         <img src={logoimg} alt="Login Logo" />

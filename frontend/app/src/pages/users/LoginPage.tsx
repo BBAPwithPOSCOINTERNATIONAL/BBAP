@@ -85,10 +85,10 @@ function LoginPage() {
         <img
           src={bbapimg}
           alt="Login Logo"
-          className="mx-auto mb-5 mt-0 w-5/6"
+          className="mx-auto mb-2 mt-0 w-5/6"
         />
         <form onSubmit={onSubmit} className="px-4 pt-6 pb-8 mb-4">
-          <div className="mb-8 mt-12">
+          <div className="mb-8 mt-4">
             <input
               type="text"
               id="employeeId"
@@ -100,7 +100,7 @@ function LoginPage() {
               ring-slate-300 focus:shadow-outline text-[18px] "
             />
           </div>
-          <div className="mb-20">
+          <div className="mb-12">
             <input
               type="password"
               id="password"
