@@ -1,8 +1,6 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-// import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
 import bbapimg from "/assets/images/bbap.png";
-// import logoimg from "/assets/images/logo.png";
 import PWAInstallPrompt from "../../components/install";
 import { requestPermission } from "../../service/initFirebase";
 import { login, getUserInfo } from "../../api/hradminAPI";
@@ -10,6 +8,7 @@ import { useUserStore } from "../../store/userStore";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 위치를 저장
   const [loading, setLoading] = useState<boolean>(false);
   const [employeeId, setEmployeeId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -25,21 +24,21 @@ function LoginPage() {
         try {
           const userInfo = await getUserInfo();
           updateUserData(userInfo.data);
-          navigate("/main"); // 유저 정보를 불러와서 업데이트하고 메인 페이지로 리다이렉트
+          navigate(location.state?.from || "/main"); // 유저 정보를 불러와서 업데이트하고 원래 경로로 리다이렉트
         } catch (error) {
           console.error("Failed to fetch user info:", error);
         }
       }
     };
     checkUserLoggedIn();
-  }, [navigate, updateUserData]);
+  }, [navigate, updateUserData, location.state?.from]);
 
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmployeeId(() => e.target.value);
+    setEmployeeId(e.target.value);
   };
 
   const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(() => e.target.value);
+    setPassword(e.target.value);
   };
 
   const onSubmit = async (event: FormEvent) => {
@@ -69,7 +68,7 @@ function LoginPage() {
         const userInfo = await getUserInfo();
         console.log("userinfo", userInfo.data);
         updateUserData(userInfo.data);
-        navigate("/main");
+        navigate(location.state?.from || "/main"); // 로그인 성공 후 원래 경로로 리다이렉트
       }
     } catch (error) {
       alert("아이디 또는 비밀번호를 확인해주세요.");
@@ -82,18 +81,12 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-light-primary-color text-white p-5">
       <div className="w-full max-w-xs">
-        {/* <img
-          src={logoimg}
-          alt="Login Logo"
-          className="mx-auto mb-5 w-36 h-36 shadow-lg bg-indigo-50 rounded-full"
-        /> */}
         <PWAInstallPrompt />
         <img
           src={bbapimg}
           alt="Login Logo"
           className="mx-auto mb-5 mt-0 w-5/6"
         />
-        {/* <h1 className="text-center text-6xl font-hyemin-bold mb-1">BBAP</h1> */}
         <form onSubmit={onSubmit} className="px-4 pt-6 pb-8 mb-4">
           <div className="mb-8 mt-12">
             <input
