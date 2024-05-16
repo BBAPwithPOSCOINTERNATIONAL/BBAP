@@ -307,7 +307,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 
         // 현재 주문자 여부 확인
-        if (room.getCurrentOrderer().equals(empId)) {
+        if (room.getCurrentOrderer().getEmpId().equals(empId)) {
             // 현재 주문자인 경우: 방 상태를 "ROOM_BOOM"으로 설정
             room.setRoomStatus("ROOM_BOOM");
             roomRepository.save(room);

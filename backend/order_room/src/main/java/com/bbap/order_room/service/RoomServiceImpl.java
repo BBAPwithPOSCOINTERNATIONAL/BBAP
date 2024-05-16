@@ -42,10 +42,10 @@ public class RoomServiceImpl implements RoomService {
 
         Optional<EntireParticipant> participant = participantRepository.findById(empId);
         RoomParticipationDto roomParticipationDto = new RoomParticipationDto();
-        if (participant.isPresent()) {
+
+        if (participant.isPresent() && roomRepository.findById(participant.get().getRoomId()).isPresent()) {
             roomParticipationDto.setRoomId(participant.get().getRoomId());
             log.info("사원 ID {}는 방 ID {}에 참여하고 있습니다.", empId, roomParticipationDto.getRoomId());
-
         } else {
             roomParticipationDto.setRoomId(null);
             log.warn("사원 ID {}는 어떤 방에도 참여하고 있지 않습니다.", empId);
