@@ -45,9 +45,6 @@ public class ParticipantRepositoryTest {
                 .filter(participant -> "testRoomId".equals(participant.getRoomId()))
                 .collect(Collectors.toList());
 
-        for (EntireParticipant participant : allParticipantsList) {
-            System.out.println(participant.getRoomId() + " " + participant.getParticipantId() + " 출력");
-        }
 
         assertThat(participants).isNotEmpty();
         assertThat(participants.size()).isEqualTo(11);
