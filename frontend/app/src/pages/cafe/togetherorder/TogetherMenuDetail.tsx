@@ -7,6 +7,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate, useParams } from "react-router-dom";
 import { Option, OptionChoice } from "../../../api/cafeAPI";
 import useWebSocket from "../../../api/useWebSocket.tsx";
+import Loading from "../../../components/Loading.tsx";
 
 const { VITE_WEBSOCKET_URL: websocketURL } = import.meta.env;
 
@@ -21,7 +22,7 @@ function TogetherMenuDetail() {
   const navigate = useNavigate();
 
   const { roomId } = useParams();
-  const { addOrderItem } = useWebSocket(websocketURL, roomId);
+  const { room, addOrderItem } = useWebSocket(websocketURL, roomId);
 
   useEffect(() => {
     // 페이지가 처음 렌더링될 때 스크롤을 맨 위로 이동
@@ -135,6 +136,12 @@ function TogetherMenuDetail() {
   };
 
   const navBarHeight = 50; // NavBar의 높이 추정값
+
+  if (room === null) {
+    return <Loading/>
+  }
+
+
   return (
     <div>
       <div

@@ -15,6 +15,7 @@ import { MenuOption } from "../../../api/useWebSocket.tsx";
 import RoulettePage from "./RoulettePage.tsx";
 import WinnerPage from "./WinnerPage.tsx";
 import Nodata from "../../../components/nodata.tsx";
+import Loading from "../../../components/Loading.tsx";
 
 const { VITE_WEBSOCKET_URL: websocketURL } = import.meta.env;
 
@@ -126,10 +127,6 @@ function TogetherOrderPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [gameResultDisplay, setGameResultDisplay] = useState<number>(1);
-
-  // TODO 1. 나가기 버튼 눌렀을 때 처리 (방장이면 알림창 추가)
-  // TODO 2. product 비어 있는 경우 텅 처리
-  // TODO 3. 공유 눌렀을 때 알림창
 
   const empId = useUserStore((state) => state.empId);
   const { roomId } = useParams();
@@ -303,7 +300,12 @@ function TogetherOrderPage() {
   // 총 주문 가격 계산
   const totalPrice = products.reduce((sum, product) => sum + product.price, 0);
 
-  if (room !== null && room.roomStatus === "ORDERED") {
+
+  if (room === null) {
+    return <Loading/>
+  }
+
+  if (room.roomStatus === "ORDERED") {
     return (
       <>
         <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold" style={{height: '100vh'}}>
@@ -352,7 +354,6 @@ function TogetherOrderPage() {
       </>
     );
   } else if (
-    room !== null &&
     (room.roomStatus === "INITIAL" ||
       room.roomStatus === "GAME_END" ||
       room.roomStatus === "ORDER_FILLED") &&
@@ -464,7 +465,6 @@ function TogetherOrderPage() {
       </>
     );
   } else if (
-    room !== null &&
     (room.roomStatus === "GAME_START" || room.roomStatus === "GAME_END") &&
     gameResultDisplay === 2
   ) {
@@ -476,7 +476,6 @@ function TogetherOrderPage() {
       />
     );
   } else if (
-    room !== null &&
     room?.roomStatus === "GAME_END" &&
     gameResultDisplay === 3
   ) {
