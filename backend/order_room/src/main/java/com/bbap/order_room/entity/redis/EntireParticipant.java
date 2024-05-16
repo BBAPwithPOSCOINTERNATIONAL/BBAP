@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @Setter
@@ -19,5 +20,6 @@ import org.springframework.data.redis.core.TimeToLive;
 public class EntireParticipant {
 	@Id
 	private Integer participantId;
+	@Indexed
 	private String roomId;
 }
