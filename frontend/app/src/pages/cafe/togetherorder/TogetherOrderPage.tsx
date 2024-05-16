@@ -332,23 +332,19 @@ function TogetherOrderPage() {
                       (menu) => menu.id === item.menuId
                     );
                     return match ? (
-                      <p
-                        className="text-xl"
-                        style={{ height: "53vh" }}
-                        key={index}
-                      >
+                      <p className="text-xl" key={index}>
                         {match.name} X {item.cnt}
                       </p>
                     ) : null;
                   })}{" "}
-                  <div className="mt-2 text-xl text-white">
-                    총 주문 가격: {totalPrice} 원
-                  </div>
                 </div>
               ) : null}
             </div>
           </section>
           <footer className="fixed bottom-0 w-full">
+            <div className="mt-2 text-xl text-white text-center p-2 mb-4">
+              총 주문 가격: {totalPrice} 원
+            </div>
             <button
               className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-2xl"
               onClick={() => navigate("/main")}
@@ -457,7 +453,7 @@ function TogetherOrderPage() {
                 room.roomStatus === "ORDER_FILLED") && (
                 <button
                   disabled={true}
-                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-2 text-center text-sm mx-4"
+                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-2 text-center text-base mx-4"
                 >
                   주문자:{room.currentOrderer.name}
                 </button>
