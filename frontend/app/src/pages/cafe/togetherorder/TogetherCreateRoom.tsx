@@ -73,11 +73,7 @@ const TogetherCreateRoom = () => {
   };
 
   const handleCreateRoom = async () => {
-    if (orderRoomId) {
-      setIsModalOpen(true);
-    } else {
-      createNewRoom();
-    }
+    setIsModalOpen(true);
   };
 
   const createNewRoom = async () => {
@@ -119,7 +115,7 @@ const TogetherCreateRoom = () => {
             perspective: 1000px;
             transform-style: preserve-3d;
             transition: transform 0.3s;
-            transform-origin: left; /* Add this line */
+            transform-origin: left;
           }
           .button-door.open {
             animation: doorOpen 0.3s forwards;
@@ -193,6 +189,8 @@ const TogetherCreateRoom = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         onConfirm={createNewRoom}
+        orderRoomId={orderRoomId}
+        selectedCafeName={selectedCafeName}
       />
     </>
   );

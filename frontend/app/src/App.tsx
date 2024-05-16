@@ -6,7 +6,7 @@ import AdminInquiryPage from "./pages/admin/AdminPage";
 import PeriodInquiryPage from "./pages/admin/PeriodInquiryPage";
 // Firebase 사용하려면 아래 주석해제 해야함
 import "./service/initFirebase.ts";
-import NotificationListener from './service/foregroundMessage.ts';
+import NotificationListener from "./service/foregroundMessage.ts";
 
 // Page들
 import LoginPage from "./pages/users/LoginPage";
@@ -78,11 +78,11 @@ const router = createBrowserRouter([
   },
   {
     path: "together/:roomId/menus",
-    element: <TogetherMenuSelector />
+    element: <TogetherMenuSelector />,
   },
   {
     path: "together/:roomId/detail",
-    element: <TogetherMenuDetail />
+    element: <TogetherMenuDetail />,
   },
   {
     path: "detail",
@@ -113,7 +113,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <div>
+      <div className="app-container">
         <QueryClientProvider client={queryClient}>
           <NotificationListener />
           <RouterProvider router={router} />
