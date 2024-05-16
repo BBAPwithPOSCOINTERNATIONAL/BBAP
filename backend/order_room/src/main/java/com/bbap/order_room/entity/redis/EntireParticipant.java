@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@RedisHash("EntireParticipant")
+@RedisHash(value = "EntireParticipant", timeToLive = 43200)
 public class EntireParticipant {
 	@Id
 	private Integer participantId;
