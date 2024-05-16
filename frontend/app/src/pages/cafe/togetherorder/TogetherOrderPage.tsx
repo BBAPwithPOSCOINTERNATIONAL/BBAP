@@ -70,7 +70,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
       </div>
       <div className="flex flex-row justify-between">
-
         <div>
           <div className="px-3">{menuname}</div>
           <div className="font-hyemin-regular text-sm ml-3 mb-2">
@@ -81,7 +80,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             ))}
           </div>
         </div>
-
 
         <span className="inline-block rounded-full py-1 mb-2 min-w-[90px] pr-3 text-end font-hyemin-bold">
           {price}원
@@ -306,47 +304,57 @@ function TogetherOrderPage() {
   if (room !== null && room.roomStatus === "ORDERED") {
     return (
       <>
-        <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold" style={{height: '100vh'}}>
-        <h1 className="text-center text-3xl font-hyemin-bold flex-1 pt-8">
+        <div
+          className="container bg-[#4786C1] text-white rounded font-hyemin-bold"
+          style={{ height: "100vh" }}
+        >
+          <h1 className="text-center text-3xl font-hyemin-bold flex-1 pt-8">
             {currentCafe?.name} 에서
           </h1>
           <div className="my-4 text-center text-xl">
             <p>함께주문하기가 완료된 방입니다.</p>
           </div>
-          <section className="bg-white m-2 p-4 text-black text-center rounded" style={{height: "61vh", width:"90vw", marginLeft: "5vw"
-          }}>
-            <div className=" flex flex-col justify-space-between" >
-            <p className="text-2xl mb-2">&lt;주문내역&gt;</p>
-            {room && room.orderItems && currentCafeMenuList ? (
-            <div className=" ">
-              {room.orderItems.map((item, index) => {
-                const menuLists = [
-                  ...currentCafeMenuList.menuListCoffee,
-                  ...currentCafeMenuList.menuListBeverage,
-                  ...currentCafeMenuList.menuListDesert,
-                ];
-                const match = menuLists.find((menu) => menu.id === item.menuId);
-                return match ? (
-                  <p className="text-xl" style={{ height: '53vh'}} key={index}>
-                    {match.name} X {item.cnt}
-                  </p>
-                ) : null;
-              })}              <div className="mt-2 text-xl text-white">
-                총 주문 가격: {totalPrice} 원
-              </div>
+          <section
+            className="bg-white m-2 p-4 text-black text-center rounded"
+            style={{ height: "61vh", width: "90vw", marginLeft: "5vw" }}
+          >
+            <div className=" flex flex-col justify-space-between">
+              <p className="text-2xl mb-2">&lt;주문내역&gt;</p>
+              {room && room.orderItems && currentCafeMenuList ? (
+                <div className=" ">
+                  {room.orderItems.map((item, index) => {
+                    const menuLists = [
+                      ...currentCafeMenuList.menuListCoffee,
+                      ...currentCafeMenuList.menuListBeverage,
+                      ...currentCafeMenuList.menuListDesert,
+                    ];
+                    const match = menuLists.find(
+                      (menu) => menu.id === item.menuId
+                    );
+                    return match ? (
+                      <p
+                        className="text-xl"
+                        style={{ height: "53vh" }}
+                        key={index}
+                      >
+                        {match.name} X {item.cnt}
+                      </p>
+                    ) : null;
+                  })}{" "}
+                  <div className="mt-2 text-xl text-white">
+                    총 주문 가격: {totalPrice} 원
+                  </div>
+                </div>
+              ) : null}
             </div>
-          ) : null}
-        </div>
-
           </section>
           <footer className="fixed bottom-0 w-full">
-
-          <button
-            className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-2xl"
-            onClick={() => navigate("/main")}
-          >
-            확인
-          </button>
+            <button
+              className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-2xl"
+              onClick={() => navigate("/main")}
+            >
+              확인
+            </button>
           </footer>
         </div>
       </>
@@ -473,6 +481,7 @@ function TogetherOrderPage() {
         room={room}
         setGameResultDisplay={setGameResultDisplay}
         runWheel={runWheel}
+        totalPrice={totalPrice}
       />
     );
   } else if (

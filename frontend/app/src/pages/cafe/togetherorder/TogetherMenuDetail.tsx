@@ -158,7 +158,7 @@ function TogetherMenuDetail() {
                 <img
                   src={selectedItem.imageUrl}
                   alt={selectedItem.name}
-                  className="w-1/2 mx-auto my-2"
+                  className="w-2/5 mx-auto my-2"
                 />
                 <p className="text-xl font-hyemin-bold text-center">
                   {selectedItem.price.toLocaleString()}원
