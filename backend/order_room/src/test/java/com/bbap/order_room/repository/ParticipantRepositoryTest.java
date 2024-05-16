@@ -4,6 +4,7 @@ import com.bbap.order_room.config.RedisTestContainerConfig;
 import com.bbap.order_room.entity.redis.EntireParticipant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +35,7 @@ public class ParticipantRepositoryTest {
             participantRepository.save(participant);
         }
     }
-
+    @DisplayName("모든 유저를 조회한 뒤 RoomId를 기준으로 Stream을 통해 분류")
     @Test
     public void whenFindByRoomId_thenReturnParticipants() {
         // When
@@ -50,7 +51,7 @@ public class ParticipantRepositoryTest {
         assertThat(participants.size()).isEqualTo(11);
         assertThat(participants.get(0).getRoomId()).isEqualTo("testRoomId");
     }
-
+    @DisplayName("Redis의 Secondary Index를 활용하여 분류")
     @Test
     public void whenFindByRoomIdMethod_thenReturnParticipants() {
         // When
