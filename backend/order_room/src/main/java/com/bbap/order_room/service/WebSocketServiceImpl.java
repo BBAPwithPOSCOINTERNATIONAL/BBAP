@@ -18,6 +18,7 @@ import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
 import com.bbap.order_room.dto.requestDto.SendNoticeRequestDto;
+import com.bbap.order_room.dto.responseDto.CafeInfoOrderListDto;
 import com.bbap.order_room.dto.responseDto.CheckEmpResponseData;
 import com.bbap.order_room.dto.responseDto.DataResponseDto;
 import com.bbap.order_room.dto.responseDto.OrderResponseDto;
@@ -31,6 +32,7 @@ import com.bbap.order_room.entity.redis.Session;
 import com.bbap.order_room.exception.OrderItemNotFoundException;
 import com.bbap.order_room.exception.RoomEntityNotFoundException;
 import com.bbap.order_room.exception.SessionEntityNotFoundException;
+import com.bbap.order_room.feign.CafeServiceFeignClient;
 import com.bbap.order_room.feign.HrServiceFeignClient;
 import com.bbap.order_room.feign.OrderServiceFeignClient;
 import com.bbap.order_room.repository.ParticipantRepository;
@@ -53,6 +55,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final SimpMessagingTemplate messagingTemplate;
     private final HrServiceFeignClient hrServiceFeignClient;
     private final OrderServiceFeignClient orderServiceFeignClient;
+    private final CafeServiceFeignClient cafeServiceFeignClient;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -279,8 +282,10 @@ public class WebSocketServiceImpl implements WebSocketService {
         //알림용 url 생성
         StringBuilder url = new StringBuilder();
         url.append("together/").append(roomId);
+        CafeInfoOrderListDto responseDto = cafeServiceFeignClient.cafeInfo(room.getCafeId()).getBody().getData();
+        String storeName = responseDto.getCafeName();
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-                empIds, 2, url.toString(), null
+                empIds, 2, url.toString(), storeName
         );
         String message = new Gson().toJson(sendNoticeRequestDto);
         kafkaTemplate.send("notice_topic", message);
