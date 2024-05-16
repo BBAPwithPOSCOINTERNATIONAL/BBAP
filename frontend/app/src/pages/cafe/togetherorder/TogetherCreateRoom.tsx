@@ -157,7 +157,6 @@ const TogetherCreateRoom = () => {
               isDoorOpen && clickedButton === "newRoom" ? "open" : ""
             }`}
             onClick={handleCreateRoom}
-            // disabled={!!orderRoomId}
           >
             <div className="bg-blue-50 rounded p-2">
               새로운 주문방
@@ -173,8 +172,13 @@ const TogetherCreateRoom = () => {
               isDoorOpen && clickedButton === "existingRoom" ? "open" : ""
             }`}
             style={{ height: "33vh" }}
-            onClick={() => navigateToRoom(orderRoomId)}
-            // disabled={!orderRoomId}
+            onClick={() => {
+              if (!orderRoomId) {
+                alert("현재 참여중인 방이 없습니다.");
+              } else {
+                navigateToRoom(orderRoomId);
+              }
+            }}
           >
             <div className="bg-blue-50 rounded p-2">
               참여중인 방
