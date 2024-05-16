@@ -314,7 +314,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
             // 방의 모든 참여자 제거
             List<EntireParticipant> participantsToDelete = participantRepository.findAllByRoomId(roomId);
-            log.info("사원 ID {}이(가) 방 {}의 방장이므로 전체 참여자를 제거했습니다.", empId, roomId);
+            log.info("사원 ID {}이(가) 방 {}의 방장이므로 전체 참여자 {}명의 참여 정보를 제거했습니다.", empId, roomId, participantsToDelete.size());
 
             participantRepository.deleteAll(participantsToDelete);
         } else {
