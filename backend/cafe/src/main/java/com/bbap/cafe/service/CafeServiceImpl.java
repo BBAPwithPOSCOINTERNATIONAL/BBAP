@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.CafeSummaryDto;
 import com.bbap.cafe.dto.response.ChoiceDto;
@@ -141,18 +142,18 @@ public class CafeServiceImpl implements CafeService {
 		return DataResponseDto.of(menuListDto);
 	}
 
-	// @Override
-	// public ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId) {
-	// 	Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
-	// 	int workPlaceId = cafe.getWorkPlaceId();
-	//
-	// 	//근무지 이름 가져오기
-	// 	String workPlaceName = "부산";
-	//
-	// 	CafeInfoOrderListDto response = new CafeInfoOrderListDto(cafe.getName(), workPlaceName);
-	//
-	// 	return DataResponseDto.of(response);
-	// }
+	@Override
+	public ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId) {
+		Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(CafeEntityNotFoundException::new);
+		int workPlaceId = cafe.getWorkPlaceId();
+
+		//근무지 이름 가져오기
+		String workPlaceName = "부산";
+
+		CafeInfoOrderListDto response = new CafeInfoOrderListDto(cafe.getName(), workPlaceName);
+
+		return DataResponseDto.of(response);
+	}
 
 	private SelectedCafeDto getSelectedCafeDto(List<Menu> menus, Cafe cafe, Integer empId) {
 		List<MenuDto> coffeeMenus = new ArrayList<>();
@@ -196,7 +197,7 @@ public class CafeServiceImpl implements CafeService {
 			}
 		}
 
-		int stampCount = getStampCount(cafe.getId(), empId);  // 직원 ID 예시로 '1' 사용, 실제로는 파라미터로 받거나 세션에서 가져올 수 있음
+		int stampCount = getStampCount(cafe.getId(), empId);
 
 		// 선택된 카페의 모든 정보와 메뉴 리스트를 포함하여 SelectedCafeDto 객체 생성
 		return new SelectedCafeDto(

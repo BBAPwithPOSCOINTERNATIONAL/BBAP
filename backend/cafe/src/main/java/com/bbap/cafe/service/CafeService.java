@@ -2,6 +2,7 @@ package com.bbap.cafe.service;
 
 import org.springframework.http.ResponseEntity;
 
+import com.bbap.cafe.dto.response.CafeInfoOrderListDto;
 import com.bbap.cafe.dto.response.CafeListDto;
 import com.bbap.cafe.dto.response.MenuListDto;
 import com.bbap.cafe.dto.response.SelectedCafeDto;
@@ -17,5 +18,5 @@ public interface CafeService {
 
 	ResponseEntity<DataResponseDto<MenuListDto>> menuList(String cafeId);
 
-	// ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId);
+	ResponseEntity<DataResponseDto<CafeInfoOrderListDto>> cafeInfoForOrderList(String cafeId);
 }
