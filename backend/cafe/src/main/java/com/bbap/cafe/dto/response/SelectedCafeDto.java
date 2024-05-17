@@ -16,7 +16,7 @@ public class SelectedCafeDto {
 	private String openTime;
 	private String closeTime;
 	private int stampCnt;
-	private List<MenuSummaryDto> menuListCoffee;
-	private List<MenuSummaryDto> menuListBeverage;
-	private List<MenuSummaryDto> menuListDesert;
+	private List<MenuDto> menuListCoffee;
+	private List<MenuDto> menuListBeverage;
+	private List<MenuDto> menuListDesert;
 }

@@ -1,8 +1,9 @@
-package com.bbap.cafe.dto.response;
+package com.bbap.cafe.dto.responseDto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,10 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuSummaryDto {
-	private String id;
-	private String name;
-	private int price;
-	private String description;
-	private String imageUrl;
+@Builder
+public class ListWorkplaceData {
+	private List<WorkplaceDto> workplaceList;
 }
