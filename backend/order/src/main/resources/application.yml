@@ -18,4 +18,11 @@ logging:
         SQL: DEBUG
         type: TRACE
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
