@@ -17,7 +17,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor // 기본 생성자 추가
 @ToString
 @RedisHash(value = "Room", timeToLive = 43200) // 12시간 유지
 public class Room {
