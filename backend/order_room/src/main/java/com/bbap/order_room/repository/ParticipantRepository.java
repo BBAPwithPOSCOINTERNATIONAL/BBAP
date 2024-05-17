@@ -9,5 +9,5 @@ import com.bbap.order_room.entity.redis.EntireParticipant;
 
 @Repository
 public interface ParticipantRepository extends CrudRepository<EntireParticipant, Integer> {
-	List<EntireParticipant> findAllByRoomId(String roomId);
+	List<EntireParticipant> findByRoomId(String roomId);
 }

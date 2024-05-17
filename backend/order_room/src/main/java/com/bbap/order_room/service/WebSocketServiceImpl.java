@@ -12,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.order_room.dto.RedisMessagePublisher;
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
@@ -55,6 +56,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final OrderServiceFeignClient orderServiceFeignClient;
     private final CafeServiceFeignClient cafeServiceFeignClient;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final RedisMessagePublisher redisMessagePublisher;
 
     @Override
     public void connectRoom(Integer empId, String sessionId, String roomId) {
@@ -62,7 +64,11 @@ public class WebSocketServiceImpl implements WebSocketService {
         sessionRepository.save(session);
         log.info("사원 ID {}, 세션 ID {}을 사용하여 방 ID {}에 성공적으로 연결되었습니다.", empId, sessionId, roomId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // 특정 세션 ID에 메시지 전송
+        //     messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -100,6 +106,7 @@ public class WebSocketServiceImpl implements WebSocketService {
             empId
         );
 
+        // 주문을 담은 유저가 해당방에 참가중 상태가 아니라면 Participant 엔티티를 생성하거나 변경
         Optional<EntireParticipant> participant = participantRepository.findById(empId);
         if (participant.isEmpty()) {
             EntireParticipant newParticipant = new EntireParticipant(empId, roomId);
@@ -121,11 +128,13 @@ public class WebSocketServiceImpl implements WebSocketService {
         room.getOrderers().put(empId, currentOrderer);
         log.info("사원 ID {}와 이름 {}을 주문자 목록에 추가했습니다.", empId, name);
 
-        room.setRoomStatus("ORDER_FILLED");
+        room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
         roomRepository.save(room);
-
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
+        //구독자에게 알리기
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -135,7 +144,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Integer empId = getEmpId(sessionId);
         String roomId = getRoomId(sessionId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-
+        // 방 상태 확인
         if (!room.getRoomStatus().equals("ORDER_FILLED")) {
             throw new IllegalStateException("'ORDER_FILLED' 상태여야 주문 삭제가 가능합니다.");
         }
@@ -147,18 +156,22 @@ public class WebSocketServiceImpl implements WebSocketService {
             room.getOrderItems().remove(itemToRemove.get());
             log.info("주문 아이템 ID {} 삭제되었습니다.", orderItemId);
 
+            // 주문 목록이 비어있으면 상태를 초기화
             if (room.getOrderItems().isEmpty()) {
                 room.setRoomStatus("INITIAL");
             }
-
+            // 해당 주문 항목을 담은 사용자의 ID 검사
             Integer ordererId = itemToRemove.get().getOrderer();
+            // 사용자가 다른 주문 항목을 가지고 있지 않을 경우만 `orderers` 및 `participantRepository`에서 제거
             if (isLastOrderFromUser(room, ordererId)) {
                 room.getOrderers().remove(ordererId);
-                participantRepository.deleteById(ordererId);
+                participantRepository.deleteById(ordererId); // `EntireParticipant`에서 제거
             }
             roomRepository.save(room);
-            messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-            log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+            // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+            // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+            redisMessagePublisher.publish(new Gson().toJson(room));
+            log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
         } else {
             log.error("주문 아이템 ID {}를 찾을 수 없습니다.", orderItemId);
@@ -173,7 +186,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Integer empId = getEmpId(sessionId);
         String roomId = getRoomId(sessionId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-
+        // 방 상태 확인
         if (!room.getRoomStatus().equals("ORDER_FILLED")) {
             throw new IllegalStateException("'ORDER_FILLED' 상태여야 게임 시작이 가능합니다.");
         }
@@ -182,8 +195,11 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("방 {}의 상태가 'GAME_START'로 변경되었습니다.", roomId);
 
         roomRepository.save(room);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
+
     }
 
     @Override
@@ -192,7 +208,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         Integer empId = getEmpId(sessionId);
         String roomId = getRoomId(sessionId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
-
+        // 방 상태 확인
         if (!room.getRoomStatus().equals("GAME_START")) {
             throw new IllegalStateException("'GAME_START' 상태여야 게임 시작이 가능합니다.");
         }
@@ -200,13 +216,20 @@ public class WebSocketServiceImpl implements WebSocketService {
         room.setRoomStatus("GAME_END");
         log.info("방 {}의 상태가 'GAME_END'로 변경되었습니다.", roomId);
 
+        // 원판 결과 생성 (랜덤 또는 사전 정의된 결과를 사용)
         Orderer result = generateWheelResult(room.getOrderers());
-        room.setCurrentOrderer(result);
+        room.setCurrentOrderer(result); //주문자 변경
         log.info("원판 결과에 따라 새로운 주문자 ID {}가 결정되었습니다.", result);
+        // Orderer[] currentOrderers = new Orderer[]{result};
 
+        //알림용 empId 목록 생성
+        // HashMap<Integer, Orderer> orderers = room.getOrderers();
+        // Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
         Integer[] empIds = new Integer[]{result.getEmpId()};
+        //알림용 url 생성
         StringBuilder url = new StringBuilder();
         url.append("together/").append(roomId);
+        //알림 보내기 -> kafka
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
             empIds, 3, url.toString(), result.getName()
         );
@@ -215,30 +238,38 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("같이 주문 방 내기 결과 알림 전송");
 
         roomRepository.save(room);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
+
     }
 
     @Override
     public void order(String sessionId, OrderRequestDto orderRequestDto) {
         Integer empId = getEmpId(sessionId);
+        //order 서비스로 주문 보내기
         ResponseEntity<DataResponseDto<OrderResponseDto>> orderResponse;
         try {
             orderResponse = orderServiceFeignClient.order(empId, orderRequestDto);
         } catch (FeignException e) {
             log.error("Order request failed: " + e.getMessage());
+            // 필요한 로직을 추가할 수 있습니다.
             throw new RuntimeException("Order service request failed", e);
         }
         Long orderNumber = orderResponse.getBody().getData().getOrderNum();
 
+        //방 상태 주문 종료로 바꾸기
         String roomId = getRoomId(sessionId);
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
         room.setRoomStatus("ORDERED");
         room.setOrderNumber(orderNumber);
         roomRepository.save(room);
 
+        //알림 보내기 -> kafka
         Map<Integer, Orderer> orderers = room.getOrderers();
         Integer[] empIds = (orderers != null) ? orderers.keySet().toArray(new Integer[0]) : new Integer[0];
+        //알림용 url 생성
         StringBuilder url = new StringBuilder();
         url.append("together/").append(roomId);
         CafeInfoOrderListDto responseDto = cafeServiceFeignClient.cafeInfo(room.getCafeId()).getBody().getData();
@@ -250,11 +281,15 @@ public class WebSocketServiceImpl implements WebSocketService {
         kafkaTemplate.send("notice_topic", message);
         log.info("같이 주문 방 알림 전송");
 
+        // Room 객체의 orderers HashMap을 사용하여 EntireParticipant에서 제거
         for (Integer ordererId : room.getOrderers().keySet()) {
             participantRepository.deleteById(ordererId);
         }
 
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // // 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -262,37 +297,50 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("세션 ID {}을 이용해서 방을 나가려고 합니다.", sessionId);
 
         Integer empId = getEmpId(sessionId);
+        // 방과 관련된 `EntireParticipant` 객체를 찾음
         String roomId = getRoomId(sessionId);
 
+        // 해당 방 객체를 찾음
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
 
+        // 현재 주문자 여부 확인
         if (room.getCurrentOrderer().getEmpId().equals(empId)) {
+            // 현재 주문자인 경우: 방 상태를 "ROOM_BOOM"으로 설정
             room.setRoomStatus("ROOM_BOOM");
             roomRepository.save(room);
 
-            List<EntireParticipant> participantsToDelete = participantRepository.findAllByRoomId(roomId);
+            // 방의 모든 참여자 제거
+            List<EntireParticipant> participantsToDelete = participantRepository.findByRoomId(roomId);
             log.info("사원 ID {}이(가) 방 {}의 방장이므로 전체 참여자 {}명의 참여 정보를 제거했습니다.", empId, roomId, participantsToDelete.size());
 
             participantRepository.deleteAll(participantsToDelete);
         } else {
+            // 현재 주문자가 아닌 경우: 해당 사용자가 시킨 주문 항목 제거
             List<OrderItem> itemsToRemove = room.getOrderItems().stream()
                 .filter(item -> item.getOrderer().equals(empId))
                 .toList();
             room.getOrderItems().removeAll(itemsToRemove);
             log.info("사원 ID {}가 방 {}에서 나갔으므로 참여자 목록에서 제거했습니다.", empId, roomId);
 
+            // 사용자가 더 이상 주문한 항목이 없다면 `orderers` 목록에서 제거
             if (room.getOrderItems().stream().noneMatch(item -> item.getOrderer().equals(empId))) {
                 room.getOrderers().remove(empId);
             }
 
+            // `EntireParticipant`에서 해당 사용자를 제거
             participantRepository.deleteById(empId);
 
+            // 방 상태 업데이트 후 저장
             roomRepository.save(room);
         }
 
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // // 방 상태 변경을 구독 중인 모든 사용자에게 알림
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
+
 
     private Integer getEmpId(String sessionId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(SessionEntityNotFoundException::new);
@@ -310,9 +358,12 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     private Orderer generateWheelResult(HashMap<Integer, Orderer> orderers) {
+        // HashSet을 List로 변환
         List<Integer> list = new ArrayList<>(orderers.keySet());
+        // 랜덤 객체 생성
         Random random = new Random();
-        int randomIndex = random.nextInt(list.size());
+        // 리스트에서 랜덤 인덱스로 요소 선택
+        int randomIndex = random.nextInt(list.size()); // 리스트 크기 내에서 랜덤 인덱스 생성
         return orderers.get(list.get(randomIndex));
     }
 
@@ -323,3 +374,4 @@ public class WebSocketServiceImpl implements WebSocketService {
         return headerAccessor.getMessageHeaders();
     }
 }
+
