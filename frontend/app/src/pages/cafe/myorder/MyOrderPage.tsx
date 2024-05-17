@@ -33,7 +33,7 @@ const MyOrderPage = () => {
         } else if (isReceivedA && !isReceivedB) {
           return 1;
         } else {
-          return pickUpTimeA.getTime() - pickUpTimeB.getTime();
+          return pickUpTimeB.getTime() - pickUpTimeA.getTime(); // 최신순으로 정렬
         }
       });
 

@@ -19,8 +19,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       className="rounded-lg"
       style={{
         backgroundImage: `url(/assets/images/card.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: "contain",
+        backgroundPosition: "top", // 변경: top으로 설정
+        backgroundRepeat: "no-repeat", // 추가: 이미지 반복 방지
       }}
     >
       <div className="flex flex-col items-center pt-24 pb-4">
