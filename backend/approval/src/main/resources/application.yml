@@ -32,3 +32,12 @@ springdoc:
     disable-swagger-default-url: false
     display-request-duration: true
     operations-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
