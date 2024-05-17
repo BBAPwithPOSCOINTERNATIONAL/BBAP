@@ -2,7 +2,7 @@ package com.bbap.order_room.entity.redis;
 
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -26,8 +26,8 @@ public class Room {
 	private String cafeId;
 	private String roomStatus;
 	private Orderer currentOrderer;
-	private HashMap<Integer, Orderer> orderers; // key = empId 사용
-	private List<OrderItem> orderItems;
+	private HashMap<Integer, Orderer> orderers = new HashMap<>(); // key = empId 사용
+	private List<OrderItem> orderItems = new ArrayList<>();
 	private Long orderNumber;
 
 	@JsonCreator
@@ -44,7 +44,7 @@ public class Room {
 		this.roomStatus = roomStatus;
 		this.currentOrderer = currentOrderer;
 		this.orderers = orderers != null ? orderers : new HashMap<>();
-		this.orderItems = orderItems != null ? orderItems : List.of();
+		this.orderItems = orderItems != null ? orderItems : new ArrayList<>();
 		this.orderNumber = orderNumber;
 	}
 }
