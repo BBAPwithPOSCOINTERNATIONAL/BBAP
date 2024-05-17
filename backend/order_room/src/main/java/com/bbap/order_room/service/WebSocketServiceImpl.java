@@ -3,8 +3,6 @@ package com.bbap.order_room.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.aspectj.weaver.ast.Or;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.MessageHeaders;
@@ -14,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.order_room.dto.RedisMessagePublisher;
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
@@ -56,8 +55,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final HrServiceFeignClient hrServiceFeignClient;
     private final OrderServiceFeignClient orderServiceFeignClient;
     private final CafeServiceFeignClient cafeServiceFeignClient;
-
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final RedisMessagePublisher redisMessagePublisher;
 
     @Override
     public void connectRoom(Integer empId, String sessionId, String roomId) {
@@ -67,7 +66,9 @@ public class WebSocketServiceImpl implements WebSocketService {
         Room room = roomRepository.findById(roomId).orElseThrow(RoomEntityNotFoundException::new);
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // 특정 세션 ID에 메시지 전송
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
+        //     messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -86,42 +87,23 @@ public class WebSocketServiceImpl implements WebSocketService {
         if (room.getOrderers() == null) {
             room.setOrderers(new HashMap<>());
         }
-        // 방 상태 확인
         if (!room.getRoomStatus().equals("INITIAL") && !room.getRoomStatus().equals("ORDER_FILLED")) {
             throw new IllegalStateException("'INITIAL' or 'ORDER_FILLED' 상태여야 주문이 가능합니다.");
         }
 
-//		List<OptionRequestDto> optionList = requestDto.getOptions();
-//		List<MenuOption> menuOptions = new ArrayList<>();
-//		for (OptionRequestDto option : optionList) {
-//			List<ChoiceRequestDto> choiceRequestDtos = option.getChoiceOptions();
-//			List<ChoiceOption> choiceOptions = new ArrayList<>();
-//			for (ChoiceRequestDto choice : choiceRequestDtos) {
-//				choiceOptions.add(new ChoiceOption(choice.getChoiceName(), choice.getPrice()));
-//			}
-//			MenuOption menuOption = new MenuOption(
-//				option.getOptionName(),
-//				option.getType(),
-//				option.isRequired(),
-//				choiceOptions
-//			);
-//			menuOptions.add(menuOption);
-//		}
-
         List<OptionRequestDto> optionList = requestDto.getOptions();
         List<MenuOption> menuOptions = optionList.stream().map(option -> {
             List<ChoiceOption> choiceOptions = option.getChoiceOptions().stream().map(
-                    choice -> new ChoiceOption(choice.getChoiceName(), choice.getPrice())
+                choice -> new ChoiceOption(choice.getChoiceName(), choice.getPrice())
             ).collect(Collectors.toList());
             return new MenuOption(option.getOptionName(), option.getType(), option.isRequired(), choiceOptions);
         }).collect(Collectors.toList());
 
-
         OrderItem orderItem = new OrderItem(
-                requestDto.getMenuId(),
-                requestDto.getCnt(),
-                menuOptions,
-                empId
+            requestDto.getMenuId(),
+            requestDto.getCnt(),
+            menuOptions,
+            empId
         );
 
         // 주문을 담은 유저가 해당방에 참가중 상태가 아니라면 Participant 엔티티를 생성하거나 변경
@@ -136,7 +118,7 @@ public class WebSocketServiceImpl implements WebSocketService {
             }
         }
 
-        room.getOrderItems().add(orderItem); //아이템 추가
+        room.getOrderItems().add(orderItem);
         log.info("주문 아이템이 성공적으로 추가되었습니다. 아이템: {}", orderItem);
 
         CheckEmpResponseData data = hrServiceFeignClient.checkId(empId).getBody().getData();
@@ -149,8 +131,10 @@ public class WebSocketServiceImpl implements WebSocketService {
         room.setRoomStatus("ORDER_FILLED");// 방 상태를 주문 담김으로 변경
         roomRepository.save(room);
         //구독자에게 알리기
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -165,8 +149,8 @@ public class WebSocketServiceImpl implements WebSocketService {
             throw new IllegalStateException("'ORDER_FILLED' 상태여야 주문 삭제가 가능합니다.");
         }
         Optional<OrderItem> itemToRemove = room.getOrderItems().stream()
-                .filter(item -> item.getOrderItemId().equals(orderItemId))
-                .findFirst();
+            .filter(item -> item.getOrderItemId().equals(orderItemId))
+            .findFirst();
 
         if (itemToRemove.isPresent()) {
             room.getOrderItems().remove(itemToRemove.get());
@@ -184,8 +168,10 @@ public class WebSocketServiceImpl implements WebSocketService {
                 participantRepository.deleteById(ordererId); // `EntireParticipant`에서 제거
             }
             roomRepository.save(room);
-            messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-            log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+            // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+            // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+            redisMessagePublisher.publish(new Gson().toJson(room));
+            log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
         } else {
             log.error("주문 아이템 ID {}를 찾을 수 없습니다.", orderItemId);
@@ -209,8 +195,10 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("방 {}의 상태가 'GAME_START'로 변경되었습니다.", roomId);
 
         roomRepository.save(room);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
     }
 
@@ -250,8 +238,10 @@ public class WebSocketServiceImpl implements WebSocketService {
         log.info("같이 주문 방 내기 결과 알림 전송");
 
         roomRepository.save(room);
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
     }
 
@@ -285,7 +275,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         CafeInfoOrderListDto responseDto = cafeServiceFeignClient.cafeInfo(room.getCafeId()).getBody().getData();
         String storeName = responseDto.getCafeName();
         SendNoticeRequestDto sendNoticeRequestDto = new SendNoticeRequestDto(
-                empIds, 2, url.toString(), storeName
+            empIds, 2, url.toString(), storeName
         );
         String message = new Gson().toJson(sendNoticeRequestDto);
         kafkaTemplate.send("notice_topic", message);
@@ -296,8 +286,10 @@ public class WebSocketServiceImpl implements WebSocketService {
             participantRepository.deleteById(ordererId);
         }
 
-        // 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // // 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
     @Override
@@ -325,8 +317,8 @@ public class WebSocketServiceImpl implements WebSocketService {
         } else {
             // 현재 주문자가 아닌 경우: 해당 사용자가 시킨 주문 항목 제거
             List<OrderItem> itemsToRemove = room.getOrderItems().stream()
-                    .filter(item -> item.getOrderer().equals(empId))
-                    .toList();
+                .filter(item -> item.getOrderer().equals(empId))
+                .toList();
             room.getOrderItems().removeAll(itemsToRemove);
             log.info("사원 ID {}가 방 {}에서 나갔으므로 참여자 목록에서 제거했습니다.", empId, roomId);
 
@@ -342,9 +334,11 @@ public class WebSocketServiceImpl implements WebSocketService {
             roomRepository.save(room);
         }
 
-        // 방 상태 변경을 구독 중인 모든 사용자에게 알림
-        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        // // 방 상태 변경을 구독 중인 모든 사용자에게 알림
+        // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
+        redisMessagePublisher.publish(new Gson().toJson(room));
+        log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
 
@@ -360,7 +354,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     private boolean isLastOrderFromUser(Room room, Integer empId) {
         return room.getOrderItems().stream()
-                .noneMatch(item -> item.getOrderer().equals(empId));
+            .noneMatch(item -> item.getOrderer().equals(empId));
     }
 
     private Orderer generateWheelResult(HashMap<Integer, Orderer> orderers) {
@@ -380,3 +374,4 @@ public class WebSocketServiceImpl implements WebSocketService {
         return headerAccessor.getMessageHeaders();
     }
 }
+

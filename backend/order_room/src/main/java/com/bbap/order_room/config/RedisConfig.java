@@ -7,6 +7,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -21,7 +23,6 @@ public class RedisConfig {
 
     @Value("${spring.redis.password}")
     private String password;
-
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -44,4 +45,17 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    @Bean
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+        RedisSubscriber subscriber) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(subscriber, topic());
+        return container;
+    }
+
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic("room-updates");
+    }
 }
