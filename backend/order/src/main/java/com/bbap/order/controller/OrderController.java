@@ -2,11 +2,13 @@ package com.bbap.order.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/orders")
@@ -43,8 +46,9 @@ public class OrderController {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
 	@PostMapping("/pay")
-	ResponseEntity<DataResponseDto<PayResponseDto>> orderApp(@RequestBody PayRequestDto requestDto) {
-		return orderService.order(requestDto);
+	ResponseEntity<DataResponseDto<PayResponseDto>> orderApp(@RequestHeader(value = "X-Employee-Id") int empId,
+		@RequestBody PayRequestDto requestDto) {
+		return orderService.order(empId, requestDto);
 	}
 
 	@Operation(
@@ -59,6 +63,18 @@ public class OrderController {
 		return orderService.orderKiosk(requestDto);
 	}
 
+	// @Operation(
+	// 	summary = "주문 하기 - 내부 ",
+	// 	description = "주문방에서 주문하기"
+	// )
+	// @ApiResponses(value = {
+	// 	@ApiResponse(responseCode = "200", description = "Success."),
+	// })
+	// @PostMapping("/pay")
+	// ResponseEntity<DataResponseDto<PayResponseDto>> orderIn(@RequestHeader(value = "X-Employee-Id") int empId, @RequestBody PayRequestDto requestDto) {
+	// 	return orderService.orderIn(empId, requestDto);
+	// }
+
 	@Operation(
 		summary = "결제 정보 확인 - 얼굴",
 		description = "얼굴 사진으로 결제 정보 확인하기"
@@ -66,8 +82,9 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@PostMapping(value="/payInfo/face", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(@ModelAttribute PayInfoFaceRequestDto requestDto) {
+	@PostMapping(value = "/payInfo/face", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByFace(
+		@ModelAttribute PayInfoFaceRequestDto requestDto) {
 		return orderService.getPayInfoByFace(requestDto);
 	}
 
@@ -78,8 +95,9 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@PostMapping(value="/payInfo/card")
-	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(@RequestBody PayInfoCardRequestDto requestDto) {
+	@PostMapping(value = "/payInfo/card")
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByCard(
+		@RequestBody PayInfoCardRequestDto requestDto) {
 		return orderService.getPayInfoByCard(requestDto);
 	}
 
@@ -90,8 +108,9 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@PostMapping(value="/payInfo/auth")
-	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(@RequestBody PayInfoAuthRequestDto requestDto) {
+	@PostMapping(value = "/payInfo/auth")
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfoByAuth(
+		@RequestBody PayInfoAuthRequestDto requestDto) {
 		return orderService.getPayInfoByAuth(requestDto);
 	}
 
@@ -102,10 +121,12 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@GetMapping(value="/payInfo/{cafeId}")
-	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@PathVariable String cafeId) {
-		return orderService.getPayInfo(cafeId);
+	@GetMapping(value = "/payInfo/{cafeId}")
+	ResponseEntity<DataResponseDto<PayInfoResponseDto>> getPayInfo(@RequestHeader(value = "X-Employee-Id") int empId,
+		@PathVariable String cafeId) {
+		return orderService.getPayInfo(empId, cafeId);
 	}
+
 	@Operation(
 		summary = "주문 내역 리스트",
 		description = "월별 주문 내역 리스트"
@@ -113,9 +134,10 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@GetMapping(value="/list/{year}/{month}")
-	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(@PathVariable Integer month, @PathVariable Integer year) {
-		return orderService.orderList(month, year);
+	@GetMapping(value = "/list/{year}/{month}")
+	ResponseEntity<DataResponseDto<OrderListResponseDto>> orderList(@RequestHeader(value = "X-Employee-Id") int empId,
+		@PathVariable Integer month, @PathVariable Integer year) {
+		return orderService.orderList(empId, month, year);
 	}
 
 	@Operation(
@@ -125,8 +147,9 @@ public class OrderController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Success."),
 	})
-	@GetMapping(value="/{orderId}")
-	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(@PathVariable String orderId) {
-		return orderService.orderDetail(orderId);
+	@GetMapping(value = "/{orderId}")
+	ResponseEntity<DataResponseDto<OrderDetailResponseDto>> orderDetail(
+		@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable String orderId) {
+		return orderService.orderDetail(empId, orderId);
 	}
 }

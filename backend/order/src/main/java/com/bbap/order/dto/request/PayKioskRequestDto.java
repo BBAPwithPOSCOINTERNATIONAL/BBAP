@@ -18,4 +18,5 @@ public class PayKioskRequestDto implements BaseOrderDto {
 	private Integer empId;
 	private int usedSubsidy;
 	private List<MenuRequestDto> menuList;
+	private int cntCouponToUse;
 }
