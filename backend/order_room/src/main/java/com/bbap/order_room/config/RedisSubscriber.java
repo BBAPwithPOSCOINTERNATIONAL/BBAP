@@ -23,11 +23,12 @@ public class RedisSubscriber implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             String messageBody = new String(message.getBody());
+            log.info("Received message: {}", messageBody);  // 메시지 내용을 로깅
             Room room = objectMapper.readValue(messageBody, Room.class);
             messagingTemplate.convertAndSend("/topic/room/" + room.getRoomId(), room);
             log.info("방 {}의 업데이트 정보가 STOMP 구독자들에게 전송되었습니다.", room.getRoomId());
         } catch (Exception e) {
-            log.error("Failed to parse Redis message: {}", e.getMessage());
+            log.error("Failed to parse Redis message: {}", e.getMessage(), e);  // 전체 예외 메시지 로깅
         }
     }
 }
