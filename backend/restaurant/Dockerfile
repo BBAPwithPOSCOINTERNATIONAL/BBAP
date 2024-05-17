@@ -1,11 +1,11 @@
 # Build stage
-FROM gradle:8.7.0-jdk17-alpine AS build
+FROM gradle:8.7.0-jdk21-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle bootJar --no-daemon
 
 # Package stage
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 
 # Set the timezone
 RUN apk --no-cache add tzdata \
