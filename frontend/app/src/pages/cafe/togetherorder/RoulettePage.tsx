@@ -47,15 +47,6 @@ const RoulettePage: React.FC<RoulettePageProps> = ({
     }
   }, [room]);
 
-  // const orderers: Name = [
-  //   "박영진",
-  //   "조혜원",
-  //   "이시은",
-  //   "강성은",
-  //   "이성완",
-  //   "김다희",
-  // ];
-
   const colors = [
     "#FFB6C1", // 연한 분홍색
     "#FFDAB9", // 연한 살구색

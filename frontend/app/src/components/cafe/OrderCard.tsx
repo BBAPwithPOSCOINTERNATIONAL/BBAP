@@ -13,7 +13,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
     (pickUpTime.getTime() - currentTime.getTime()) / (1000 * 60)
   );
 
-  const statusText = timeDiff <= 0 ? "수령완료" : `${timeDiff}분전`;
+  const statusText = timeDiff <= 0 ? "수령완료" : `수령 ${timeDiff}분전`;
   const additionalMenuText =
     order.menuCnt > 1 ? `외 ${order.menuCnt - 1} 종` : "";
 

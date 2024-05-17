@@ -60,9 +60,14 @@ const DetailModal = ({
     // .slice(0, -3); // 초 단위 제거
   };
 
+  const totalAmount = order.data.menuList.reduce(
+    (total, item) => total + item.menuPrice * item.menuCnt,
+    0
+  );
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-slate-200 p-4 rounded-lg h-2/5 w-4/5 flex flex-col justify-content: space-between">
+      <div className="bg-slate-200 p-4 rounded-lg h-3/5 w-4/5 flex flex-col justify-between">
         {/* 상단 */}
         <div>
           <h2 className="text-3xl text-center">{order.data.cafeName}</h2>
@@ -73,7 +78,7 @@ const DetailModal = ({
           <hr className="h-1 bg-[#bbc6dd] mb-5 w-11/12 m-auto rounded-lg" />
         </div>
         {/* 중간 */}
-        <div className="flex flex-col grow gap-2">
+        <div className="flex flex-col grow gap-2 overflow-y-auto max-h-96">
           {order.data.menuList.map((item, idx) => (
             <div
               key={idx}
@@ -82,15 +87,29 @@ const DetailModal = ({
               <span className="font-semibold">
                 {item.menuName} x {item.menuCnt}
               </span>
-              <span>{item.menuPrice.toLocaleString()} 원</span>
+              <span>
+                <span className="text-blue-500">
+                  {item.menuPrice.toLocaleString()}{" "}
+                </span>
+                <span>원</span>
+              </span>
             </div>
           ))}
         </div>
         {/* 하단 */}
-        <div>
+        <div className="mt-4">
+          <div className="flex justify-between items-center font-bold text-lg mb-4">
+            <span>총 주문가격:</span>
+            <span>
+              <span className="text-blue-500">
+                {totalAmount.toLocaleString()}{" "}
+              </span>
+              원
+            </span>
+          </div>
           <button
             onClick={onClose}
-            className="block mx-auto font-bold py-2 px-4 rounded"
+            className="block mx-auto font-bold py-1 px-4 rounded"
           >
             <img src={closeimg} className="w-10" alt="close" />
           </button>
