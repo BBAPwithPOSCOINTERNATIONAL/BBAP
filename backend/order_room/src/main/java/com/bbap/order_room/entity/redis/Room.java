@@ -26,7 +26,7 @@ public class Room {
 	private String cafeId;
 	private String roomStatus;
 	private Orderer currentOrderer;
-	private HashMap<Integer, Orderer> orderers; //key = empId 사용
+	private HashMap<Integer, Orderer> orderers; // key = empId 사용
 	private List<OrderItem> orderItems;
 	private Long orderNumber;
 

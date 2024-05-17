@@ -22,7 +22,8 @@ public class RedisSubscriber implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            Room room = objectMapper.readValue(message.getBody(), Room.class);
+            String messageBody = new String(message.getBody());
+            Room room = objectMapper.readValue(messageBody, Room.class);
             messagingTemplate.convertAndSend("/topic/room/" + room.getRoomId(), room);
             log.info("방 {}의 업데이트 정보가 STOMP 구독자들에게 전송되었습니다.", room.getRoomId());
         } catch (Exception e) {
