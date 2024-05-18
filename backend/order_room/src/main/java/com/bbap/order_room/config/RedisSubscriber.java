@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bbap.order_room.entity.redis.Room;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisSubscriber implements MessageListener {
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final ObjectMapper objectMapper;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
             String messageBody = new String(message.getBody());
             log.info("Received message: {}", messageBody);
-            Room room = objectMapper.readValue(messageBody, Room.class);
+            Room room = new Gson().fromJson(messageBody, Room.class);
             messagingTemplate.convertAndSend("/topic/room/" + room.getRoomId(), room);
             log.info("방 {}의 업데이트 정보가 STOMP 구독자들에게 전송되었습니다.", room.getRoomId());
         } catch (Exception e) {
