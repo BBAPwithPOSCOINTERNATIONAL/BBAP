@@ -12,7 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bbap.order_room.dto.RedisMessagePublisher;
+import com.bbap.order_room.config.RedisPublisher;
 import com.bbap.order_room.dto.requestDto.AddOrderItemRequestDto;
 import com.bbap.order_room.dto.requestDto.OptionRequestDto;
 import com.bbap.order_room.dto.requestDto.OrderRequestDto;
@@ -56,7 +56,7 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final OrderServiceFeignClient orderServiceFeignClient;
     private final CafeServiceFeignClient cafeServiceFeignClient;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final RedisMessagePublisher redisMessagePublisher;
+    private final RedisPublisher redisPublisher;
 
     @Override
     public void connectRoom(Integer empId, String sessionId, String roomId) {
@@ -67,7 +67,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // 특정 세션 ID에 메시지 전송
         //     messagingTemplate.convertAndSend("/topic/room/" + roomId, room, createHeaders(sessionId));
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
@@ -133,7 +133,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         //구독자에게 알리기
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // log.info("방 {}의 정보가 구독자들에게 전송되었습니다.", roomId);
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
@@ -170,7 +170,7 @@ public class WebSocketServiceImpl implements WebSocketService {
             roomRepository.save(room);
             // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
             // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
-            redisMessagePublisher.publish(new Gson().toJson(room));
+            redisPublisher.publish(room);
             log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
         } else {
@@ -197,7 +197,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         roomRepository.save(room);
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
     }
@@ -240,7 +240,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         roomRepository.save(room);
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
 
     }
@@ -288,7 +288,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
         // // 메시지 전송을 통해 방의 상태가 바뀌었음을 알릴 수 있습니다.
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
@@ -338,7 +338,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         // // 방 상태 변경을 구독 중인 모든 사용자에게 알림
         // messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         // log.info("방 {}의 업데이트 정보가 구독자들에게 전송되었습니다.", roomId);
-        redisMessagePublisher.publish(new Gson().toJson(room));
+        redisPublisher.publish(room);
         log.info("방 {}의 정보가 Redis에 게시되었습니다.", room);
     }
 
