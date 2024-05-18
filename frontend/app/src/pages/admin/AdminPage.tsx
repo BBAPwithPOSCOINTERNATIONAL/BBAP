@@ -52,11 +52,11 @@ const AdminPage = () => {
   const tabParam = query.get("tab");
   const empNo = useUserStore((state) => state.empNo);
 
-  const [activeTab, setActiveTab] = useState<"조회" | "결재">(
-    tabParam === "결재" ? "결재" : "조회"
+  const [activeTab, setActiveTab] = useState<"확인" | "승인">(
+    tabParam === "승인" ? "승인" : "확인"
   );
 
-  const handleTabClick = (tab: "조회" | "결재") => {
+  const handleTabClick = (tab: "확인" | "승인") => {
     setActiveTab(tab);
   };
 
@@ -80,17 +80,17 @@ const AdminPage = () => {
             className="font-hyemin-bold bg-[#F2F2F2] rounded-md mt-24
             p-4 px-10 text-[20px] sm:text-[20px] md:text-[22px] lg:text-[25px]
             w-48 sm:w-44 md:w-52 lg:w-full"
-            onClick={() => handleTabClick("조회")}
+            onClick={() => handleTabClick("확인")}
           >
-            조회
+            확인
           </button>
           <button
             className="font-hyemin-bold bg-[#F2F2F2] rounded-md m-5 ml-0 
              p-4 text-[20px] sm:text-[20px] md:text-[22px] lg:text-[25px]
              w-44 sm:w-44 md:w-52 lg:w-full"
-            onClick={() => handleTabClick("결재")}
+            onClick={() => handleTabClick("승인")}
           >
-            결재
+            승인
           </button>
         </div>
         <div>
@@ -108,14 +108,14 @@ const AdminPage = () => {
       <RightSide>
         <img src={poscoimg} alt="Login Logo" className="fixed top-3 right-4" />
         {/* 조회 탭 눌렀을 경우 */}
-        {activeTab === "조회" && (
+        {activeTab === "확인" && (
           <div
             style={{
               marginLeft: "23rem",
               marginTop: "1%",
             }}
           >
-            <div className=" font-hyemin-bold text-[40px] mb-3">조회</div>
+            <div className=" font-hyemin-bold text-[40px] mb-3">확인</div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold ">
               <EmployeeSearch />
@@ -123,7 +123,7 @@ const AdminPage = () => {
           </div>
         )}
         {/* 결재 탭 눌렀을 경우 */}
-        {activeTab === "결재" && (
+        {activeTab === "승인" && (
           <div
             style={{
               marginLeft: "23rem",
@@ -131,7 +131,7 @@ const AdminPage = () => {
             }}
           >
             <div className=" font-hyemin-bold text-[40px]  mb-3">
-              {year}년 {month}월 결재
+              {year}년 {month}월 승인
             </div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold">
