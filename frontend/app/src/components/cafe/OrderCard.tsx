@@ -37,8 +37,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
         </div>
         <div></div>
       </div>
-      <div className="text-end">
-        <p className="text-green-500">{statusText}</p>
+      <div className="text-end mt-1">
+        <p className="text-green-500 mb-2
+        ">{statusText}</p>
         <p className="text-xl">{order.payAmount.toLocaleString()} 원</p>
       </div>
     </div>
