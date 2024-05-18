@@ -233,10 +233,10 @@ function Approve(): JSX.Element {
         } text-white w-36 p-2 rounded-md m-5`}
       >
         {selectedEmployees.length === employees.length
-          ? "모두 승인"
+          ? "급여 반영"
           : selectedEmployees.length === 0
-          ? "승인"
-          : "선택 승인"}
+          ? "급여 반영"
+          : "급여 반영"}
       </button>
 
       <table

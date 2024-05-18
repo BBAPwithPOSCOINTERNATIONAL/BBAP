@@ -23,7 +23,7 @@ const WinnerPage: React.FC<WinnerPageProps> = ({
   const navigate = useNavigate();
   // const {roomId} = useParams();
 
-  const { orderers, setWinner } = useRoomStore();
+  const { orderers, setWinner, currentCafe } = useRoomStore();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,11 +59,11 @@ const WinnerPage: React.FC<WinnerPageProps> = ({
     <>
       <NavBar goBack={goBack} />
       <div className="flex flex-col items-center justify-center font-hyemin-bold">
-        <h1 className="text-center mb-4 font-hyemin-bold">
-          {localStorage.getItem("cafeName")}
+        <h1 className="mt-2 mx-1 ml-2 bg-primary-color text-xl text-white border rounded-md p-1 w-11/12 text-center flex justify-center items-center">
+          {currentCafe?.name}
         </h1>
+        <div className="text-center text-3xl mt-4">사줄 사람</div>
         <p className="text-center text-3xl my-4">
-          <div className="text-center text-3xl mt-4">사줄 사람</div>
           {` ${penaltyWinner?.empName}님입니다!`}
         </p>
         <div className="text-center text-3xl mt-4">맛있게 먹을사람</div>
