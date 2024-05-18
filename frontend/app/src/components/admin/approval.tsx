@@ -334,11 +334,11 @@ function Approve(): JSX.Element {
           <div className="bg-light-primary-color text-white rounded-lg p-12 text-[40px]">
             <p>
               {selectedEmployees.length === employees.length
-                ? "전체 승인 하시겠습니까?"
-                : "선택한 항목을 승인하시겠습니까?"}
+                ? "급여에 반영하시겠습니까?"
+                : "급여에 반영하시겠습니까?"}
             </p>
             <p className=" text-[30px] text-center mt-4">
-              승인하시면 조회 페이지에서
+              반영하시면 확인 페이지에서
               <br /> 목록 조회만 가능합니다.
             </p>
             <div className="flex justify-center mt-8">
