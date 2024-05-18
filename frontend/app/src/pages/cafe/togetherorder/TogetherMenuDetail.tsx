@@ -158,7 +158,7 @@ function TogetherMenuDetail() {
                 <img
                   src={selectedItem.imageUrl}
                   alt={selectedItem.name}
-                  className="w-1/2 mx-auto my-2"
+                  className="w-2/5 mx-auto my-2"
                 />
                 <p className="text-xl font-hyemin-bold text-center">
                   {selectedItem.price.toLocaleString()}원
@@ -173,9 +173,13 @@ function TogetherMenuDetail() {
                   const option = selectedItem.options.find(
                     (opt: Option) => opt.optionName === optionName
                   );
-                  if (!option) return null; // Skip if the option is not present
+                  if (
+                    !option ||
+                    (optionName === "추가옵션" && option.choice.length === 0)
+                  )
+                    return null; // 추가옵션에 값들이 없다면 추가옵션 안나오게
                   return (
-                    <div key={option.optionName} className="my-4">
+                    <div key={option.optionName} className="my-2">
                       <p className="text-xl font-hyemin-bold">
                         {option.optionName}{" "}
                         {option.required && (
@@ -186,7 +190,7 @@ function TogetherMenuDetail() {
                       </p>
                       {/* 온도 옵션 렌더링 */}
                       {option.optionName === "온도" && (
-                        <div className="flex my-4">
+                        <div className="flex my-2">
                           {option.choice.map(
                             (choice: OptionChoice, index: number) => (
                               <Button
@@ -217,7 +221,7 @@ function TogetherMenuDetail() {
                       )}
                       {/* 사이즈 옵션 렌더링 */}
                       {option.optionName === "사이즈" && (
-                        <div className="flex my-4">
+                        <div className="flex my-2">
                           {option.choice.map(
                             (choice: OptionChoice, index: number) => (
                               <Button
@@ -248,7 +252,7 @@ function TogetherMenuDetail() {
                         option.choice.map((choice: OptionChoice) => (
                           <div
                             key={choice.choiceName}
-                            className="flex my-4 text-m font-hyemin-regular"
+                            className="flex my-2 text-m font-hyemin-regular"
                           >
                             <input
                               id={choice.choiceName}
@@ -256,7 +260,7 @@ function TogetherMenuDetail() {
                                 option.type === "single" ? "radio" : "checkbox"
                               }
                               name={option.optionName}
-                              className="w-10 "
+                              className="w-10"
                               value={choice.choiceName}
                               onChange={() =>
                                 handleOptionChange(option.optionName, choice)
@@ -288,7 +292,7 @@ function TogetherMenuDetail() {
                 </p>
               )}
 
-              <div className="my-3 flex items-center justify-center text-base font-hyemin-bold space-x-3">
+              <div className="my-2 flex items-center justify-center text-base font-hyemin-bold space-x-3">
                 <p className="text-xl font-hyemin-bold px-4">수량</p>
                 <div
                   onClick={() => {
@@ -320,21 +324,21 @@ function TogetherMenuDetail() {
                   />
                 </div>
               </div>
-              <p className="mt-2 text-xl font-hyemin-bold text-center">
+              <p className="mt-1 text-xl font-hyemin-bold text-center">
                 총 결제가격 : {totalPrice?.toLocaleString()} 원
               </p>
-              <div className="text-xl font-hyemin-bold flex justify-center space-x-8 my-3">
+              <div className="text-xl font-hyemin-bold flex justify-center space-x-8 my-2">
                 <Button
                   onClick={() => navigate(-1)}
                   text="취소"
-                  className="bg-bg-color w-2/5 py-3 text-white"
+                  className="bg-bg-color w-2/5 py-2 text-white"
                 />
                 <Button
                   onClick={() => {
                     handleAddCart();
                   }}
                   text="담기"
-                  className="bg-primary-color w-2/5 py-3 text-white"
+                  className="bg-primary-color w-2/5 py-2 text-white"
                 />
               </div>
             </div>

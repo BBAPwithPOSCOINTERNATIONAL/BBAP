@@ -16,7 +16,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   return (
     <div
       className="m-5 mt-4 flex flex-col items-center"
-      style={{ width: "70vw", display: "felx" }}
+      style={{ width: "64vw", display: "felx" }}
     >
       <p className="font-hyemin-bold text-2xl">{paymentDetail}</p>
       <div className="w-full">

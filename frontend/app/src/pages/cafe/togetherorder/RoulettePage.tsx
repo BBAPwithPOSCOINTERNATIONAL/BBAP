@@ -11,12 +11,14 @@ interface RoulettePageProps {
   setGameResultDisplay: (value: number) => void;
   runWheel: () => void;
   room: Room;
+  totalPrice: number;
 }
 
 const RoulettePage: React.FC<RoulettePageProps> = ({
   setGameResultDisplay,
   runWheel,
   room,
+  totalPrice,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // const [winner, setWinner] = useState<Employee | null>(null);
@@ -44,15 +46,6 @@ const RoulettePage: React.FC<RoulettePageProps> = ({
       rotate();
     }
   }, [room]);
-
-  // const orderers: Name = [
-  //   "박영진",
-  //   "조혜원",
-  //   "이시은",
-  //   "강성은",
-  //   "이성완",
-  //   "김다희",
-  // ];
 
   const colors = [
     "#FFB6C1", // 연한 분홍색
@@ -121,7 +114,7 @@ const RoulettePage: React.FC<RoulettePageProps> = ({
           // Draw center dot
           ctx.beginPath();
           ctx.arc(cw, ch, 5, 0, Math.PI * 2);
-          ctx.fillStyle = "gray";
+          ctx.fillStyle = "#A56134";
           ctx.fill();
         }
       }
@@ -173,17 +166,20 @@ const RoulettePage: React.FC<RoulettePageProps> = ({
         <img
           src={jackpot}
           alt="jackpot"
-          className="absolute top-[5%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-[5%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8"
         />
       </div>
-      <div className="font-hyemin-bold my-5 text-2xl">
-        총 주문 인원 : {orderers.length}
+      <div className="font-hyemin-bold my-3 text-2xl">
+        총 주문 인원 : {orderers.length} 명
+      </div>
+      <div className="font-hyemin-bold my-1 text-2xl">
+        총 주문 가격 : {totalPrice.toLocaleString()} 원
       </div>
       {room.currentOrderer.empId === empId &&
         room.roomStatus === "GAME_START" && (
           <button
             onClick={runWheel}
-            className="w-3/5 mt-4 bg-primary-color text-white font-hyemin-bold p-3 text-2xl rounded transition duration-200 active:bg-gray-700 active:text-white cursor-pointer"
+            className="w-4/5 mt-4 bg-primary-color text-white font-hyemin-bold p-3 text-2xl rounded transition duration-200 active:bg-gray-700 active:text-white cursor-pointer"
           >
             룰렛 돌리기
           </button>

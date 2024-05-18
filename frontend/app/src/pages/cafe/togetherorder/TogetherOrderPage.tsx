@@ -56,7 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   return (
     <div className="m-3 mt-3 font-hyemin-bold rounded overflow-hidden shadow-lg bg-[#EFF7FF] flex flex-col">
-      <div className="px-6 pr-3 py-4 pb-2 flex justify-between items-center">
+      <div className="pl-3 pr-3 py-3 pb-2 flex justify-between items-center">
         <div className="font-bold text-xl mb-2">{name} 님</div>
         {owner &&
           (room?.roomStatus === "INITIAL" ||
@@ -71,17 +71,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
       <div className="flex flex-row justify-between">
         <div>
-          <span className="px-6">{menuname}</span>
-          <span className="font-hyemin-regular text-sm">
+          <div className="px-3">{menuname}</div>
+          <div className="font-hyemin-regular text-sm ml-3 mb-2">
             {optionsString.map((option, index) => (
-              <span key={index} className="inline-block mr-2">
+              <span key={index} className="inline-block mr-1">
                 {option}
               </span>
             ))}
-          </span>
+          </div>
         </div>
-        <span className="inline-block rounded-full px-3 py-1 mb-2">
-          {price} 원
+
+        <span className="inline-block rounded-full py-1 mb-2 min-w-[90px] pr-3 text-end font-hyemin-bold">
+          {price}원
         </span>
       </div>
     </div>
@@ -251,7 +252,7 @@ function TogetherOrderPage() {
 
   const handleConfirm = () => {
     setModalOpen(false);
-    setGameResultDisplay(2);
+
     if ((room?.orderers ? Object.keys(room.orderers).length : 0) >= 2) {
       startGame();
     } else {
@@ -303,42 +304,54 @@ function TogetherOrderPage() {
   if (room !== null && room.roomStatus === "ORDERED") {
     return (
       <>
-        <header>
-          <h1 className="text-center text-3xl font-hyemin-bold flex-1">
-            {currentCafe?.name}
+        <div
+          className="container bg-[#4786C1] text-white rounded font-hyemin-bold"
+          style={{ height: "100vh" }}
+        >
+          <h1 className="text-center text-3xl font-hyemin-bold flex-1 pt-8">
+            {currentCafe?.name} 에서
           </h1>
-          <hr className="h-1 border-1 bg-black mb-2 w-full" />
-        </header>
-        <div className="container bg-[#4786C1] text-white rounded font-hyemin-bold">
-          <div className="my-4 text-center">
+          <div className="my-4 text-center text-xl">
             <p>함께주문하기가 완료된 방입니다.</p>
           </div>
-          <section className="bg-white m-2 p-10 text-black text-center rounded">
-            <p>&lt;주문내역&gt;</p>
-            {room && room.orderItems && currentCafeMenuList
-              ? room.orderItems.map((item, index) => {
-                  const menuLists = [
-                    ...currentCafeMenuList.menuListCoffee,
-                    ...currentCafeMenuList.menuListBeverage,
-                    ...currentCafeMenuList.menuListDesert,
-                  ];
-                  const match = menuLists.find(
-                    (menu) => menu.id === item.menuId
-                  );
-                  return match ? (
-                    <p key={index}>
-                      {match.name} X {item.cnt}
-                    </p>
-                  ) : null;
-                })
-              : null}
-          </section>
-          <button
-            className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-3xl"
-            onClick={() => navigate("/main")}
+          <section
+            className="bg-white m-2 p-4 text-black text-center rounded"
+            style={{ height: "61vh", width: "90vw", marginLeft: "5vw" }}
           >
-            확인
-          </button>
+            <div className=" flex flex-col justify-space-between">
+              <p className="text-2xl mb-2">&lt;주문내역&gt;</p>
+              {room && room.orderItems && currentCafeMenuList ? (
+                <div className=" ">
+                  {room.orderItems.map((item, index) => {
+                    const menuLists = [
+                      ...currentCafeMenuList.menuListCoffee,
+                      ...currentCafeMenuList.menuListBeverage,
+                      ...currentCafeMenuList.menuListDesert,
+                    ];
+                    const match = menuLists.find(
+                      (menu) => menu.id === item.menuId
+                    );
+                    return match ? (
+                      <p className="text-xl" key={index}>
+                        {match.name} X {item.cnt}
+                      </p>
+                    ) : null;
+                  })}{" "}
+                </div>
+              ) : null}
+            </div>
+          </section>
+          <footer className="fixed bottom-0 w-full">
+            <div className="mt-2 text-xl text-white text-center p-2 mb-4">
+              총 주문 가격: {totalPrice} 원
+            </div>
+            <button
+              className="w-full bg-primary-color text-white  rounded-md p-2 font-hyemin-bold text-center text-2xl"
+              onClick={() => navigate("/main")}
+            >
+              확인
+            </button>
+          </footer>
         </div>
       </>
     );
@@ -392,8 +405,8 @@ function TogetherOrderPage() {
           id="footer"
           className="fixed bottom-0 left-0 w-full p-2 font-hyemin-bold bg-white shadow-md"
         >
-          <div className="flex justify-between items-center">
-            <div className="text-base ml-4">
+          <div className="flex justify-between items-end">
+            <div className="text-base ml-2">
               총 주문 인원:{" "}
               {(room && room.orderers && Object.keys(room.orderers).length) ||
                 0}
@@ -404,11 +417,11 @@ function TogetherOrderPage() {
               (room?.roomStatus === "INITIAL" ||
                 room?.roomStatus === "ORDER_FILLED") && (
                 <button onClick={handleOpenModal}>
-                  <img src={game} className="mr-4 h-16" />
+                  <img src={game} className="mr-2 h-16 mb-0" />
                 </button>
               )}
           </div>
-          <div className="flex justify-center items-center mt-3">
+          <div className="flex justify-center items-center mt-2">
             {(room?.roomStatus === "INITIAL" ||
               room?.roomStatus === "ORDER_FILLED") && (
               <button
@@ -440,10 +453,9 @@ function TogetherOrderPage() {
                 room.roomStatus === "ORDER_FILLED") && (
                 <button
                   disabled={true}
-                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-1 text-center text-lg mx-4"
+                  className="min-w-[64px] w-full bg-[#d4d4d4] text-black border rounded-md p-2 text-center text-base mx-4"
                 >
-                  주문자 <br />
-                  {room.currentOrderer.name}
+                  주문자:{room.currentOrderer.name}
                 </button>
               )}
           </div>
@@ -465,6 +477,7 @@ function TogetherOrderPage() {
         room={room}
         setGameResultDisplay={setGameResultDisplay}
         runWheel={runWheel}
+        totalPrice={totalPrice}
       />
     );
   } else if (

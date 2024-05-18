@@ -73,11 +73,7 @@ const TogetherCreateRoom = () => {
   };
 
   const handleCreateRoom = async () => {
-    if (orderRoomId) {
-      setIsModalOpen(true);
-    } else {
-      createNewRoom();
-    }
+    setIsModalOpen(true);
   };
 
   const createNewRoom = async () => {
@@ -119,7 +115,7 @@ const TogetherCreateRoom = () => {
             perspective: 1000px;
             transform-style: preserve-3d;
             transition: transform 0.3s;
-            transform-origin: left; /* Add this line */
+            transform-origin: left;
           }
           .button-door.open {
             animation: doorOpen 0.3s forwards;
@@ -161,7 +157,6 @@ const TogetherCreateRoom = () => {
               isDoorOpen && clickedButton === "newRoom" ? "open" : ""
             }`}
             onClick={handleCreateRoom}
-            // disabled={!!orderRoomId}
           >
             <div className="bg-blue-50 rounded p-2">
               새로운 주문방
@@ -177,8 +172,13 @@ const TogetherCreateRoom = () => {
               isDoorOpen && clickedButton === "existingRoom" ? "open" : ""
             }`}
             style={{ height: "33vh" }}
-            onClick={() => navigateToRoom(orderRoomId)}
-            // disabled={!orderRoomId}
+            onClick={() => {
+              if (!orderRoomId) {
+                alert("현재 참여중인 방이 없습니다.");
+              } else {
+                navigateToRoom(orderRoomId);
+              }
+            }}
           >
             <div className="bg-blue-50 rounded p-2">
               참여중인 방
@@ -193,6 +193,8 @@ const TogetherCreateRoom = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         onConfirm={createNewRoom}
+        orderRoomId={orderRoomId}
+        selectedCafeName={selectedCafeName}
       />
     </>
   );
