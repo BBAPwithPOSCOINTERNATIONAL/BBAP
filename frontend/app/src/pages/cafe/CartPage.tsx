@@ -144,23 +144,26 @@ function CartPage() {
     navigate(-1);
   };
 
+  const timeButtons = [5, 10, 15, 20, 30];
+
   return (
     <div className="mb-30">
-      <div className="flex items-center justify-ceter flex m-1">
-        <button onClick={handleOpenModal} className="text-4xl ml-2">
-          <img src={deletebutton} />
+      <div className="flex items-center justify-between m-1">
+        <button
+          onClick={handleOpenModal}
+          className="ml-2"
+          aria-label="Open modal"
+        >
+          <img src={deletebutton} className="w-5" alt="delete" />
         </button>
         <h1 className="text-center text-3xl font-hyemin-bold flex-1">
           {localStorage.getItem("cafeName")}
         </h1>
-        <div></div>{" "}
+        <div className="w-6 ml-2"></div>
       </div>
       <hr className="h-1 border-1 border-primary-color" />
       <hr className="h-1.5 -mt-1 bg-[#E3E9F6]" />
-
-      {/* 주문목록 */}
-      <h1 className="m-3 text-xl font-hyemin-bold">주문목록</h1>
-      {/* <hr></hr> */}
+      <h1 className="m-2 text-xl font-hyemin-bold">주문목록</h1>
       <ul className="list-none p-0 my-1">
         {cartList.map((item, index) => {
           const options = item.options.reduce((acc: string[], option) => {
@@ -184,7 +187,10 @@ function CartPage() {
               </div>
               <div className="flex items-center">
                 <div className="my-3 flex items-center justify-center text-base font-hyemin-bold space-x-1">
-                  <div onClick={() => handleDecrease(index)}>
+                  <div
+                    onClick={() => handleDecrease(index)}
+                    aria-label="Decrease quantity"
+                  >
                     <RemoveCircleOutlineIcon
                       sx={{
                         fontSize: 25,
@@ -193,7 +199,10 @@ function CartPage() {
                     />
                   </div>
                   <p>{item.cnt}</p>
-                  <div onClick={() => handleIncrease(index)}>
+                  <div
+                    onClick={() => handleIncrease(index)}
+                    aria-label="Increase quantity"
+                  >
                     <AddCircleOutlineIcon
                       sx={{
                         fontSize: 25,
@@ -206,7 +215,7 @@ function CartPage() {
                   {item.price.toLocaleString()}원
                 </span>
               </div>
-              <div onClick={() => handleRemove(index)}>
+              <div onClick={() => handleRemove(index)} aria-label="Remove item">
                 <img src={listdeletebutton} alt="삭제버튼" className="w-5" />
               </div>
             </li>
@@ -222,65 +231,28 @@ function CartPage() {
         <Button
           onClick={handleAddMoreItems}
           text="🛒 메뉴 더담기"
-          className="m-2 items-center font-hyemin-bold mb-3"
+          className="m-2 items-center font-hyemin-bold mb-1"
         />
       </div>
       <hr className="h-3 bg-[#E3E9F6]" />
-      <h1 className="m-3 text-xl font-hyemin-bold">
+      <h1 className="m-2 text-xl font-hyemin-bold">
         예상 수령시간 <span style={{ color: "red" }}>*</span>
       </h1>
-      <div className="flex flex-col items-center mb-4 text-[15px]">
+      <div className="flex flex-col items-center mb-1 text-[15px]">
         <div className="flex justify-between w-full px-3">
-          <button
-            className={`my-2 px-3 py-2 font-xs border-2 rounded-lg ${
-              selectedTime === 5
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(5)}
-          >
-            +5분
-          </button>
-          <button
-            className={`my-2 px-2 py-2 font-xs border-2 rounded-lg ${
-              selectedTime === 10
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(10)}
-          >
-            +10분
-          </button>
-          <button
-            className={`my-2 px-2 py-2 font-sm border-2 rounded-lg ${
-              selectedTime === 15
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(15)}
-          >
-            +15분
-          </button>
-          <button
-            className={`my-2 px-2 py-2 font-sm border-2 rounded-lg ${
-              selectedTime === 20
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(20)}
-          >
-            +20분
-          </button>
-          <button
-            className={`my-2 px-2 py-2 font-sm border-2 rounded-lg ${
-              selectedTime === 30
-                ? "bg-gray-500 text-white"
-                : "bg-white text-gray-500"
-            }`}
-            onClick={() => handleSelectTime(30)}
-          >
-            +30분
-          </button>
+          {timeButtons.map((time) => (
+            <button
+              key={time}
+              className={`my-1 px-2 py-2 font-xs border-2 rounded-lg ${
+                selectedTime === time
+                  ? "bg-gray-500 text-white"
+                  : "bg-white text-gray-500"
+              }`}
+              onClick={() => handleSelectTime(time)}
+            >
+              +{time}분
+            </button>
+          ))}
         </div>
       </div>
 
@@ -319,15 +291,18 @@ function CartPage() {
           </span>
         </div>
 
-        <hr className="bg-[#D2DBF0] h-0.5 fixed bottom-16 " />
-        <div className="text-sm text-center fixed bottom-16 left-0 w-full ">
-          결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
+        <hr className="bg-[#D2DBF0] h-0.5 fixed bottom-16" />
+
+        <div className="bg-white fixed bottom-0 left-0 w-full z-50">
+          <div className="text-sm text-center py-2">
+            결제하기 버튼을 누르시면 사번으로 자동결제 됩니다.
+          </div>
+          <Button
+            onClick={handleOrder}
+            text="결제하기"
+            className="w-full py-2 text-xl font-bold bg-primary-color text-white h-14"
+          />
         </div>
-        <Button
-          onClick={handleOrder}
-          text="결제하기"
-          className="w-full py-2 text-xl font-bold  bg-primary-color text-white h-14 fixed bottom-0 left-0"
-        />
       </div>
       <Modal isOpen={showModal} onClose={handleCloseModal}>
         <h2 className="text-2xl font-bold">주문 취소</h2>
