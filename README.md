@@ -1,12 +1,16 @@
-<img  src="/Ddukddak/README_assets/뚝딱뚝딱.png" alt="" width="500px">
+<div align="center">
+  <img src="./ReadME_asset/256.png" alt="" width="200px">
+</div>
 
 > **2024.04.08 ~ 2024.05.20**
 
+- 자율프로젝트(기업연계)
+
 ## ✅ 프로젝트 소개
 
-▪️ **기획의도 및 배경**
+- 구내식당 / 카페 이용내역(사원증 Tag) 확인용 모바일 App 개발
 
-- 구내식당 / 카페 이용내역(사원증 Tag) 확인용 모바일 App 개발 (기업연계)
+▪️ **기획의도 및 배경**
 
 [문제제기]
 
@@ -69,141 +73,166 @@
   - mysql: 8.3.0
 - Ubuntu 20.04.6 LTS
 
-## ✅ 기능 소개
+## ✅ 서비스 소개
 
-### 앱 로그인, 관리자 로그인
+- 저희 프로젝트는 서비스가 앱, 키오스크, 관리자 3가지로 나뉘어져 있습니다.
+
+## 1. 앱 서비스
+
+### 앱 로그인
 
 <table>    
     <tr align="center" > 
         <td><strong>로그인</strong></td>
-        <td><strong>회원가입</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="![앱로그인](/ReadME_asset/AppLogin.png)" alt="" width="500px"> </td>
-        <td> <img src="/Ddukddak/README_assets/회원가입.jpg" alt="" width="500px"> </td>
+        <td> <img src="./ReadME_asset/AppLogin.png" alt="" width="200px" height="250px"> </td>
     </tr>
     <tr> 
         <td>
             1. 앱 로그인
         </td>
+</table>
+
+### 식당 화면
+
+<table>    
+    <tr align="center" > 
+        <td><strong>식당</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/식당.gif" alt="" width="500px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 포스웰 사이트 크롤링을 통해 포스코 그룹 전체 식당의 메뉴를 볼 수 있음
+        </td>
+</table>
+
+### 카페 화면
+
+<table>    
+    <tr align="center" > 
+        <td><strong>혼자 주문</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/혼자주문.gif" alt="" width="500px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 앱으로 카페 오더를 진행 할 수 있다.<br>
+            1. 결제가 완료되면 알림이 온다.
+        </td>
+</table>
+
+<table>    
+    <tr align="center" > 
+        <td><strong>같이 주문</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/같이주문.gif" alt="" width="500px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 팀원들과 동시에 주문 할 수 있다.<br>
+            2. 내기를 통해 한 사람이 결제 할 수 있다.<br>
+            3. 내기결과와 결제 완료 알림이 온다.
+        </td>
+</table>
+
+#### 3. 나의 주문
+
+<table>    
+    <tr align="center" > 
+        <td><strong>나의 주문</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/나의주문.png" alt="" width="150px" height="300px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 오더나 키오스크를 통해 주문한 내역을 확인 할 수 있다.<br>
+        </td>
+</table>
+
+### 사용내역 화면
+
+<table>    
+    <tr align="center" > 
+        <td><strong>사용 내역</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/사용내역.gif" alt="" width="500px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 해당 월의 본인 부담금, 지원금, 총 결제 금액을 한눈에 볼 수 있다. <br>
+            2. 날을 선택하여 상세보기 또한 볼 수 있다. <br>
+        </td>
+</table>
+
+### 내 프로필 화면
+
+<table>    
+    <tr align="center" > 
+        <td><strong>내 프로필</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/내프로필.png" alt="" width="150px" height="300px"> </td>
+    </tr>
+    <tr> 
+        <td>
+            1. 나의 사번, 근무지 확인 할 수 있다 <br>
+            2. 얼굴 인식 등록을 할 수 있다.
+        </td>
+</table>
+
+## 2. 관리자 서비스
+
+<table>    
+    <tr align="center" > 
+        <td><strong>관리자 로그인</strong></td>
+    </tr>
+    <tr align="center"> 
+        <td> <img src="./ReadME_asset/adminLogin.png" alt="" width="500px"> </td>
+    </tr>
+    <tr> 
         <td>
             1. 관리자 로그인
         </td>
 </table>
 
-### 인트로
-
 <table>    
     <tr align="center" > 
-        <td><strong>인트로</strong></td>
+        <td><strong>직원 확인</strong></td>
+        <td><strong>직원 승인</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="/Ddukddak/README_assets/인트로.gif" alt="" width="500px"> </td>
+        <td> <img src="./ReadME_asset/직원확인.png" alt="" width="500px"> </td>
+        <td> <img src="./ReadME_asset/직원승인.png" alt="" width="500px"> </td>
     </tr>
     <tr> 
         <td>
-            1. 아이 친화적인 UI<br>
-            2. 책 추천을 통해 동화 추천 받음<br>
-            3. 애니메이션과 배경음을 사용하여 흥미를 유도<br>
-            4. 간단한 이용 방법을 설명
+            1. 임직원의 정보를 확인 할 수 있다.
+        </td>
+        <td>
+            1. 전월 사용내역을 급여 명세서에 반영 할 수 있다.
         </td>
 </table>
 
-### 메인 화면
+## 3. 키오스크 서비스
 
 <table>    
-    <tr align="center" > 
-        <td><strong>메인</strong></td>
+    <tr align="center" >
+        <td><strong>키오스크</strong></td>
     </tr>
     <tr align="center"> 
-        <td> <img src="/Ddukddak/README_assets/메인.gif" alt="" width="500px"> </td>
+        <td> <img src="./ReadME_asset/키오스크.gif" alt="" width="500px"> </td>
     </tr>
     <tr> 
         <td>
-            1. 아이를 위한 직관적이고 귀여운 UI<br>
-        </td>
-</table>
-
-### 사진 저장
-
-<table>    
-    <tr align="center" > 
-        <td><strong>사진 뚝딱</strong></td>
-    </tr>
-    <tr align="center"> 
-        <td> <img src="/Ddukddak/README_assets/사진뚝딱.gif" alt="" width="500px"> </td>
-    </tr>
-    <tr> 
-        <td>
-            1. 얼굴이 한명만 나오게 저장해야함 <br>
-            2. 갤러리에서 불러오기 <br>
-            3. 카메라로 촬영
-        </td>
-</table>
-
-### 목소리 저장
-
-<table>    
-    <tr align="center" > 
-        <td><strong>소리 뚝딱</strong></td>
-    </tr>
-    <tr align="center"> 
-        <td> <img src="/Ddukddak/README_assets/목소리추가.gif" alt="" width="500px"> </td>
-    </tr>
-    <tr> 
-        <td>
-            1. 간단한 동화를 30초 이상 읽기 <br>
-            2. 목소리를 저장시키며 AI 학습
-        </td>
-</table>
-
-### 색칠하기
-
-<table>    
-    <tr align="center" > 
-        <td><strong>색칠 뚝딱</strong></td>
-    </tr>
-    <tr align="center"> 
-        <td> <img src="/Ddukddak/README_assets/색칠하기.gif" alt="" width="500px"> </td>
-    </tr>
-    <tr> 
-        <td>
-            1. 원하는 그림을 선택<br>
-            2. 색을 고르며 색칠할수있음            
-        </td>
-</table>
-
-### 동화생성
-
-<table>    
-    <tr align="center" > 
-        <td><strong>동화 뚝딱</strong></td>
-    </tr>
-    <tr align="center">
-        <td> <img src="/Ddukddak/README_assets/동화뚝딱.gif" alt="" width="500px"> </td>
-    </tr>
-    <tr> 
-        <td>
-            1. 주인공의 얼굴과 소리 추가 <br>
-            2. 서브역할의 얼굴과 소리 추가<br>
-            3. 내래이션 소리 추가<br>
-            4. 동화책의 이름 정하기 <br>
-            5. 동화생성이 완료되면 푸쉬알람
-        </td>
-</table>
-
-### 동화 속 주인공과 대화하기
-
-<table>    
-    <tr align="center" > 
-        <td><strong>뚝딱 대화</strong></td>
-    </tr>
-    <tr align="center">
-        <td> <img src="/Ddukddak/README_assets/뚝딱대화.gif" alt="" width="500px"> </td>
-    </tr>
-    <tr> 
-        <td>
-            1. 동화에 나오는 캐릭터와 대화하기            
+            1. 카페 메뉴를 주문 할 수 있다. <br>
+            2. 결제는 사원증 태깅, 얼굴 인식, 사원번호로 결제 가능하다.
         </td>
 </table>
 
@@ -213,42 +242,37 @@
 
 <table>    
     <tr align="center" > 
-        <td><strong>개발 목업</strong></td>
-        <td><strong>API 명세서</strong></td>
+        <td><strong>앱 목업</strong></td>
+        <td><strong>키오스크 목업</strong></td>
     </tr>
     <tr align="center">
-        <td> <img src="/Ddukddak/README_assets/최종피그마.png" alt="" width="500px"></td>
-        <td> <img src="/Ddukddak/README_assets/API.gif" alt="" width="500px"></td>
+        <td> <img src="./ReadME_asset/앱피그마.png" alt="" width="500px" height="200px"></td>
+        <td> <img src="./ReadME_asset/키오스크피그마.png" alt="" width="500px" height="200px"></td>
     </tr>
 </table>
+
 <table>
     <tr align="center" > 
       <td><strong>ERD</strong></td>
       <td><strong>아키텍처</strong></td>
     </tr>
     <tr align="center">
-        <td> <img title="" src="/Ddukddak/README_assets/ERD_DDUKDDAK.png" alt="" width="500px" /></td>
-        <td> <img src="/Ddukddak/README_assets/architecture.png" alt="" width="500px" /></td>
+        <td> <img title="" src="./ReadME_asset/ERD.png" alt="" width="500px" height="200px" /></td>
+        <td> <img src="./ReadME_asset/아키텍처.png" alt="" width="500px" height="200px"/></td>
     </tr>
-
 </table>
-<br>
+
 <table>
     <tr align="center" > 
-        <th>5주차 번다운차트</th>
-        <th>4주차 번다운차트</th>
-        <th>3주차 번다운차트</th>
-        <th>2주차 번다운차트</th>
-        <th>1주차 번다운차트</th>
+      <td><strong>API 명세서</strong></td>
+      <td><strong>기능 명세서</strong></td>
     </tr>
     <tr align="center">
-        <td> <img src="/Ddukddak/README_assets/5ndB.PNG" alt="" width="500px"> </td>
-        <td> <img  src="/Ddukddak/README_assets/4ndB.PNG" alt="" width="500px"> </td>
-        <td><img  src="/Ddukddak/README_assets/3ndB.PNG" alt="" width="500px"></td>
-        <td><img  src="/Ddukddak/README_assets/2ndB.PNG" alt="" width="500px"></td>
-        <td><img  src="/Ddukddak/README_assets/1ndB.PNG" alt="" width="500px"></td>
+        <td> <img title="" src="./ReadME_asset/api.gif" alt="" width="500px" height="200px" /></td>
+        <td> <img src="./ReadME_asset/기능명세서.gif" alt="" width="500px" height="200px"/></td>
     </tr>
 </table>
+<br>
 
 ## 🧾컴포넌트
 
@@ -258,128 +282,133 @@
 <summary>Front-End</summary>
 <div markdown="1">
 
+- App
+
 ```
 ┗📦src
  ┣ 📂components
- ┃ ┣ 📂common
- ┃ ┃ ┣ 📜 AlertModal.tsx
- ┃ ┃ ┣ 📜 Button.tsx
- ┃ ┃ ┣ 📜 Design.tsx
- ┃ ┃ ┣ 📜 Error.tsx
- ┃ ┃ ┣ 📜 Footer.tsx
- ┃ ┃ ┣ 📜 Icons.tsx
- ┃ ┃ ┣ 📜 LoadingOrError.tsx
- ┃ ┃ ┣ 📜 NavBar.tsx
- ┃ ┃ ┣ 📜 Pagination.tsx
- ┃ ┃ ┣ 📜 TextSearch.tsx
- ┃ ┃ ┣ 📜 Title.tsx
- ┃ ┣ 📂users
- ┃ ┃ ┣ 📜 Card.tsx
- ┃ ┃ ┣ 📜 ContentBox.tsx
- ┃ ┃ ┣ 📜 KakaoMap.tsx
- ┃ ┃ ┣ 📜 Line.tsx
- ┃ ┃ ┣ 📜 ProfileBox.tsx
- ┃ ┃ ┣ 📜 ProfileEditModal.tsx
- ┃ ┃ ┣ 📜 Title.tsx
- ┃ ┣ 📂animalinfo
- ┃ ┃ ┣ 📜Input.tsx
- ┃ ┃ ┣ 📜LikeButton.tsx
- ┃ ┃ ┣ 📜search.css
- ┃ ┃ ┣ 📜style.tsx
- ┃ ┃ ┣ 📂lostanimals
- ┃ ┃ ┃ ┣ 📜LostAnimalCard.tsx
- ┃ ┃ ┃ ┣ 📜LostAnimalSearch.tsx
- ┃ ┃ ┣ 📂mungbti
- ┃ ┃ ┃ ┣ 📜 AnimalMatching.tsx
- ┃ ┃ ┣ 📂savedanimals
- ┃ ┃ ┃ ┣ 📜SaveAnimalCard.tsx
- ┃ ┃ ┃ ┣ 📜SaveAnimalSearch.tsx
- ┃ ┃ ┃ ┣ 📜SavedAnimalList.tsx
- ┃ ┣ 📂	articles
- ┃ ┃ ┣ 📜ArticleCard.tsx
- ┃ ┃ ┣ 📜 ArticleContent.tsx
- ┃ ┃ ┣ 📜 ArticleEditor.tsx
- ┃ ┃ ┣ 📜 ArticleInterface.ts
- ┃ ┃ ┣ 📜 ArticleList.tsx
- ┃ ┃ ┣ 📜 Likes.tsx
- ┃ ┃ ┣ 📜 PreviewModal.tsx
- ┃ ┃ ┣ 📂comments
- ┃ ┃ ┃ ┣  📜Comment.tsx
- ┃ ┃ ┃ ┣  📜CommentForm.tsx
- ┃ ┃ ┃ ┣  📜CommentList.tsx
- ┃ ┣ 📂Broadcast
- ┃ ┃ ┣ 📜 AnimalList.tsx
- ┃ ┃ ┣ 📜 AnimalSearchForBroadcast.tsx
- ┃ ┃ ┣ 📜 BroadcastDetail.tsx
- ┃ ┃ ┣ 📜 BroadcastForm.tsx
- ┃ ┃ ┣ 📜 Chat.tsx
- ┃ ┃ ┣ 📜 MyVideo.tsx
- ┃ ┃ ┣ 📜 SessionComponent.tsx
- ┃ ┃ ┣ 📜 simpleEncrypt.ts
- ┃ ┣ 📂notificationss
- ┃ ┃ ┣ 📜NotiModal.tsx
- ┃ ┣ 📂visits
- ┃ ┃ ┣ 📜 AdoptionInfoModal.tsx
- ┃ ┃ ┣ 📜 ReservationInfo.tsx
- ┃ ┃ ┣ 📜 ReservationList.tsx
- ┃ ┃ ┣ 📜ScheduleCard.tsx
- ┣ 📂pages
- ┃ ┣ 📂	users
- ┃ ┃ ┣ 📜SignUpPage.tsx
- ┃ ┃ ┣ 📜SignUpPage.tsx
- ┃ ┃ ┣ 📜ProfilePage.tsx
- ┃ ┃ ┣ 📜VisitManagementPage.tsx
- ┃ ┣ 📂	home
- ┃ ┃ ┣ 📜HomePage.tsx
- ┃ ┃ ┣ 📜LandingPage.tsx
- ┃ ┣ 📂animals
- ┃ ┃ ┣ 📜SavedAnimalManagementPage.tsx
- ┃ ┃ ┣ 📜StyleDetail.tsx
- ┃ ┃ ┣ 📂lostanimals
- ┃ ┃ ┃ ┣ 📜LostAnimalDetailPage.tsx
- ┃ ┃ ┃ ┣ 📜LostAnimalFormPage.tsx
- ┃ ┃ ┃ ┣ 📜LostAnimalListPage.tsx
- ┃ ┃ ┃ ┣ 📜LostAnimalUpdatePage.tsx
- ┃ ┃ ┣ 📂mungbti
- ┃ ┃ ┃ ┣ 📜MungBTIPage.tsx
- ┃ ┃ ┣ 📂savedanimals
- ┃ ┃ ┃ ┣ 📜AnimalDetailPage.tsx
- ┃ ┃ ┃ ┣ 📜AnimalFormPage.tsx
- ┃ ┃ ┃ ┣ 📜AnimalListPage.tsx
- ┃ ┃ ┃ ┣ 📜AnimalUpdatePage.tsx
- ┃ ┣ 📂	visits
- ┃ ┃ ┣ 📜VisitManagementPage.tsx
- ┃ ┃ ┣ 📜VisitReservationListPage.tsx
- ┃ ┃ ┣ 📜VisitReservationPage.tsx
- ┃ ┣ 📂articles
- ┃ ┃ ┣ 📜ArticleDetailPage.tsx
- ┃ ┃ ┣ 📜ArticleListPage.tsx
- ┃ ┃ ┣ 📜articleLoader.ts
- ┃ ┃ ┣ 📜ArticleWritePage.tsx
- ┃ ┣ 📂broadcast
- ┃ ┃ ┣ 📜BoradcastListPage.tsx
- ┃ ┃ ┣ 📜BroadCastPage.tsx
- ┃ ┣ 📂notice
- ┃ ┃ ┣ 📜NoticeListPage.tsx
  ┃ ┣ 📂admin
+ ┃ ┃ ┣ 📜 approval.css
+ ┃ ┃ ┣ 📜 approval.tsx
+ ┃ ┃ ┣ 📜 datailpagination.tsx
+ ┃ ┃ ┣ 📜 employeesubsidy.tsx
+ ┃ ┃ ┣ 📜 filter.tsx
+ ┃ ┃ ┣ 📜 Pagination.tsx
+ ┃ ┣ 📂cafe
+ ┃ ┃ ┣ 📜 CafeCoupon.tsx
+ ┃ ┃ ┣ 📜 CafeNameInfo.tsx
+ ┃ ┃ ┣ 📜 CafeSelector.tsx
+ ┃ ┃ ┣ 📜 CafeTabs.tsx
+ ┃ ┃ ┣ 📜 Coupon.tsx
+ ┃ ┃ ┣ 📜 CreateRoomModal.tsx
+ ┃ ┃ ┣ 📜 DetailModal.tsx
+ ┃ ┃ ┣ 📜 GameModal.tsx
+ ┃ ┃ ┣ 📜 MenuButtons.tsx
+ ┃ ┃ ┣ 📜 MenuSection.tsx
+ ┃ ┃ ┣ 📜 Modal.tsx
+ ┃ ┃ ┣ 📜 MonthNavigation.tsx
+ ┃ ┃ ┣ 📜 OrderCard.tsx
+ ┃ ┃ ┣ 📜 OrderList.tsx
+ ┃ ┃ ┣ 📜 TogetherMenuSection.tsx
+ ┃ ┣ 📂calendar
+ ┃ ┃ ┣ 📜 _common.scss
+ ┃ ┃ ┣ 📜 _style.scss
+ ┃ ┃ ┣ 📜 _theme.scss
+ ┃ ┃ ┣ 📜 CalenderComponent.tsx
+ ┃ ┃ ┣ 📜 filter.tsx
+ ┃ ┃ ┣ 📜 Pagination.tsx
+ ┃ ┣ 📂receipt
+ ┃ ┃ ┣ 📜 Header.tsx
+ ┃ ┃ ┣ 📜 PaymentCard.tsx
+ ┃ ┃ ┣ 📜 PaymentSummary.tsx
+ ┃ ┃ ┣ 📜 ReceiptHeader.tsx
+ ┃ ┃ ┣ 📜 Summary.tsx
+ ┃ ┣ 📂 restaurant
+ ┃ ┃ ┣ 📜 DateNavigation.tsx
+ ┃ ┃ ┣ 📜 MealTypeSelector.tsx
+ ┃ ┃ ┣ 📜 MenuCard.tsx
+ ┃ ┃ ┣ 📜 RestaurantSelector.tsx
+ ┃ ┣ 📂users
+ ┃ ┃ ┣ 📜 Modal.tsx
+ ┃ ┃ ┣ 📜 FaceRecognitionButton.tsx
+ ┃ ┃ ┣ 📜 ProfileCard.tsx
+ ┃ ┣ 📜 BottomTabBar.tsx
+ ┃ ┣ 📜 button.tsx
+ ┃ ┣ 📜 install.tsx
+ ┃ ┣ 📜 Loading.tsx
+ ┃ ┣ 📜 Navbar.tsx
+ ┃ ┣ 📜 nodata.tsx
+ ┃ ┣ 📜 NoticeItem.tsx
+ ┣ 📂pages
+ ┃ ┣ 📂	admin
+ ┃ ┃ ┣ 📜AdminLoginPage.tsx
  ┃ ┃ ┣ 📜AdminPage.tsx
- ┃ ┣ 📂message
- ┃ ┃ ┣ 📜MessageListPage.tsx
+ ┃ ┃ ┣ 📜PeriodInquiryPage.tsx
+ ┃ ┣ 📂cafe
+ ┃ ┃ ┣ 📂aloneorder
+ ┃ ┃ ┃ ┣ 📜AloneOrderPage .tsx
+ ┃ ┃ ┣ 📂myorder
+ ┃ ┃ ┃ ┣ 📜MyOrderPage.tsx
+ ┃ ┃ ┣ 📂togetherorder
+ ┃ ┃ ┃ ┣ 📜RoulettePage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherAfterPaymentPage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherCreateRoomPage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherMenuDetailPage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherMenuSelectorPage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherOrderPage.tsx
+ ┃ ┃ ┃ ┣ 📜TogetherPayment.tsx
+ ┃ ┃ ┃ ┣ 📜WinnerPage.tsx
+ ┃ ┃ ┣ 📜AfterPaymentPage.tsx
+ ┃ ┃ ┣ 📜CafeMainPage.tsx
+ ┃ ┃ ┣ 📜CartPage.tsx
+ ┃ ┃ ┣ 📜MenuDetailPage.tsx
+ ┃ ┣ 📂	users
+ ┃ ┃ ┣ 📜LoginPage.tsx
+ ┃ ┃ ┣ 📜MainPage.tsx
+ ┃ ┃ ┣ 📜MyProfilePage.tsx
+ ┃ ┣ 📜NotificationPage.tsx
+ ┃ ┣ 📜RestaurantMainPage.tsx
  ┣ 📂store
- ┃ ┣ 📜 broadcastSlice.ts
- ┃ ┣ 📜 store.ts
- ┣ 📂utils
- ┃ ┣ 📜articleAPI.ts
- ┃ ┣ 📜axios.ts
- ┃ ┣ 📜broadcastAPI.ts
- ┃ ┣ 📜LostAPI.ts
- ┃ ┣ 📜notificationsAPI.ts
- ┃ ┣ 📜S3.ts
- ┃ ┣ 📜SaveAPI.ts
- ┃ ┣ 📜tanstackQuery.ts
- ┃ ┣ 📜uitl.ts
- ┃ ┣ 📜UserAPI.ts
- ┃ ┣ 📜VisitAPI.ts
+ ┃ ┣ 📜 cafeStore.tsx
+ ┃ ┣ 📜 cartStore.tsx
+ ┃ ┣ 📜 contentStore.tsx
+ ┃ ┣ 📜 noticeStore.tsx
+ ┃ ┣ 📜 roomStore.tsx
+ ┃ ┣ 📜 userStore.tsx
+ ┣ 📜App.tsx
+ ┗ 📜main.tsx
+```
+
+- kiosk
+
+```
+┗📦src
+ ┣ 📂components
+ ┃ ┣ 📜 button.tsx
+ ┃ ┣ 📜 cartItem.tsx
+ ┃ ┣ 📜 confirmModal.tsx
+ ┃ ┣ 📜 coupon.tsx
+ ┃ ┣ 📜 currentTime.tsx
+ ┃ ┣ 📜 customKeyboard.css
+ ┃ ┣ 📜 customKeyboard.tsx
+ ┃ ┣ 📜 entryCarousel.tsx
+ ┃ ┣ 📜 install.tsx
+ ┃ ┣ 📜 menuItem.tsx
+ ┃ ┣ 📜 MenuModal.tsx
+ ┣ 📂pages
+ ┃ ┣ 📂	admin
+ ┃ ┃ ┣ 📜 paymentFacePage.tsx
+ ┃ ┃ ┣ 📜 paymentFinalPage.tsx
+ ┃ ┃ ┣ 📜 paymentLoginPage.tsx
+ ┃ ┃ ┣ 📜 paymentPage.tsx
+ ┃ ┃ ┣ 📜 paymentTagPage.tsx
+ ┃ ┣ 📜entryPage.tsx
+ ┃ ┣ 📜gamePage.tsx
+ ┃ ┣ 📜mainPage.tsx
+ ┃ ┣ 📜restaurantPage.tsx
+ ┣ 📂store
+ ┃ ┣ 📜 cartStore.tsx
+ ┃ ┣ 📜 modalStore.tsx
  ┣ 📜App.tsx
  ┗ 📜main.tsx
 ```
@@ -388,5 +417,3 @@
 </details>
 
 ## ✅ 팀원소개
-
-<img  src="/Ddukddak/README_assets/팀원.PNG" alt="" width="500px">
