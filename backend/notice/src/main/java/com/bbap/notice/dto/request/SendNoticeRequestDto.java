@@ -1,5 +1,7 @@
 package com.bbap.notice.dto.request;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class SendNoticeRequestDto {
+	@NotNull
+	@Schema(description = "사원ID")
+	private List<Integer> empIds;
+
 	@NotNull
 	@Schema(description = "알림 분류ID")
 	private int noticeTemplateId;
