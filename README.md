@@ -253,11 +253,13 @@
 
 <table>
     <tr align="center" > 
-      <td><strong>ERD</strong></td>
+      <td><strong>DB ERD</strong></td>
+      <td><strong>NoSQL ERD</strong></td>
       <td><strong>아키텍처</strong></td>
     </tr>
     <tr align="center">
-        <td> <img title="" src="./ReadME_asset/ERD.png" alt="" width="500px" height="200px" /></td>
+        <td> <img title="" src="./ReadME_asset/DBERD.png" alt="" width="500px" height="200px" /></td>
+                <td> <img title="" src="./ReadME_asset/NoERD.png" alt="" width="500px" height="200px" /></td>
         <td> <img src="./ReadME_asset/아키텍처.png" alt="" width="500px" height="200px"/></td>
     </tr>
 </table>
