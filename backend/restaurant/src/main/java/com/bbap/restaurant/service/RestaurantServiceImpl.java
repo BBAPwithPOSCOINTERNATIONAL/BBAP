@@ -2,15 +2,26 @@ package com.bbap.restaurant.service;
 
 import java.sql.Date;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbap.restaurant.dto.RestaurantDto;
 import com.bbap.restaurant.dto.response.DataResponseDto;
+import com.bbap.restaurant.dto.response.EmployeeDto;
 import com.bbap.restaurant.dto.response.ListMenuResponseData;
 import com.bbap.restaurant.dto.response.ListRestaurantResponseData;
+import com.bbap.restaurant.dto.response.ListWorkplaceData;
 import com.bbap.restaurant.dto.response.PayMenuResponseData;
+import com.bbap.restaurant.dto.response.WorkplaceDto;
+import com.bbap.restaurant.exception.MenuNotFoundException;
+import com.bbap.restaurant.feign.HrServiceFeignClient;
 import com.bbap.restaurant.repository.RestaurantMenuRepository;
 import com.bbap.restaurant.repository.RestaurantRepository;
 
@@ -22,24 +33,43 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class RestaurantServiceImpl implements RestaurantService {
-	// private final FaceServiceFeignClient faceServiceFeignClient;
+	private final HrServiceFeignClient hrServiceFeignClient;
 
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantMenuRepository restaurantMenuRepository;
 
 	@Override
-	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(int restaurantId) {
+	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(int empId,int restaurantId) {
 		//restaurantId가 -1로 넘어왔을 경우 이용자의 근무지에 속해있는 사전순 제일 앞의 식당 정보를 보여준다.
-		//restaurantId를 사원에 맞게 변경 처리
-		Date todatDate = new Date(System.currentTimeMillis());
+		if(restaurantId==-1){
+			EmployeeDto empData = hrServiceFeignClient.getUserInfo(empId).getBody().getData();
+			restaurantId=restaurantRepository.findFirstByWorkplaceId(empData.getWorkplace().getWorkplaceId()).getRestaurantId();
+		}
+
+		Date todayDate = new Date(System.currentTimeMillis());
 		int mealClassification = classifyMealTime();
 
+		//근무지명 리스트 받아오기
+		ListWorkplaceData workplaceData = hrServiceFeignClient.listWorkplace().getBody().getData();
+		List<RestaurantDto> restaurantList =restaurantRepository.findAllDto();
+
+		// 근무지 목록을 Map으로 변환
+		Map<Integer, String> workplaceMap = workplaceData.getWorkplaceList().stream()
+			.collect(Collectors.toMap(WorkplaceDto::getWorkplaceId, WorkplaceDto::getWorkplaceName));
+
+		// 모든 레스토랑에 대한 근무지 이름 매핑
+		restaurantList.forEach(restaurant -> {
+			int workplaceId = restaurant.getWorkplaceId();
+			String workplaceName = workplaceMap.getOrDefault(workplaceId, "Unknown Workplace");
+			restaurant.setWorkplaceName(workplaceName);
+		});
+
 		ListRestaurantResponseData data = ListRestaurantResponseData.builder()
-			.restaurantList(restaurantRepository.findAllDto())
+			.restaurantList(restaurantList)
 			.restaurantId(restaurantId)
-			.todayDate(todatDate)
+			.todayDate(todayDate)
 			.mealClassification(mealClassification)
-			.menuList(restaurantMenuRepository.findMenuList(restaurantId, todatDate, mealClassification))
+			.menuList(restaurantMenuRepository.findMenuList(restaurantId, todayDate, mealClassification))
 			.build();
 
 		log.info("{} : 식당 정보 정상 조회", restaurantId);
@@ -57,9 +87,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@Override
 	public ResponseEntity<DataResponseDto<PayMenuResponseData>> payMenu(int menuId) {
-		restaurantMenuRepository.addEat(menuId);
+		return DataResponseDto.of(restaurantMenuRepository.findPayMenu(menuId).orElseThrow(MenuNotFoundException::new));
+	}
 
-		return DataResponseDto.of(restaurantMenuRepository.findPayMenu(menuId));
+	@KafkaListener(topics = "eat_topic", groupId = "restaurant-service-group")
+	public void eatMenu(String menuId) {
+		restaurantMenuRepository.addEat(Integer.parseInt(menuId));
+		log.info("{} 먹음",menuId);
 	}
 
 	//시간별 식사 분류 지정

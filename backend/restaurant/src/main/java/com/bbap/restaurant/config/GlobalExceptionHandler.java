@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.bbap.restaurant.dto.response.ResponseDto;
 import com.bbap.restaurant.exception.CustomException;
+import com.bbap.restaurant.exception.MenuNotFoundException;
+
+import feign.FeignException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -15,6 +18,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResponseDto> validationExceptionHandler(MethodArgumentNotValidException e) {
 		ResponseDto responseBody = new ResponseDto("유효하지 않은 요청입니다.");
 		return ResponseEntity.status(e.getStatusCode()).body(responseBody);
+	}
+
+	//없는 메뉴
+	@ExceptionHandler(MenuNotFoundException.class)
+	public ResponseEntity<ResponseDto> MenuNotFoundExceptionHandler(MenuNotFoundException e) {
+		return handleException(e);
+	}
+
+	//feign
+	@ExceptionHandler(FeignException.class)
+	public ResponseEntity<String> FeignExceptionHandler(FeignException e) {
+		return ResponseEntity.status(e.status()).body(e.contentUTF8());
 	}
 
 	private ResponseEntity<ResponseDto> handleException(CustomException e) {

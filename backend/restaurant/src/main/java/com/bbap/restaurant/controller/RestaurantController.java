@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +42,8 @@ public class RestaurantController {
 		@ApiResponse(responseCode = "403", description = "리프레쉬 토큰 인증 실패.")
 	})
 	@GetMapping("/{restaurantId}")
-	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(@PathVariable int restaurantId) {
-		return restaurantService.listRestaurant(restaurantId);
+	public ResponseEntity<DataResponseDto<ListRestaurantResponseData>> listRestaurant(@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable int restaurantId) {
+		return restaurantService.listRestaurant(empId,restaurantId);
 	}
 
 	@Operation(

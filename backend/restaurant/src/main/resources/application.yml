@@ -19,9 +19,9 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   api-docs:
-    path: /api/v1/api-docs
+    path: /api/v1/restaurants/api-docs
   swagger-ui:
-    path: /api/v1/
+    path: /api/v1/restaurants/swagger
     disable-swagger-default-url: true
     display-request-duration: true
     operations-sorter: alpha
@@ -32,3 +32,13 @@ logging:
       hibernate:
         SQL: DEBUG
         type: TRACE
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
