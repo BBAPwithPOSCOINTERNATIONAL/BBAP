@@ -2,7 +2,6 @@ package com.bbap.payment.service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +15,7 @@ import com.bbap.payment.dto.response.ListMonthPaymentResponseData;
 import com.bbap.payment.dto.response.ResponseDto;
 
 public interface PaymentService {
-	CompletableFuture<ResponseEntity<ResponseDto>> payRestaurant(PayRestaurantRequestDto request);
+	ResponseEntity<ResponseDto> payRestaurant(PayRestaurantRequestDto request);
 
 	ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request);
 

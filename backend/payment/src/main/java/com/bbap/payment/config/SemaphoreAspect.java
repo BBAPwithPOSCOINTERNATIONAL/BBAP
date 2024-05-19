@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class SemaphoreAspect {
-	private static final Semaphore semaphore = new Semaphore(60);
+	private static final Semaphore semaphore = new Semaphore(650);
 
 	@Around("execution(* com.bbap.payment.controller.PaymentController.*(..))")
 	public Object aroundControllerMethods(ProceedingJoinPoint joinPoint) throws Throwable {
