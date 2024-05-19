@@ -66,7 +66,8 @@ export async function payInfoByFace(file: File): Promise<PayInfoApiResponse> {
     return data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Failed to data");
+      throw error
+      // throw new Error(error.response.data.message || "Failed to data");
     } else {
       throw new Error("Failed to data");
     }
