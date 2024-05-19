@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bbap.payment.dto.request.PayRestaurantRequestDto;
 import com.bbap.payment.dto.request.ProcessPayRequestDto;
+import com.bbap.payment.dto.response.AvailSubsidyResponseData;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.DetailPaymentResponseData;
 import com.bbap.payment.dto.response.ListDayPaymentResponseData;
@@ -69,8 +71,8 @@ public class PaymentController {
 	})
 	@GetMapping("/month/{yearMonth}")
 	public ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(
-		@PathVariable YearMonth yearMonth) {
-		return paymentService.listMonthPayment(yearMonth);
+		@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable YearMonth yearMonth) {
+		return paymentService.listMonthPayment(empId, yearMonth);
 	}
 
 	@Operation(
@@ -81,8 +83,10 @@ public class PaymentController {
 		@ApiResponse(responseCode = "200", description = "조회 성공."),
 	})
 	@GetMapping("/day/{date}")
-	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(@PathVariable LocalDate date) {
-		return paymentService.listDayPayment(date);
+	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(
+		@RequestHeader(value = "X-Employee-Id") int empId, @PathVariable LocalDate date
+	) {
+		return paymentService.listDayPayment(empId, date);
 	}
 
 	@Operation(
@@ -95,5 +99,18 @@ public class PaymentController {
 	@GetMapping("/{historyId}")
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(@PathVariable int historyId) {
 		return paymentService.detailPayment(historyId);
+	}
+
+	@Operation(
+		summary = "지원금 조회",
+		description = "이용 가능한 지원금을 보여준다."
+	)
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "조회 성공."),
+	})
+	@GetMapping("/subsidy")
+	public ResponseEntity<DataResponseDto<AvailSubsidyResponseData>> availSubsidy(
+		@RequestHeader(value = "X-Employee-Id") int empId) {
+		return paymentService.availSubsidy(empId);
 	}
 }

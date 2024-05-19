@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.bbap.payment.dto.response.DataResponseDto;
 import com.bbap.payment.dto.response.PayMenuResponseData;
 
-@FeignClient(name = "restaurant", url = "http://localhost:8081/api/v1/restaurants")
+@FeignClient(name = "restaurant", url = "${feign_restaurant}")
 public interface RestaurantServiceFeignClient {
 	@GetMapping("/menus/{menuId}")
 	ResponseEntity<DataResponseDto<PayMenuResponseData>> payMenu(@PathVariable int menuId);
