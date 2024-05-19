@@ -1,0 +1,25 @@
+.react-simple-keyboard {
+	width: 700px;
+	height: 330px;
+}
+
+.hg-theme-default .hg-button {
+	align-items: center;
+	background: #fff;
+	border-bottom: 1px solid #b5b5b5;
+	border-radius: 5px;
+	box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.3);
+	box-sizing: border-box;
+	cursor: pointer;
+	display: flex;
+	height: 60px;
+	justify-content: center;
+	padding: 5px;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	font-size: 28px;
+}
+
+.hg-theme-default .hg-button-bksp {
+	background-color: rgb(251, 196, 137);
+	color: white;
+}
