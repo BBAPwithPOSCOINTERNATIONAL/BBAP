@@ -12,7 +12,7 @@ import com.bbap.face.dto.response.CheckFaceResponseData;
 import com.bbap.face.dto.response.DataResponseDto;
 import com.bbap.face.dto.response.ResponseDto;
 
-@FeignClient(name = "face-fastapi", url = "http://localhost:8000/api/v1")
+@FeignClient(name = "face-fastapi", url = "${feign-fast-api}")
 public interface FaceServiceFeignClient {
 	@PostMapping(value = "/train", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<ResponseDto> registerFace(@ModelAttribute RegisterFaceRequestDto request);

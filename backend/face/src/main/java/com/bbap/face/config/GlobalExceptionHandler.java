@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.bbap.face.dto.response.ResponseDto;
 import com.bbap.face.exception.CustomException;
 import com.bbap.face.exception.FaceNotFoundException;
-import com.bbap.face.exception.FaceUnprocessException;
 import com.bbap.face.exception.RegisterNotFoundException;
+
+import feign.FeignException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -32,10 +33,10 @@ public class GlobalExceptionHandler {
 		return handleException(e);
 	}
 
-	//처리할 수 없는 이미지
-	@ExceptionHandler(FaceUnprocessException.class)
-	public ResponseEntity<ResponseDto> FaceUnprocessExceptionHandler(FaceUnprocessException e) {
-		return handleException(e);
+	//feign
+	@ExceptionHandler(FeignException.class)
+	public ResponseEntity<String> FeignExceptionHandler(FeignException e) {
+		return ResponseEntity.status(e.status()).body(e.contentUTF8());
 	}
 
 	private ResponseEntity<ResponseDto> handleException(CustomException e) {

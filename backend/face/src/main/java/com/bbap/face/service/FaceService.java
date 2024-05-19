@@ -8,9 +8,9 @@ import com.bbap.face.dto.response.DataResponseDto;
 import com.bbap.face.dto.response.ResponseDto;
 
 public interface FaceService {
-	ResponseEntity<ResponseDto> registerFace(FaceRequestDto request);
+	ResponseEntity<ResponseDto> registerFace(int empId, FaceRequestDto request);
 
 	ResponseEntity<DataResponseDto<CheckFaceResponseData>> checkFace(FaceRequestDto request);
 
-	ResponseEntity<ResponseDto> checkRegister();
+	ResponseEntity<ResponseDto> checkRegister(int empId);
 }
