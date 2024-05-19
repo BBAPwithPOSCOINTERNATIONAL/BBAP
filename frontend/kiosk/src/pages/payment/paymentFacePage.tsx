@@ -10,6 +10,7 @@ const PaymentFacePage: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [warningMsg, setWarningMsg] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("");
   const [retryCount, setRetryCount] = useState(0);
 
   const navigate = useNavigate();
@@ -92,8 +93,13 @@ const PaymentFacePage: React.FC = () => {
 		try {
 			const response = await payInfoByFace(file);
 			navigate("/payment-final", { state: response.data });
-		} catch (err) {
-			setRetryCount(prevCount => prevCount + 1); // 에러 발생 시 재시도 횟수만 증가
+		} catch (err:any) {
+      if (err.response?.status === 406) {
+        setErrorMsg("이미지로는 인식할 수 없습니다.");
+        detection(); // 재시도 함수 호출
+    } else {
+        setRetryCount(prevCount => prevCount + 1); // 에러 발생 시 재시도 횟수만 증가
+    }
 		}
 	};
 
@@ -101,6 +107,7 @@ const PaymentFacePage: React.FC = () => {
 		if (retryCount > 0 && retryCount < 10) {
 			detection(); // 재시도 함수 호출
 		} else if (retryCount >= 10) {
+      setErrorMsg("");
 			setWarningMsg("등록되지 않은 사원입니다");
 			setRetryCount(0); // 재시도 횟수 초기화
 		}
@@ -180,6 +187,13 @@ const PaymentFacePage: React.FC = () => {
             >
               재시도
             </div>
+          </div>
+        )}
+             {errorMsg && (
+          <div>
+            <p className="text-xl text-red-500 font-bold text-center mt-10 mb-5">
+              {errorMsg}
+            </p>
           </div>
         )}
       </div>
