@@ -15,4 +15,6 @@ public class LoginRequestDto {
 
     @NotNull
     private String password;
+
+    private String fcmToken;
 }

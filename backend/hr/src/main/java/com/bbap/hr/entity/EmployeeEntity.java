@@ -32,6 +32,9 @@ public class EmployeeEntity {
     @Column(name = "emp_card", nullable = true, unique = true, length = 20)
     private String empCard;
 
+    @Column(name = "emp_image", nullable = false)
+    private String empImage;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private DepartmentEntity department;

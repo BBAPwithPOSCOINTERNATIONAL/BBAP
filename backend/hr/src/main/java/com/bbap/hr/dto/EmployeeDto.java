@@ -11,8 +11,10 @@ public class EmployeeDto {
     private Integer empId;
     private String empNo;
     private String empName;
+    private String empImage;
     private DepartmentDto department;
     private PositionDto position;
     private WorkplaceDto workplace;
+
 
 }

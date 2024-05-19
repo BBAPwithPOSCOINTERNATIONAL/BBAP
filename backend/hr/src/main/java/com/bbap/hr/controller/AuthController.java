@@ -8,6 +8,8 @@ import com.bbap.hr.dto.EmployeeDto;
 import com.bbap.hr.dto.response.LoginResponseData;
 import com.bbap.hr.dto.response.ResponseDto;
 import com.bbap.hr.service.AuthService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/hr/auth")
+@Tag(name = "auth", description = "인증 API")
 public class AuthController {
 
     private final AuthService authService;
@@ -33,13 +36,13 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logout(@RequestBody @Valid LogoutRequestDto requestBody) {
-        return authService.logout(requestBody);
+    public ResponseEntity<ResponseDto> logout(@RequestHeader(value = "X-Employee-Id") int empId, @RequestBody @Valid LogoutRequestDto requestBody) {
+        return authService.logout(empId,requestBody);
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<DataResponseDto<EmployeeDto>> userInfo() {
-        return authService.getUserInfo();
+    public ResponseEntity<DataResponseDto<EmployeeDto>> userInfo(@RequestHeader(value = "X-Employee-Id") int empId) {
+        return authService.getUserInfo(empId);
     }
 
 

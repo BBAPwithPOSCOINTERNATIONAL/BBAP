@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import feign.FeignException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     //유효성 검사
@@ -14,6 +16,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDto> validationExceptionHandler(MethodArgumentNotValidException e) {
         ResponseDto responseBody = new ResponseDto("유효하지 않은 요청입니다.");
         return ResponseEntity.status(e.getStatusCode()).body(responseBody);
+    }
+
+    //feign
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<String> FeignExceptionHandler(FeignException e) {
+        return ResponseEntity.status(e.status()).body(e.contentUTF8());
     }
 
     @ExceptionHandler(CustomException.class)
