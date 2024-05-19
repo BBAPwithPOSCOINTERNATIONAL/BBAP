@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Semaphore;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -34,7 +37,6 @@ import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -46,41 +48,78 @@ public class PaymentServiceImpl implements PaymentService {
 
 	private final KafkaTemplate<String, String> kafkaTemplate;
 
+	private final Executor virtualThreadExecutor;
+
+	private static final Semaphore semaphore = new Semaphore(60);
+
 	@Override
-	public ResponseEntity<ResponseDto> payRestaurant(PayRestaurantRequestDto request) {
-		//cardID를 통해 사원 정보를 받아옴
-		CheckEmpResponseData empData = hrServiceFeignClient.checkCard(request.getCardId()).getBody().getData();
+	public CompletableFuture<ResponseEntity<ResponseDto>> payRestaurant(PayRestaurantRequestDto request) {
+		return CompletableFuture.supplyAsync(() -> {
+			log.info("Fetching employee data asynchronously");
+			System.out.println("1" + Thread.currentThread().getName());
+			System.out.println("1" + Thread.currentThread().isVirtual());
+			//cardID를 통해 사원 정보를 받아옴
+			CheckEmpResponseData empData = hrServiceFeignClient.checkCard(request.getCardId()).getBody().getData();
+			return empData;
 
-		//사용 가능한 지원금 계산
-		int availSubsidy = calSubsidy(empData);
+		}, virtualThreadExecutor).thenCombineAsync(CompletableFuture.supplyAsync(() -> {
+			System.out.println("2" + Thread.currentThread().getName());
+			System.out.println("2" + Thread.currentThread().isVirtual());
+			log.info("Fetching menu data asynchronously");
+			//메뉴 정보를 받아옴
+			PayMenuResponseData menuData = restaurantServiceFeignClient.payMenu(request.getMenuId())
+				.getBody()
+				.getData();
+			return menuData;
 
-		//메뉴 정보를 받아옴
-		PayMenuResponseData menuData = restaurantServiceFeignClient.payMenu(request.getMenuId()).getBody().getData();
+		}, virtualThreadExecutor), (empData, menuData) -> {
+			log.info("Combining results and processing payment");
+			System.out.println("3" + Thread.currentThread().getName());
+			System.out.println("3" + Thread.currentThread().isVirtual());
+			//사용 가능한 지원금 계산
+			int availSubsidy = calSubsidy(empData);
 
-		//결제 내역 처리
-		PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
-			.empId(empData.getEmpId())
-			.payStore(menuData.getStoreName())
-			.totalPaymentAmount(menuData.getMenuPrice())
-			.useSubsidy(Math.min(menuData.getMenuPrice(), availSubsidy))
-			.paymentDetail(menuData.getMenuName())
-			.paymentDate(LocalDateTime.now())
-			.build();
+			//결제 내역 처리
+			PaymentHistoryEntity entity = PaymentHistoryEntity.builder()
+				.empId(empData.getEmpId())
+				.payStore(menuData.getStoreName())
+				.totalPaymentAmount(menuData.getMenuPrice())
+				.useSubsidy(Math.min(menuData.getMenuPrice(), availSubsidy))
+				.paymentDetail(menuData.getMenuName())
+				.paymentDate(LocalDateTime.now())
+				.build();
 
-		paymentHistoryRepository.save(entity);
+			log.info("{} : 식당 결제 완료 - 총 금액 : {}, 사용 지원금 : {}",
+				entity.getEmpId(), entity.getTotalPaymentAmount(), entity.getUseSubsidy());
 
-		//알림 전송
-		sendPayNotice(entity);
+			CompletableFuture<Void> saveFuture = CompletableFuture.runAsync(
+				() -> {
+					try {
+						semaphore.acquire();
+						paymentHistoryRepository.save(entity);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						throw new RuntimeException("Failed to acquire semaphore", e);
+					} finally {
+						semaphore.release();
+					}
+				}, virtualThreadExecutor);
 
-		log.info("{} : 식당 결제 완료 - 총 금액 : {}, 사용 지원금 : {}", entity.getEmpId(), entity.getTotalPaymentAmount(),
-			entity.getUseSubsidy());
+			//카프카를 통한 알림 전송
+			CompletableFuture<Void> noticeFuture = CompletableFuture.runAsync(() -> sendPayNotice(entity),
+				virtualThreadExecutor);
 
-		//카프카를 통한 메뉴 먹은 인원 수 증가
-		kafkaSend("eat_topic", String.valueOf(request.getMenuId()));
+			//카프카를 통한 메뉴 먹은 인원 수 증가
+			CompletableFuture<Void> eatFuture = CompletableFuture.runAsync(
+				() -> kafkaSend("eat_topic", String.valueOf(request.getMenuId())), virtualThreadExecutor);
 
-		return ResponseDto.success();
+			return CompletableFuture.allOf(saveFuture, noticeFuture, eatFuture)
+				.thenApply(v -> ResponseDto.success())
+				.join();
+		}, virtualThreadExecutor);
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<ResponseDto> processPay(ProcessPayRequestDto request) {
 		//HR에서 empId를 이용해 사원정보를 받아옴
@@ -113,6 +152,7 @@ public class PaymentServiceImpl implements PaymentService {
 		return ResponseDto.success();
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<DataResponseDto<ListMonthPaymentResponseData>> listMonthPayment(int empId,
 		YearMonth yearMonth) {
@@ -140,6 +180,7 @@ public class PaymentServiceImpl implements PaymentService {
 		return DataResponseDto.of(data);
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<DataResponseDto<ListDayPaymentResponseData>> listDayPayment(int empId, LocalDate date) {
 		//인덱스 기반으로 검색하기 위해 LocalDateTime으로 변경
@@ -152,12 +193,14 @@ public class PaymentServiceImpl implements PaymentService {
 		return DataResponseDto.of(data);
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<DataResponseDto<DetailPaymentResponseData>> detailPayment(int historyId) {
 		return DataResponseDto.of(paymentHistoryRepository.findByHistoryId(historyId).orElseThrow(
 			HistoryNotFoundException::new));
 	}
 
+	@Transactional
 	@Override
 	public ResponseEntity<DataResponseDto<AvailSubsidyResponseData>> availSubsidy(int empId) {
 		//HR에서 empId를 이용해 사원정보를 받아옴
@@ -194,9 +237,17 @@ public class PaymentServiceImpl implements PaymentService {
 		LocalDateTime start = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getStartTime());
 		LocalDateTime end = LocalDateTime.of(LocalDate.now(), empData.getSubsidy().getEndTime());
 
-		int usedSubsidy = paymentHistoryRepository.sumUseSubsidy(empData.getEmpId(), start, end).orElse(0);
+		try {
+			semaphore.acquire();
+			int usedSubsidy = paymentHistoryRepository.sumUseSubsidy(empData.getEmpId(), start, end).orElse(0);
+			return empData.getSubsidy().getSubsidy() - usedSubsidy;
 
-		return empData.getSubsidy().getSubsidy() - usedSubsidy;
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException("Failed to acquire semaphore", e);
+		} finally {
+			semaphore.release();
+		}
 	}
 
 	public void kafkaSend(String topic, String message) {
