@@ -1,24 +1,20 @@
 app:
-  name: pobap-order-room
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado/pobap-order-room
-  pullPolicy: Always
-  tag: latest
+  repository: {{image-repo}}
+  pullPolicy: {{image-pullPolicy}}
+  tag: {{image-tag}}
 service:
-  name: pobap-order-room-service
-  port: 80
-  targetPort: 8080
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  enabled: true
-  name: pobap-order-room-ingressroute
-  certResolver: myresolver
+  enabled: {{ingress-enabled}}
+  name: {{ingress-name}}
+  certResolver: {{cert-resolver}}
   routes:
-    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/order-rooms`)
+    - match: {{route-match}}
       middlewares:
-        - pobap-auth-middleware
-    - match: Host(`pobap.com`) && PathPrefix(`/app`)
-    - match: Host(`pobap.com`) && PathPrefix(`/topic`)
-    - match: Host(`pobap.com`) && PathPrefix(`/websocket`)
-
-replicas: 2
+        - {{route-middlewares}}
+replicas: {{replicas}}

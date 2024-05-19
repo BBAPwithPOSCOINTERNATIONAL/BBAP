@@ -1,25 +1,19 @@
 app:
-  name: bbap-kiosk
-  namespace: bbap-front
-
-
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado/bbap-kiosk
-  pullPolicy: Always
-  tag: latest
-
-
+  repository: {{image-repo}}
+  pullPolicy: {{image-pullPolicy}}
+  tag: {{image-tag}}
 deployment:
-  replicas: 2
-  containerPort: 80
-  pullPolicy: Always
-
+  replicas: {{replicas}}
+  containerPort: {{container-port}}
+  pullPolicy: {{deployment-pullPolicy}}
 service:
-  name: bbap-kiosk-service
-  port: 80
-  targetPort: 80
-
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  name: bbap-kiosk-ingressroute
-  host: kiosk.ssafybbap.com
-  certResolver: myresolver
+  name: {{ingress-name}}
+  host: {{host}}
+  certResolver: {{cert-resolver}}

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pobap-crawler
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 spec:
-  replicas: 1
+  replicas: {{replicas}}
   selector:
     matchLabels:
-      app: pobap-crawler
+      app: {{app-name}}
   template:
     metadata:
       labels:
-        app: pobap-crawler
+        app: {{app-name}}
     spec:
       containers:
-        - name: pobap-crawler
-          image: bavocado/pobap-crawler:latest
+        - name: {{app-name}}
+          image: {{image-repo}}/{{app-name}}:{tag}

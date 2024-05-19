@@ -1,19 +1,19 @@
 app:
-  name:
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado
-  tag: latest
+  repository: {{image-repo}}
+  tag: {{image-tag}}
 service:
-  name:
-  port: 80
-  targetPort: 8080
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  enabled : true
-  name:
-  match:
-  servicePort: 80
-  certResolver: myresolver
-replicas: 2
+  enabled : {{ingress-enabled}}
+  name: {{ingress-name}}
+  match: {{ingress-match}}
+  servicePort: {{service-port}}
+  certResolver: {{cert-resolver}}
+replicas: {{replicas}}
 persistence:
-  enabled: false
+  enabled: {{persistence-enabled}}

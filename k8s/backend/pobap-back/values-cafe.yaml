@@ -1,20 +1,20 @@
 app:
-  name: pobap-cafe
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado/pobap-cafe
-  pullPolicy: Always
-  tag: latest
+  repository: {{image-repo}}
+  pullPolicy: {{image-pullPolicy}}
+  tag: {{image-tag}}
 service:
-  name: pobap-cafe-service
-  port: 80
-  targetPort: 8080
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  enabled : true
-  name: pobap-cafe-ingressroute
-  certResolver: myresolver
+  enabled: {{ingress-enabled}}
+  name: {{ingress-name}}
+  certResolver: {{cert-resolver}}
   routes:
-    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/cafes`)
+    - match: {{route-match}}
       middlewares:
-        - pobap-auth-middleware
-replicas: 2
+        - {{route-middlewares}}
+replicas: {{replicas}}

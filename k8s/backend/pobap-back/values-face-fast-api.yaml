@@ -1,30 +1,28 @@
 app:
-  name: pobap-face-fast-api
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado/pobap-face-fast-api
-  pullPolicy: Always
-  tag: latest
+  repository: {{image-repo}}
+  pullPolicy: {{image-pullPolicy}}
+  tag: {{image-tag}}
 service:
-  name: pobap-face-fast-api-service
-  port: 80
-  targetPort: 80
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  enabled : true
-  name: pobap-face-fast-api-ingressroute
-  certResolver: myresolver
+  enabled: {{ingress-enabled}}
+  name: {{ingress-name}}
+  certResolver: {{cert-resolver}}
   routes:
-    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/train`)
-    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/predict`)
-replicas: 2
-
+    - match: {{route-match}}
+replicas: {{replicas}}
 
 persistence:
   enabled: true
-  volumeName: clf-volume
-  mountPath: /app/clf
-  claimName: clf-pvc
+  volumeName: {{clf-volume-name}}
+  mountPath: {{mount-path}}
+  claimName: {{pvc-name}}
   pvc:
-    accessMode: ReadWriteOnce
-    size: 1Gi
-    name: clf-pvc
+    accessMode: {{access-mode}}
+    size: {{size}}
+    name: {{pvc-name}}

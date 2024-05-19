@@ -1,49 +1,44 @@
-# Define service details
 service:
   type: ClusterIP
 
-# Configure ports
 ports:
   web:
     exposedPort: 80
     hostPort: 80
     protocol: TCP
     redirectTo:
-      port: websecure  # Updated redirection syntax
+      port: websecure
   websecure:
     exposedPort: 443
     hostPort: 443
     protocol: TCP
 
-# Enable Traefik Dashboard
 additionalArguments:
   - "--api.dashboard=true"
-  - "--api.insecure=true"  # Be cautious with this in production
+  - "--api.insecure=true"
 
-# Define logging level
 logs:
   general:
     level: INFO
 
-# Define other required settings based on your setup
+
 
 certResolvers:
-  myresolver:  # You can name this whatever you want
-    email: 1ksy3629@naver.com  # your actual email
+  myresolver:
+    email: {{letsencrypt-email}}
     httpChallenge:
-      entryPoint: web  
-    # It has to match the path with a persistent volume
-    storage: /etc/traefik/acme/acme.json  # change this path to the path you mounted your PVC
+      entryPoint: web
+    storage: /etc/traefik/acme/acme.json
 
 
 persistence:
-  enabled: true  # enable persistence so your TLS certificates will be stored
-  name: acme-cert-pvc  # use the name of your PVC
-  existingClaim: "acme-cert-pvc" 
-  accessMode: ReadWriteOnce  
-  size: 10Mi  
-  path: /etc/traefik/acme  # change this path to the path you mounted your PVC
-  annotations: {}
+  enabled: true
+  name: acme-cert-pvc
+  existingClaim: "acme-cert-pvc"
+  accessMode: ReadWriteOnce
+  size: 10Mi
+  path: /etc/traefik/acme
+  annotations: { }
 
 
 podSecurityContext:

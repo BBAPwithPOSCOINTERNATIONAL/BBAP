@@ -1,14 +1,14 @@
 app:
-  name: pobap-auth
-  namespace: pobap-back
+  name: {{app-name}}
+  namespace: {{namespace}}
 image:
-  repository: bavocado/pobap-auth
-  pullPolicy: Always
-  tag: latest
+  repository: {{image-repo}}
+  pullPolicy: {{image-pullPolicy}}
+  tag: {{image-tag}}
 service:
-  name: pobap-auth-service
-  port: 4181
-  targetPort: 8080
+  name: {{service-name}}
+  port: {{service-port}}
+  targetPort: {{target-port}}
 ingress:
-  enabled : false
-replicas: 2
+  enabled: false
+replicas: {{replicas}}
