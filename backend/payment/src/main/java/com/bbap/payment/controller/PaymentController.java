@@ -2,6 +2,7 @@ package com.bbap.payment.controller;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,7 +47,7 @@ public class PaymentController {
 		@ApiResponse(responseCode = "200", description = "결제 성공."),
 	})
 	@PostMapping("/restaurant")
-	public ResponseEntity<ResponseDto> payRestaurant(@RequestBody PayRestaurantRequestDto request) {
+	public CompletableFuture<ResponseEntity<ResponseDto>> payRestaurant(@RequestBody PayRestaurantRequestDto request) {
 		return paymentService.payRestaurant(request);
 	}
 
