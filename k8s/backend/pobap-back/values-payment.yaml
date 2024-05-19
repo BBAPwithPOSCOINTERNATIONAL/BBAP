@@ -1,0 +1,20 @@
+app:
+  name: pobap-payment
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-payment
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-payment-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-payment-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/payment`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

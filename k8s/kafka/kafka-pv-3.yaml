@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-data-3
+  labels:
+    app: kafka-data-3
+spec:
+  storageClassName: standard
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/bitnami/kafka/data-3"
+  capacity:
+    storage: 8Gi

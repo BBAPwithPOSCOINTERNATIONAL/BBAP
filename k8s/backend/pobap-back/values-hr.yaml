@@ -1,0 +1,21 @@
+app:
+  name: pobap-hr
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-hr
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-hr-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-hr-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/hr/auth/login`)
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/hr`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

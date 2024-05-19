@@ -1,0 +1,20 @@
+app:
+  name: pobap-restaurant
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-restaurant
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-restaurant-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-restaurant-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/restaurant`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

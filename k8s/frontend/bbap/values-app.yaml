@@ -1,0 +1,23 @@
+app:
+  name: bbap-front
+  namespace: bbap-front
+
+
+image:
+  repository: bavocado/bbap-front
+  pullPolicy: Always
+  tag: latest
+
+deployment:
+  replicas: 2
+  containerPort: 80
+  pullPolicy: Always
+service:
+  name: bbap-front-service
+  port: 80
+  targetPort: 80
+
+ingress:
+  name: bbap-front-ingressroute
+  host: ssafybbap.com
+  certResolver: myresolver

@@ -1,0 +1,25 @@
+app:
+  name: bbap-kiosk
+  namespace: bbap-front
+
+
+image:
+  repository: bavocado/bbap-kiosk
+  pullPolicy: Always
+  tag: latest
+
+
+deployment:
+  replicas: 2
+  containerPort: 80
+  pullPolicy: Always
+
+service:
+  name: bbap-kiosk-service
+  port: 80
+  targetPort: 80
+
+ingress:
+  name: bbap-kiosk-ingressroute
+  host: kiosk.ssafybbap.com
+  certResolver: myresolver

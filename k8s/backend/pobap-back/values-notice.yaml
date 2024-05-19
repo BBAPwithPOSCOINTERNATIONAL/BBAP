@@ -1,0 +1,20 @@
+app:
+  name: pobap-notice
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-notice
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-notice-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-notice-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/notices`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

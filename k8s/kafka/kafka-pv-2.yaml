@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-data-2
+  labels:
+    app: kafka-data-2
+spec:
+  storageClassName: standard
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/bitnami/kafka/data-2"
+  capacity:
+    storage: 8Gi

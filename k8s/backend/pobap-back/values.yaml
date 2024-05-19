@@ -1,0 +1,19 @@
+app:
+  name:
+  namespace: pobap-back
+image:
+  repository: bavocado
+  tag: latest
+service:
+  name:
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name:
+  match:
+  servicePort: 80
+  certResolver: myresolver
+replicas: 2
+persistence:
+  enabled: false

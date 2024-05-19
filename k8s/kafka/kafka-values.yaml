@@ -1,0 +1,61 @@
+image:
+  debug: true
+
+
+listeners:
+  client:
+    protocol: PLAINTEXT
+
+externalAccess:
+  enabled: true
+  controller:
+    service:
+      type: NodePort
+      nodePorts:
+        - 30100
+        - 30101
+        - 30102
+#  autoDiscovery:
+#    enabled: true
+
+controller:
+
+  persistence:
+    enabled: true
+    storageClass: standard
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+    mountPath: /bitnami/kafka
+
+#  logPersistence:
+#    enabled: true
+#    size: 8Gi
+#    mountPath: /opt/bitnami/kafka/logs
+
+
+volumePermissions:
+  enabled: true
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: false
+
+
+kraft:
+  enabled: true
+  clusterId: ZTAxYTAzYzcyMzQ1NDM5Yj
+
+zookeeper:
+  enabled: false
+
+
+extraEnvVars:
+  - name: KAFKA_ENABLE_KRAFT
+    value: "true"
+  - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
+    value: "true"  # Add this line to enable topic deletion
+  - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+    value: "true"  # Add this line to enable topic auto-creation

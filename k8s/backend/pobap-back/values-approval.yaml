@@ -1,0 +1,20 @@
+app:
+  name: pobap-approval
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-approval
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-approval-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-approval-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/approvals`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

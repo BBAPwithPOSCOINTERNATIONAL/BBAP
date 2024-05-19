@@ -1,0 +1,20 @@
+app:
+  name: pobap-order
+  namespace: pobap-back
+image:
+  repository: bavocado/pobap-order
+  pullPolicy: Always
+  tag: latest
+service:
+  name: pobap-order-service
+  port: 80
+  targetPort: 8080
+ingress:
+  enabled : true
+  name: pobap-order-ingressroute
+  certResolver: myresolver
+  routes:
+    - match: Host(`pobap.com`) && PathPrefix(`/api/v1/orders`)
+      middlewares:
+        - pobap-auth-middleware
+replicas: 2

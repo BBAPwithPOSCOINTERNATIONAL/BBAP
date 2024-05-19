@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pobap-crawler
+  namespace: pobap-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pobap-crawler
+  template:
+    metadata:
+      labels:
+        app: pobap-crawler
+    spec:
+      containers:
+        - name: pobap-crawler
+          image: bavocado/pobap-crawler:latest
