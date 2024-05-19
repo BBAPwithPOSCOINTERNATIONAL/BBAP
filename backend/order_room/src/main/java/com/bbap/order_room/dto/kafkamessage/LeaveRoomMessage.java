@@ -1,4 +1,4 @@
-package com.bbap.order_room.entity.redis;
+package com.bbap.order_room.dto.kafkamessage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Orderer {
-	Integer empId;
-	String name;
-	String empNo;
+public class LeaveRoomMessage {
+    private String sessionId;
 }
