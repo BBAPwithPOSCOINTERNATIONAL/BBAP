@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    active: ${profile}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: none # or create, create-drop, validate, none, update
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE
+
+springdoc:
+  packages-to-scan: com.bbap.approval.controller
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api/v1/approvals/api-docs
+  swagger-ui:
+    path: /api/v1/approvals/swagger
+    disable-swagger-default-url: false
+    display-request-duration: true
+    operations-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
