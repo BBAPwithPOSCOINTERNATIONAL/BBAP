@@ -47,7 +47,7 @@ const RightSide = styled.div`
 
 const AdminNav = () => {
   const empNo = useUserStore((state) => state.empNo);
-  const [activeTab] = useState<"조회" | "결재">("조회");
+  const [activeTab] = useState<"확인" | "승인">("확인");
   const history = useNavigate();
 
   const handleLogout = () => {
@@ -60,7 +60,7 @@ const AdminNav = () => {
   };
 
   const handleApprovalClick = () => {
-    history("/admininquiry?tab=결재");
+    history("/admininquiry?tab=승인");
   };
 
   return (
@@ -78,7 +78,7 @@ const AdminNav = () => {
             w-48 sm:w-44 md:w-52 lg:w-full"
             onClick={() => gotoback()}
           >
-            조회
+            확인
           </button>
           <button
             className="font-hyemin-bold bg-[#F2F2F2] rounded-md m-5 ml-0 
@@ -86,7 +86,7 @@ const AdminNav = () => {
              w-44 sm:w-44 md:w-52 lg:w-full"
             onClick={handleApprovalClick}
           >
-            결재
+            승인
           </button>
         </div>
         <div>
@@ -104,14 +104,14 @@ const AdminNav = () => {
       <RightSide>
         <img src={poscoimg} alt="Login Logo" className="fixed top-3 right-4" />
         {/* 조회 탭 눌렀을 경우 */}
-        {activeTab === "조회" && (
+        {activeTab === "확인" && (
           <div
             style={{
               marginLeft: "23rem",
               marginTop: "1%",
             }}
           >
-            <div className=" font-hyemin-bold text-[40px] mb-3">조회</div>
+            <div className=" font-hyemin-bold text-[40px] mb-3">확인</div>
             <div className=" font-hyemin-bold text-[30px]">기간설정</div>
             <div className=" font-hyemin-bold ">
               <EmployeeSubsidy />
@@ -127,7 +127,7 @@ const AdminNav = () => {
           </div>
         )}
         {/* 결재 탭 눌렀을 경우 */}
-        {activeTab === "결재" && (
+        {activeTab === "승인" && (
           <div
             style={{
               marginLeft: "23rem",
@@ -135,7 +135,7 @@ const AdminNav = () => {
             }}
           >
             <div className=" font-hyemin-bold text-[40px]">
-              {year}년 {month}월 결재
+              {year}년 {month}월 승인
             </div>
             <div className=" font-hyemin-bold text-[30px]">사원검색</div>
             <div className=" font-hyemin-bold">탭 내용</div>
